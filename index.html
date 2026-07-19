@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Objeto Virtual de Aprendizaje: manejo de arritmias cardiacas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+    <link rel="stylesheet" href="css/01-variables.css">
+    <link rel="stylesheet" href="css/02-layout.css">
+    <link rel="stylesheet" href="css/03-components.css">
+    <link rel="stylesheet" href="css/04-simulator.css">
+    <link rel="stylesheet" href="css/05-modulo.css">
+    <link rel="stylesheet" href="css/10-componentes.css">
+</head>
+<body>
+
+    <aside id="aha-sidebar" class="aha-sidebar" aria-label="Panel de referencia rápida: algoritmo ACLS">
+        <button id="aha-toggle" class="aha-toggle" aria-expanded="false" aria-controls="aha-sidebar">ACLS</button>
+        <div class="aha-content">
+            <h2>Algoritmo para Interpretación de Arritmias (ACLS)</h2>
+            <h3>1. ¿EL PACIENTE TIENE PULSO?</h3>
+            <p class="alert-text">NO tiene pulso → Paro cardíaco</p>
+            <ul>
+                <li><strong>Ritmo desfibrilable:</strong> FV, TVSP<br>→ <span class="action-text">RCP + Desfibrilación + Adrenalina + Amiodarona</span></li>
+                <li><strong>Ritmo no desfibrilable:</strong> Asistolia, AESP<br>→ <span class="action-text">RCP + Adrenalina + buscar 6H y 6T</span></li>
+            </ul>
+            <p class="success-text">SÍ tiene pulso → continuar</p>
+            
+            <h3>2. ¿ESTÁ HEMODINÁMICAMENTE ESTABLE?</h3>
+            <p><em>(Hipotensión, alteración de conciencia, dolor torácico, shock)</em></p>
+            <ul>
+                <li><strong>INESTABLE:</strong> <span class="action-text">Cardioversión eléctrica sincronizada</span><br><em>(excepto FV/TV sin pulso → desfibrilar)</em></li>
+                <li><strong>ESTABLE:</strong> Continuar análisis del ECG</li>
+            </ul>
+            
+            <h3>3. FRECUENCIA CARDÍACA</h3>
+            <p><strong>&lt; 60 lpm → BRADIARRITMIA</strong><br><em>(Bradicardia sinusal, Bloqueos AV)</em></p>
+            <ul>
+                <li><strong>Sintomático:</strong> <span class="action-text">Atropina → Dopamina/Adrenalina → Marcapaso</span></li>
+                <li><strong>Asintomático:</strong> Observación y corregir causas</li>
+            </ul>
+            <p><strong>&gt; 100 lpm → TAQUIARRITMIA</strong> → continuar al paso 4</p>
+            
+            <h3>4. ANCHO DEL QRS</h3>
+            <p><strong>QRS ESTRECHO (&lt; 0.12 s) → SUPRAVENTRICULAR</strong></p>
+            <ul>
+                <li><strong>Regular</strong> <em>(Taqui Sinusal, TSVP)</em>: <span class="action-text">Maniobras vagales, Adenosina, Betabloqueador/Calcioantagonista.</span></li>
+                <li><strong>Irregular</strong> <em>(FA, Flutter)</em>: <span class="action-text">Control de FC, Anticoagulación, Cardioversión si inestable.</span></li>
+            </ul>
+            <p><strong>QRS ANCHO (≥ 0.12 s) → VENTRICULAR HASTA DEMOSTRAR LO CONTRARIO</strong></p>
+            <ul>
+                <li><strong>Estable:</strong> <span class="action-text">Amiodarona / Antiarrítmicos</span></li>
+                <li><strong>Inestable:</strong> <span class="action-text">Cardioversión</span></li>
+                <li><strong>Sin pulso:</strong> <span class="action-text">Desfibrilación</span></li>
+            </ul>
+            
+            <h3>5. ¿ESPIGAS DE MARCAPASO?</h3>
+            <p>Evaluar: Captura, Fallo de captura, Fallo de sensado, Fallo de estimulación.</p>
+            
+            <h3>6. ¿HAY LATIDOS PREMATUROS?</h3>
+            <p><em>(EAP, EV)</em> → Generalmente observación, corregir causas (electrolitos, hipoxia).</p>
+            
+            <div class="key-box">
+                <h4>RESUMEN OPERATIVO RÁPIDO</h4>
+                <ul>
+                    <li><strong>Pulso:</strong> ¿sí o no?</li>
+                    <li><strong>Estabilidad:</strong> ¿estable o inestable?</li>
+                    <li><strong>Frecuencia:</strong> ¿lento o rápido?</li>
+                    <li><strong>QRS:</strong> ¿estrecho o ancho?</li>
+                    <li><strong>Regularidad:</strong> ¿regular o irregular?</li>
+                </ul>
+            </div>
+            <div class="key-box danger">
+                <h4 class="alert-text">CLAVES CLÍNICAS</h4>
+                <ul>
+                    <li>QRS ancho = TV hasta demostrar lo contrario</li>
+                    <li>Paciente inestable = Electricidad</li>
+                    <li>Paciente sin pulso = Protocolo de paro</li>
+                    <li>Siempre buscar causas reversibles (6H y 6T)</li>
+                </ul>
+            </div>
+            <br><br>
+        </div>
+    </aside>
+
+    <header class="header-container">
+        <span class="header-eyebrow">Facultad de Enfermería · Universidad FUCS</span>
+        <h1>Objeto Virtual de Aprendizaje: manejo de arritmias cardiacas</h1>
+    </header>
+
+    <main id="vista-home" class="view-active">
+        <div class="home-layout">
+            <div class="heart-showcase">
+                <model-viewer
+                    src="assets/models/Heart.glb"
+                    alt="Modelo tridimensional del corazón humano"
+                    auto-rotate
+                    rotation-per-second="6deg"
+                    interaction-prompt="none"
+                    shadow-intensity="0.8"
+                    shadow-softness="1"
+                    exposure="1"
+                    disable-zoom
+                    disable-pan
+                    disable-tap
+                ></model-viewer>
+            </div>
+            <div class="modules-column">
+                <div class="dashboard-grid">
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('01', 'Fundamentos')">
+                <div class="card-icon" aria-hidden="true">⚡</div>
+                <h3>Módulo 01</h3>
+                <h4>Fundamentos</h4>
+            </div>
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('02', 'Valoración')">
+                <div class="card-icon" aria-hidden="true">🩺</div>
+                <h3>Módulo 02</h3>
+                <h4>Valoración</h4>
+            </div>
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('03', 'Diagnóstico')">
+                <div class="card-icon" aria-hidden="true">📈</div>
+                <h3>Módulo 03</h3>
+                <h4>Diagnóstico</h4>
+                <span class="card-badge">Simulador interactivo</span>
+            </div>
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('04', 'Planeación')">
+                <div class="card-icon" aria-hidden="true">📋</div>
+                <h3>Módulo 04</h3>
+                <h4>Planeación</h4>
+            </div>
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('05', 'Intervención')">
+                <div class="card-icon" aria-hidden="true">💉</div>
+                <h3>Módulo 05</h3>
+                <h4>Intervención</h4>
+                <span class="card-badge">Simulador interactivo</span>
+            </div>
+            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('06', 'Evaluación')">
+                <div class="card-icon" aria-hidden="true">✅</div>
+                <h3>Módulo 06</h3>
+                <h4>Evaluación</h4>
+                <span class="card-badge">Simulador interactivo</span>
+            </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="vista-modulo" class="view-hidden">
+        
+        <div class="module-navbar">
+            <button class="btn-back" onclick="volverHome()">← Volver al Menú</button>
+            <h2 id="titulo-modulo-activo" class="module-title-display">Módulo X</h2>
+        </div>
+
+        <div class="pedagogy-container">
+            
+            <div id="contenido-modulo-01" data-src="modules/modulo-01.html"></div>
+
+            <div id="contenido-modulo-02" data-src="modules/modulo-02.html"></div>
+
+
+            <div id="contenido-modulo-03" data-src="modules/modulo-03.html"></div>
+
+
+            <div id="contenido-modulo-04" data-src="modules/modulo-04.html"></div>
+
+
+            <div id="contenido-modulo-05" data-src="modules/modulo-05.html"></div>
+
+
+            <div id="contenido-modulo-06" data-src="modules/modulo-06.html"></div>
+
+        </div>
+
+        <div id="simulador-wrapper">
+            <div class="main-container">
+                <div class="top-row">
+                    <div class="monitor-frame">
+                        <div class="canvas-container">
+                            <canvas id="ekgCanvas" width="520" height="320" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
+                        </div>
+                        <div class="vitals-panel">
+                            <div class="vital-box fc"><div class="label">FC (LPM)</div><div class="value" id="val-fc">75</div></div>
+                            <div class="vital-box ta"><div class="label">TA (mmHg) / PAM</div><div class="value small-text" id="val-ta">120/80 (93)</div></div>
+                            <div class="vital-box spo2"><div class="label">SpO2 (%)</div><div class="value" id="val-spo2">98</div></div>
+                            <div class="vital-box fr"><div class="label">FR (RPM)</div><div class="value" id="val-fr">16</div></div>
+                            <div class="vital-box temp"><div class="label">T° (°C)</div><div class="value" id="val-temp">36.5</div></div>
+                        </div>
+                    </div>
+
+                    <div class="clinical-panel">
+                        <h3>Acciones Clínicas</h3>
+                        <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
+                        <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
+                        <div class="log-container" id="clinical-log" role="log" aria-live="polite" aria-label="Registro de eventos clínicos">
+                            <div class="log-entry">-- Inicio de Simulación --</div>
+                            <div class="log-entry">Paciente monitorizado. Seleccione un ritmo.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="selectorRitmo"><strong>Selección de Ritmo Clínico:</strong></label>
+                        <select id="selectorRitmo">
+                            <option value="sinusal">Ritmo Sinusal</option>
+                            
+                            <optgroup label="1. Bradiarritmias">
+                                <option value="bradi_sinusal">Bradicardia Sinusal</option>
+                                <option value="bav1">Bloqueo Av de 1er Grado</option>
+                                <option value="bav2_1">Bloqueo Av de 2do Grado (Mobitz I)</option>
+                                <option value="bav2_2">Bloqueo Av de 2do Grado (Mobitz II)</option>
+                                <option value="bav3">Bloqueo Av de 3er Grado</option>
+                            </optgroup>
+
+                            <optgroup label="2. Ritmos de Marcapasos">
+                                <option value="mp_ventricular">Marcapasos: Captura Ventricular Efectiva</option>
+                                <option value="mp_fallo_est">Marcapasos: Fallo de Estimulación</option>
+                            </optgroup>
+
+                            <optgroup label="3. Taquiarritmias de Complejo Angosto">
+                                <option value="taqui_sinusal">Taquicardia Sinusal</option>
+                                <option value="tsvp">Taquicardia Supraventricular</option>
+                                <option value="flutter">Flutter Auricular</option>
+                                <option value="fa">Fibrilación Auricular</option>
+                            </optgroup>
+
+                            <optgroup label="4. Taquiarritmias de Complejo Ancho">
+                                <option value="tv_mono">Taquicardia Ventricular Monomórfica</option>
+                                <option value="tv_poli">Taquicardia Ventricular Polimórfica</option>
+                                <option value="torsades">Torsades de Pointes</option>
+                            </optgroup>
+
+                            <optgroup label="5. Ritmos de Parada Cardiaca">
+                                <option value="fv">Fibrilación Ventricular</option>
+                                <option value="tvsp">Taquicardia Ventricular Sin Pulso</option>
+                                <option value="asistolia">Asistolia</option>
+                                <option value="aesp">Actividad Eléctrica Sin Pulso</option>
+                            </optgroup>
+
+                            <optgroup label="6. Extrasístoles">
+                                <option value="eap">Extrasístole Auricular</option>
+                                <option value="ev">Extrasístole Ventricular</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="control-group instruccion-box">
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            <strong>Instrucción:</strong> Al cambiar el ritmo, el simulador aplicará automáticamente la lógica de la categoría seleccionada (hemodinamia, pulso, medicamentos y opciones de desfibrilación).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="fucs-footer">
+        <div class="footer-brand">
+            <img src="assets/images/logo-fucs.png" alt="Logo Universidad FUCS" class="footer-logo">
+            <p class="footer-project-name">Objeto Virtual de Aprendizaje: Manejo de Arritmias Cardíacas</p>
+            <p class="footer-project-meta">Facultad de Enfermería · Universidad FUCS</p>
+        </div>
+
+        <hr class="footer-divider">
+
+        <div class="footer-columns">
+            <div class="footer-col">
+                <h4>Proyecto</h4>
+                <p>Proyecto de Grado</p>
+                <p>Facultad de Enfermería</p>
+                <p>2026</p>
+            </div>
+            <div class="footer-col">
+                <h4>Autores</h4>
+                <p>Investigador principal: Carlos González, Paula Duarte</p>
+                <p>Coautores: Andrés Arango, Erika Barrera, Luis Mantilla, Jhon Londoño, Laura Ramirez</p>
+                <p>Diseño y desarrollo web: Andrés Arango</p>
+            </div>
+            <div class="footer-col">
+                <h4>Guías clínicas</h4>
+                <p>American Heart Association (AHA) 2025</p>
+                <p>European Society of Cardiology (ESC) 2024</p>
+            </div>
+        </div>
+
+        <hr class="footer-divider">
+
+        <p class="footer-legal">© 2026 Todos los derechos reservados. Desarrollado como recurso educativo para estudiantes de ciencias de la salud.</p>
+    </footer>
+
+    <script src="js/00-motor-clinico.js"></script>
+    <script src="js/01-data-ritmos.js"></script>
+    <script src="js/02-motor-ecg.js"></script>
+    <script src="js/06-motor-hemodinamico.js"></script>
+    <script src="js/07-motor-eventos.js"></script>
+    <script src="js/08-motor-medicamentos.js"></script>
+    <script src="js/09-motor-pacientes.js"></script>
+    <script src="js/03-navegacion.js"></script>
+    <script src="js/05-modulo.js"></script>
+    <script src="js/04-simulador.js"></script>
+    <script src="js/10-componentes.js"></script>
+    <script src="js/11-contenido-dinamico.js"></script>
+</body>
+</html>

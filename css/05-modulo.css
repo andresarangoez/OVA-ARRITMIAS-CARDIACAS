@@ -1,0 +1,133 @@
+/* ============================================================
+   COMPONENTES DE MÓDULO — Estándar CONTENIDO_MODULOS.md
+   Patrón: Bienvenida (gating) → Desarrollo (Unidades) → Cierre
+   ============================================================ */
+
+/* --- PANTALLA DE BIENVENIDA --- */
+.modulo-bienvenida { max-width: 640px; margin: 0 auto; }
+
+.modulo-encabezado { margin-bottom: 32px; text-align: center; }
+.modulo-numero { display: inline-block; color: var(--fucs-azul-oscuro); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+.modulo-icono-grande { font-size: 2.4rem; display: block; margin-bottom: 10px; }
+.modulo-titulo-bienvenida { color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; margin: 0 0 14px 0; }
+.modulo-meta { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.9rem; }
+.modulo-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fucs-gris); }
+
+.modulo-comenzar-wrap { text-align: center; margin-top: 32px; }
+
+.btn-comenzar { background-color: var(--fucs-azul-profundo); color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+.btn-comenzar:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); transform: scale(1.02); }
+
+.modulo-objetivos { background: var(--fucs-niebla); border-radius: var(--bento-radius-md); padding: 20px 24px; margin-bottom: 24px; }
+.modulo-objetivos h3 { margin: 0 0 10px 0; font-size: 0.95rem; color: var(--fucs-azul-profundo); text-transform: uppercase; letter-spacing: 0.5px; }
+.modulo-objetivos ul { margin: 0; padding-left: 20px; }
+.modulo-objetivos li { margin-bottom: 6px; color: var(--text-body); text-align: left; }
+
+.modulo-introduccion h3 { font-size: 0.95rem; color: var(--fucs-azul-profundo); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: justify; }
+
+/* --- DESARROLLO: UNIDADES --- */
+.modulo-unidad { margin-top: 44px; padding-top: 32px; border-top: 2px dashed var(--fucs-amarillo); }
+.modulo-unidad:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+.unidad-titulo { color: var(--fucs-azul-oscuro); font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; }
+
+/* --- FIGURA / IMAGEN --- */
+.figura { margin: 20px 0; }
+.figura-caption { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+.figura-caption strong { color: var(--fucs-azul-oscuro); }
+
+/* --- ESPACIO RESERVADO (genérico: diagramas, video, 3D, imágenes) --- */
+.espacio-reservado { border: 2px dashed var(--fucs-gris); border-radius: var(--bento-radius-md); padding: 36px 20px; text-align: center; color: var(--text-muted); background: var(--fucs-niebla); font-size: 0.88rem; }
+.espacio-reservado .icono { font-size: 1.8rem; display: block; margin-bottom: 8px; }
+
+/* --- GALERÍA DE IMÁGENES --- */
+.galeria-imagenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.galeria-imagenes .espacio-reservado { padding: 24px 10px; font-size: 0.78rem; }
+
+/* --- TARJETA INFORMATIVA (reutiliza .key-box existente en 03-components.css) --- */
+.tarjeta-informativa { background: rgba(251, 215, 133, 0.14); border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-dorado); padding: 18px 20px; margin: 20px 0; }
+.tarjeta-informativa h4 { margin: 0 0 6px 0; color: var(--fucs-azul-profundo); font-size: 0.95rem; }
+.tarjeta-informativa p { margin: 4px 0; font-size: 0.88rem; color: var(--text-body); }
+.tarjeta-informativa .etiqueta { font-weight: 700; color: var(--fucs-azul-oscuro); }
+
+/* --- TABLA COMPARATIVA --- */
+.tabla-comparativa { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+.tabla-comparativa th, .tabla-comparativa td { border: 1px solid var(--fucs-gris); padding: 10px 14px; text-align: left; }
+.tabla-comparativa th { background: var(--fucs-azul-profundo); color: white; font-weight: 600; }
+.tabla-comparativa tr:nth-child(even) td { background: var(--fucs-niebla); }
+
+/* --- LÍNEA DE TIEMPO --- */
+.linea-tiempo { position: relative; margin: 24px 0; padding-left: 28px; border-left: 2px solid var(--fucs-dorado); }
+.linea-tiempo-item { position: relative; margin-bottom: 22px; }
+.linea-tiempo-item:last-child { margin-bottom: 0; }
+.linea-tiempo-item::before { content: ""; position: absolute; left: -33px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--fucs-azul-profundo); }
+.linea-tiempo-item h5 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 0.9rem; }
+.linea-tiempo-item p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+
+/* --- ACORDEÓN --- */
+.acordeon { margin: 20px 0; }
+.acordeon-item { border: 1px solid var(--fucs-gris); border-radius: var(--bento-radius-md); margin-bottom: 10px; overflow: hidden; }
+.acordeon-header { width: 100%; background: #ffffff; border: none; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: var(--fucs-azul-profundo); font-size: 0.9rem; text-align: left; }
+.acordeon-header:hover { background: var(--fucs-niebla); }
+.acordeon-header .icono-toggle { transition: transform 0.2s ease; color: var(--fucs-dorado); font-weight: 700; }
+.acordeon-item.abierto .acordeon-header .icono-toggle { transform: rotate(45deg); }
+.acordeon-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 18px; }
+.acordeon-item.abierto .acordeon-body { max-height: 400px; padding: 0 18px 16px 18px; }
+.acordeon-body p { margin: 0; font-size: 0.87rem; color: var(--text-body); line-height: 1.6; }
+
+/* --- RECURSO INTERACTIVO --- */
+.modulo-recurso-interactivo { margin-top: 44px; padding: 24px; background: var(--fucs-niebla); border-radius: var(--bento-radius-md); }
+.modulo-recurso-interactivo h3 { color: var(--fucs-azul-profundo); margin: 0 0 8px 0; }
+.placeholder-nota { color: var(--text-muted); font-size: 0.88rem; font-style: italic; margin: 0; }
+
+/* --- CASO CLÍNICO --- */
+.modulo-caso-clinico { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-azul-profundo); }
+.modulo-caso-clinico > h3 { color: var(--fucs-azul-profundo); font-size: 1.15rem; margin-bottom: 18px; }
+.caso-clinico-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+.caso-clinico-campo { background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--bento-radius-md); padding: 14px 16px; }
+.caso-clinico-campo h5 { margin: 0 0 6px 0; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--fucs-azul-oscuro); }
+.caso-clinico-campo p { margin: 0; font-size: 0.88rem; color: var(--text-body); }
+.caso-clinico-preguntas { margin-top: 20px; }
+.caso-clinico-preguntas h4 { color: var(--fucs-azul-profundo); font-size: 0.95rem; margin-bottom: 10px; }
+
+/* --- ACTIVIDAD DE APRENDIZAJE --- */
+.modulo-actividad { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-azul-profundo); }
+.modulo-actividad > h3 { color: var(--fucs-azul-profundo); font-size: 1.15rem; margin-bottom: 8px; }
+.actividad-enunciado { color: var(--text-body); margin-bottom: 16px; }
+.actividad-opciones { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.actividad-opcion { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--fucs-gris); border-radius: var(--bento-radius-md); cursor: pointer; transition: 0.2s; background: #ffffff; }
+.actividad-opcion:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.1); }
+.actividad-opcion input { accent-color: var(--fucs-azul-profundo); }
+.btn-verificar { background-color: var(--fucs-azul-oscuro); color: white; border: none; padding: 10px 22px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-verificar:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+
+/* --- RESUMEN --- */
+.modulo-resumen { margin-top: 44px; padding: 24px; background: rgba(10, 62, 124, 0.04); border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-azul-oscuro); }
+.modulo-resumen h3 { color: var(--fucs-azul-profundo); margin: 0 0 12px 0; }
+.modulo-resumen ul { margin: 0; padding-left: 20px; }
+.modulo-resumen li { margin-bottom: 6px; color: var(--text-body); }
+
+/* --- AUTOEVALUACIÓN --- */
+.modulo-autoevaluacion { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-dorado); }
+.modulo-autoevaluacion > h3 { color: var(--fucs-azul-profundo); font-size: 1.15rem; margin-bottom: 6px; }
+.autoevaluacion-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; }
+.autoevaluacion-pregunta { margin-bottom: 24px; }
+.autoevaluacion-pregunta h5 { color: var(--fucs-azul-profundo); font-size: 0.92rem; margin-bottom: 10px; }
+.btn-enviar-eval { background-color: var(--fucs-azul-profundo); color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-enviar-eval:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+
+/* --- ESTADOS DE CARGA DINÁMICA DE MÓDULOS (03-navegacion.js) --- */
+.modulo-cargando, .modulo-error {
+    text-align: center;
+    padding: 60px 20px;
+    border-radius: var(--bento-radius-md);
+    font-size: 0.95rem;
+}
+.modulo-cargando { color: var(--text-muted); background: var(--fucs-niebla); }
+.modulo-error { color: var(--danger); background: rgba(231, 76, 60, 0.06); border: 1px solid rgba(231, 76, 60, 0.25); }
+
+/* --- BIBLIOGRAFÍA --- */
+.modulo-bibliografia { margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--fucs-gris); }
+.modulo-bibliografia h3 { color: var(--fucs-azul-profundo); font-size: 1rem; margin-bottom: 12px; }
+.modulo-bibliografia ol { margin: 0; padding-left: 22px; }
+.modulo-bibliografia li { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }

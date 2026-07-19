@@ -1,0 +1,48 @@
+/* --- CONTENEDOR PRINCIPAL --- */
+.main-container { display: flex; flex-direction: column; gap: 20px; width: 1100px; margin: 0 auto;}
+.top-row { display: flex; gap: 20px; width: 100%; }
+
+/* --- MONITOR EKG Y SIGNOS --- */
+.monitor-frame { background-color: #000; border: 5px solid #333; border-radius: 12px; display: flex; padding: 15px; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); flex-grow: 1; color: var(--text-light); }
+.canvas-container { position: relative; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 20px 20px; border-right: 2px solid #222; padding-right: 15px; }
+
+.vitals-panel { width: 200px; display: flex; flex-direction: column; gap: 6px; }
+.vital-box { text-align: left; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: var(--radius-sm); border-left: 3px solid currentColor; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #888; }
+.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; }
+.value.small-text { font-size: 1.6rem; }
+
+.fc { color: #2ecc71; } 
+.ta { color: #ffffff; } 
+.spo2 { color: #3498db; } 
+.fr { color: #f1c40f; } 
+.temp { color: #e67e22; }
+
+/* --- PANEL DE ACCIONES CLÍNICAS --- */
+.clinical-panel { width: 320px; background: #ffffff; color: var(--fucs-azul-oscuro); border: 1px solid var(--fucs-gris); border-top: 4px solid var(--fucs-dorado); border-radius: var(--radius-lg); padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-md); }
+.clinical-panel h3 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 1.1rem; text-align: center; padding-bottom: 10px; border-bottom: 1px solid var(--fucs-gris); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 10px; font-family: var(--font-mono); font-size: 0.8rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--fucs-gris); }
+
+/* --- CONTROLES MANUALES --- */
+.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 22px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
+.control-group { display: flex; flex-direction: column; gap: 8px; }
+.control-group label { color: var(--fucs-azul-profundo); font-size: 1.05rem; }
+
+/* --- ANIMACIÓN DE DESFIBRILADOR Y LOGS --- */
+@keyframes pulse-charge {
+    0% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0.7); }
+    50% { transform: scale(1.03); background-color: var(--danger); color: white; box-shadow: 0 0 15px rgba(231, 76, 60, 0.8); }
+    100% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
+}
+
+.btn-shock.charging {
+    animation: pulse-charge 0.8s infinite;
+    pointer-events: none;
+    border-color: transparent;
+}
+
+.log-entry.alert { color: var(--danger); font-weight: bold; } 
+.log-entry.success { color: var(--success); font-weight: bold; } 
+.log-entry.action { color: var(--fucs-azul-profundo); font-weight: bold; }
+.log-entry.warning { color: #d35400; font-weight: bold; }

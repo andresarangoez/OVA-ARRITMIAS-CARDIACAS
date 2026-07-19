@@ -1,0 +1,150 @@
+/* Título principal */
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 1100px;
+    padding: 22px 15px 26px 15px;
+    margin-bottom: 24px;
+    background: #ffffff;
+    border-radius: var(--bento-radius-xl);
+    box-shadow: var(--bento-shadow-soft);
+}
+.header-eyebrow {
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; font-size: 1.6rem; font-weight: 800; letter-spacing: 1.5px; }
+
+/* --- PANEL LATERAL ACLS (Institucional) --- */
+.aha-sidebar {
+    position: fixed;
+    top: 0;
+    left: -420px;
+    width: 420px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 12px 0 30px rgba(9, 39, 85, 0.18);
+    border-right: 4px solid var(--fucs-dorado);
+    transition: left 0.4s ease;
+    z-index: 1000;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.aha-sidebar.open { left: 0; }
+
+.aha-toggle {
+    position: absolute;
+    top: 20px;
+    right: -40px;
+    width: 40px;
+    height: 140px;
+    background-color: var(--fucs-azul-profundo); 
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 2px;
+    transition: background-color 0.2s ease;
+}
+.aha-toggle:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+
+.aha-content { padding: 20px; overflow-y: auto; flex-grow: 1; box-sizing: border-box; color: var(--fucs-azul-oscuro); font-size: 0.95rem; }
+
+/* --- ESTILO PARA HACER LA BARRA DELGADA --- */
+
+/* Para Firefox */
+.aha-content {
+    scrollbar-width: thin;
+    scrollbar-color: var(--fucs-azul-oscuro) transparent;
+}
+
+/* Para Chrome, Edge y Safari */
+.aha-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.aha-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.aha-content::-webkit-scrollbar-thumb {
+    background-color: var(--fucs-azul-oscuro);
+    border-radius: 10px;
+}
+
+.aha-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--fucs-azul-profundo);
+}
+
+.aha-content h2 { color: var(--fucs-azul-profundo); border-bottom: 2px solid var(--fucs-dorado); padding-bottom: 10px; font-size: 1.2rem; text-align: center; margin-top: 0; text-transform: uppercase; }
+.aha-content h3 { color: var(--fucs-azul-oscuro); margin-top: 25px; margin-bottom: 10px; font-size: 1.05rem; border-bottom: 1px dashed var(--fucs-azul-oscuro); padding-bottom: 5px; }
+.aha-content h4 { color: var(--fucs-azul-profundo); margin: 0 0 10px 0; font-size: 1rem; }
+.aha-content ul { padding-left: 20px; line-height: 1.5; margin-top: 5px; }
+.aha-content p { margin: 5px 0; }
+
+/* --- PIE DE PÁGINA --- */
+.fucs-footer { margin-top: auto; width: 100%; max-width: 1100px; padding: 64px 20px 40px 20px; color: var(--fucs-azul-profundo); }
+
+.footer-brand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; margin-bottom: 40px; }
+.footer-logo { height: 100px; width: auto; }
+.footer-project-name { margin: 0; font-size: 1.15rem; font-weight: 500; color: var(--fucs-azul-profundo); letter-spacing: 0.2px; }
+.footer-project-meta { margin: 0; font-size: 0.85rem; font-weight: 300; color: var(--fucs-azul-oscuro); opacity: 0.7; }
+
+.footer-divider { border: none; height: 1px; background: rgba(198, 199, 200, 0.5); margin: 0 0 40px 0; }
+
+.footer-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-bottom: 40px; }
+.footer-col h4 { margin: 0 0 14px 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--fucs-azul-oscuro); opacity: 0.6; }
+.footer-col p { margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-profundo); }
+.footer-col p:last-child { margin-bottom: 0; }
+
+.footer-legal { text-align: center; font-size: 0.78rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-oscuro); opacity: 0.65; max-width: 60ch; margin: 0 auto; }
+
+/* --- SISTEMA DE VISTAS (SPA) --- */
+.view-hidden { display: none !important; }
+.view-active { display: block; animation: fadeIn 0.4s ease; width: 100%; max-width: 1100px; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- VISTA HOME: DASHBOARD DE MÓDULOS --- */
+.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 100%; }
+
+/* --- ZONA CORAZÓN 3D (Home) --- */
+.home-layout { display: grid; grid-template-columns: 540px 1fr; gap: 30px; width: 100%; max-width: 1100px; margin: 0 auto; align-items: start; }
+.heart-showcase { display: flex; align-items: center; justify-content: center; min-height: 760px; }
+.heart-showcase model-viewer { width: 100%; height: 640px; --poster-color: transparent; background-color: transparent; }
+.modules-column { min-width: 0; padding-top: 4px; }
+
+/* --- VISTA MÓDULO: NAVEGACIÓN Y TEORÍA --- */
+.module-navbar { display: flex; align-items: center; justify-content: space-between; background: var(--fucs-niebla); padding: 15px 20px; border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-dorado); margin-bottom: 20px; }
+.btn-back { background-color: var(--fucs-azul-profundo); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-back:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); transform: scale(1.02); }
+.module-title-display { color: var(--fucs-azul-profundo); margin: 0; font-size: 1.4rem; text-transform: uppercase; }
+.pedagogy-container { background: white; border-radius: var(--bento-radius-xl); padding: 30px; min-height: 100px; margin-bottom: 30px; box-shadow: var(--bento-shadow-soft); line-height: 1.6; }
+.pedagogy-container h2 { color: var(--fucs-azul-profundo); font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid var(--fucs-dorado); padding-bottom: 14px; margin: 0 0 24px 0; }
+.pedagogy-container h4 { color: var(--fucs-azul-oscuro); font-size: 1rem; font-weight: 700; margin: 20px 0 8px 0; }
+.pedagogy-container p, .pedagogy-container li { color: var(--text-body); max-width: 75ch; }
+.pedagogy-container ul { padding-left: 22px; margin-top: 8px; }
+.pedagogy-container li { margin-bottom: 6px; }
+.section-title { color: var(--fucs-azul-oscuro); font-size: 1.15rem; font-weight: 700; border-bottom: 2px dashed var(--fucs-amarillo); padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px; }
+
+[id^="contenido-modulo-"] {
+    display: none;
+}

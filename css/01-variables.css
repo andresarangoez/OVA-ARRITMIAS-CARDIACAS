@@ -1,0 +1,74 @@
+:root {
+    /* ============================================================
+       PALETA OFICIAL — Facultad de Enfermería, Universidad FUCS
+       ============================================================ */
+    --fucs-azul-profundo: #092755;   /* Azul Fundadores — color principal */
+    --fucs-azul-oscuro: #0A3E7C;     /* Azul Humano — color secundario */
+    --fucs-dorado: #F8C680;          /* Dorado Tradición — acentos principales (navegación, interacción) */
+    --fucs-amarillo: #FBD785;        /* Amarillo Colonial — fondos suaves y elementos pedagógicos */
+    --fucs-gris: #C6C7C8;            /* Gris San José — bordes y elementos secundarios */
+    --fucs-niebla: #E8E8E8;          /* Niebla Capital — fondos neutros */
+
+    /* Colores funcionales (estado clínico / feedback) — no institucionales,
+       reservados para semántica médica (alerta, éxito, información) */
+    --danger: #e74c3c;
+    --warning: #f1c40f;
+    --success: #27ae60;
+    --info: #3498db;
+
+    /* Texto y superficies */
+    --text-body: #333333;
+    --text-muted: #6b7280;
+    --text-light: #ecf0f1;
+    --border-subtle: var(--fucs-gris);
+    --bg-page: #ffffff;
+    --bg-neutral: var(--fucs-niebla);
+
+    /* Tipografía */
+    --font-main: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-mono: 'Courier New', Courier, monospace;
+
+    /* Espaciado (escala 8px) */
+    --space-xs: 8px;
+    --space-sm: 12px;
+    --space-md: 20px;
+    --space-lg: 30px;
+
+    /* Bordes y sombras */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+
+    /* --- Tokens Bento (Etapa 1 de rediseño visual) ---
+       Fondo "shell" gris muy claro + radios grandes + sombra difusa,
+       inspirados en la referencia de dashboard clínico soft-UI. */
+    --bg-shell: #F3F5F8;
+    --bento-radius-xl: 28px;
+    --bento-radius-md: 18px;
+    --bento-shadow-soft: 0 10px 30px rgba(9, 39, 85, 0.08);
+}
+
+:focus-visible {
+    /* Azul Humano en vez de un dorado: el dorado institucional (#F8C680)
+       no alcanza el contraste mínimo (3:1) requerido para un anillo de foco
+       visible sobre fondos blancos; el azul institucional sí lo cumple (10.5:1). */
+    outline: 3px solid var(--fucs-azul-oscuro);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+body { 
+    background-color: var(--bg-page); 
+    color: var(--text-body); 
+    font-family: var(--font-main); 
+    margin: 0;
+    padding: 20px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    min-height: 100vh;
+    line-height: 1.5;
+}

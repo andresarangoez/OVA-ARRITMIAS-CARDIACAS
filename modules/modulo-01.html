@@ -1,0 +1,388 @@
+                <!-- ============ PANTALLA DE BIENVENIDA ============ -->
+                <div class="modulo-bienvenida">
+                    <div class="modulo-encabezado">
+                        <span class="modulo-numero">Módulo 01</span>
+                        <span class="modulo-icono-grande" aria-hidden="true">⚡</span>
+                        <h2 class="modulo-titulo-bienvenida">Fundamentos de las Arritmias Cardíacas</h2>
+                        <div class="modulo-meta">
+                            <span>Tiempo estimado: 40 minutos</span>
+                            <span class="dot" aria-hidden="true"></span>
+                            <span>5 unidades</span>
+                        </div>
+                    </div>
+
+                    <div class="modulo-objetivos">
+                        <h3>Objetivos de aprendizaje</h3>
+                        <ul>
+                            <li>Comprender la fisiología eléctrica cardíaca y el potencial de acción celular.</li>
+                            <li>Reconocer la jerarquía del sistema de conducción cardíaco.</li>
+                            <li>Interpretar las ondas e intervalos básicos del electrocardiograma normal.</li>
+                            <li>Relacionar la hemodinamia con la toma de decisiones del algoritmo ACLS.</li>
+                            <li>Aplicar los principios de monitorización electrocardiográfica en la práctica de enfermería.</li>
+                        </ul>
+                    </div>
+
+                    <div class="modulo-introduccion">
+                        <h3>Introducción</h3>
+                        <p>Antes de interpretar cualquier arritmia es necesario comprender cómo se genera y se conduce el impulso eléctrico dentro del corazón. Este módulo construye esa base: desde el potencial de acción celular hasta la lectura del ECG normal, pasando por el impacto hemodinámico de cualquier alteración del ritmo.</p>
+                        <p>El contenido está organizado en 5 unidades progresivas. Al finalizar encontrarás un caso clínico, una actividad práctica y una autoevaluación para consolidar lo aprendido.</p>
+                    </div>
+
+                    <div class="modulo-comenzar-wrap">
+                        <button class="btn-comenzar" onclick="iniciarModulo('01')">Comenzar</button>
+                    </div>
+                </div>
+
+                <!-- ============ DESARROLLO DEL MÓDULO ============ -->
+                <div class="modulo-desarrollo" style="display: none;">
+
+                    <!-- UNIDAD 1 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 1 · Fisiología Eléctrica Cardíaca</h3>
+                        <p>La contracción cardíaca es el resultado de un proceso eléctrico celular conocido como <strong>potencial de acción</strong>. Este proceso depende del intercambio de iones (Sodio [Na+], Potasio [K+] y Calcio [Ca++]) a través de la membrana celular de los miocitos, generando cambios de voltaje que se traducen en despolarización (contracción) y repolarización (relajación).</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Fase 0 (Despolarización rápida):</strong> Entrada masiva de Na+ a la célula.</li>
+                            <li><strong>Fase 2 (Meseta):</strong> Entrada lenta de Ca++, esencial para la contracción muscular sostenida.</li>
+                            <li><strong>Fase 3 (Repolarización):</strong> Salida de K+, devolviendo la célula a su estado de reposo.</li>
+                            <li><strong>Período Refractario:</strong> Tiempo durante el cual la célula no puede responder a un nuevo estímulo.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica en Arritmias:</h4>
+                        <p>Las alteraciones en las fases del potencial de acción son la génesis de las arritmias. Los medicamentos antiarrítmicos actúan bloqueando canales específicos.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Vigilar estrictamente los niveles de electrolitos séricos (especialmente K+ y Mg++).</li>
+                            <li>Anticipar la aparición de arritmias en pacientes con desequilibrios hidroelectrolíticos.</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> La electricidad <em>precede</em> a la mecánica. Sin un impulso eléctrico organizado, no hay un bombeo de sangre efectivo.
+                        </div>
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> La hipopotasemia (K+ bajo) aumenta la excitabilidad celular y puede desencadenar arritmias ventriculares letales.
+                        </div>
+
+                        <!-- Demo: Figura / Imagen -->
+                        <div class="figura">
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para imagen
+                            </div>
+                            <p class="figura-caption"><strong>Figura 1.</strong> Fases del potencial de acción cardíaco. Fuente: por definir.</p>
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 2 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 2 · Sistema de Conducción</h3>
+                        <p>El corazón posee células marcapasos especializadas capaces de generar impulsos eléctricos de forma autónoma (automatismo). El impulso viaja de forma jerárquica para asegurar que las aurículas se contraigan antes que los ventrículos.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Nodo Sinusal (SA):</strong> Marcapasos principal (60 - 100 lpm).</li>
+                            <li><strong>Nodo Auriculoventricular (AV):</strong> Estación de relevo. Retrasa el impulso 0.1s para permitir el llenado ventricular. Marcapasos secundario (40 - 60 lpm).</li>
+                            <li><strong>Haz de His y Fibras de Purkinje:</strong> Distribución rápida a los ventrículos. Marcapasos de rescate (20 - 40 lpm).</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica en Arritmias:</h4>
+                        <p>Si el nodo SA falla, los marcapasos inferiores asumen el mando, pero a una frecuencia menor (ritmos de escape). Si hay un bloqueo en el nodo AV, las aurículas y ventrículos laten de forma disociada.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Deducir el origen del ritmo según la frecuencia cardíaca del paciente.</li>
+                            <li>Evaluar la tolerancia del paciente si está siendo perfundido por un ritmo de escape ventricular (&lt; 40 lpm).</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Jerarquía de mando: el sitio con la frecuencia intrínseca más rápida controla el corazón.
+                        </div>
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Una frecuencia cardíaca de 30 lpm indica que el ritmo se está originando en los ventrículos; el paciente tiene alto riesgo de colapso inminente.
+                        </div>
+
+                        <!-- Demo: Tarjeta informativa -->
+                        <div class="tarjeta-informativa">
+                            <h4>Nodo Sinusal (SA)</h4>
+                            <p><span class="etiqueta">Definición:</span> Marcapasos natural principal del corazón.</p>
+                            <p><span class="etiqueta">Importancia clínica:</span> Su fallo obliga a marcapasos inferiores a asumir el ritmo, típicamente a menor frecuencia.</p>
+                        </div>
+
+                        <!-- Demo: Modelo 3D -->
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para modelo 3D interactivo (assets/models/)
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 3 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 3 · Fundamentos del Electrocardiograma (ECG)</h3>
+                        <p>El ECG es el registro gráfico de la actividad eléctrica del corazón desde la superficie corporal. Para interpretar arritmias, es vital reconocer las ondas e intervalos normales.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Onda P:</strong> Despolarización auricular. Debe ser redondeada, simétrica y preceder a cada QRS.</li>
+                            <li><strong>Intervalo PR (0.12 - 0.20 seg):</strong> Tiempo de conducción desde las aurículas hasta los ventrículos.</li>
+                            <li><strong>Complejo QRS (&lt; 0.12 seg):</strong> Despolarización ventricular. Un QRS estrecho indica conducción normal; un QRS ancho indica origen o bloqueo ventricular.</li>
+                            <li><strong>Onda T:</strong> Repolarización ventricular.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica en Arritmias:</h4>
+                        <p>El análisis sistemático del ECG (frecuencia, regularidad, presencia de onda P, relación P-QRS y ancho del QRS) es la herramienta estándar de oro para diagnosticar la arritmia exacta.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Garantizar la correcta preparación de la piel (minimizar artefactos).</li>
+                            <li>Colocar electrodos en las posiciones anatómicas exactas para evitar falsos diagnósticos.</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> QRS Estrecho = Origen Supraventricular. QRS Ancho = Origen Ventricular (hasta demostrar lo contrario).
+                        </div>
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> No trate el monitor, trate al paciente. Verifique siempre el pulso y estado clínico antes de asumir una línea plana como asistolia (podría ser un cable desconectado).
+                        </div>
+
+                        <!-- Demo: Galería de imágenes -->
+                        <h4>Galería: Ondas del ECG</h4>
+                        <div class="galeria-imagenes">
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda P</div>
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Complejo QRS</div>
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda T</div>
+                        </div>
+
+                        <!-- Demo: Tabla comparativa -->
+                        <h4>Tabla comparativa: Bradicardia vs. Taquicardia</h4>
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Criterio</th><th>Bradicardia</th><th>Taquicardia</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Frecuencia cardíaca</td><td>&lt; 60 lpm</td><td>&gt; 100 lpm</td></tr>
+                                <tr><td>Riesgo hemodinámico principal</td><td>Bajo gasto cardíaco</td><td>Reducción del llenado diastólico</td></tr>
+                                <tr><td>Primera línea si inestable</td><td>Atropina / Marcapaso</td><td>Cardioversión eléctrica</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- UNIDAD 4 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 4 · Hemodinamia Aplicada a Arritmias</h3>
+                        <p>Las arritmias no solo son un problema eléctrico, son un problema de perfusión mecánica. El Gasto Cardíaco (GC) depende de la Frecuencia Cardíaca (FC) y el Volumen Sistólico (VS).</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Fórmula:</strong> GC = FC x VS.</li>
+                            <li><strong>Taquiarritmias:</strong> Reducen severamente el tiempo de diástole (llenado ventricular), lo que disminuye el VS y precipita hipotensión, hipoxia tisular o isquemia miocárdica.</li>
+                            <li><strong>Bradiarritmias:</strong> Reducen el componente de FC de la fórmula, incapacitando al corazón para bombear suficiente volumen por minuto, incluso si el llenado es óptimo.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica en Arritmias:</h4>
+                        <p>La hemodinamia define el algoritmo terapéutico (ACLS). Si el paciente está <em>inestable</em>, requiere terapia eléctrica (cardioversión/desfibrilación). Si está <em>estable</em>, se intentan intervenciones farmacológicas.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Valorar perfusión en segundos: Llenado capilar, coloración de piel, nivel de consciencia (sensorio), dolor torácico, hipotensión.</li>
+                            <li>Diferenciar rápidamente entre un paciente "asintomático" y uno "inestable".</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Estabilidad vs. Inestabilidad marca el destino del paciente.
+                        </div>
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Un estado mental alterado (confusión, somnolencia, agitación inexplicable) es un signo primario y temprano de bajo gasto cardíaco debido a la hipoperfusión cerebral.
+                        </div>
+
+                        <!-- Demo: Línea de tiempo -->
+                        <h4>Línea de tiempo: evolución de una taquiarritmia no tratada</h4>
+                        <div class="linea-tiempo">
+                            <div class="linea-tiempo-item">
+                                <h5>Fase 1 — Compensación</h5>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="linea-tiempo-item">
+                                <h5>Fase 2 — Descompensación temprana</h5>
+                                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+                            </div>
+                            <div class="linea-tiempo-item">
+                                <h5>Fase 3 — Inestabilidad hemodinámica</h5>
+                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                            </div>
+                        </div>
+
+                        <!-- Demo: Video -->
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🎬</span>
+                            Espacio reservado para video (assets/videos/)
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 5 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 5 · Rol de Enfermería en la Monitorización</h3>
+                        <p>La enfermera es la primera línea de detección, interpretación y respuesta ante eventos arrítmicos. La monitorización no es un acto pasivo, requiere juicio clínico constante.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Sistemas de derivaciones:</strong> 3 derivaciones (básico) vs. 5 derivaciones (permite monitorización de isquemia y mejor discriminación de morfología).</li>
+                            <li><strong>Gestión de Alarmas:</strong> Evitar la "fatiga de alarmas" configurando parámetros individualizados para la condición de cada paciente.</li>
+                            <li><strong>Documentación:</strong> Impresión e identificación del trazado basal al ingreso, al inicio del turno y ante cualquier cambio clínico.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica en Arritmias:</h4>
+                        <p>El reconocimiento precoz de arritmias de advertencia (como extrasístoles ventriculares frecuentes) puede prevenir la progresión a ritmos de paro cardíaco.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Asegurar la conexión del paciente, inspeccionando la integridad de los cables.</li>
+                            <li>Correlacionar los hallazgos eléctricos (ECG) con los signos vitales (SpO2, PA, FR, FC por pulso manual).</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> La monitorización electrocardiográfica apoya, pero nunca sustituye, la valoración clínica directa del paciente.
+                        </div>
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Silenciar alarmas sin investigar la causa en el paciente es una de las principales causas de eventos adversos graves en unidades de cuidado crítico.
+                        </div>
+
+                        <!-- Demo: Acordeón -->
+                        <h4>Preguntas frecuentes</h4>
+                        <div class="acordeon">
+                            <div class="acordeon-item">
+                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
+                                    ¿Cada cuánto se debe cambiar la posición de los electrodos?
+                                    <span class="icono-toggle" aria-hidden="true">+</span>
+                                </button>
+                                <div class="acordeon-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                                </div>
+                            </div>
+                            <div class="acordeon-item">
+                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
+                                    ¿Qué hacer ante una alarma de "lead-off"?
+                                    <span class="icono-toggle" aria-hidden="true">+</span>
+                                </button>
+                                <div class="acordeon-body">
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Demo: Diagrama -->
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🗺️</span>
+                            Espacio reservado para diagrama interactivo
+                        </div>
+                    </div>
+
+                    <!-- RECURSO INTERACTIVO -->
+                    <div class="modulo-recurso-interactivo">
+                        <h3>Recurso interactivo</h3>
+                        <p class="placeholder-nota">Este módulo no requiere un recurso interactivo adicional — el simulador ECG completo se encuentra en el Módulo 03: Diagnóstico.</p>
+                    </div>
+
+                    <!-- CASO CLÍNICO -->
+                    <div class="modulo-caso-clinico">
+                        <h3>Caso clínico</h3>
+                        <div class="caso-clinico-grid">
+                            <div class="caso-clinico-campo">
+                                <h5>Motivo de consulta</h5>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="caso-clinico-campo">
+                                <h5>Antecedentes</h5>
+                                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+                            </div>
+                            <div class="caso-clinico-campo">
+                                <h5>Signos vitales</h5>
+                                <p>Lorem ipsum: FC 000 lpm · TA 000/00 mmHg · SpO2 00%</p>
+                            </div>
+                            <div class="caso-clinico-campo">
+                                <h5>Valoración</h5>
+                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+                            </div>
+                            <div class="caso-clinico-campo">
+                                <h5>Resultados</h5>
+                                <p>Duis aute irure dolor in reprehenderit in voluptate velit.</p>
+                            </div>
+                        </div>
+                        <div class="caso-clinico-preguntas">
+                            <h4>Preguntas del caso</h4>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVIDAD DE APRENDIZAJE -->
+                    <div class="modulo-actividad">
+                        <h3>Actividad de aprendizaje</h3>
+                        <p class="actividad-enunciado">Lorem ipsum dolor sit amet, ¿cuál de las siguientes opciones corresponde al marcapasos principal del corazón?</p>
+                        <div class="actividad-opciones">
+                            <label class="actividad-opcion"><input type="radio" name="act-01" value="A"> Opción A — Lorem ipsum dolor</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-01" value="B"> Opción B — Lorem ipsum dolor</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-01" value="C"> Opción C — Lorem ipsum dolor</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-01" value="D"> Opción D — Lorem ipsum dolor</label>
+                        </div>
+                        <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
+                    </div>
+
+                    <!-- RESUMEN -->
+                    <div class="modulo-resumen">
+                        <h3>Resumen</h3>
+                        <ul>
+                            <li>La electricidad precede a la mecánica cardíaca.</li>
+                            <li>El nodo SA es el marcapasos principal; su jerarquía determina quién controla el ritmo si falla.</li>
+                            <li>QRS estrecho = origen supraventricular; QRS ancho = origen ventricular hasta demostrar lo contrario.</li>
+                            <li>La estabilidad hemodinámica del paciente define el algoritmo terapéutico a seguir.</li>
+                            <li>La monitorización de enfermería apoya, pero nunca reemplaza, la valoración clínica directa.</li>
+                        </ul>
+                    </div>
+
+                    <!-- AUTOEVALUACIÓN -->
+                    <div class="modulo-autoevaluacion">
+                        <h3>Autoevaluación</h3>
+                        <p class="autoevaluacion-meta">3 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>1. Lorem ipsum dolor sit amet, ¿cuál es la fase de despolarización rápida?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Fase 0</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Fase 2</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Fase 3</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>2. Lorem ipsum dolor sit amet, ¿qué frecuencia caracteriza al nodo AV?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> 60-100 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> 40-60 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> 20-40 lpm</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>3. Lorem ipsum dolor sit amet, ¿qué indica un QRS ancho?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> Origen supraventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> Origen ventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> Repolarización normal</label>
+                            </div>
+                        </div>
+
+                        <button class="btn-enviar-eval" onclick="verificarActividad(this)">Enviar respuestas</button>
+                    </div>
+
+                    <!-- BIBLIOGRAFÍA -->
+                    <div class="modulo-bibliografia">
+                        <h3>Bibliografía</h3>
+                        <ol>
+                            <li>Autor AA. Título del artículo o capítulo. Nombre de la revista. Año;Volumen(Número):páginas.</li>
+                            <li>Autor BB, Autor CC. Título del recurso. Editorial; Año.</li>
+                        </ol>
+                    </div>
+
+                </div>
+            

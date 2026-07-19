@@ -1,0 +1,147 @@
+/* ============================================================
+   BIBLIOTECA DE COMPONENTES — COMPONENTES.md
+   ============================================================
+   Este archivo contiene ÚNICAMENTE los componentes que todavía no
+   existían en el proyecto. La mayoría de los componentes que pide
+   COMPONENTES.md ya estaban implementados con otro nombre — se listan
+   aquí como referencia para que nadie los vuelva a crear duplicados:
+
+     Botón principal        → .btn-comenzar          (05-modulo.css)
+     Botón secundario       → .btn-back               (02-layout.css)
+     Tarjeta                → .tarjeta-informativa    (05-modulo.css)
+     Caja de información    → .key-box                (03-components.css)
+     Caja de advertencia    → .key-box.danger         (03-components.css)
+     Imagen / Figura        → .figura / .figura-caption (05-modulo.css)
+     Galería                → .galeria-imagenes       (05-modulo.css)
+     Accordion               → .acordeon               (05-modulo.css)
+     Timeline                → .linea-tiempo           (05-modulo.css)
+     Caso clínico             → .modulo-caso-clinico    (05-modulo.css)
+     Monitor de constantes    → .vitals-panel           (04-simulator.css)
+     Simulador ECG            → #simulador-wrapper      (04-simulator.css)
+     Tabla clínica            → .tabla-comparativa      (05-modulo.css)
+     Objetivos/Intro/Resumen/
+     Actividad/Autoevaluación/
+     Bibliografía              → .modulo-*              (05-modulo.css)
+
+   Los componentes definidos AQUÍ son los que sí faltaban:
+   botón de acción, breadcrumb, barra de progreso, caja de éxito,
+   perla clínica, tabs, modal, tooltip, zoom de imágenes,
+   contenedor de video, contenedor de modelo 3D.
+   ============================================================ */
+
+/* --- BOTÓN DE ACCIÓN --- */
+/* Uso: "Ver caso clínico", "Abrir simulador", "Iniciar actividad".
+   Se diferencia del botón principal (sólido) y el secundario (oscuro)
+   con un estilo de contorno dorado — invita a la acción sin competir
+   visualmente con "Comenzar". */
+.btn-accion {
+    background: transparent;
+    color: var(--fucs-azul-profundo);
+    border: 2px solid var(--fucs-dorado);
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-accion:hover { background: var(--fucs-dorado); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+/* --- BREADCRUMB --- */
+/* Uso: Inicio > Módulo > Unidad */
+.breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px; }
+.breadcrumb .breadcrumb-item { color: var(--text-muted); }
+.breadcrumb .breadcrumb-item.actual { color: var(--fucs-azul-profundo); font-weight: 700; }
+.breadcrumb .breadcrumb-separador { color: var(--fucs-gris); }
+
+/* --- BARRA DE PROGRESO --- */
+/* Uso: progreso del módulo, porcentaje, unidades completadas */
+.barra-progreso-wrap { margin-bottom: 24px; }
+.barra-progreso-meta { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
+.barra-progreso-meta .porcentaje { color: var(--fucs-azul-oscuro); font-weight: 700; }
+.barra-progreso { width: 100%; height: 8px; background: var(--fucs-niebla); border-radius: 20px; overflow: hidden; }
+.barra-progreso-fill { height: 100%; background: linear-gradient(90deg, var(--fucs-dorado), var(--fucs-azul-oscuro)); border-radius: 20px; transition: width 0.3s ease; }
+
+/* --- CAJA DE ÉXITO --- */
+/* Uso: conclusiones. Mismo patrón visual que .key-box (información) y
+   .key-box.danger (advertencia), en verde institucional funcional. */
+.caja-exito { background: rgba(39, 174, 96, 0.07); padding: 15px; margin-top: 20px; border-radius: var(--radius-md); border: 1px solid var(--fucs-gris); border-left: 4px solid var(--success); box-shadow: var(--shadow-sm); }
+.caja-exito .caja-exito-titulo { color: var(--success); font-weight: bold; }
+
+/* --- PERLA CLÍNICA --- */
+/* Uso: recomendaciones para la práctica clínica. Distinto de la caja de
+   información (concepto teórico) — acento azul, ícono de estetoscopio. */
+.perla-clinica { background: rgba(10, 62, 124, 0.05); padding: 15px 18px; margin-top: 20px; border-radius: var(--radius-md); border: 1px solid var(--fucs-gris); border-left: 4px solid var(--fucs-azul-oscuro); box-shadow: var(--shadow-sm); }
+.perla-clinica .perla-clinica-titulo { color: var(--fucs-azul-oscuro); font-weight: bold; display: block; margin-bottom: 4px; }
+
+/* --- TABS --- */
+/* Uso: dividir contenido dentro de una misma unidad. Requiere
+   js/06-componentes.js para el cambio de pestaña activa. */
+.tabs { margin: 20px 0; }
+.tabs-nav { display: flex; gap: 4px; border-bottom: 2px solid var(--fucs-niebla); flex-wrap: wrap; }
+.tabs-nav button {
+    background: none; border: none; padding: 10px 18px; cursor: pointer;
+    font-weight: 600; font-size: 0.88rem; color: var(--text-muted);
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: 0.2s;
+}
+.tabs-nav button:hover { color: var(--fucs-azul-oscuro); }
+.tabs-nav button.activo { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-dorado); }
+.tabs-panel { display: none; padding: 18px 4px; }
+.tabs-panel.activo { display: block; }
+
+/* --- MODAL --- */
+/* Uso: mostrar imágenes ampliadas u otro contenido superpuesto.
+   Requiere js/06-componentes.js para abrir/cerrar. */
+.modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(9, 39, 85, 0.65);
+    z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.abierto { display: flex; }
+.modal-caja {
+    background: #ffffff; border-radius: var(--bento-radius-md); max-width: 90vw; max-height: 90vh;
+    overflow: auto; padding: 24px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+.modal-cerrar {
+    position: absolute; top: 10px; right: 14px; background: none; border: none;
+    font-size: 1.4rem; color: var(--fucs-azul-oscuro); cursor: pointer; line-height: 1;
+}
+.modal-cerrar:hover { color: var(--danger); }
+
+/* --- TOOLTIP --- */
+/* Uso: definiciones rápidas. Solo CSS (hover + foco de teclado) — no
+   requiere JS. Marcar el término con: <span class="tooltip" data-tooltip="texto">término</span> */
+.tooltip { position: relative; border-bottom: 1px dashed var(--fucs-azul-oscuro); cursor: help; }
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+    background: var(--fucs-azul-profundo); color: white; padding: 8px 12px;
+    border-radius: var(--radius-sm); font-size: 0.78rem; white-space: normal; width: max-content;
+    max-width: 240px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 1500;
+    box-shadow: var(--shadow-md);
+}
+.tooltip:hover::after, .tooltip:focus::after { opacity: 1; }
+
+/* --- ZOOM DE IMÁGENES --- */
+/* Uso: especialmente para electrocardiogramas. Envolver la imagen con
+   esta clase; js/06-componentes.js abre el modal con la versión grande. */
+.zoom-imagen { position: relative; display: inline-block; cursor: zoom-in; }
+.zoom-imagen img { display: block; border-radius: var(--radius-md); }
+.zoom-imagen::after {
+    content: "🔍"; position: absolute; bottom: 8px; right: 8px; background: rgba(9, 39, 85, 0.75);
+    color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; pointer-events: none;
+}
+
+/* --- CONTENEDOR DE VIDEO --- */
+/* Uso: contenedor estándar y responsive (16:9) para video embebido. */
+.video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--bento-radius-md); background: #000; margin: 20px 0; }
+.video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* --- CONTENEDOR DE MODELO 3D --- */
+/* Uso: modelos GLB embebidos dentro del contenido de un módulo (distinto
+   del corazón protagonista del home, que usa .heart-showcase). */
+.modelo-3d-container { width: 100%; height: 320px; border-radius: var(--bento-radius-md); background: var(--fucs-niebla); overflow: hidden; margin: 20px 0; }
+.modelo-3d-container model-viewer { width: 100%; height: 100%; background-color: transparent; }
