@@ -5,24 +5,29 @@
                         <span class="modulo-icono-grande" aria-hidden="true">📈</span>
                         <h2 class="modulo-titulo-bienvenida">Diagnóstico</h2>
                         <div class="modulo-meta">
-                            <span>Tiempo estimado: 45 minutos</span>
+                            <span>Tiempo estimado: 60 minutos</span>
                             <span class="dot" aria-hidden="true"></span>
-                            <span>3 unidades</span>
+                            <span>7 unidades</span>
                         </div>
                     </div>
 
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Reconocer tempranamente los distintos tipos de arritmias cardíacas.</li>
-                            <li>Interpretar patrones electrocardiográficos patológicos.</li>
-                            <li>Estratificar el riesgo clínico del paciente según el ritmo identificado.</li>
+                            <li>Reconocer el ritmo sinusal normal como punto de referencia para cualquier diagnóstico.</li>
+                            <li>Diferenciar los tipos de bradicardias: sinusal y bloqueos auriculoventriculares.</li>
+                            <li>Identificar extrasístoles auriculares y ventriculares en el trazado.</li>
+                            <li>Diagnosticar taquicardias supraventriculares: sinusal, fibrilación auricular y flutter.</li>
+                            <li>Diagnosticar taquicardias ventriculares: monomórfica, polimórfica y torsades de pointes.</li>
+                            <li>Reconocer los ritmos letales de paro cardíaco y su manejo según la AHA.</li>
+                            <li>Aplicar el algoritmo diagnóstico completo usando el simulador ECG interactivo.</li>
                         </ul>
                     </div>
 
                     <div class="modulo-introduccion">
                         <h3>Introducción</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>En el Módulo 02 aprendiste <em>cómo mirar</em> un trazado: frecuencia, ritmo, onda P, PR, QRS, eje. Este módulo es donde ese método se convierte en un diagnóstico concreto — nombrar exactamente qué arritmia tienes frente a ti.</p>
+                        <p>Cada unidad cubre una familia de ritmos, del más benigno al más letal. Al final encontrarás el <strong>simulador ECG interactivo</strong> de esta OVA: úsalo para practicar cada ritmo mencionado en las unidades, con retroalimentación clínica en tiempo real (signos vitales, opciones de tratamiento y desfibrilación cuando corresponda).</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -33,41 +38,191 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 1 · Reconocimiento temprano de arritmias</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                        <h3 class="unidad-titulo">Unidad 1 · Ritmo Sinusal Normal</h3>
+                        <p>El ritmo sinusal normal es la referencia obligada: todo diagnóstico de arritmia se hace por comparación contra este patrón.</p>
+
+                        <h4>Puntos Clave — criterios diagnósticos:</h4>
+                        <ul>
+                            <li><strong>Frecuencia:</strong> 60-100 lpm.</li>
+                            <li><strong>Ritmo:</strong> regular.</li>
+                            <li><strong>Onda P:</strong> presente, redondeada y positiva en derivación II; precede a cada QRS.</li>
+                            <li><strong>Intervalo PR:</strong> constante, entre 0.12 y 0.20 seg.</li>
+                            <li><strong>Complejo QRS:</strong> estrecho, menor a 0.12 seg.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Si alguno de estos cinco criterios falla, ya no es ritmo sinusal normal — y ese criterio específico que falla es la primera pista de qué familia de arritmia estás viendo.</p>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Un solo criterio alterado (por ejemplo, solo la frecuencia) ya redirige el diagnóstico hacia una familia distinta de ritmos.
                         </div>
+
+                        <p class="placeholder-nota">Practica: selecciona "Ritmo Sinusal" en el simulador (Unidad 7) y confirma cada uno de los cinco criterios en el trazado.</p>
                     </div>
+
+                    <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 2 · Interpretación de patrones patológicos</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                        <h3 class="unidad-titulo">Unidad 2 · Bradicardias</h3>
+                        <p>Las bradicardias comparten una frecuencia menor a 60 lpm, pero su origen y su riesgo cambian radicalmente según dónde falle la conducción.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Bradicardia sinusal:</strong> el nodo SA simplemente descarga más lento. Onda P y PR normales, QRS estrecho — solo cambia la frecuencia.</li>
+                            <li><strong>Bloqueo AV de 1er grado:</strong> conducción 1:1 preservada (ningún latido se bloquea), pero el PR está fijo y prolongado (&gt; 200 ms).</li>
+                            <li><strong>Bloqueo AV de 2do grado, Mobitz I (Wenckebach):</strong> el PR se alarga progresivamente, latido a latido, hasta que uno se bloquea por completo — con acortamiento del R-R antes de la pausa.</li>
+                            <li><strong>Bloqueo AV de 2do grado, Mobitz II:</strong> PR fijo (nunca se alarga), pero un latido se bloquea de forma súbita y sin aviso; suele acompañarse de QRS ancho.</li>
+                            <li><strong>Bloqueo AV de 3er grado (completo):</strong> disociación AV total — las ondas P y los QRS laten cada uno a su propio ritmo, sin relación entre sí.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Mobitz I suele ser benigno y transitorio; Mobitz II y el bloqueo completo son de alto riesgo de progresar a bloqueo total o asistolia, y frecuentemente requieren marcapasos.</p>
+
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Tipo</th><th>Intervalo PR</th><th>¿Se bloquean latidos?</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Sinusal</td><td>Normal</td><td>No</td></tr>
+                                <tr><td>1er grado</td><td>Fijo y prolongado</td><td>No</td></tr>
+                                <tr><td>Mobitz I</td><td>Progresivamente prolongado</td><td>Sí, con patrón</td></tr>
+                                <tr><td>Mobitz II</td><td>Fijo</td><td>Sí, sin aviso</td></tr>
+                                <tr><td>Completo (3er grado)</td><td>Sin relación P-QRS</td><td>Disociación total</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Mobitz II y el bloqueo de 3er grado son bradiarritmias de alto riesgo — nunca esperar a que el paciente se deteriore para actuar.
                         </div>
+
+                        <p class="placeholder-nota">Practica los cinco patrones de esta unidad en el simulador (grupo "Bradiarritmias").</p>
                     </div>
+
+                    <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 3 · Estratificación del riesgo clínico</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <h3 class="unidad-titulo">Unidad 3 · Extrasístoles</h3>
+                        <p>Las extrasístoles son latidos que aparecen antes de lo esperado (prematuros), interrumpiendo el ritmo de base. Su origen —auricular o ventricular— cambia por completo su morfología y su significado clínico.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Extrasístole auricular:</strong> onda P prematura, de morfología distinta a la sinusal, seguida de un QRS estrecho normal.</li>
+                            <li><strong>Extrasístole ventricular:</strong> QRS prematuro, ancho y de morfología bizarra, sin onda P que lo preceda, generalmente seguido de una pausa compensatoria.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Extrasístoles aisladas y ocasionales suelen ser benignas. Su importancia clínica aumenta cuando son frecuentes, multifocales o se agrupan (parejas, tripletas), ya que pueden anticipar arritmias más complejas.</p>
+
                         <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                            <h4>Pausa compensatoria</h4>
+                            <p><span class="etiqueta">Definición:</span> Intervalo prolongado después de una extrasístole ventricular, que "compensa" el latido adelantado sin alterar el ritmo de base.</p>
+                            <p><span class="etiqueta">Importancia clínica:</span> Ayuda a diferenciar el origen ventricular del auricular, cuyo reinicio del nodo sinusal no suele producir esta pausa completa.</p>
+                        </div>
+
+                        <p class="placeholder-nota">Practica: compara "Extrasístole Auricular" y "Extrasístole Ventricular" en el simulador y observa la diferencia de morfología del QRS.</p>
+                    </div>
+
+                    <!-- UNIDAD 4 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 4 · Taquicardias Supraventriculares</h3>
+                        <p>Estas taquicardias se originan por encima del haz de His, por lo que conservan un QRS estrecho — la diferencia entre ellas está en la onda P y la regularidad del ritmo.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Taquicardia sinusal:</strong> ritmo sinusal normal, pero acelerado (&gt; 100 lpm); onda P y PR conservan su morfología habitual.</li>
+                            <li><strong>Fibrilación auricular:</strong> ausencia total de ondas P organizadas (línea de base fibrilatoria/irregular), con QRS estrecho de conducción irregularmente irregular.</li>
+                            <li><strong>Flutter auricular:</strong> ondas P reemplazadas por un patrón regular en "dientes de sierra", con QRS estrecho de conducción regular (frecuentemente 2:1 o 3:1).</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>La taquicardia sinusal casi siempre tiene una causa subyacente identificable (fiebre, dolor, hipovolemia, ansiedad) — tratar la causa, no solo la frecuencia. La FA y el flutter requieren evaluar riesgo de formación de trombos y control de frecuencia o ritmo.</p>
+
+                        <h4>Aplicación en Enfermería:</h4>
+                        <ul>
+                            <li>Buscar activamente la causa desencadenante ante una taquicardia sinusal, en vez de tratarla como arritmia primaria.</li>
+                            <li>Confirmar la irregularidad "irregularmente irregular" de la FA palpando el pulso, no solo mirando el monitor.</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> QRS estrecho + ritmo irregular sin ondas P organizadas = fibrilación auricular, hasta demostrar lo contrario.
+                        </div>
+
+                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Taquiarritmias de Complejo Angosto").</p>
+                    </div>
+
+                    <!-- UNIDAD 5 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 5 · Taquicardias Ventriculares</h3>
+                        <p>Estas taquicardias se originan en el miocardio ventricular o el sistema His-Purkinje distal, por lo que producen un QRS ancho — y representan un riesgo hemodinámico considerablemente mayor que las supraventriculares.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>TV monomórfica:</strong> QRS ancho, rápido y de morfología uniforme, latido a latido.</li>
+                            <li><strong>TV polimórfica:</strong> QRS ancho, rápido, con morfología que cambia de forma caótica e irregular, sin patrón repetitivo.</li>
+                            <li><strong>Torsades de Pointes:</strong> variante de TV polimórfica con un patrón característico en "huso" (la amplitud del QRS crece y decrece de forma cíclica); típicamente asociada a QT prolongado.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Toda taquicardia de QRS ancho debe tratarse como de origen ventricular hasta demostrar lo contrario — es la postura más segura para el paciente. Torsades obliga a buscar y corregir la causa del QT prolongado (electrolitos, medicamentos) además del tratamiento inmediato.</p>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> El sulfato de magnesio es el tratamiento de elección en Torsades de Pointes, incluso con magnesemia normal.
+                        </div>
+
+                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Taquiarritmias de Complejo Ancho").</p>
+                    </div>
+
+                    <!-- UNIDAD 6 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 6 · Ritmos Letales</h3>
+                        <p>Estos ritmos corresponden a un paro cardíaco. Reconocerlos de inmediato — y saber cuáles son desfibrilables— es una de las competencias más críticas de este módulo.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Fibrilación ventricular (FV):</strong> caos eléctrico total, sin complejos organizados ni ciclo reconocible. <strong>Desfibrilable.</strong></li>
+                            <li><strong>Asistolia:</strong> ausencia total de actividad eléctrica organizada — línea isoeléctrica. <strong>No desfibrilable.</strong></li>
+                            <li><strong>Actividad eléctrica sin pulso (AESP):</strong> el monitor muestra un ritmo organizado (a veces incluso de apariencia normal), pero el paciente no tiene pulso palpable. <strong>No desfibrilable</strong> — el tratamiento se centra en identificar y corregir la causa (6H y 6T, ver Módulo 02).</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>El error clínico más grave en este grupo es intentar desfibrilar Asistolia o AESP: ninguna de las dos responde a la descarga, y se pierde tiempo valioso de RCP de alta calidad y búsqueda de causa reversible.</p>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> "Ritmo organizado en el monitor" no es sinónimo de "paciente con pulso" — en AESP, siempre se debe verificar el pulso, nunca confiar solo en el trazado.
+                        </div>
+
+                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Ritmos de Parada Cardiaca") y observa cuándo se habilita el botón de desfibrilación.</p>
+                    </div>
+
+                    <!-- UNIDAD 7 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 7 · Algoritmo Diagnóstico (AHA) — Simulador ECG</h3>
+                        <p>Esta unidad integra todo lo anterior en un solo flujo de trabajo, apoyado en el simulador interactivo de esta misma página.</p>
+
+                        <h4>Puntos Clave — algoritmo de trabajo:</h4>
+                        <ul>
+                            <li><strong>1.</strong> Aplica el método sistemático del Módulo 02 (frecuencia, ritmo, onda P, PR, QRS, eje) al ritmo del monitor.</li>
+                            <li><strong>2.</strong> Ubica el ritmo dentro de una de las seis familias de este módulo (sinusal, bradicardia, extrasístole, taquicardia supraventricular, taquicardia ventricular o ritmo letal).</li>
+                            <li><strong>3.</strong> Dentro de esa familia, confirma el diagnóstico específico usando los criterios distintivos de cada unidad.</li>
+                            <li><strong>4.</strong> Verifica el estado hemodinámico del paciente (Módulo 02, Unidad 3) para decidir la urgencia de la respuesta.</li>
+                        </ul>
+
+                        <h4>Cómo usar el simulador de esta unidad:</h4>
+                        <ul>
+                            <li>Selecciona cualquier ritmo del listado y observa el trazado, los signos vitales y el registro clínico en tiempo real.</li>
+                            <li>Antes de mirar el nombre del ritmo seleccionado, intenta nombrarlo tú mismo aplicando el algoritmo de los 4 pasos.</li>
+                            <li>En los ritmos de paro, identifica si el botón de desfibrilación se habilita — y recuerda por qué (Unidad 6).</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> El algoritmo diagnóstico no es una lista de memoria — es el mismo método de 4 pasos aplicado una y otra vez, ritmo por ritmo.
                         </div>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo incluye el simulador ECG interactivo — desplázate hasta el final para practicar con los distintos ritmos clínicos.</p>
+                        <p class="placeholder-nota">Este módulo incluye el simulador ECG interactivo — desplázate hasta el final para practicar con los distintos ritmos clínicos mencionados en cada unidad.</p>
                     </div>
 
                     <!-- CASO CLÍNICO -->
@@ -76,35 +231,35 @@
                         <div class="caso-clinico-grid">
                             <div class="caso-clinico-campo">
                                 <h5>Motivo de consulta</h5>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmo</p>
+                                <p>Paciente de 74 años que refiere palpitaciones irregulares de 3 días de evolución.</p>
                             </div>
                             <div class="caso-clinico-campo">
                                 <h5>Antecedentes</h5>
-                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nis</p>
+                                <p>Hipertensión arterial e hipotiroidismo.</p>
                             </div>
                             <div class="caso-clinico-campo">
                                 <h5>Signos vitales</h5>
-                                <p>Lorem ipsum: FC 000 lpm · TA 000/00 mmHg · SpO2 00%</p>
+                                <p>FC 138 lpm (irregular) · TA 118/76 mmHg · SpO2 96%</p>
                             </div>
                             <div class="caso-clinico-campo">
-                                <h5>Valoración</h5>
-                                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum </p>
+                                <h5>Trazado ECG</h5>
+                                <p>Ausencia de ondas P organizadas, línea de base fibrilatoria, QRS estrecho de conducción irregularmente irregular.</p>
                             </div>
                         </div>
                         <div class="caso-clinico-preguntas">
                             <h4>Preguntas del caso</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <p>Aplicando el algoritmo de 4 pasos de la Unidad 7: ¿a qué familia de ritmos pertenece este trazado y cuál es el diagnóstico específico? ¿Qué hallazgo del ECG fue determinante para descartar el flutter auricular como diagnóstico alternativo?</p>
                         </div>
                     </div>
 
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
-                        <p class="actividad-enunciado">Lorem ipsum dolor sit amet, enunciado de la actividad de ejemplo.</p>
+                        <p class="actividad-enunciado">¿Cuál de los siguientes ritmos de paro cardíaco es desfibrilable?</p>
                         <div class="actividad-opciones">
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="A"> Opción A — Lorem ipsum dolor</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="B"> Opción B — Lorem ipsum dolor</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="C"> Opción C — Lorem ipsum dolor</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-03" value="A"> A — Asistolia</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-03" value="B"> B — Fibrilación ventricular</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-03" value="C"> C — Actividad eléctrica sin pulso</label>
                         </div>
                         <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
                     </div>
@@ -113,24 +268,75 @@
                     <div class="modulo-resumen">
                         <h3>Resumen</h3>
                         <ul>
-                            <li>Punto clave de ejemplo 1 — contenido pendiente.</li>
-                            <li>Punto clave de ejemplo 2 — contenido pendiente.</li>
-                            <li>Punto clave de ejemplo 3 — contenido pendiente.</li>
+                            <li>El ritmo sinusal normal (5 criterios) es la referencia contra la que se compara cualquier arritmia.</li>
+                            <li>Las bradicardias se diferencian por dónde falla la conducción: sinusal, o los distintos grados de bloqueo AV.</li>
+                            <li>Las extrasístoles auriculares y ventriculares se distinguen por la morfología del QRS y la presencia o no de pausa compensatoria.</li>
+                            <li>Las taquicardias supraventriculares mantienen QRS estrecho; su diferencia está en la onda P y la regularidad.</li>
+                            <li>Las taquicardias ventriculares tienen QRS ancho y mayor riesgo hemodinámico; Torsades se asocia a QT prolongado.</li>
+                            <li>De los ritmos letales, solo la FV (y la TV sin pulso) son desfibrilables — Asistolia y AESP nunca se desfibrilan.</li>
+                            <li>El algoritmo diagnóstico es un método de 4 pasos, repetible para cualquier trazado, aplicable directamente en el simulador.</li>
                         </ul>
                     </div>
 
                     <!-- AUTOEVALUACIÓN -->
                     <div class="modulo-autoevaluacion">
                         <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">3 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+                        <p class="autoevaluacion-meta">6 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+
                         <div class="autoevaluacion-pregunta">
-                            <h5>1. Pregunta de ejemplo — contenido pendiente.</h5>
+                            <h5>1. ¿Qué diferencia principal distingue al Bloqueo AV Mobitz I del Mobitz II?</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Opción A</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Opción B</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Opción C</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Mobitz I tiene PR progresivamente prolongado; Mobitz II tiene PR fijo</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Mobitz I tiene QRS ancho; Mobitz II tiene QRS estrecho</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> No hay ninguna diferencia clínica relevante</label>
                             </div>
                         </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>2. Una extrasístole ventricular se caracteriza por:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> QRS estrecho precedido de onda P prematura</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> QRS ancho y prematuro, sin onda P que lo preceda</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> Ausencia total de QRS</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>3. El hallazgo característico del flutter auricular es:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> Línea de base fibrilatoria sin ondas P</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> Ondas en patrón regular de "dientes de sierra"</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> PR progresivamente prolongado</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>4. Torsades de Pointes se asocia clásicamente con:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> QT prolongado</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> PR prolongado</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> QRS estrecho</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>5. ¿Cuál de estos ritmos de paro NUNCA se desfibrila?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Fibrilación ventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Asistolia</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Taquicardia ventricular sin pulso</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>6. El primer paso del algoritmo diagnóstico de la Unidad 7 es:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Verificar el estado hemodinámico del paciente</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Aplicar el método sistemático de interpretación (frecuencia, ritmo, onda P, PR, QRS, eje)</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Administrar el medicamento antiarrítmico</label>
+                            </div>
+                        </div>
+
                         <button class="btn-enviar-eval" onclick="verificarActividad(this)">Enviar respuestas</button>
                     </div>
 
@@ -138,9 +344,11 @@
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>Autor AA. Título del artículo o capítulo. Nombre de la revista. Año;Volumen(Número):páginas.</li>
+                            <li>American Heart Association. Aspectos destacados de las guías de la AHA para RCP y atención cardiovascular de emergencia (ACLS/BLS).</li>
+                            <li>Herdman TH, Kamitsuru S, editores. NANDA International: Diagnósticos enfermeros. Definiciones y clasificación.</li>
+                            <li>Moorhead S, Johnson M, Maas ML, Swanson E. Clasificación de Resultados de Enfermería (NOC).</li>
+                            <li>Bulechek GM, Butcher HK, Dochterman JM, Wagner CM. Clasificación de Intervenciones de Enfermería (NIC).</li>
                         </ol>
                     </div>
 
                 </div>
-            
