@@ -20,8 +20,18 @@ function iniciarModulo(idModulo) {
     if (bienvenida) bienvenida.style.display = 'none';
     if (desarrollo) desarrollo.style.display = 'block';
 
-    // Llevar el scroll al inicio del contenido de desarrollo
-    contenedor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // El simulador solo se revela al entrar al desarrollo del módulo, y solo
+    // si este módulo es uno de los que lo incluyen (fuente única de verdad:
+    // OVA.Navegacion.MODULOS_CON_SIMULADOR, definida en 03-navegacion.js).
+    const simulador = document.getElementById('simulador-wrapper');
+    if (simulador && OVA.Navegacion && OVA.Navegacion.MODULOS_CON_SIMULADOR.includes(idModulo)) {
+        simulador.style.display = 'block';
+    }
+
+    // Llevar el scroll al tope absoluto de la página, donde se ve el
+    // encabezado global de la OVA (Facultad de Enfermería · Universidad FUCS)
+    // — no solo la barra del módulo, y mucho menos el contenido de la Unidad 1.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Se invoca desde abrirModulo() en 03-navegacion.js cada vez que el
@@ -37,6 +47,9 @@ function reiniciarEstadoModulo(idModulo) {
 
     if (bienvenida) bienvenida.style.display = 'block';
     if (desarrollo) desarrollo.style.display = 'none';
+
+    const simulador = document.getElementById('simulador-wrapper');
+    if (simulador) simulador.style.display = 'none';
 }
 
 // --- ACORDEONES ---

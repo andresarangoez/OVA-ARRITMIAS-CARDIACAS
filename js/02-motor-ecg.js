@@ -170,18 +170,6 @@ function generarFlutter(ctx) {
     return amplitud;
 }
 
-// Taquicardia Supraventricular Paroxística: QRS estrecho y rápido, sin onda P
-// visible distinguible (oculta en el latido previo).
-function generarTSVP(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-    if (t > 0.10 && t < 0.13) amplitud -= 10;
-    else if (t >= 0.13 && t < 0.16) amplitud += 70;
-    else if (t >= 0.16 && t < 0.19) amplitud -= 20;
-    if (t > 0.25 && t < 0.40) amplitud += 15 * Math.sin((t - 0.25) * Math.PI / 0.15);
-    return amplitud;
-}
-
 // Fibrilación Auricular: línea de base irregular ("fibrilatoria") sin onda P,
 // con QRS estrecho de conducción irregular.
 function generarFA(ctx) {
@@ -197,16 +185,6 @@ function generarFA(ctx) {
 
 // Taquicardia Ventricular Monomórfica.
 function generarTVMonomorfica(ctx) {
-    return 60 * Math.sin(ctx.t * Math.PI * 2);
-}
-
-// Taquicardia Ventricular Sin Pulso. Función independiente de
-// generarTVMonomorfica (se puede modificar una sin afectar la otra), pero
-// produce intencionalmente la MISMA forma de onda: clínicamente, la TV con
-// pulso y sin pulso pueden ser eléctricamente indistinguibles en el monitor.
-// La diferencia la da la palpación del pulso, no el trazado — por eso no se
-// le da una morfología distinta (sería enseñar una falsedad clínica).
-function generarTVSinPulso(ctx) {
     return 60 * Math.sin(ctx.t * Math.PI * 2);
 }
 
@@ -226,25 +204,6 @@ function generarFV() {
 // la línea isoeléctrica es una decisión deliberada, no un hueco sin implementar.
 function generarAsistolia() {
     return 0;
-}
-
-// Marcapasos: Captura Ventricular Efectiva. Espiga de estimulación (deflexión
-// breve y aguda) inmediatamente seguida de un QRS ancho capturado —
-// morfología ventricular, como un latido de escape pero a ritmo regular.
-function generarMarcapasosVentricular(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-    if (t > 0.13 && t < 0.14) amplitud += 90; // espiga de marcapasos
-    amplitud += dibujarQRS(t, true) + dibujarT(t, true);
-    return amplitud;
-}
-
-// Marcapasos: Fallo de Estimulación. El dispositivo NO genera espiga (sin
-// captura): a propósito no se dibuja ninguna espiga. El paciente queda
-// dependiente de su ritmo de escape ventricular lento y ancho — el punto
-// clínico es precisamente notar la ausencia de la espiga esperada.
-function generarMarcapasosFalloEstimulacion(ctx) {
-    return dibujarQRS(ctx.t, true) + dibujarT(ctx.t, true);
 }
 
 // Taquicardia Ventricular Polimórfica: caótica e irregular, sin patrón
@@ -278,17 +237,13 @@ const GENERADORES_RITMO = {
     bav3: generarBav3,
     flutter: generarFlutter,
 
-    tsvp: generarTSVP,
     fa: generarFA,
     tv_mono: generarTVMonomorfica,
-    tvsp: generarTVSinPulso,
     tv_poli: generarTVPolimorfica,
     torsades: generarTorsades,
 
     fv: generarFV,
     asistolia: generarAsistolia,
-    mp_ventricular: generarMarcapasosVentricular,
-    mp_fallo_est: generarMarcapasosFalloEstimulacion,
 };
 
 class MotorMatematicoECG {
@@ -318,7 +273,7 @@ class MotorMatematicoECG {
     }
 
     obtenerVoltaje(deltaTime, ritmo, fc) {
-        if (fc === 0 && !['fv', 'tvsp', 'asistolia', 'aesp'].includes(ritmo)) return 0;
+        if (fc === 0 && !['fv', 'asistolia', 'aesp'].includes(ritmo)) return 0;
 
         const cicloBase = fc > 0 ? 60000 / fc : 1000;
         let cicloActual = cicloBase;

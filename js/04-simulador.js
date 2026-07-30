@@ -32,7 +32,7 @@
         document.getElementById('val-temp').innerText = hmd_actual.temp.toFixed(1);
     
         // --- Mostrar botón en desfibrilables Y en Asistolia/AESP ---
-        const esRitmoDeParo = ['fv', 'tvsp', 'asistolia', 'aesp'].includes(estado.ritmo);
+        const esRitmoDeParo = ['fv', 'asistolia', 'aesp'].includes(estado.ritmo);
         document.getElementById('btn-shock').style.display = (estado.datos.desf || esRitmoDeParo) ? 'block' : 'none';
         
         document.getElementById('btn-meds').innerText = `💉 Admin. ${estado.datos.med.split(' / ')[0]}`;
@@ -69,7 +69,7 @@
         const ritmoActual = document.getElementById('selectorRitmo').value;
         
         // Definimos cuáles son los ritmos de paro
-        const ritmosParo = ['fv', 'tvsp', 'asistolia', 'aesp'];
+        const ritmosParo = ['fv', 'asistolia', 'aesp'];
     
         // --- LÓGICA DE EVALUACIÓN: ERRORES FATALES ---
         if (ritmosParo.includes(ritmoActual)) {
@@ -210,7 +210,7 @@
         ctx.clearRect(posX, 0, 25, canvas.height);
         let amplitude = currentWave[waveIndex];
         
-        if(hmd_actual.fc === 0 && estado.ritmo !== 'tvsp' && estado.ritmo !== 'aesp') {
+        if(hmd_actual.fc === 0 && estado.ritmo !== 'aesp') {
             amplitude = (Math.random() * 2 - 1); 
         }
     
@@ -232,7 +232,7 @@
         if(posX > canvas.width) { posX = 0; lastY = canvas.height / 2; }
     
         let renderSpeed = 20; 
-        let fcVisual = hmd_actual.fc > 0 ? hmd_actual.fc : (estado.ritmo === 'tvsp' ? 180 : 60);
+        let fcVisual = hmd_actual.fc > 0 ? hmd_actual.fc : 60;
         if (fcVisual > 0) renderSpeed = 1500 / fcVisual; 
         if (renderSpeed < 5) renderSpeed = 5;
         if (renderSpeed > 30) renderSpeed = 30;
