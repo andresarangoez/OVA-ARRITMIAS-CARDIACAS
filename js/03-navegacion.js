@@ -53,6 +53,11 @@
 
         document.getElementById('titulo-modulo-activo').innerText = "Módulo " + idModulo + ": " + titulo;
 
+        // Siempre se abre un módulo desde su pantalla de bienvenida (ver más
+        // abajo), así que el título del módulo debe quedar visible arriba —
+        // nunca arrastrar el scroll de la vista anterior.
+        window.scrollTo(0, 0);
+
         const todosLosContenidos = document.querySelectorAll('[id^="contenido-modulo-"]');
         todosLosContenidos.forEach(div => {
             div.style.display = 'none';
@@ -71,9 +76,13 @@
             }
         }
 
+        // El simulador NUNCA se muestra en la pantalla de bienvenida — solo
+        // debe aparecer una vez que el estudiante entra al desarrollo del
+        // módulo (ver iniciarModulo en 05-modulo.js), aunque el módulo sea
+        // uno de los que sí lo incluyen.
         const simulador = document.getElementById('simulador-wrapper');
         if (simulador) {
-            simulador.style.display = MODULOS_CON_SIMULADOR.includes(idModulo) ? 'block' : 'none';
+            simulador.style.display = 'none';
         }
     }
 

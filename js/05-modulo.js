@@ -20,8 +20,18 @@ function iniciarModulo(idModulo) {
     if (bienvenida) bienvenida.style.display = 'none';
     if (desarrollo) desarrollo.style.display = 'block';
 
-    // Llevar el scroll al inicio del contenido de desarrollo
-    contenedor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // El simulador solo se revela al entrar al desarrollo del módulo, y solo
+    // si este módulo es uno de los que lo incluyen (fuente única de verdad:
+    // OVA.Navegacion.MODULOS_CON_SIMULADOR, definida en 03-navegacion.js).
+    const simulador = document.getElementById('simulador-wrapper');
+    if (simulador && OVA.Navegacion && OVA.Navegacion.MODULOS_CON_SIMULADOR.includes(idModulo)) {
+        simulador.style.display = 'block';
+    }
+
+    // Llevar el scroll al inicio del módulo (donde se ve el título), no al
+    // contenido de la Unidad 1 — de lo contrario el título queda oculto arriba.
+    const vistaModulo = document.getElementById('vista-modulo');
+    if (vistaModulo) vistaModulo.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Se invoca desde abrirModulo() en 03-navegacion.js cada vez que el
@@ -37,6 +47,9 @@ function reiniciarEstadoModulo(idModulo) {
 
     if (bienvenida) bienvenida.style.display = 'block';
     if (desarrollo) desarrollo.style.display = 'none';
+
+    const simulador = document.getElementById('simulador-wrapper');
+    if (simulador) simulador.style.display = 'none';
 }
 
 // --- ACORDEONES ---
