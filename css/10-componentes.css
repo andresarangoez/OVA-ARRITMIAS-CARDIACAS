@@ -26,7 +26,9 @@
    Los componentes definidos AQUÍ son los que sí faltaban:
    botón de acción, breadcrumb, barra de progreso, caja de éxito,
    perla clínica, tabs, modal, tooltip, zoom de imágenes,
-   contenedor de video, contenedor de modelo 3D.
+   contenedor de video, contenedor de modelo 3D, dato curioso,
+   error frecuente, mini reto, stepper de fases, diagrama de nodos,
+   reto de emparejar.
    ============================================================ */
 
 /* --- BOTÓN DE ACCIÓN --- */
@@ -145,3 +147,97 @@
    del corazón protagonista del home, que usa .heart-showcase). */
 .modelo-3d-container { width: 100%; height: 320px; border-radius: var(--bento-radius-md); background: var(--fucs-niebla); overflow: hidden; margin: 20px 0; }
 .modelo-3d-container model-viewer { width: 100%; height: 100%; background-color: transparent; }
+
+/* --- DATO CURIOSO --- */
+/* Uso: dato curioso o cifra llamativa, sin carga clínica — solo interés.
+   Mismo patrón de caja que .key-box/.perla-clinica/.caja-exito, con
+   acento dorado (el color de "acentos" de la paleta institucional). */
+.dato-curioso { background: rgba(248, 198, 128, 0.14); padding: 15px 18px; margin: 20px 0; border-radius: var(--radius-md); border: 1px solid var(--fucs-gris); border-left: 4px solid var(--fucs-dorado); box-shadow: var(--shadow-sm); }
+.dato-curioso .dato-curioso-titulo { color: var(--fucs-azul-profundo); font-weight: bold; display: block; margin-bottom: 4px; }
+
+/* --- ERROR FRECUENTE --- */
+/* Uso: errores conceptuales o de interpretación comunes en estudiantes.
+   Distinto de .key-box.danger: ese es una alerta de seguridad del
+   paciente; este es un error pedagógico — por eso usa ámbar (--warning),
+   no rojo (--danger), para que no se confundan a simple vista. */
+.error-frecuente { background: rgba(241, 196, 15, 0.08); padding: 15px 18px; margin: 20px 0; border-radius: var(--radius-md); border: 1px solid var(--fucs-gris); border-left: 4px solid var(--warning); box-shadow: var(--shadow-sm); }
+.error-frecuente .error-frecuente-titulo { color: #8a6d00; font-weight: bold; display: block; margin-bottom: 4px; }
+
+/* --- MINI RETO --- */
+/* Uso: micro-pregunta de retroalimentación inmediata dentro de una unidad,
+   distinta de la Actividad de aprendizaje (que cierra el módulo). Borde
+   punteado para señalar visualmente "esto se responde", no solo se lee.
+   Requiere js/12-widgets-aprendizaje.js (verificarMiniReto). */
+.mini-reto { background: rgba(10, 62, 124, 0.05); padding: 18px 20px; margin: 20px 0; border-radius: var(--radius-md); border: 2px dashed var(--fucs-azul-oscuro); }
+.mini-reto .mini-reto-titulo { color: var(--fucs-azul-oscuro); font-weight: bold; display: block; margin-bottom: 8px; }
+.mini-reto .mini-reto-enunciado { margin: 0 0 12px 0; color: var(--text-body); }
+.mini-reto .mini-reto-feedback { margin-top: 10px; font-size: 0.88rem; font-weight: 600; min-height: 1.2em; }
+.mini-reto .mini-reto-feedback.correcto { color: var(--success); }
+.mini-reto .mini-reto-feedback.incorrecto { color: var(--danger); }
+
+/* --- STEPPER DE FASES --- */
+/* Uso: recorrido paso a paso de un proceso secuencial (ej. fases del
+   potencial de acción). Cada botón revela su panel correspondiente;
+   los demás paneles permanecen ocultos. Requiere
+   js/12-widgets-aprendizaje.js (activarPasoStepper). */
+.stepper-fases { margin: 20px 0; border: 1px solid var(--fucs-gris); border-radius: var(--bento-radius-md); overflow: hidden; }
+.stepper-nav { display: flex; flex-wrap: wrap; gap: 0; background: var(--fucs-niebla); }
+.stepper-nav button {
+    flex: 1 1 auto; min-width: 70px; background: none; border: none; border-bottom: 3px solid transparent;
+    padding: 12px 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; color: var(--text-muted); transition: 0.2s;
+}
+.stepper-nav button:hover { color: var(--fucs-azul-oscuro); }
+.stepper-nav button.activo { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-dorado); background: #ffffff; }
+.stepper-panel { display: none; padding: 20px; }
+.stepper-panel.activo { display: block; }
+.stepper-panel h5 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); }
+.stepper-panel p { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-body); }
+.stepper-panel p:last-child { margin-bottom: 0; }
+
+/* --- DIAGRAMA DE NODOS --- */
+/* Uso: jerarquía clicable (ej. sistema de conducción SA→AV→His→Purkinje).
+   Cada nodo revela su ficha de detalle al hacer clic; los conectores son
+   puramente decorativos (línea entre nodos). Requiere
+   js/12-widgets-aprendizaje.js (activarNodoDiagrama). */
+.diagrama-nodos-wrap { margin: 24px 0; }
+.diagrama-nodos { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+.diagrama-nodos .nodo {
+    background: #ffffff; border: 2px solid var(--fucs-gris); border-radius: var(--radius-md);
+    padding: 12px 16px; cursor: pointer; font-weight: 700; font-size: 0.85rem; color: var(--fucs-azul-oscuro);
+    transition: 0.2s; text-align: center;
+}
+.diagrama-nodos .nodo:hover { border-color: var(--fucs-dorado); }
+.diagrama-nodos .nodo.activo { border-color: var(--fucs-dorado); background: rgba(248, 198, 128, 0.16); color: var(--fucs-azul-profundo); }
+.diagrama-nodos .nodo-conector { color: var(--fucs-gris); font-size: 1.2rem; }
+.diagrama-nodos-detalle-grupo { margin-top: 4px; padding: 18px 20px; background: var(--fucs-niebla); border-radius: var(--bento-radius-md); min-height: 3em; }
+.diagrama-nodos-detalle { display: none; }
+.diagrama-nodos-detalle.activo { display: block; }
+.diagrama-nodos-detalle h5 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); }
+.diagrama-nodos-detalle p { margin: 0 0 6px 0; font-size: 0.88rem; color: var(--text-body); }
+.diagrama-nodos-detalle p:last-child { margin-bottom: 0; }
+
+/* --- RETO DE EMPAREJAR --- */
+/* Uso: actividad de "toca para emparejar" (término ↔ definición). Se usa
+   tap-to-pair con botones nativos en vez de drag-and-drop nativo: el
+   drag-and-drop HTML5 tiene soporte pobre en táctil y es inaccesible por
+   teclado, lo cual choca con los requisitos de responsive/accesibilidad
+   del proyecto. Requiere js/12-widgets-aprendizaje.js. */
+.reto-emparejar { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+.reto-emparejar-columna { display: flex; flex-direction: column; gap: 10px; }
+.reto-emparejar-item {
+    background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--radius-md);
+    padding: 12px 16px; cursor: pointer; font-size: 0.88rem; color: var(--text-body); text-align: left; transition: 0.2s;
+}
+.reto-emparejar-item:hover { border-color: var(--fucs-dorado); background: rgba(248, 198, 128, 0.08); }
+.reto-emparejar-item.seleccionado { border-color: var(--fucs-azul-oscuro); background: rgba(10, 62, 124, 0.06); }
+.reto-emparejar-item.correcto { border-color: var(--success); background: rgba(39, 174, 96, 0.08); cursor: default; }
+.reto-emparejar-item.incorrecto { border-color: var(--danger); background: rgba(231, 76, 60, 0.08); animation: retoShake 0.3s; }
+.reto-emparejar-progreso { grid-column: 1 / -1; font-size: 0.85rem; color: var(--text-muted); margin-top: -6px; }
+@keyframes retoShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+@media (max-width: 640px) {
+    .reto-emparejar { grid-template-columns: 1fr; }
+}
