@@ -28,10 +28,10 @@ function iniciarModulo(idModulo) {
         simulador.style.display = 'block';
     }
 
-    // Llevar el scroll al inicio del módulo (donde se ve el título), no al
-    // contenido de la Unidad 1 — de lo contrario el título queda oculto arriba.
-    const vistaModulo = document.getElementById('vista-modulo');
-    if (vistaModulo) vistaModulo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Llevar el scroll al tope absoluto de la página, donde se ve el
+    // encabezado global de la OVA (Facultad de Enfermería · Universidad FUCS)
+    // — no solo la barra del módulo, y mucho menos el contenido de la Unidad 1.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Se invoca desde abrirModulo() en 03-navegacion.js cada vez que el
