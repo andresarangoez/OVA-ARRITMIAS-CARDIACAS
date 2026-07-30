@@ -6,7 +6,7 @@
 
 ## 1. Propósito de este documento
 
-Este documento explica **por qué** el Módulo 01 está diseñado como está: qué modelo pedagógico lo sostiene, cómo se justifica el orden de sus cinco unidades, qué nivel cognitivo exige cada objetivo, y cómo se evalúa el aprendizaje. No es una guía de contenido clínico (eso ya vive en `modules/modulo-01.html`) — es el razonamiento instruccional detrás de esa estructura.
+Este documento explica **por qué** el Módulo 01 está diseñado como está: qué modelo pedagógico lo sostiene, cómo se justifica el orden de sus siete unidades, qué nivel cognitivo exige cada objetivo, y cómo se evalúa el aprendizaje. No es una guía de contenido clínico (eso ya vive en `modules/modulo-01.html`) — es el razonamiento instruccional detrás de esa estructura.
 
 Sirve para tres cosas:
 
@@ -14,7 +14,7 @@ Sirve para tres cosas:
 2. Servir de plantilla replicable al documentar la arquitectura de los Módulos 02-06.
 3. Detectar inconsistencias entre el diseño pretendido y el contenido real ya implementado.
 
-> **Nota de actualización:** este documento describió originalmente el Módulo 01 en su primera versión (5 unidades con contenido narrativo, pero con el caso clínico, la autoevaluación y la bibliografía todavía sin redactar). Tras un rediseño posterior que añadió recursos interactivos propios del módulo y cerró esas brechas, se actualizó el documento completo — la sección 6.1 y la sección 8 son las que más cambiaron.
+> **Nota de actualización (v3):** este documento pasó por dos rediseños de contenido. El primero (v1→v2) mantuvo la estructura original de 5 unidades pero añadió recursos interactivos propios y cerró las brechas de caso clínico/autoevaluación/bibliografía. El segundo (v2→v3, esta versión) **reemplaza esa estructura de 5 unidades por las 7 unidades del syllabus oficial de la Facultad** (Anatomía cardíaca funcional, Electrofisiología, Sistema de conducción, Ciclo cardíaco, Fundamentos del ECG, Ondas/segmentos/intervalos, Generalidades de las arritmias) — un requisito curricular, no una decisión de diseño libre. Los recursos interactivos construidos en el primer rediseño se conservaron y reubicaron en la unidad que les corresponde bajo la nueva estructura; nada se descartó sin razón.
 
 ---
 
@@ -68,44 +68,54 @@ Por diseño, el Módulo 01 no tiene fase asignada en el Proceso de Atención de 
 
 | # | Objetivo de aprendizaje (tal como aparece en el módulo) | Verbo / Nivel de Bloom | Unidad que lo desarrolla | Evidencia de evaluación actual |
 |---|---|---|---|---|
-| 1 | Comprender la fisiología eléctrica cardíaca y el potencial de acción celular | **Comprender** | Unidad 1 | Autoevaluación P1 (fase 0); Mini reto de la Unidad 1 (fase 2); stepper "Construye el potencial de acción" |
-| 2 | Reconocer la jerarquía del sistema de conducción cardíaco | **Recordar / Comprender** | Unidad 2 | Autoevaluación P2 (frecuencia del nodo AV); diagrama de nodos clicable |
-| 3 | Interpretar las ondas e intervalos básicos del ECG normal | **Aplicar** | Unidad 3 | Autoevaluación P3 (significado del QRS ancho); Actividad de aprendizaje; reto de emparejar (ondas ↔ definición) |
-| 4 | Relacionar la hemodinamia con la toma de decisiones del algoritmo ACLS | **Analizar** (anticipatorio) | Unidad 4 | Autoevaluación P4 (efecto de la taquicardia extrema sobre el GC) — cierra la brecha original, ver sección 8 |
-| 5 | Aplicar los principios de monitorización electrocardiográfica en la práctica de enfermería | **Aplicar** | Unidad 5 | Autoevaluación P5 (acción ante alarma "lead-off") — cierra la brecha original, ver sección 8 |
+| 1 | Describir la anatomía funcional del corazón y la ubicación anatómica del sistema de conducción | **Recordar / Comprender** | Unidad 1 · Anatomía Cardíaca Funcional | Autoevaluación P1 (arteria coronaria del nodo SA/AV); exploración 3D del corazón |
+| 2 | Comprender la electrofisiología celular cardíaca: potencial de acción, automatismo, excitabilidad, conductividad y refractariedad | **Comprender** | Unidad 2 · Electrofisiología Cardíaca | Autoevaluación P2 (fase 0); mini reto (fase 2); stepper "Construye el potencial de acción" |
+| 3 | Reconocer la jerarquía funcional del sistema de conducción cardíaco | **Recordar / Comprender** | Unidad 3 · Sistema de Conducción | Autoevaluación P3 (frecuencia del nodo AV); diagrama de nodos clicable |
+| 4 | Relacionar el ciclo cardíaco con la actividad eléctrica que lo desencadena | **Analizar** | Unidad 4 · Ciclo Cardíaco | Autoevaluación P4 (qué marca el cierre de las válvulas AV); tabla comparativa sístole/diástole |
+| 5 | Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la FC | **Aplicar** | Unidad 5 · Fundamentos del ECG | Autoevaluación P5 (cálculo de FC); mini reto de cálculo; tabs de derivaciones |
+| 6 | Identificar las ondas, segmentos e intervalos normales del ECG | **Aplicar** | Unidad 6 · Ondas, Segmentos e Intervalos | Autoevaluación P6 (significado del intervalo QT); Actividad de aprendizaje; reto de emparejar (5 pares) |
+| 7 | Reconocer las generalidades de las arritmias cardíacas como puente hacia la valoración clínica | **Comprender / Analizar** (anticipatorio) | Unidad 7 · Generalidades de las Arritmias | Autoevaluación P7 (clasificación brady/taquiarritmia); tabla comparativa de clasificación |
 
-**Lectura del mapa:** los objetivos suben progresivamente de nivel de Bloom (Comprender → Recordar/Comprender → Aplicar → Analizar → Aplicar). Tras el rediseño, la autoevaluación pasó de 3 a 5 preguntas — una por objetivo — y cada unidad ganó además un instrumento formativo propio (mini reto, stepper, diagrama o actividad de emparejar) que refuerza el objetivo antes de llegar a la autoevaluación final.
+**Lectura del mapa:** a diferencia de la versión anterior (5 objetivos, 2 sin instrumento propio), esta estructura logra una correspondencia 1:1 entre unidad, objetivo y pregunta de autoevaluación desde el primer diseño — no como una brecha corregida después, sino como principio de diseño desde el inicio. Los niveles de Bloom siguen una progresión similar a la versión anterior (Recordar/Comprender en las unidades más descriptivas, subiendo a Aplicar/Analizar en las unidades que exigen cálculo o clasificación).
 
 ---
 
-## 5. Justificación de la secuencia de las cinco unidades
+## 5. Justificación de la secuencia de las siete unidades
 
-El orden no es arbitrario — cada unidad depende conceptualmente de la anterior:
+El orden lo define el syllabus oficial, y resulta pedagógicamente coherente: cada unidad depende conceptualmente de la anterior.
 
 ```mermaid
 graph TD
     U1["Unidad 1
-Fisiología Eléctrica
-(la célula)"] --> U2["Unidad 2
-Sistema de Conducción
-(la red de células)"]
+Anatomía Cardíaca Funcional
+(la estructura física)"] --> U2["Unidad 2
+Electrofisiología Cardíaca
+(la célula)"]
     U2 --> U3["Unidad 3
-Fundamentos del ECG
-(cómo se ve la red en el papel)"]
+Sistema de Conducción
+(la red de células, en función)"]
     U3 --> U4["Unidad 4
-Hemodinamia Aplicada
+Ciclo Cardíaco
 (qué efecto mecánico tiene)"]
     U4 --> U5["Unidad 5
-Rol de Enfermería en Monitorización
-(qué hace la enfermera con todo esto)"]
+Fundamentos del ECG
+(cómo se registra todo esto)"]
+    U5 --> U6["Unidad 6
+Ondas, Segmentos e Intervalos
+(cómo se lee el registro)"]
+    U6 --> U7["Unidad 7
+Generalidades de las Arritmias
+(puente al Módulo 02)"]
 ```
 
-- **U1 → U2:** no se puede explicar la jerarquía de marcapasos (SA, AV, His-Purkinje) sin antes entender qué es un potencial de acción y por qué una célula puede "generar" un impulso.
-- **U2 → U3:** el ECG no es más que el registro en superficie de la despolarización que U2 ya explicó a nivel celular y de conducción — por eso el ECG se enseña después, no antes.
-- **U3 → U4:** una vez que el estudiante puede leer el trazado, se le muestra que ese trazado tiene una consecuencia mecánica real (gasto cardíaco) — el puente entre "electricidad" y "paciente".
-- **U4 → U5:** cerrando el módulo, se convierte todo lo anterior en una competencia de enfermería aplicable (monitorización), preparando directamente el salto al Módulo 02.
+- **U1 → U2:** no se puede explicar el potencial de acción sin saber primero dónde ocurre — la anatomía (cavidades, válvulas, irrigación) es el "mapa" físico sobre el que se apoya la electrofisiología.
+- **U2 → U3:** la jerarquía de marcapasos (SA, AV, His-Purkinje) solo se entiende si antes se sabe qué es un potencial de acción y por qué una célula puede "generar" un impulso (automatismo). La Unidad 1 ya mostró *dónde* está anatómicamente cada nodo; la Unidad 3 explica *cómo funcionan juntos*.
+- **U3 → U4:** una vez entendida la conducción eléctrica, se muestra su consecuencia mecánica inmediata: la despolarización dispara la contracción (sístole) y la repolarización coincide con la relajación (diástole).
+- **U4 → U5:** el ciclo cardíaco (mecánico) y la conducción (eléctrica) son exactamente lo que el ECG registra desde la superficie corporal — por eso el ECG se enseña después de entender qué produce la señal, no antes.
+- **U5 → U6:** una vez que el estudiante sabe qué es el papel milimetrado y cómo se calcula la frecuencia, puede aprender a nombrar cada onda, segmento e intervalo del trazado.
+- **U6 → U7:** con el ECG normal ya dominado, la unidad de cierre introduce qué es y cómo se clasifica una arritmia — sin pedir todavía ninguna decisión clínica, solo generalidades que preparan el terreno para el Módulo 02.
 
-Esta secuencia sigue un patrón **de lo micro a lo macro** (célula → tejido → superficie corporal → mecánica → práctica clínica), coherente con el nivel Novato: cada paso solo añade una capa de abstracción sobre la anterior, nunca dos a la vez.
+Esta secuencia sigue un patrón **de lo estructural a lo funcional, y de lo funcional al registro** (anatomía → célula → red de conducción → mecánica → registro → lectura → generalización patológica), coherente con el nivel Novato: cada paso añade una sola capa de abstracción sobre la anterior.
 
 ---
 
@@ -113,28 +123,29 @@ Esta secuencia sigue un patrón **de lo micro a lo macro** (célula → tejido �
 
 Verificación de la plantilla de 5 pasos (sección 2.3) contra el contenido real de cada unidad:
 
-| Paso de la plantilla | Unidad 1 | Unidad 2 | Unidad 3 | Unidad 4 | Unidad 5 |
-|---|---|---|---|---|---|
-| 1. Fundamento científico | ✅ Potencial de acción, fases 0/2/3 | ✅ Jerarquía de marcapasos | ✅ Ondas P, PR, QRS, T | ✅ Fórmula GC = FC × VS | ✅ Derivaciones, gestión de alarmas |
-| 2. Interpretación clínica | ✅ "Relevancia clínica en arritmias" | ✅ ídem | ✅ ídem + tabla comparativa | ✅ ídem | ✅ ídem |
-| 3. Aplicación práctica | ✅ "Aplicación en Enfermería" | ✅ ídem | ✅ ídem | ✅ ídem | ✅ ídem |
-| 4. Toma de decisiones | ⚠️ Atenuado (solo alerta clínica, sin decisión activa) | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado |
-| 5. Caso o simulación | ➖ No aplica a nivel de unidad (se centraliza al final del módulo) | ➖ | ➖ | ➖ | ➖ |
-| 2.4 Interacción activa *(nueva)* | ✅ Stepper de fases + mini reto | ✅ Diagrama de nodos + modelo 3D | ✅ Tabs + reto de emparejar | ➖ (línea de tiempo, sin interacción nueva) | ➖ (acordeón, ya existía) |
+| Paso de la plantilla | U1 Anatomía | U2 Electrofisiología | U3 Sist. Conducción | U4 Ciclo Cardíaco | U5 Fundamentos ECG | U6 Ondas/Segmentos | U7 Generalidades |
+|---|---|---|---|---|---|---|---|
+| 1. Fundamento científico | ✅ Cavidades, válvulas, irrigación | ✅ Potencial de acción, 4 propiedades | ✅ Jerarquía de nodos | ✅ Sístole/diástole | ✅ Qué registra, derivaciones, papel | ✅ P, PR, QRS, ST, T, QT, U | ✅ Definición y clasificación |
+| 2. Interpretación clínica | ✅ Relevancia clínica (IAM y coronarias) | ✅ ídem | ✅ ídem | ✅ ídem | ✅ ídem | ✅ ídem | ✅ ídem |
+| 3. Aplicación práctica | ➖ (se traslada a la exploración 3D) | ✅ Aplicación en Enfermería | ➖ | ➖ | ✅ Aplicación en Enfermería | ➖ | ➖ |
+| 4. Toma de decisiones | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado | ⚠️ Atenuado (mecanismos, sin decidir tratamiento) |
+| 5. Caso o simulación | ➖ Centralizado al final del módulo | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ |
+| 2.4 Interacción activa | ✅ Modelo 3D real | ✅ Stepper + mini reto | ✅ Diagrama de nodos | ➖ (tabla comparativa) | ✅ Tabs + mini reto de cálculo | ✅ Reto de emparejar (5 pares) | ➖ (tabla de clasificación) |
 
-**Conclusión:** las tres primeras capas de la plantilla (fundamento, interpretación, aplicación) están sólidamente implementadas en las cinco unidades, con el patrón visual consistente de `key-box` (concepto clave) + `key-box danger` (alerta clínica). La capa 4 (decisión) se atenúa deliberadamente — coherente con el nivel Novato, que no debe todavía "decidir" clínicamente. La capa 5 (caso/simulación) se centraliza al final del módulo, no unidad por unidad, lo cual es una decisión de diseño razonable para no fragmentar el caso clínico en cinco mini-casos. La nueva capa de interacción activa se concentró en las Unidades 1-3 (donde el contenido se presta mejor a manipulación directa: fases secuenciales, jerarquía de nodos, emparejamiento de conceptos); las Unidades 4 y 5 se reforzaron con recursos formativos existentes (perla clínica, error frecuente, dato curioso, caja de éxito) en vez de forzar un widget nuevo donde no aportaba valor pedagógico claro.
+**Conclusión:** el patrón de `key-box` + `key-box danger` se mantiene consistente en las 7 unidades. La capa 4 (decisión) sigue atenuada deliberadamente en todas — incluida la nueva Unidad 7, cuyo repaso de "mecanismos" es intencionalmente introductorio (el Módulo 04 es quien exige análisis profundo de mecanismos para decidir tratamiento). La interacción activa ahora cubre 4 de las 7 unidades (1, 2, 3, 5) más las tablas comparativas de las Unidades 4 y 7, que cumplen una función equivalente de síntesis visual sin requerir un widget dedicado.
 
 ### 6.1 Recursos interactivos propios del módulo
 
-Antes del rediseño, la única interacción del Módulo 01 era el acordeón de preguntas frecuentes (Unidad 5). El rediseño agregó cuatro recursos genéricos y reutilizables (definidos en `css/10-componentes.css` y `js/12-widgets-aprendizaje.js`, no específicos de este módulo):
+Los recursos interactivos genéricos y reutilizables (definidos en `css/10-componentes.css` y `js/12-widgets-aprendizaje.js`, no específicos de este módulo) se reubicaron según la unidad a la que pertenecen bajo la nueva estructura de 7 unidades:
 
-- **Stepper de fases** (Unidad 1): recorrido secuencial de las 5 fases del potencial de acción. Cada fase pre-escrita en HTML explica el evento iónico y "por qué le importa a enfermería" — decisión deliberada para que el widget muestre/oculte contenido curado, no para que genere texto dinámicamente.
-- **Diagrama de nodos clicable** (Unidad 2): jerarquía SA→AV→His→Purkinje, cada nodo revela su ficha (frecuencia intrínseca, rol, qué pasa si falla). Acompañado del modelo 3D real del corazón (`assets/models/Heart.glb`, el mismo asset ya usado en el home) — con un caption que aclara honestamente que el modelo es anatómico general y no marca las vías de conducción, para no sugerir una precisión que el asset no tiene.
-- **Tabs** (Unidad 3): separa derivaciones bipolares de unipolares sin sobrecargar la unidad con texto continuo.
-- **Reto de emparejar** (Unidad 3): asocia cada onda del ECG con su definición. Se implementó como "toca para emparejar" (clic en término, luego en definición) en vez de arrastrar y soltar nativo de HTML5 — el drag-and-drop tiene soporte táctil pobre y es poco accesible por teclado, lo cual entra en conflicto directo con los requisitos de responsive/accesibilidad del proyecto (`docs/CLAUDE.md`). Los mismos botones nativos dan accesibilidad de teclado (Tab + Enter) sin esfuerzo adicional.
-- **Mini reto** (Unidad 1, y reutilizable en cualquier unidad futura): una micro-pregunta de retroalimentación inmediata, distinta de la Actividad de aprendizaje que cierra el módulo — refuerza un concepto puntual sin esperar hasta el final.
+- **Modelo 3D real del corazón** (`assets/models/Heart.glb`, Unidad 1 — Anatomía): se trasladó aquí desde su ubicación original (antes en la unidad de "Sistema de Conducción") porque encaja mejor con el contenido puramente anatómico (cavidades, válvulas). Mantiene el caption honesto: es un modelo anatómico general, no marca las vías de conducción.
+- **Stepper de fases** (Unidad 2 — Electrofisiología): recorrido secuencial de las 5 fases del potencial de acción, cada una explicando además a cuál de las 4 propiedades eléctricas (automatismo, excitabilidad, conductividad, refractariedad) corresponde.
+- **Diagrama de nodos clicable** (Unidad 3 — Sistema de Conducción): jerarquía funcional SA→AV→His→Purkinje (frecuencia intrínseca, rol, qué pasa si falla) — complementa, sin repetir, la vista puramente anatómica ya dada en la Unidad 1.
+- **Tabs** (Unidad 5 — Fundamentos del ECG): separa derivaciones bipolares de unipolares.
+- **Mini retos** (Unidades 2 y 5): el de la Unidad 2 refuerza la Fase 2 del potencial de acción; el nuevo de la Unidad 5 pone en práctica el cálculo de frecuencia cardíaca con un ejemplo numérico concreto (cuadros grandes entre ondas R).
+- **Reto de emparejar** (Unidad 6 — Ondas, Segmentos e Intervalos): se amplió de 4 a 5 pares para incluir el segmento ST y el intervalo QT, que no existían en la versión anterior del módulo. Sigue usando "toca para emparejar" en vez de arrastrar y soltar nativo de HTML5, por accesibilidad táctil y de teclado (`docs/CLAUDE.md`).
 
-Los cuatro widgets comparten el mismo principio de diseño: la respuesta correcta o el contenido de cada paso vive en el HTML (atributos `data-correcta`, o paneles pre-escritos), y el JavaScript solo la lee — nunca la genera ni la inventa. Esto mantiene el contenido clínico auditable y editable sin tocar código.
+Todos los widgets comparten el mismo principio de diseño: la respuesta correcta o el contenido de cada paso vive en el HTML (atributos `data-correcta`, o paneles pre-escritos), y el JavaScript solo la lee — nunca la genera ni la inventa.
 
 ---
 
@@ -148,22 +159,24 @@ El módulo evalúa en tres momentos distintos, con tres propósitos distintos:
 | Mini reto, stepper, diagrama de nodos, reto de emparejar (sección 6.1) | Formativo, in-line, con retroalimentación real (✅/❌) | Manipulación activa del contenido antes de la evaluación final | Comprender / Aplicar |
 | Actividad de aprendizaje (1 pregunta) | Al cierre del desarrollo, antes del resumen | Chequeo rápido de un concepto puntual | Aplicar |
 | Caso clínico | Antes de la autoevaluación | Integración de varias unidades en un escenario único, estrictamente de reconocimiento (nunca "qué haría usted") | Aplicar / Analizar |
-| Autoevaluación (5 preguntas, una por objetivo) | Cierre del módulo | Verificación sumativa-formativa (intentos ilimitados, retroalimentación real por pregunta vía `verificarAutoevaluacion`) de los 5 objetivos | Recordar / Comprender / Aplicar / Analizar |
+| Autoevaluación (7 preguntas, una por objetivo) | Cierre del módulo | Verificación sumativa-formativa (intentos ilimitados, retroalimentación real por pregunta vía `verificarAutoevaluacion`) de los 7 objetivos | Recordar / Comprender / Aplicar / Analizar |
 
 Este diseño en capas es coherente con el ciclo de aprendizaje experiencial (Kolb): concepto → interacción activa (sección 6.1) → aplicación integrada (caso) → verificación (autoevaluación) — el Módulo 01 ya incorpora su propia fase de "experimentación concreta" a menor escala, antes de la experimentación con datos clínicos reales que exigirán los módulos con simulador (03, 05, 06).
 
 ---
 
-## 8. Brechas detectadas y su resolución
+## 8. Historial de brechas y decisiones de rediseño
 
-Esta sección documentaba originalmente 4 inconsistencias entre el diseño pretendido y el contenido real de `modules/modulo-01.html`. Las 4 se cerraron en el rediseño posterior — se conservan aquí, marcadas como resueltas, para dejar registro de la iteración (útil para la sustentación del proyecto de grado):
+**Del diseño v1 (5 unidades, contenido incompleto) al v2 (5 unidades, contenido completo):** se cerraron 4 brechas — caso clínico sin redactar, autoevaluación con enunciados de relleno, bibliografía genérica, y los objetivos 4-5 sin instrumento de evaluación propio. Como efecto colateral se encontró y corrigió un bug real presente en los 6 módulos de la OVA: el botón "Enviar respuestas" llamaba a `verificarActividad`, que buscaba un contenedor (`.modulo-actividad`) del que `.modulo-autoevaluacion` no es descendiente sino hermano — producía un `TypeError` en vez de validar nada. Se separó en `verificarActividad` (sin cambios) y una nueva `verificarAutoevaluacion` que sí opera sobre `.modulo-autoevaluacion`.
 
-1. **✅ Resuelto — Caso clínico sin redactar.** Los cinco campos y las preguntas del caso ahora tienen contenido real: un paciente con palpitaciones y antecedente de consumo elevado de cafeína, con preguntas de reconocimiento (no de decisión clínica) que remiten explícitamente a las Unidades 1, 2 y 4.
-2. **✅ Resuelto — Autoevaluación con enunciados sin redactar.** Las 3 preguntas originales se reescribieron sin texto de relleno, y se agregaron 2 preguntas nuevas (P4 y P5).
-3. **✅ Resuelto — Bibliografía genérica.** Se reemplazó por 5 fuentes reales y reconocibles: Guyton & Hall (Unidad 1), Goldberger (Unidad 3), Braunwald (referencia general), guías AHA (Unidad 4) y AACN Practice Alert sobre fatiga de alarmas (Unidad 5).
-4. **✅ Resuelto — Objetivos 4 y 5 sin instrumento de evaluación propio.** La autoevaluación pasó de 3 a 5 preguntas; P4 mide directamente el objetivo 4 (efecto de la taquicardia extrema sobre el gasto cardíaco) y P5 mide el objetivo 5 (acción correcta ante una alarma de "lead-off").
+**Del diseño v2 (5 unidades) al v3 (7 unidades, esta versión):** la Facultad indicó que el Módulo 01 debe seguir la estructura oficial del syllabus, distinta de las 5 unidades del rediseño libre. Esto implicó:
 
-Como efecto colateral de este trabajo se encontró y corrigió además un bug real, presente en los 6 módulos de la OVA (no solo en el Módulo 01): el botón "Enviar respuestas" llamaba a una función (`verificarActividad`) que buscaba un contenedor (`.modulo-actividad`) del que `.modulo-autoevaluacion` no es descendiente sino hermano — lo que producía un `TypeError` en consola en vez de validar nada. Se separó en `verificarActividad` (sin cambios) y una nueva `verificarAutoevaluacion` que sí opera sobre `.modulo-autoevaluacion` y dota de retroalimentación real por pregunta.
+- **Unidades agregadas por completo:** Unidad 1 (Anatomía Cardíaca Funcional) y Unidad 4 (Ciclo Cardíaco) no existían en ninguna versión anterior — contenido nuevo.
+- **Unidades eliminadas:** "Hemodinamia Aplicada a Arritmias" y "Rol de Enfermería en Monitorización" (v2, Unidades 4 y 5) no forman parte de la estructura oficial del Módulo 01. No se perdió contenido de valor: ambos temas ya están cubiertos en profundidad por el **Módulo 02 (Valoración)** — la valoración hemodinámica (FC, TA, PAM, perfusión) y la monitorización electrocardiográfica son, de hecho, unidades completas de ese módulo.
+- **Unidades expandidas:** la antigua "Fundamentos del ECG" (v2, Unidad 3) se dividió en dos unidades oficiales — Unidad 5 (registro, derivaciones, papel milimetrado, **cálculo de FC**, contenido nuevo) y Unidad 6 (ondas, segmentos e intervalos, ampliada con **segmento ST, intervalo QT y onda U**, que no existían antes).
+- **Unidad nueva de cierre:** Unidad 7 (Generalidades de las Arritmias) reemplaza el cierre anterior — introduce definición, clasificación y una mención breve de mecanismos (remitiendo al Módulo 04 para el detalle), en vez de terminar en contenido de monitorización que ya no corresponde a este módulo.
+- **Recursos interactivos:** ninguno se descartó. Los cuatro construidos en el rediseño v2 (modelo 3D, stepper, diagrama de nodos, reto de emparejar) se reubicaron en la unidad oficial que les corresponde temáticamente (ver sección 6.1), y se sumaron dos mini retos nuevos.
+- **Autoevaluación:** pasó de 5 a 7 preguntas, recuperando desde el inicio la correspondencia 1:1 objetivo↔pregunta que en v2 se había logrado como corrección de una brecha.
 
 ---
 

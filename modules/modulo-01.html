@@ -11,27 +11,29 @@
                         <span class="modulo-icono-grande" aria-hidden="true">⚡</span>
                         <h2 class="modulo-titulo-bienvenida">Fundamentos de las Arritmias Cardíacas</h2>
                         <div class="modulo-meta">
-                            <span>Tiempo estimado: 55 minutos</span>
+                            <span>Tiempo estimado: 75 minutos</span>
                             <span class="dot" aria-hidden="true"></span>
-                            <span>5 unidades</span>
+                            <span>7 unidades</span>
                         </div>
                     </div>
 
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Comprender la fisiología eléctrica cardíaca y el potencial de acción celular.</li>
-                            <li>Reconocer la jerarquía del sistema de conducción cardíaco.</li>
-                            <li>Interpretar las ondas e intervalos básicos del electrocardiograma normal.</li>
-                            <li>Relacionar la hemodinamia con la toma de decisiones del algoritmo ACLS.</li>
-                            <li>Aplicar los principios de monitorización electrocardiográfica en la práctica de enfermería.</li>
+                            <li>Describir la anatomía funcional del corazón (cavidades, válvulas, irrigación coronaria) y la ubicación anatómica del sistema de conducción.</li>
+                            <li>Comprender la electrofisiología celular cardíaca: potencial de acción, automatismo, excitabilidad, conductividad y refractariedad.</li>
+                            <li>Reconocer la jerarquía funcional del sistema de conducción cardíaco.</li>
+                            <li>Relacionar el ciclo cardíaco (sístole y diástole) con la actividad eléctrica que lo desencadena.</li>
+                            <li>Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la frecuencia cardíaca.</li>
+                            <li>Identificar las ondas, segmentos e intervalos normales del ECG.</li>
+                            <li>Reconocer las generalidades de las arritmias cardíacas como puente hacia la valoración clínica.</li>
                         </ul>
                     </div>
 
                     <div class="modulo-introduccion">
                         <h3>Introducción</h3>
-                        <p>Antes de interpretar cualquier arritmia es necesario comprender cómo se genera y se conduce el impulso eléctrico dentro del corazón. Este módulo construye esa base: desde el potencial de acción celular hasta la lectura del ECG normal, pasando por el impacto hemodinámico de cualquier alteración del ritmo.</p>
-                        <p>El contenido está organizado en 5 unidades progresivas, con recursos interactivos propios de este módulo (construcción del potencial de acción, recorrido del sistema de conducción, actividad de emparejar). Al finalizar encontrarás un caso clínico, una actividad práctica y una autoevaluación para consolidar lo aprendido.</p>
+                        <p>Antes de interpretar cualquier arritmia es necesario comprender cómo está construido el corazón, cómo genera y conduce su impulso eléctrico, y cómo se traduce todo eso en el papel del electrocardiograma. Este módulo construye esa base, siguiendo la estructura curricular oficial del curso: de la anatomía a la electrofisiología, de la electrofisiología al ECG, y del ECG a las generalidades de las arritmias.</p>
+                        <p>El contenido está organizado en 7 unidades progresivas, con recursos interactivos propios de este módulo (exploración 3D del corazón, construcción del potencial de acción, recorrido del sistema de conducción, actividad de emparejar). Al finalizar encontrarás un caso clínico, una actividad práctica y una autoevaluación para consolidar lo aprendido.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -52,8 +54,54 @@
 
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 1 · Fisiología Eléctrica Cardíaca</h3>
-                        <p>La contracción cardíaca es el resultado de un proceso eléctrico celular conocido como <strong>potencial de acción</strong>. Este proceso depende del intercambio de iones (Sodio [Na+], Potasio [K+] y Calcio [Ca++]) a través de la membrana celular de los miocitos, generando cambios de voltaje que se traducen en despolarización (contracción) y repolarización (relajación).</p>
+                        <h3 class="unidad-titulo">Unidad 1 · Anatomía Cardíaca Funcional</h3>
+                        <p>El corazón es una bomba muscular de cuatro cavidades. Entender su estructura física es el punto de partida obligado antes de hablar de electricidad: la anatomía explica por qué el impulso eléctrico recorre el camino que recorre.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Cavidades:</strong> 2 aurículas (receptoras, de pared delgada) y 2 ventrículos (eyectores, de pared gruesa). El ventrículo izquierdo es 2-3 veces más grueso que el derecho porque bombea contra la resistencia de la circulación sistémica, mucho mayor que la pulmonar.</li>
+                            <li><strong>Válvulas auriculoventriculares (mitral, tricúspide):</strong> evitan el reflujo de sangre del ventrículo hacia la aurícula durante la sístole. Su cierre genera el primer ruido cardíaco (S1).</li>
+                            <li><strong>Válvulas semilunares (aórtica, pulmonar):</strong> evitan el reflujo de sangre de la arteria hacia el ventrículo durante la diástole. Su cierre genera el segundo ruido cardíaco (S2).</li>
+                            <li><strong>Irrigación coronaria:</strong> la arteria coronaria derecha irriga, en la mayoría de las personas, el nodo SA y el nodo AV, además de la pared inferior; la arteria coronaria izquierda se divide en la descendente anterior (tabique y pared anterior) y la circunfleja (pared lateral).</li>
+                            <li><strong>Sistema de conducción (vista anatómica):</strong> el nodo SA está en la pared de la aurícula derecha, cerca de la entrada de la vena cava superior; el nodo AV está en el piso de la aurícula derecha, cerca del tabique; el Haz de His atraviesa el tabique interventricular y se divide en dos ramas que descienden hacia cada ventrículo, terminando en la red de Purkinje.</li>
+                        </ul>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Un infarto de la pared inferior (típicamente por oclusión de la coronaria derecha) puede comprometer la irrigación del nodo SA o del nodo AV, y explica por qué ciertos infartos se acompañan de bradiarritmias o bloqueos AV.</p>
+
+                        <div class="error-frecuente">
+                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
+                            Asumir que ambos ventrículos tienen paredes de grosor similar. El ventrículo izquierdo es notablemente más grueso — una diferencia anatómica directamente relacionada con la presión que cada uno debe generar.
+                        </div>
+
+                        <div class="dato-curioso">
+                            <span class="dato-curioso-titulo">💡 Dato curioso</span>
+                            El corazón adulto promedio pesa entre 250 y 350 gramos — aproximadamente el tamaño de un puño cerrado — y aun así bombea la totalidad del volumen sanguíneo corporal varias veces por minuto.
+                        </div>
+
+                        <h4>Explora el corazón en 3D</h4>
+                        <div class="modelo-3d-container">
+                            <model-viewer src="assets/models/Heart.glb" alt="Modelo 3D del corazón humano" auto-rotate camera-controls rotation-per-second="8deg" shadow-intensity="0.8"></model-viewer>
+                        </div>
+                        <p class="figura-caption">Gira y explora el modelo para identificar las 4 cavidades y orientarte anatómicamente — este modelo muestra la anatomía general del corazón; no marca visualmente las válvulas ni las vías del sistema de conducción descritas arriba.</p>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Reconocer qué arteria coronaria está comprometida en un infarto ayuda a anticipar qué arritmias son más probables — la enfermería debe vigilar activamente ese riesgo, no solo reaccionar a él.
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 2 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 2 · Electrofisiología Cardíaca</h3>
+                        <p>La contracción cardíaca es el resultado de un proceso eléctrico celular conocido como <strong>potencial de acción</strong>. Este proceso depende del intercambio de iones (Sodio [Na+], Potasio [K+] y Calcio [Ca++]) a través de la membrana celular de los miocitos, generando cambios de voltaje que se traducen en despolarización y repolarización.</p>
+
+                        <h4>Las cuatro propiedades eléctricas del miocito</h4>
+                        <ul>
+                            <li><strong>Automatismo:</strong> capacidad de generar un impulso eléctrico espontáneamente, sin estímulo externo — propia de las células marcapasos.</li>
+                            <li><strong>Excitabilidad:</strong> capacidad de responder a un estímulo generando un potencial de acción.</li>
+                            <li><strong>Conductividad:</strong> capacidad de transmitir ese impulso de una célula a la siguiente, a través de uniones especializadas (discos intercalares).</li>
+                            <li><strong>Refractariedad:</strong> incapacidad temporal de generar un nuevo potencial de acción inmediatamente después del anterior — un mecanismo de protección.</li>
+                        </ul>
 
                         <div class="dato-curioso">
                             <span class="dato-curioso-titulo">💡 Dato curioso</span>
@@ -72,8 +120,8 @@
                             </div>
                             <div class="stepper-panel activo" data-paso="fase0">
                                 <h5>Fase 0 — Despolarización rápida</h5>
-                                <p><strong>Qué ocurre:</strong> apertura de canales rápidos de Na+ y entrada masiva de sodio a la célula — el ascenso más pronunciado de todo el potencial de acción.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> la velocidad de este ascenso determina la velocidad de conducción del impulso. Los antiarrítmicos de clase I (ej. lidocaína, flecainida) actúan bloqueando estos canales de sodio.</p>
+                                <p><strong>Qué ocurre:</strong> apertura de canales rápidos de Na+ y entrada masiva de sodio a la célula — el ascenso más pronunciado de todo el potencial de acción. Corresponde a la propiedad de <strong>excitabilidad</strong>.</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> la velocidad de este ascenso determina la velocidad de conducción del impulso (propiedad de <strong>conductividad</strong>). Los antiarrítmicos de clase I actúan bloqueando estos canales de sodio.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase1">
                                 <h5>Fase 1 — Repolarización inicial</h5>
@@ -83,26 +131,26 @@
                             <div class="stepper-panel" data-paso="fase2">
                                 <h5>Fase 2 — Meseta</h5>
                                 <p><strong>Qué ocurre:</strong> entrada lenta y sostenida de Ca++ a través de canales tipo L, equilibrada con salida de K+ — esto mantiene la célula despolarizada por más tiempo que en una neurona.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> este calcio es el mismo que dispara la contracción muscular (acoplamiento excitación-contracción). Los calcioantagonistas (clase IV, ej. verapamilo, diltiazem) actúan en esta fase.</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> este calcio es el mismo que dispara la contracción muscular (acoplamiento excitación-contracción, Unidad 4). Los calcioantagonistas actúan en esta fase.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase3">
                                 <h5>Fase 3 — Repolarización rápida</h5>
                                 <p><strong>Qué ocurre:</strong> salida masiva de K+, devolviendo la célula a su potencial de reposo.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> los antiarrítmicos de clase III (ej. amiodarona) prolongan esta fase — de ahí que puedan alargar el intervalo QT y, en exceso, favorecer Torsades de Pointes (Módulo 03).</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> los antiarrítmicos de clase III (ej. amiodarona) prolongan esta fase — de ahí que puedan alargar el intervalo QT (Unidad 6) y, en exceso, favorecer Torsades de Pointes (Módulo 03).</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase4">
                                 <h5>Fase 4 — Reposo (o despolarización diastólica)</h5>
-                                <p><strong>Qué ocurre:</strong> en un miocito contráctil normal, es un potencial de reposo estable. En las células marcapasos (nodo SA, nodo AV), en cambio, esta fase es inestable — una corriente de entrada lenta ("funny current") despolariza la célula progresivamente hasta disparar una nueva Fase 0 por sí sola.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> esta inestabilidad de la Fase 4 es la base del <strong>automatismo</strong> — la capacidad del corazón de generar su propio impulso sin estímulo externo (Unidad 2).</p>
+                                <p><strong>Qué ocurre:</strong> en un miocito contráctil normal, es un potencial de reposo estable. En las células marcapasos (nodo SA, nodo AV), en cambio, esta fase es inestable — una corriente de entrada lenta despolariza la célula progresivamente hasta disparar una nueva Fase 0 por sí sola. Esta inestabilidad es la base del <strong>automatismo</strong>.</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> esta es la propiedad que hace que el corazón pueda generar su propio ritmo sin necesidad de un marcapasos externo (Unidad 3).</p>
                             </div>
                         </div>
 
                         <h4>Período refractario</h4>
-                        <p>Mientras dura el <span class="tooltip" data-tooltip="Intervalo en el que la célula no puede generar un nuevo potencial de acción sin importar la intensidad del estímulo.">período refractario absoluto</span>, la célula no puede responder a un nuevo estímulo — un mecanismo de protección que impide que el corazón se reexcite antes de completar un ciclo.</p>
+                        <p>Mientras dura el <span class="tooltip" data-tooltip="Intervalo en el que la célula no puede generar un nuevo potencial de acción sin importar la intensidad del estímulo.">período refractario absoluto</span>, la célula no puede responder a un nuevo estímulo — la <strong>refractariedad</strong> impide que el corazón se reexcite antes de completar un ciclo.</p>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Confundir "despolarización" con "contracción". La despolarización es un evento <em>eléctrico</em> (cambio de voltaje); la contracción mecánica ocurre milisegundos después, acoplada por el calcio de la Fase 2. Un ECG puede mostrar actividad eléctrica organizada mientras el corazón no bombea sangre de forma eficaz — de eso trata la <strong>actividad eléctrica sin pulso</strong> (Módulo 03).
+                            Confundir "despolarización" con "contracción". La despolarización es un evento <em>eléctrico</em> (cambio de voltaje); la contracción mecánica ocurre milisegundos después, acoplada por el calcio de la Fase 2 (Unidad 4). Un ECG puede mostrar actividad eléctrica organizada mientras el corazón no bombea sangre de forma eficaz — de eso trata la <strong>actividad eléctrica sin pulso</strong> (Módulo 03).
                         </div>
 
                         <div class="key-box danger">
@@ -121,7 +169,6 @@
                             <p class="mini-reto-feedback"></p>
                         </div>
 
-                        <!-- Demo: Figura / Imagen -->
                         <div class="figura">
                             <div class="espacio-reservado">
                                 <span class="icono" aria-hidden="true">🖼️</span>
@@ -131,10 +178,10 @@
                         </div>
                     </div>
 
-                    <!-- UNIDAD 2 -->
+                    <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 2 · Sistema de Conducción</h3>
-                        <p>El corazón posee células marcapasos especializadas capaces de generar impulsos eléctricos de forma autónoma (automatismo, Unidad 1). El impulso viaja de forma jerárquica para asegurar que las aurículas se contraigan antes que los ventrículos.</p>
+                        <h3 class="unidad-titulo">Unidad 3 · Sistema de Conducción</h3>
+                        <p>Ya viste dónde están anatómicamente el nodo SA, el nodo AV, el Haz de His y las fibras de Purkinje (Unidad 1). Ahora toca entender <em>cómo funcionan juntos</em>: el impulso viaja de forma jerárquica para asegurar que las aurículas se contraigan antes que los ventrículos.</p>
 
                         <h4>Recorre el sistema de conducción</h4>
                         <p>Haz clic en cada nodo, en orden, para ver su frecuencia intrínseca y qué pasa si falla.</p>
@@ -152,25 +199,25 @@
                                 <div class="diagrama-nodos-detalle activo" data-nodo="sa">
                                     <h5>Nodo Sinusal (SA)</h5>
                                     <p><strong>Frecuencia intrínseca:</strong> 60-100 lpm.</p>
-                                    <p><strong>Ubicación y rol:</strong> pared superior de la aurícula derecha. Marcapasos fisiológico principal — el sitio con el automatismo más rápido controla el ritmo.</p>
+                                    <p><strong>Rol:</strong> marcapasos fisiológico principal — el sitio con el automatismo más rápido controla el ritmo.</p>
                                     <p><strong>Si falla:</strong> los marcapasos inferiores asumen el control, pero a una frecuencia menor (ritmos de escape).</p>
                                 </div>
                                 <div class="diagrama-nodos-detalle" data-nodo="av">
                                     <h5>Nodo Auriculoventricular (AV)</h5>
                                     <p><strong>Frecuencia intrínseca:</strong> 40-60 lpm (marcapasos de respaldo).</p>
-                                    <p><strong>Rol:</strong> retrasa el impulso unos 0.1 segundos, permitiendo que los ventrículos terminen de llenarse antes de contraerse.</p>
+                                    <p><strong>Rol:</strong> retrasa el impulso unos 0.1 segundos, permitiendo que los ventrículos terminen de llenarse antes de contraerse (Unidad 4).</p>
                                     <p><strong>Si falla (bloqueo AV):</strong> aurículas y ventrículos pueden desincronizarse total o parcialmente (Módulo 03).</p>
                                 </div>
                                 <div class="diagrama-nodos-detalle" data-nodo="his">
                                     <h5>Haz de His</h5>
-                                    <p><strong>Rol:</strong> distribuye el impulso hacia ambas ramas ventriculares (derecha e izquierda) con conducción muy rápida.</p>
-                                    <p><strong>Si falla:</strong> un bloqueo aquí o en alguna de las ramas produce un QRS ancho (Unidad 3).</p>
+                                    <p><strong>Rol:</strong> distribuye el impulso hacia ambas ramas ventriculares con conducción muy rápida.</p>
+                                    <p><strong>Si falla:</strong> un bloqueo aquí o en alguna de las ramas produce un QRS ancho (Unidad 6).</p>
                                 </div>
                                 <div class="diagrama-nodos-detalle" data-nodo="purkinje">
                                     <h5>Fibras de Purkinje</h5>
                                     <p><strong>Frecuencia intrínseca:</strong> 20-40 lpm (marcapasos de rescate más lento).</p>
                                     <p><strong>Rol:</strong> red terminal que despolariza el miocardio ventricular casi simultáneamente, asegurando una contracción coordinada.</p>
-                                    <p><strong>Si falla:</strong> es el último nivel de respaldo — su fallo deja al corazón sin ritmo de escape ventricular.</p>
+                                    <p><strong>Si falla:</strong> es el último nivel de respaldo.</p>
                                 </div>
                             </div>
                         </div>
@@ -193,18 +240,59 @@
                         <div class="key-box danger">
                             <span class="alert-text">🚨 Alerta Clínica:</span> Una frecuencia cardíaca de 30 lpm indica que el ritmo se está originando en los ventrículos; el paciente tiene alto riesgo de colapso inminente.
                         </div>
-
-                        <h4>Explora el corazón en 3D</h4>
-                        <div class="modelo-3d-container">
-                            <model-viewer src="assets/models/Heart.glb" alt="Modelo 3D del corazón humano" auto-rotate camera-controls rotation-per-second="8deg" shadow-intensity="0.8"></model-viewer>
-                        </div>
-                        <p class="figura-caption">Gira y explora el modelo para orientarte anatómicamente — este modelo muestra la anatomía general del corazón; no marca visualmente las vías del sistema de conducción descritas arriba.</p>
                     </div>
 
-                    <!-- UNIDAD 3 -->
+                    <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 3 · Fundamentos del Electrocardiograma (ECG)</h3>
-                        <p>El ECG es el registro gráfico de la actividad eléctrica del corazón desde la superficie corporal. Para interpretar arritmias, es vital reconocer las ondas e intervalos normales.</p>
+                        <h3 class="unidad-titulo">Unidad 4 · Ciclo Cardíaco</h3>
+                        <p>El ciclo cardíaco es la secuencia mecánica de contracción y relajación que resulta de todo lo visto hasta ahora: la electricidad (Unidades 2-3) no es un fin en sí misma, es la señal que dispara el bombeo real de sangre.</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Sístole ventricular:</strong> fase de contracción y eyección. Las válvulas AV se cierran (S1) y las semilunares se abren para eyectar sangre hacia la aorta y la arteria pulmonar.</li>
+                            <li><strong>Diástole ventricular:</strong> fase de relajación y llenado. Las válvulas semilunares se cierran (S2) y las AV se abren, permitiendo el llenado ventricular — primero pasivo, y al final reforzado por la contracción auricular ("patada auricular").</li>
+                            <li><strong>Relación mecánico-eléctrica:</strong> la despolarización (evento eléctrico) siempre precede a la contracción (evento mecánico) por un breve retraso — el acoplamiento excitación-contracción visto en la Unidad 2.</li>
+                        </ul>
+
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Fase</th><th>Válvulas AV</th><th>Válvulas semilunares</th><th>Correlato en el ECG</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Sístole ventricular</td><td>Cerradas</td><td>Abiertas</td><td>Del complejo QRS al final de la onda T</td></tr>
+                                <tr><td>Diástole ventricular</td><td>Abiertas</td><td>Cerradas</td><td>Del final de la onda T al siguiente QRS</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>El complejo QRS marca eléctricamente el inicio de la sístole mecánica; el final de la onda T coincide aproximadamente con el inicio de la diástole. Esta correlación es la que permite, más adelante, entender por qué una frecuencia demasiado alta "roba" tiempo de diástole y compromete el llenado ventricular (Módulo 02).</p>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> S1 (cierre de válvulas AV) marca el inicio de la sístole; S2 (cierre de válvulas semilunares) marca el inicio de la diástole.
+                        </div>
+
+                        <div class="error-frecuente">
+                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
+                            Pensar que la sístole y la diástole "auricular" y "ventricular" ocurren siempre al mismo tiempo. En realidad están desfasadas: mientras los ventrículos están en sístole, las aurículas ya están en diástole llenándose para el siguiente ciclo.
+                        </div>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🎬</span>
+                            Espacio reservado para animación: diagrama de Wiggers simplificado, mostrando presión ventricular, apertura/cierre de válvulas y su correlación con el trazado del ECG a lo largo de un mismo ciclo cardíaco.
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 5 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 5 · Fundamentos del Electrocardiograma (ECG)</h3>
+                        <p>El ECG es el registro gráfico, desde la superficie corporal, de la actividad eléctrica que ya describimos a nivel celular (Unidad 2) y de conducción (Unidad 3).</p>
+
+                        <h4>Puntos Clave:</h4>
+                        <ul>
+                            <li><strong>Qué registra:</strong> la suma de las despolarizaciones y repolarizaciones de todas las células cardíacas, captada por electrodos en la piel.</li>
+                            <li><strong>Electrodos:</strong> deben colocarse en posiciones anatómicas estandarizadas para evitar falsas interpretaciones.</li>
+                            <li><strong>Planos:</strong> el plano frontal (derivaciones I, II, III, aVR, aVL, aVF) y el plano horizontal (derivaciones precordiales V1-V6) permiten "ver" la actividad eléctrica desde distintos ángulos.</li>
+                        </ul>
 
                         <div class="tabs">
                             <div class="tabs-nav" role="tablist">
@@ -212,44 +300,31 @@
                                 <button role="tab" aria-selected="false" onclick="cambiarTab(this,'tab-derivaciones-unipolares')">Derivaciones unipolares</button>
                             </div>
                             <div id="tab-derivaciones-bipolares" class="tabs-panel activo">
-                                <p>Miden la diferencia de potencial entre dos electrodos: I, II y III — el clásico "triángulo de Einthoven" (ver dato curioso más abajo). La derivación II es la más usada para monitorización continua por alinearse mejor con el eje eléctrico normal del corazón.</p>
+                                <p>Miden la diferencia de potencial entre dos electrodos: I, II y III — el clásico "triángulo de Einthoven" (ver dato curioso más abajo). La derivación II es la más usada para monitorización continua.</p>
                             </div>
                             <div id="tab-derivaciones-unipolares" class="tabs-panel">
-                                <p>Miden el potencial en un punto respecto a un punto de referencia central: aVR, aVL, aVF (de los miembros) y V1-V6 (precordiales). Las precordiales son las que permiten evaluar la actividad eléctrica en el plano horizontal, útiles para localizar isquemia.</p>
+                                <p>Miden el potencial en un punto respecto a un punto de referencia central: aVR, aVL, aVF (de los miembros) y V1-V6 (precordiales, plano horizontal).</p>
                             </div>
                         </div>
 
-                        <h4>Puntos Clave:</h4>
+                        <h4>Papel milimetrado y cálculo de la frecuencia cardíaca</h4>
                         <ul>
-                            <li><strong>Onda P:</strong> Despolarización auricular. Debe ser redondeada, simétrica y preceder a cada QRS.</li>
-                            <li><strong>Intervalo PR (0.12 - 0.20 seg):</strong> Tiempo de conducción desde las aurículas hasta los ventrículos.</li>
-                            <li><strong>Complejo QRS (&lt; 0.12 seg):</strong> Despolarización ventricular. Un QRS estrecho indica conducción normal; un QRS ancho indica origen o bloqueo ventricular.</li>
-                            <li><strong>Onda T:</strong> Repolarización ventricular.</li>
+                            <li>A la velocidad estándar (25 mm/seg): cada cuadro pequeño (1 mm) equivale a 0.04 seg; cada cuadro grande (5 mm) equivale a 0.20 seg.</li>
+                            <li><strong>Método rápido (ritmo regular):</strong> 300 ÷ número de cuadros grandes entre dos ondas R consecutivas.</li>
+                            <li><strong>Método preciso:</strong> 1500 ÷ número de cuadros pequeños entre dos ondas R.</li>
+                            <li><strong>Ritmo irregular:</strong> contar los complejos QRS en una tira de 6 segundos y multiplicar por 10.</li>
                         </ul>
 
-                        <h4>Actividad: empareja cada onda con su definición</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 4 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Onda P</button>
-                                <button class="reto-emparejar-item" data-par="pr" onclick="manejarClicEmparejar(this)">Intervalo PR</button>
-                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Complejo QRS</button>
-                                <button class="reto-emparejar-item" data-par="t" onclick="manejarClicEmparejar(this)">Onda T</button>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Si entre dos ondas R consecutivas hay 5 cuadros grandes, ¿cuál es la frecuencia cardíaca aproximada?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-2"> 100 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-2" data-correcta="true"> 60 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-2"> 150 lpm</label>
                             </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Despolarización ventricular</button>
-                                <button class="reto-emparejar-item" data-par="t" onclick="manejarClicEmparejar(this)">Repolarización ventricular</button>
-                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Despolarización auricular</button>
-                                <button class="reto-emparejar-item" data-par="pr" onclick="manejarClicEmparejar(this)">Conducción de aurículas a ventrículos</button>
-                            </div>
-                        </div>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>El análisis sistemático del ECG (frecuencia, regularidad, presencia de onda P, relación P-QRS y ancho del QRS) es la herramienta estándar de oro para diagnosticar la arritmia exacta (Módulo 03).</p>
-
-                        <div class="error-frecuente">
-                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Asumir que una onda P ausente siempre significa "no hay actividad auricular". En la fibrilación auricular sí hay actividad auricular — pero es caótica y desorganizada, por lo que no se ve como una onda P discreta sino como una línea de base fibrilatoria (Módulo 03).
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
 
                         <div class="dato-curioso">
@@ -263,197 +338,107 @@
                             <li>Colocar electrodos en las posiciones anatómicas exactas para evitar falsos diagnósticos.</li>
                         </ul>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> QRS Estrecho = Origen Supraventricular. QRS Ancho = Origen Ventricular (hasta demostrar lo contrario).
-                        </div>
                         <div class="key-box danger">
                             <span class="alert-text">🚨 Alerta Clínica:</span> No trate el monitor, trate al paciente. Verifique siempre el pulso y estado clínico antes de asumir una línea plana como asistolia (podría ser un cable desconectado).
                         </div>
-
-                        <!-- Demo: Galería de imágenes -->
-                        <h4>Galería: Ondas del ECG</h4>
-                        <div class="galeria-imagenes">
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda P (recorte de ECG real, provisto por el docente)</div>
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Complejo QRS (recorte de ECG real)</div>
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda T (recorte de ECG real)</div>
-                        </div>
-
-                        <!-- Demo: Tabla comparativa -->
-                        <h4>Tabla comparativa: Bradicardia vs. Taquicardia</h4>
-                        <table class="tabla-comparativa">
-                            <thead>
-                                <tr><th>Criterio</th><th>Bradicardia</th><th>Taquicardia</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Frecuencia cardíaca</td><td>&lt; 60 lpm</td><td>&gt; 100 lpm</td></tr>
-                                <tr><td>Riesgo hemodinámico principal</td><td>Bajo gasto cardíaco</td><td>Reducción del llenado diastólico</td></tr>
-                                <tr><td>Primera línea si inestable</td><td>Atropina / Marcapaso</td><td>Cardioversión eléctrica</td></tr>
-                            </tbody>
-                        </table>
                     </div>
 
-                    <!-- UNIDAD 4 -->
+                    <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 4 · Hemodinamia Aplicada a Arritmias</h3>
-                        <p>Las arritmias no solo son un problema eléctrico, son un problema de perfusión mecánica. El Gasto Cardíaco (GC) depende de la Frecuencia Cardíaca (FC) y el Volumen Sistólico (VS).</p>
+                        <h3 class="unidad-titulo">Unidad 6 · Ondas, Segmentos e Intervalos</h3>
+                        <p>Con el papel milimetrado ya entendido (Unidad 5), toca reconocer cada componente del trazado normal — la base indispensable para diagnosticar cualquier arritmia (Módulo 03).</p>
 
                         <h4>Puntos Clave:</h4>
                         <ul>
-                            <li><strong>Fórmula:</strong> GC = FC x VS.</li>
-                            <li><strong>Taquiarritmias:</strong> Reducen severamente el tiempo de diástole (llenado ventricular), lo que disminuye el VS y precipita hipotensión, hipoxia tisular o isquemia miocárdica.</li>
-                            <li><strong>Bradiarritmias:</strong> Reducen el componente de FC de la fórmula, incapacitando al corazón para bombear suficiente volumen por minuto, incluso si el llenado es óptimo.</li>
+                            <li><strong>Onda P:</strong> despolarización auricular. Redondeada, simétrica, precede a cada QRS.</li>
+                            <li><strong>Intervalo PR (0.12-0.20 seg):</strong> tiempo de conducción desde las aurículas hasta los ventrículos.</li>
+                            <li><strong>Complejo QRS (&lt; 0.12 seg):</strong> despolarización ventricular. Estrecho = origen supraventricular; ancho = origen o bloqueo ventricular.</li>
+                            <li><strong>Segmento ST:</strong> intervalo entre el final del QRS y el inicio de la onda T — corresponde a la meseta del potencial de acción (Fase 2, Unidad 2). Normalmente isoeléctrico; su elevación o descenso es un signo clásico de isquemia.</li>
+                            <li><strong>Onda T:</strong> repolarización ventricular.</li>
+                            <li><strong>Intervalo QT:</strong> desde el inicio del QRS hasta el final de la onda T — representa la despolarización y repolarización ventricular completas. Se prolonga con ciertos electrolitos y medicamentos; un QT muy prolongado predispone a Torsades de Pointes (Módulos 03 y 05).</li>
+                            <li><strong>Onda U:</strong> onda pequeña, ocasionalmente visible después de la T; su mecanismo no está completamente establecido, y se asocia con frecuencia a hipopotasemia.</li>
                         </ul>
 
-                        <div class="dato-curioso">
-                            <span class="dato-curioso-titulo">💡 Dato curioso</span>
-                            La fórmula GC = FC × VS explica por qué tanto una frecuencia demasiado alta como demasiado baja reducen el gasto cardíaco: una taquicardia extrema no deja tiempo para llenar el ventrículo (cae el VS), y una bradicardia extrema no puede compensarse indefinidamente con más volumen por latido.
-                        </div>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>La hemodinamia define el algoritmo terapéutico (ACLS). Si el paciente está <em>inestable</em>, requiere terapia eléctrica (cardioversión/desfibrilación). Si está <em>estable</em>, se intentan intervenciones farmacológicas (Módulos 04 y 05).</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Valorar perfusión en segundos: Llenado capilar, coloración de piel, nivel de consciencia (sensorio), dolor torácico, hipotensión.</li>
-                            <li>Diferenciar rápidamente entre un paciente "asintomático" y uno "inestable".</li>
-                        </ul>
-
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            El estado mental es uno de los signos más tempranos y sensibles de bajo gasto cardíaco — suele cambiar antes que la tensión arterial, porque el cerebro es de los primeros órganos en sentir la hipoperfusión.
-                        </div>
-
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Estabilidad vs. Inestabilidad marca el destino del paciente.
-                        </div>
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Un estado mental alterado (confusión, somnolencia, agitación inexplicable) es un signo primario y temprano de bajo gasto cardíaco debido a la hipoperfusión cerebral.
-                        </div>
-
-                        <!-- Demo: Línea de tiempo -->
-                        <h4>Línea de tiempo: evolución de una taquiarritmia no tratada</h4>
-                        <div class="linea-tiempo">
-                            <div class="linea-tiempo-item">
-                                <h5>Fase 1 — Compensación</h5>
-                                <p>Mecanismos compensatorios (vasoconstricción periférica, aumento de la contractilidad) mantienen la perfusión de órganos vitales pese a la reducción del llenado diastólico. El paciente puede estar asintomático o con síntomas leves.</p>
+                        <h4>Actividad: empareja cada componente con su definición</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 5 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Onda P</button>
+                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Complejo QRS</button>
+                                <button class="reto-emparejar-item" data-par="st" onclick="manejarClicEmparejar(this)">Segmento ST</button>
+                                <button class="reto-emparejar-item" data-par="qt" onclick="manejarClicEmparejar(this)">Intervalo QT</button>
+                                <button class="reto-emparejar-item" data-par="u" onclick="manejarClicEmparejar(this)">Onda U</button>
                             </div>
-                            <div class="linea-tiempo-item">
-                                <h5>Fase 2 — Descompensación temprana</h5>
-                                <p>Los mecanismos compensatorios empiezan a fallar: aparecen los primeros signos (taquipnea leve, ansiedad, piel fría) aunque la tensión arterial puede seguir siendo normal — esta es la ventana ideal para intervenir.</p>
-                            </div>
-                            <div class="linea-tiempo-item">
-                                <h5>Fase 3 — Inestabilidad hemodinámica</h5>
-                                <p>Hipotensión franca, alteración del estado mental y signos evidentes de hipoperfusión — el paciente requiere intervención inmediata (Módulo 05).</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="qt" onclick="manejarClicEmparejar(this)">Despolarización y repolarización ventricular completas</button>
+                                <button class="reto-emparejar-item" data-par="u" onclick="manejarClicEmparejar(this)">Asociada frecuentemente a hipopotasemia</button>
+                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Despolarización auricular</button>
+                                <button class="reto-emparejar-item" data-par="st" onclick="manejarClicEmparejar(this)">Signo clásico de isquemia si se eleva o desciende</button>
+                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Despolarización ventricular</button>
                             </div>
                         </div>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Esperar a que la tensión arterial caiga para reconocer inestabilidad. Para cuando la hipotensión es evidente, los mecanismos compensatorios de la Fase 1 ya fallaron — vigilar los signos tempranos de la Fase 2 permite actuar antes.
+                            Asumir que una onda P ausente siempre significa "no hay actividad auricular". En la fibrilación auricular sí hay actividad auricular — pero es caótica y desorganizada, por lo que no se ve como una onda P discreta sino como una línea de base fibrilatoria (Módulo 03).
                         </div>
 
-                        <div class="caja-exito">
-                            <span class="caja-exito-titulo">✅ Cierre de la unidad</span>
-                            Si al terminar esta unidad puedes distinguir signos de compensación de signos de descompensación en una viñeta clínica, cumpliste el objetivo de <em>reconocimiento</em> de esta unidad — decidir qué hacer con esos hallazgos es el tema del Módulo 04: Planeación.
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> QRS Estrecho = Origen Supraventricular. QRS Ancho = Origen Ventricular (hasta demostrar lo contrario).
                         </div>
 
-                        <!-- Demo: Video -->
-                        <div class="espacio-reservado">
-                            <span class="icono" aria-hidden="true">🎬</span>
-                            Espacio reservado para video: animación breve mostrando cómo cae el volumen sistólico a medida que aumenta la frecuencia cardíaca (ilustrando por qué la taquicardia extrema reduce el gasto cardíaco).
+                        <h4>Galería: Ondas del ECG</h4>
+                        <div class="galeria-imagenes">
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda P (recorte de ECG real, provisto por el docente)</div>
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Complejo QRS (recorte de ECG real)</div>
+                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Segmento ST y onda T (recorte de ECG real)</div>
                         </div>
                     </div>
 
-                    <!-- UNIDAD 5 -->
+                    <!-- UNIDAD 7 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 5 · Rol de Enfermería en la Monitorización</h3>
-                        <p>La enfermera es la primera línea de detección, interpretación y respuesta ante eventos arrítmicos. La monitorización no es un acto pasivo, requiere juicio clínico constante.</p>
+                        <h3 class="unidad-titulo">Unidad 7 · Generalidades de las Arritmias</h3>
+                        <p>Esta unidad cierra el Módulo 01 como puente directo hacia el Módulo 02: ya sabes cómo es un corazón que funciona bien (Unidades 1-6) — ahora toca introducir, en términos generales, qué es y cómo se clasifica una arritmia.</p>
 
-                        <h4>Puntos Clave:</h4>
+                        <h4>Definición:</h4>
+                        <p>Una arritmia es cualquier alteración del ritmo cardíaco normal en su frecuencia, su regularidad o el sitio donde se origina el impulso.</p>
+
+                        <h4>Clasificación general:</h4>
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Criterio</th><th>Bradiarritmias</th><th>Taquiarritmias</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Frecuencia cardíaca</td><td>&lt; 60 lpm</td><td>&gt; 100 lpm</td></tr>
+                                <tr><td>Riesgo hemodinámico principal</td><td>Bajo gasto cardíaco</td><td>Reducción del llenado diastólico</td></tr>
+                                <tr><td>Ejemplos</td><td>Bradicardia sinusal, bloqueos AV</td><td>Fibrilación auricular, taquicardia ventricular</td></tr>
+                            </tbody>
+                        </table>
+                        <p>Dentro de las taquiarritmias, una segunda clasificación distingue el origen: <strong>supraventriculares</strong> (por encima del Haz de His, QRS estrecho) y <strong>ventriculares</strong> (QRS ancho) — el criterio que ya aprendiste a reconocer en la Unidad 6.</p>
+
+                        <h4>Mecanismos (introducción — se profundiza en el Módulo 04):</h4>
                         <ul>
-                            <li><strong>Sistemas de derivaciones:</strong> 3 derivaciones (básico) vs. 5 derivaciones (permite monitorización de isquemia y mejor discriminación de morfología).</li>
-                            <li><strong>Gestión de Alarmas:</strong> Evitar la "fatiga de alarmas" configurando parámetros individualizados para la condición de cada paciente.</li>
-                            <li><strong>Documentación:</strong> Impresión e identificación del trazado basal al ingreso, al inicio del turno y ante cualquier cambio clínico.</li>
-                        </ul>
-
-                        <div class="dato-curioso">
-                            <span class="dato-curioso-titulo">💡 Dato curioso</span>
-                            Estudios en unidades de cuidado crítico han reportado que la gran mayoría de las alarmas de monitor no requieren una intervención clínica inmediata — de ahí la importancia de configurar límites individualizados para cada paciente en vez de usar valores genéricos por defecto (AACN, Practice Alert: Alarm Management).
-                        </div>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>El reconocimiento precoz de arritmias de advertencia (como extrasístoles ventriculares frecuentes) puede prevenir la progresión a ritmos de paro cardíaco.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Asegurar la conexión del paciente, inspeccionando la integridad de los cables.</li>
-                            <li>Correlacionar los hallazgos eléctricos (ECG) con los signos vitales (SpO2, PA, FR, FC por pulso manual).</li>
+                            <li><strong>Alteración de la formación del impulso:</strong> un marcapasos descarga demasiado rápido, demasiado lento, o aparece uno anómalo donde no debería.</li>
+                            <li><strong>Alteración de la conducción:</strong> el impulso se retrasa o se bloquea en su camino normal.</li>
+                            <li><strong>Reentrada:</strong> un impulso queda circulando en un circuito eléctrico cerrado.</li>
+                            <li><strong>Actividad desencadenada:</strong> despolarizaciones anómalas que ocurren durante o después de la repolarización normal.</li>
                         </ul>
 
                         <div class="perla-clinica">
                             <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            La monitorización electrocardiográfica te dice qué está pasando eléctricamente — pero solo la valoración clínica directa te dice si el paciente lo está tolerando.
+                            Nombrar el mecanismo no es un ejercicio académico: orienta qué tipo de tratamiento tiene más probabilidad de funcionar (Módulo 05).
                         </div>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> La monitorización electrocardiográfica apoya, pero nunca sustituye, la valoración clínica directa del paciente.
-                        </div>
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Silenciar alarmas sin investigar la causa en el paciente es una de las principales causas de eventos adversos graves en unidades de cuidado crítico.
-                        </div>
-
-                        <!-- Demo: Acordeón -->
-                        <h4>Preguntas frecuentes</h4>
-                        <div class="acordeon">
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Cada cuánto se debe cambiar la posición de los electrodos?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>No hay un intervalo fijo universal, pero es buena práctica rotar el sitio de los electrodos adhesivos cada 24-48 horas para prevenir irritación cutánea, verificando siempre la integridad de la piel antes de recolocarlos.</p>
-                                </div>
-                            </div>
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Qué hacer ante una alarma de "lead-off" (electrodo desconectado)?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>Verificar primero al paciente (¿está bien?), luego revisar la conexión física del electrodo y el cable — nunca silenciar la alarma sin confirmar la causa real.</p>
-                                </div>
-                            </div>
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Cuántas derivaciones se necesitan para detectar isquemia con confiabilidad?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>La monitorización de 3 derivaciones es suficiente para detectar arritmias, pero un sistema de 5 derivaciones (o un ECG de 12 derivaciones puntual) es necesario para evaluar cambios isquémicos del segmento ST con mayor confiabilidad.</p>
-                                </div>
-                            </div>
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Qué es la "fatiga de alarmas" y por qué es peligrosa?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>Es la desensibilización del personal ante alarmas frecuentes, muchas de ellas no clínicamente significativas — puede llevar a ignorar o retrasar la respuesta ante una alarma que sí es real. Se previene configurando límites individualizados por paciente.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Demo: Diagrama -->
-                        <div class="espacio-reservado">
-                            <span class="icono" aria-hidden="true">🗺️</span>
-                            Espacio reservado para diagrama: comparación visual de la colocación de electrodos en un sistema de 3 vs. 5 derivaciones.
+                        <div class="caja-exito">
+                            <span class="caja-exito-titulo">✅ Cierre del módulo</span>
+                            Si puedes explicar la anatomía básica del corazón, describir su electrofisiología, ubicar el sistema de conducción, relacionar electricidad con mecánica, leer un ECG normal y definir qué es una arritmia — estás listo para el Módulo 02: Valoración, donde este conocimiento se aplica por primera vez a un paciente real.
                         </div>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo incluye sus propios recursos interactivos (construcción del potencial de acción, recorrido del sistema de conducción, actividad de emparejar de ondas del ECG) — el simulador ECG completo, con ritmos clínicos reales y acciones de tratamiento, se encuentra en el Módulo 03: Diagnóstico.</p>
+                        <p class="placeholder-nota">Este módulo incluye sus propios recursos interactivos (exploración 3D del corazón, construcción del potencial de acción, recorrido del sistema de conducción, actividad de emparejar de ondas del ECG) — el simulador ECG completo, con ritmos clínicos reales y acciones de tratamiento, se encuentra en el Módulo 03: Diagnóstico.</p>
                     </div>
 
                     <!-- CASO CLÍNICO -->
@@ -474,7 +459,7 @@
                             </div>
                             <div class="caso-clinico-campo">
                                 <h5>Trazado ECG</h5>
-                                <p>Ritmo regular, onda P presente antes de cada QRS, intervalo PR de 0.16 segundos, QRS estrecho.</p>
+                                <p>Ritmo regular, onda P presente antes de cada QRS, intervalo PR de 0.16 segundos, QRS estrecho. Entre dos ondas R hay aproximadamente 3.5 cuadros grandes.</p>
                             </div>
                             <div class="caso-clinico-campo">
                                 <h5>Valoración inicial</h5>
@@ -483,7 +468,7 @@
                         </div>
                         <div class="caso-clinico-preguntas">
                             <h4>Preguntas del caso</h4>
-                            <p>Con base en los criterios de la Unidad 1: ¿este trazado corresponde a un ritmo sinusal normal? ¿Qué parte del sistema de conducción (Unidad 2) es responsable de que la onda P siempre preceda al QRS con un intervalo PR constante? Considerando el antecedente de consumo elevado de cafeína (Unidad 4), ¿qué debería vigilar la enfermera en las próximas horas?</p>
+                            <p>Usando el método de la Unidad 5, ¿cuál es la frecuencia cardíaca aproximada de este paciente? Con base en los criterios de la Unidad 6: ¿este trazado corresponde a un ritmo sinusal normal? ¿Qué parte del sistema de conducción (Unidad 3) es responsable de que la onda P siempre preceda al QRS con un intervalo PR constante? Según la clasificación de la Unidad 7, ¿este episodio de palpitaciones encajaría como taquiarritmia? ¿Por qué sí o por qué no?</p>
                         </div>
                     </div>
 
@@ -504,61 +489,81 @@
                     <div class="modulo-resumen">
                         <h3>Resumen</h3>
                         <ul>
-                            <li>La electricidad precede a la mecánica cardíaca — la despolarización (eléctrica) y la contracción (mecánica) son eventos distintos y consecutivos.</li>
+                            <li>La anatomía del corazón (cavidades, válvulas, irrigación coronaria) explica por qué ciertos infartos comprometen directamente el sistema de conducción.</li>
+                            <li>Automatismo, excitabilidad, conductividad y refractariedad son las cuatro propiedades eléctricas que hacen posible el potencial de acción cardíaco.</li>
                             <li>El nodo SA es el marcapasos principal; su jerarquía con el AV, el Haz de His y Purkinje determina quién controla el ritmo si el nivel superior falla.</li>
-                            <li>QRS estrecho = origen supraventricular; QRS ancho = origen ventricular hasta demostrar lo contrario.</li>
-                            <li>La estabilidad hemodinámica del paciente (GC = FC x VS) define el algoritmo terapéutico a seguir.</li>
-                            <li>La monitorización de enfermería apoya, pero nunca reemplaza, la valoración clínica directa.</li>
+                            <li>La despolarización (eléctrica) siempre precede a la contracción (mecánica) — QRS marca el inicio de la sístole, el final de la T marca el inicio de la diástole.</li>
+                            <li>El papel milimetrado permite calcular la frecuencia cardíaca con métodos simples y reproducibles.</li>
+                            <li>P, PR, QRS, ST, T, QT y U son los componentes normales de todo trazado — la base para diagnosticar cualquier arritmia.</li>
+                            <li>Una arritmia es cualquier alteración de la frecuencia, regularidad u origen del ritmo cardíaco normal.</li>
                         </ul>
                     </div>
 
                     <!-- AUTOEVALUACIÓN -->
                     <div class="modulo-autoevaluacion">
                         <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">5 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+                        <p class="autoevaluacion-meta">7 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
 
                         <div class="autoevaluacion-pregunta">
-                            <h5>1. ¿Cuál es la fase del potencial de acción en la que ocurre la despolarización rápida por entrada de sodio?</h5>
+                            <h5>1. ¿Qué arteria coronaria irriga con mayor frecuencia el nodo SA y el nodo AV?</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1" data-correcta="true"> Fase 0</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Fase 2</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Fase 3</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1" data-correcta="true"> Arteria coronaria derecha</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Arteria descendente anterior</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Arteria circunfleja</label>
                             </div>
                         </div>
 
                         <div class="autoevaluacion-pregunta">
-                            <h5>2. ¿Qué frecuencia intrínseca caracteriza al nodo AV como marcapasos de respaldo?</h5>
+                            <h5>2. ¿Cuál es la fase del potencial de acción en la que ocurre la despolarización rápida por entrada de sodio?</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> 60-100 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2" data-correcta="true"> 40-60 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> 20-40 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2" data-correcta="true"> Fase 0</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> Fase 2</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> Fase 3</label>
                             </div>
                         </div>
 
                         <div class="autoevaluacion-pregunta">
-                            <h5>3. ¿Qué indica un complejo QRS ancho, hasta demostrar lo contrario?</h5>
+                            <h5>3. ¿Qué frecuencia intrínseca caracteriza al nodo AV como marcapasos de respaldo?</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> Origen supraventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3" data-correcta="true"> Origen ventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> Repolarización normal</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> 60-100 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3" data-correcta="true"> 40-60 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> 20-40 lpm</label>
                             </div>
                         </div>
 
                         <div class="autoevaluacion-pregunta">
-                            <h5>4. Según la fórmula GC = FC × VS, ¿qué le ocurre al gasto cardíaco en una taquicardia extrema?</h5>
+                            <h5>4. El cierre de las válvulas auriculoventriculares (primer ruido cardíaco) marca el inicio de:</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> Aumenta siempre de forma proporcional a la FC</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4" data-correcta="true"> Puede disminuir, porque cae el volumen sistólico por falta de tiempo de llenado</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> No se modifica en ningún caso</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-4" data-correcta="true"> La sístole ventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> La diástole ventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> La despolarización auricular</label>
                             </div>
                         </div>
 
                         <div class="autoevaluacion-pregunta">
-                            <h5>5. ¿Cuál es la acción correcta de enfermería ante una alarma de "lead-off"?</h5>
+                            <h5>5. Si entre dos ondas R hay 3 cuadros grandes, ¿cuál es la frecuencia cardíaca aproximada?</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> Silenciarla de inmediato para no molestar al paciente</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5" data-correcta="true"> Verificar al paciente y la conexión antes de descartarla como falsa alarma</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> Ignorarla si el paciente se ve clínicamente bien</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> 60 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-5" data-correcta="true"> 100 lpm</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> 150 lpm</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>6. ¿Qué componente del ECG representa la despolarización y repolarización ventricular completas?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-6"> El intervalo PR</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-6" data-correcta="true"> El intervalo QT</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-6"> El segmento ST</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>7. Según la clasificación general de arritmias, una frecuencia cardíaca sostenida de 130 lpm se clasifica como:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-7"> Bradiarritmia</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-7" data-correcta="true"> Taquiarritmia</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-01-7"> Ritmo sinusal normal</label>
                             </div>
                         </div>
 
@@ -569,11 +574,11 @@
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>Hall JE. Guyton y Hall: Tratado de Fisiología Médica. (Unidad 1 — potencial de acción y automatismo cardíaco)</li>
-                            <li>Goldberger AL, Goldberger ZD, Shvilkin A. Goldberger's Clinical Electrocardiography: A Simplified Approach. (Unidad 3 — ondas e intervalos del ECG)</li>
-                            <li>Braunwald E, editor. Braunwald's Heart Disease: A Textbook of Cardiovascular Medicine. (referencia general de cardiología)</li>
-                            <li>American Heart Association. Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care (ACLS/BLS). (Unidad 4 — hemodinamia y algoritmos)</li>
-                            <li>American Association of Critical-Care Nurses (AACN). Practice Alert: Alarm Management. (Unidad 5 — monitorización y fatiga de alarmas)</li>
+                            <li>Moore KL, Dalley AF, Agur AMR. Moore's Clinically Oriented Anatomy. (Unidad 1 — anatomía cardíaca e irrigación coronaria)</li>
+                            <li>Hall JE. Guyton y Hall: Tratado de Fisiología Médica. (Unidades 2 y 4 — electrofisiología celular y ciclo cardíaco)</li>
+                            <li>Goldberger AL, Goldberger ZD, Shvilkin A. Goldberger's Clinical Electrocardiography: A Simplified Approach. (Unidades 5 y 6 — fundamentos del ECG, ondas e intervalos)</li>
+                            <li>Braunwald E, editor. Braunwald's Heart Disease: A Textbook of Cardiovascular Medicine. (Unidad 7 — generalidades y clasificación de arritmias)</li>
+                            <li>American Heart Association. Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care (ACLS/BLS).</li>
                         </ol>
                     </div>
 
