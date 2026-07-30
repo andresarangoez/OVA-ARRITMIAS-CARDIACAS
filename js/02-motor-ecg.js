@@ -65,43 +65,95 @@ function generarConExtrasistoles(ctx) {
     return amplitud;
 }
 
-// Bloqueo AV 1er grado: PR fijo y alargado (retraso constante del QRS/T).
+// Bloqueo AV 1er grado: retraso de conducción NODAL puro — todo impulso
+// auricular conduce (1:1, nunca se cae un latido), P y QRS normales, el
+// único hallazgo es un PR fijo y prolongado (> 200 ms; aquí 280 ms, un valor
+// inequívocamente patológico para que sea fácil de reconocer).
+//
+// El retraso se calcula en milisegundos reales y se convierte a fracción de
+// ciclo usando ctx.cicloActual (el largo real del ciclo a la FC de ESTE
+// ritmo) — no un número de fase arbitrario. Así el PR resultante es
+// clínicamente correcto sin importar a qué FC esté configurado el ritmo en
+// 01-data-ritmos.js.
 function generarBav1(ctx) {
     let amplitud = 0;
     const t = ctx.t;
+
+    const PR_OBJETIVO_MS = 280;
+    const PR_BASE_FRACCION = 0.10; // PR intrínseco del modelo: P onset (0.05) a QRS onset (0.15)
+    const retraso = Math.max(0, PR_OBJETIVO_MS / ctx.cicloActual - PR_BASE_FRACCION);
+
     amplitud += dibujarP(t);
-    if (t - 0.08 > 0) amplitud += dibujarQRS(t - 0.08) + dibujarT(t - 0.08);
+    const tQRS = t - retraso;
+    if (tQRS > 0) amplitud += dibujarQRS(tQRS) + dibujarT(tQRS);
     return amplitud;
 }
 
-// Bloqueo AV 2do grado Mobitz I (Wenckebach): el PR se alarga progresivamente
-// hasta que un latido se bloquea por completo (4to latido del ciclo).
+// Bloqueo AV 2do grado Mobitz I (Wenckebach): fatiga progresiva del nodo AV.
+// El PR se alarga latido a latido con INCREMENTOS DECRECIENTES (no
+// constantes) — ese detalle es el que hace que el R-R se vaya ACORTANDO
+// antes de la pausa (el hallazgo clásico "agrupamiento" que distingue
+// Wenckebach a simple vista). Con incrementos constantes el R-R quedaría
+// igual entre latidos conducidos y ese patrón desaparecería.
+// 4 de cada 4 impulsos auriculares: 3 conducen (PR creciente), el 4to se
+// bloquea por completo y el ciclo reinicia. QRS angosto: el bloqueo es
+// nodal, el sistema His-Purkinje está intacto.
 function generarBav2Wenckebach(ctx) {
     let amplitud = 0;
     const t = ctx.t;
     amplitud += dibujarP(t);
-    let retrasoW = (ctx.contadorNodal - 1) * 0.04;
-    let t_retrasadoW = t - retrasoW;
-    if (ctx.contadorNodal < 4 && t_retrasadoW > 0) {
-        amplitud += dibujarQRS(t_retrasadoW) + dibujarT(t_retrasadoW);
+
+    const PR_BASE_FRACCION = 0.10;
+    // PR objetivo (ms) para los latidos 1, 2 y 3 del grupo — incrementos
+    // decrecientes (100 ms, luego 40 ms) para lograr el acortamiento del R-R.
+    const PR_POR_LATIDO_MS = [180, 280, 320];
+
+    if (ctx.contadorNodal <= 3) {
+        const prObjetivo = PR_POR_LATIDO_MS[ctx.contadorNodal - 1];
+        const retraso = Math.max(0, prObjetivo / ctx.cicloActual - PR_BASE_FRACCION);
+        const tQRS = t - retraso;
+        if (tQRS > 0) amplitud += dibujarQRS(tQRS) + dibujarT(tQRS);
     }
+    // contadorNodal === 4: latido bloqueado, no se dibuja QRS/T (la P sí se dibujó arriba)
     return amplitud;
 }
 
-// Bloqueo AV 2do grado Mobitz II: PR fijo, pero cada 3er latido se bloquea
-// de forma súbita (sin alargamiento previo).
+// Bloqueo AV 2do grado Mobitz II: bloqueo INFRA-HISIANO — a diferencia de
+// Wenckebach, el PR es FIJO (nunca se alarga) y el latido se cae SIN AVISO.
+// QRS ANCHO con T invertida (cambios secundarios de repolarización): el
+// bloqueo infra-Hisiano casi siempre coexiste con enfermedad del sistema de
+// conducción distal (bloqueo de rama de base). Ese contraste QRS angosto
+// (Wenckebach) vs QRS ancho (Mobitz II) es, junto con el aviso previo o no,
+// la clave para diferenciarlos.
+// Conducción 3:2 — se bloquea 1 de cada 3 impulsos, siempre de forma súbita.
 function generarBav2Mobitz2(ctx) {
     let amplitud = 0;
     const t = ctx.t;
     amplitud += dibujarP(t);
-    if (ctx.contadorRatio % 3 !== 0) {
-        amplitud += dibujarQRS(t) + dibujarT(t);
+
+    const PR_FIJO_MS = 220; // fijo, puede estar levemente prolongado, pero NUNCA cambia
+    const PR_BASE_FRACCION = 0.10;
+    const retraso = Math.max(0, PR_FIJO_MS / ctx.cicloActual - PR_BASE_FRACCION);
+    const tQRS = t - retraso;
+
+    if (ctx.contadorRatio % 3 !== 0 && tQRS > 0) {
+        amplitud += dibujarQRS(tQRS, true) + dibujarT(tQRS, true);
     }
     return amplitud;
 }
 
-// Bloqueo AV 3er grado (completo): disociación AV total — la onda P sigue
-// su propio reloj auricular, el QRS sigue su propio reloj ventricular de escape.
+// Bloqueo AV 3er grado (completo): disociación AV total. Este es el modelo
+// que MENOS necesitaba cambios — ya estaba correctamente diseñado con dos
+// relojes verdaderamente independientes:
+//   - Auricular (ctx.t_aur): nodo sinusal a 800ms/75lpm, propio marcapasos.
+//   - Ventricular (ctx.t): escape de origen bajo (His-Purkinje/miocardio
+//     ventricular) a la FC propia del ritmo (30 lpm en 01-data-ritmos.js),
+//     QRS ancho — coherente: un escape lento y ancho indica un marcapasos
+//     de rescate bajo, no de la unión AV (que sería más rápido y angosto).
+// Al no compartir el mismo reloj, la relación P-QRS queda genuinamente
+// aleatoria (las P "caminan" a través del ciclo, a veces caen dentro del
+// QRS o la T) — exactamente el hallazgo diagnóstico de la disociación AV,
+// que no se puede lograr sincronizando ambas ondas al mismo reloj.
 function generarBav3(ctx) {
     let amplitud = 0;
     amplitud += dibujarP(ctx.t_aur);
@@ -325,6 +377,7 @@ class MotorMatematicoECG {
             tipoLatidoActual: this.tipoLatidoActual,
             contadorNodal: this.contadorNodal,
             contadorRatio: this.contadorRatio,
+            cicloActual: cicloActual, // largo real del ciclo (ms) — permite calcular PR/intervalos en tiempo real, no en fracciones arbitrarias
         };
 
         const generador = GENERADORES_RITMO[ritmo];
