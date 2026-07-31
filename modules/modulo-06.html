@@ -1,5 +1,11 @@
                 <!-- ============ PANTALLA DE BIENVENIDA ============ -->
                 <div class="modulo-bienvenida">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
+                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
+                        <span class="breadcrumb-item actual">Módulo 06 · Evaluación</span>
+                    </div>
+
                     <div class="modulo-encabezado">
                         <span class="modulo-numero">Módulo 06</span>
                         <span class="modulo-icono-grande" aria-hidden="true">✅</span>
@@ -35,23 +41,48 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <div class="barra-progreso-wrap">
+                        <div class="barra-progreso-meta">
+                            <span>Progreso del módulo</span>
+                            <span class="porcentaje">0%</span>
+                        </div>
+                        <div class="barra-progreso"><div class="barra-progreso-fill" style="width: 0%;"></div></div>
+                    </div>
+
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Casos Clínicos Progresivos</h3>
-                        <p>Un caso progresivo presenta al mismo paciente en distintos momentos, exigiendo aplicar el pipeline completo de la OVA a cada etapa: valorar (Módulo 02), diagnosticar (Módulo 03), planear (Módulo 04) e intervenir (Módulo 05).</p>
+                        <p>Un caso progresivo presenta al mismo paciente en distintos momentos, exigiendo aplicar el pipeline completo de la OVA a cada etapa. Cada etapa depende de la anterior: un error de valoración arrastra un diagnóstico equivocado, y este arrastra una intervención inadecuada. La práctica clínica real rara vez presenta un ritmo aislado y estático — el paciente cambia, y el estudiante debe re-evaluar en cada paso, no solo al inicio.</p>
 
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li>Cada etapa del caso depende de la anterior: un error de valoración arrastra un diagnóstico equivocado, y este arrastra una intervención inadecuada.</li>
-                            <li>El simulador ECG (Módulo 03) se usa aquí no para aprender un ritmo aislado, sino para seguir su evolución dentro de un mismo caso.</li>
-                            <li>La complejidad aumenta progresivamente: de un hallazgo único a escenarios con múltiples variables simultáneas.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>La práctica clínica real rara vez presenta un ritmo aislado y estático — el paciente cambia, y el estudiante debe re-evaluar en cada paso, no solo al inicio.</p>
+                        <h4>Recorre el ciclo completo</h4>
+                        <p>Haz clic en cada etapa para ver qué se hace y en qué módulo se aprendió.</p>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'valorar')">Valorar</button>
+                                <button onclick="activarPasoStepper(this,'diagnosticar')">Diagnosticar</button>
+                                <button onclick="activarPasoStepper(this,'planear')">Planear</button>
+                                <button onclick="activarPasoStepper(this,'intervenir')">Intervenir</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="valorar">
+                                <h5>Valorar (Módulo 02)</h5>
+                                <p>Aplicar el ABCDE, reconocer las manifestaciones clínicas y clasificar al paciente como estable o inestable.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="diagnosticar">
+                                <h5>Diagnosticar (Módulo 03)</h5>
+                                <p>Nombrar el ritmo específico aplicando el método sistemático y el algoritmo diagnóstico de 4 pasos.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="planear">
+                                <h5>Planear (Módulo 04)</h5>
+                                <p>Explicar el mecanismo, clasificar clínicamente, estratificar el riesgo y ubicar el algoritmo AHA/ESC correspondiente.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="intervenir">
+                                <h5>Intervenir (Módulo 05)</h5>
+                                <p>Ejecutar la intervención indicada — farmacológica, eléctrica o mecánica — y vigilar la respuesta del paciente.</p>
+                            </div>
+                        </div>
 
                         <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Un caso progresivo se resuelve repitiendo el ciclo completo (valorar → diagnosticar → planear → intervenir) en cada nueva etapa, no aplicándolo una sola vez.
+                            <strong>💡 Concepto Clave:</strong> Un caso progresivo se resuelve repitiendo este ciclo completo en cada nueva etapa del paciente, no aplicándolo una sola vez.
                         </div>
 
                         <p class="placeholder-nota">Practica: usa el simulador (Módulo 03) para cambiar el ritmo del "paciente" en distintos momentos y repite el ciclo completo en cada cambio.</p>
@@ -60,57 +91,58 @@
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Toma de Decisiones</h3>
-                        <p>Esta unidad pone a prueba la capacidad de decidir bajo presión, integrando la priorización del Módulo 04 con la ejecución del Módulo 05.</p>
-
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li>Ante cada escenario, la primera decisión sigue siendo la misma del Módulo 04: ¿el paciente está estable o inestable?</li>
-                            <li>La segunda decisión es de ejecución (Módulo 05): ¿qué intervención específica corresponde, y con qué urgencia?</li>
-                            <li>Una decisión correcta en el momento equivocado puede ser tan dañina como una decisión equivocada.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>La toma de decisiones clínicas no es una lista de pasos memorizada — es la aplicación flexible del mismo marco de razonamiento a un escenario que no siempre se presenta de forma típica.</p>
+                        <p>Esta unidad pone a prueba la capacidad de decidir bajo presión, integrando la priorización del Módulo 04 con la ejecución del Módulo 05. Ante cada escenario, la primera decisión sigue siendo la misma del Módulo 04 (¿estable o inestable?) y la segunda es de ejecución (Módulo 05): ¿qué intervención específica corresponde, y con qué urgencia? La toma de decisiones clínicas no es una lista de pasos memorizada — es la aplicación flexible del mismo marco de razonamiento a un escenario que no siempre se presenta de forma típica.</p>
 
                         <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Ante la duda entre dos posibles decisiones, siempre prevalece la que protege primero la vida del paciente (ABCDE, Módulo 02).
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Ante la duda entre dos posibles decisiones, siempre prevalece la que protege primero la vida del paciente (ABCDE, Módulo 02). Una decisión correcta en el momento equivocado puede ser tan dañina como una decisión equivocada.
+                        </div>
+
+                        <h4>¿Qué se resuelve primero?</h4>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Un paciente con fibrilación auricular inestable presenta además una vía aérea parcialmente obstruida por secreciones. Según el marco de decisión clínica, ¿qué se resuelve primero?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-06-2"> Control farmacológico de la frecuencia</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-06-2" data-correcta="true"> Asegurar la vía aérea (ABCDE)</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-06-2"> Cardioversión sincronizada inmediata</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
                     </div>
 
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Complicaciones y Seguimiento</h3>
-                        <p>Ninguna intervención está libre de riesgo. Reconocer sus complicaciones potenciales es tan importante como saber ejecutarla.</p>
+                        <p>Ninguna intervención está libre de riesgo. Reconocer sus complicaciones potenciales es tan importante como saber ejecutarla — anticiparlas es parte del cuidado, no una señal de que la intervención fue incorrecta.</p>
 
-                        <h4>Puntos Clave — complicaciones frecuentes:</h4>
-                        <ul>
-                            <li><strong>Farmacológicas:</strong> hipotensión por sobredosis de antiarrítmicos, bradicardia excesiva por betabloqueadores o calcioantagonistas.</li>
-                            <li><strong>Eléctricas:</strong> quemaduras cutáneas por desfibrilación, fallo de captura del marcapasos (Módulo 05, Unidad 5).</li>
-                            <li><strong>De la arritmia misma:</strong> recurrencia si no se corrigió la causa de fondo (6H y 6T, Módulo 02); fenómenos embólicos en fibrilación auricular no anticoagulada.</li>
-                        </ul>
+                        <h4>Actividad: empareja cada tipo de complicación con sus ejemplos</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="farmacologicas" onclick="manejarClicEmparejar(this)">Farmacológicas</button>
+                                <button class="reto-emparejar-item" data-par="electricas" onclick="manejarClicEmparejar(this)">Eléctricas</button>
+                                <button class="reto-emparejar-item" data-par="arritmia" onclick="manejarClicEmparejar(this)">De la arritmia misma</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="arritmia" onclick="manejarClicEmparejar(this)">Recurrencia si no se corrigió la causa de fondo; fenómenos embólicos en FA no anticoagulada</button>
+                                <button class="reto-emparejar-item" data-par="farmacologicas" onclick="manejarClicEmparejar(this)">Hipotensión por sobredosis de antiarrítmicos; bradicardia excesiva por betabloqueadores o calcioantagonistas</button>
+                                <button class="reto-emparejar-item" data-par="electricas" onclick="manejarClicEmparejar(this)">Quemaduras cutáneas por desfibrilación; fallo de captura del marcapasos</button>
+                            </div>
+                        </div>
 
-                        <h4>Seguimiento del paciente:</h4>
+                        <h4>Seguimiento del paciente</h4>
                         <ul>
                             <li>Reevaluación periódica de signos vitales y ritmo tras cualquier intervención.</li>
                             <li>Educación al paciente y su familia sobre signos de alarma para consultar de nuevo.</li>
                             <li>Documentación completa que permita a otro profesional continuar el seguimiento sin perder información.</li>
                         </ul>
-
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Anticipar una complicación es parte del cuidado, no una señal de que la intervención fue incorrecta.
-                        </div>
                     </div>
 
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Evaluación Final</h3>
-                        <p>Esta unidad integra, en una sola autoevaluación, los conceptos centrales de los seis módulos de la OVA.</p>
-
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li>La autoevaluación final de esta unidad no introduce contenido nuevo — reúne los criterios diagnósticos, la estratificación de riesgo y las intervenciones ya vistas.</li>
-                            <li>Un desempeño débil en un módulo específico es la señal para volver a repasarlo, no para avanzar de todas formas.</li>
-                        </ul>
+                        <p>Esta unidad integra, en una sola autoevaluación, los conceptos centrales de los seis módulos de la OVA. La autoevaluación final no introduce contenido nuevo — reúne los criterios diagnósticos, la estratificación de riesgo y las intervenciones ya vistas. Un desempeño débil en un módulo específico es la señal para volver a repasarlo, no para avanzar de todas formas.</p>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> "¿Funcionó mi intervención? ¿Qué sigue?" es la pregunta que resume el propósito de todo el Módulo 06.
