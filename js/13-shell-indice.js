@@ -192,7 +192,7 @@
         }
     }
 
-    // --- TOGGLE DEL SIDEBAR + EXCLUSIÓN MUTUA CON EL PANEL ACLS ---
+    // --- TOGGLE DEL SIDEBAR DE ÍNDICE ---
     function alternarSidebarIndice() {
         const sidebar = document.getElementById('indice-sidebar');
         const toggle = document.getElementById('indice-toggle');
@@ -200,30 +200,28 @@
 
         const abierto = sidebar.classList.toggle('open');
         toggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-
-        if (abierto) {
-            const ahaSidebar = document.getElementById('aha-sidebar');
-            const ahaToggle = document.getElementById('aha-toggle');
-            if (ahaSidebar && ahaSidebar.classList.contains('open')) {
-                ahaSidebar.classList.remove('open');
-                if (ahaToggle) ahaToggle.setAttribute('aria-expanded', 'false');
-            }
-        }
     }
 
-    // El toggle ACLS ya tiene su propio listener en 03-navegacion.js (solo
-    // abre/cierra su panel); este listener adicional únicamente cierra el
-    // índice si estaba abierto — no duplica ni reemplaza el original.
-    function inicializarExclusionMutua() {
-        const ahaToggle = document.getElementById('aha-toggle');
-        if (!ahaToggle) return;
-        ahaToggle.addEventListener('click', () => {
-            const ahaSidebar = document.getElementById('aha-sidebar');
-            const indiceSidebar = document.getElementById('indice-sidebar');
-            const indiceToggle = document.getElementById('indice-toggle');
-            if (ahaSidebar && ahaSidebar.classList.contains('open') && indiceSidebar && indiceSidebar.classList.contains('open')) {
-                indiceSidebar.classList.remove('open');
-                if (indiceToggle) indiceToggle.setAttribute('aria-expanded', 'false');
+    // --- BOTÓN FLOTANTE: VOLVER ARRIBA DEL MÓDULO ---
+    // Scroll suave dentro de la misma página (a diferencia de volverHome,
+    // que es un cambio de vista y usa scroll instantáneo) — aquí sí tiene
+    // sentido animarlo.
+    function volverArribaModulo() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- ACCESIBILIDAD: Esc cierra el índice y devuelve el foco al toggle ---
+    function inicializarCierreConEsc() {
+        document.addEventListener('keydown', (evento) => {
+            if (evento.key !== 'Escape') return;
+            const sidebar = document.getElementById('indice-sidebar');
+            const toggle = document.getElementById('indice-toggle');
+            if (sidebar && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.focus();
+                }
             }
         });
     }
@@ -298,13 +296,14 @@
 
     // --- INICIALIZACIÓN (el navbar y los toggles ya existen al cargar este script) ---
     vigilarScrollNavbar();
-    inicializarExclusionMutua();
+    inicializarCierreConEsc();
 
     // --- API PÚBLICA DEL NAMESPACE ---
     OVA.ShellModulo.prepararModulo = prepararModulo;
     OVA.ShellModulo.onProgresoUnidad = onProgresoUnidad;
     OVA.ShellModulo.irAUnidad = irAUnidad;
     OVA.ShellModulo.alternarSidebarIndice = alternarSidebarIndice;
+    OVA.ShellModulo.volverArribaModulo = volverArribaModulo;
     OVA.ShellModulo.finalizarModuloActual = finalizarModuloActual;
     OVA.ShellModulo.continuarSiguienteModulo = continuarSiguienteModulo;
     OVA.ShellModulo.obtenerDesarrolloActivo = obtenerDesarrolloActivo;
@@ -312,6 +311,7 @@
 
     // --- EXPOSICIÓN MÍNIMA PARA onclick="" EN EL HTML ---
     window.alternarSidebarIndice = alternarSidebarIndice;
+    window.volverArribaModulo = volverArribaModulo;
     window.finalizarModuloActual = finalizarModuloActual;
     window.continuarSiguienteModulo = continuarSiguienteModulo;
 

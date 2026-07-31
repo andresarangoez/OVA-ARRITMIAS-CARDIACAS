@@ -18,78 +18,29 @@
 </head>
 <body>
 
-    <aside id="aha-sidebar" class="aha-sidebar" aria-label="Panel de referencia rápida: algoritmo ACLS">
-        <button id="aha-toggle" class="aha-toggle" aria-expanded="false" aria-controls="aha-sidebar">ACLS</button>
-        <div class="aha-content">
-            <h2>Algoritmo para Interpretación de Arritmias (ACLS)</h2>
-            <h3>1. ¿EL PACIENTE TIENE PULSO?</h3>
-            <p class="alert-text">NO tiene pulso → Paro cardíaco</p>
-            <ul>
-                <li><strong>Ritmo desfibrilable:</strong> FV, TVSP<br>→ <span class="action-text">RCP + Desfibrilación + Adrenalina + Amiodarona</span></li>
-                <li><strong>Ritmo no desfibrilable:</strong> Asistolia, AESP<br>→ <span class="action-text">RCP + Adrenalina + buscar 6H y 6T</span></li>
-            </ul>
-            <p class="success-text">SÍ tiene pulso → continuar</p>
-            
-            <h3>2. ¿ESTÁ HEMODINÁMICAMENTE ESTABLE?</h3>
-            <p><em>(Hipotensión, alteración de conciencia, dolor torácico, shock)</em></p>
-            <ul>
-                <li><strong>INESTABLE:</strong> <span class="action-text">Cardioversión eléctrica sincronizada</span><br><em>(excepto FV/TV sin pulso → desfibrilar)</em></li>
-                <li><strong>ESTABLE:</strong> Continuar análisis del ECG</li>
-            </ul>
-            
-            <h3>3. FRECUENCIA CARDÍACA</h3>
-            <p><strong>&lt; 60 lpm → BRADIARRITMIA</strong><br><em>(Bradicardia sinusal, Bloqueos AV)</em></p>
-            <ul>
-                <li><strong>Sintomático:</strong> <span class="action-text">Atropina → Dopamina/Adrenalina → Marcapaso</span></li>
-                <li><strong>Asintomático:</strong> Observación y corregir causas</li>
-            </ul>
-            <p><strong>&gt; 100 lpm → TAQUIARRITMIA</strong> → continuar al paso 4</p>
-            
-            <h3>4. ANCHO DEL QRS</h3>
-            <p><strong>QRS ESTRECHO (&lt; 0.12 s) → SUPRAVENTRICULAR</strong></p>
-            <ul>
-                <li><strong>Regular</strong> <em>(Taqui Sinusal, TSVP)</em>: <span class="action-text">Maniobras vagales, Adenosina, Betabloqueador/Calcioantagonista.</span></li>
-                <li><strong>Irregular</strong> <em>(FA, Flutter)</em>: <span class="action-text">Control de FC, Anticoagulación, Cardioversión si inestable.</span></li>
-            </ul>
-            <p><strong>QRS ANCHO (≥ 0.12 s) → VENTRICULAR HASTA DEMOSTRAR LO CONTRARIO</strong></p>
-            <ul>
-                <li><strong>Estable:</strong> <span class="action-text">Amiodarona / Antiarrítmicos</span></li>
-                <li><strong>Inestable:</strong> <span class="action-text">Cardioversión</span></li>
-                <li><strong>Sin pulso:</strong> <span class="action-text">Desfibrilación</span></li>
-            </ul>
-            
-            <h3>5. ¿ESPIGAS DE MARCAPASO?</h3>
-            <p>Evaluar: Captura, Fallo de captura, Fallo de sensado, Fallo de estimulación.</p>
-            
-            <h3>6. ¿HAY LATIDOS PREMATUROS?</h3>
-            <p><em>(EAP, EV)</em> → Generalmente observación, corregir causas (electrolitos, hipoxia).</p>
-            
-            <div class="key-box">
-                <h4>RESUMEN OPERATIVO RÁPIDO</h4>
-                <ul>
-                    <li><strong>Pulso:</strong> ¿sí o no?</li>
-                    <li><strong>Estabilidad:</strong> ¿estable o inestable?</li>
-                    <li><strong>Frecuencia:</strong> ¿lento o rápido?</li>
-                    <li><strong>QRS:</strong> ¿estrecho o ancho?</li>
-                    <li><strong>Regularidad:</strong> ¿regular o irregular?</li>
-                </ul>
-            </div>
-            <div class="key-box danger">
-                <h4 class="alert-text">CLAVES CLÍNICAS</h4>
-                <ul>
-                    <li>QRS ancho = TV hasta demostrar lo contrario</li>
-                    <li>Paciente inestable = Electricidad</li>
-                    <li>Paciente sin pulso = Protocolo de paro</li>
-                    <li>Siempre buscar causas reversibles (6H y 6T)</li>
-                </ul>
-            </div>
-            <br><br>
-        </div>
-    </aside>
+    <button id="indice-toggle" type="button" class="fab-flotante fab-flotante--izquierda"
+            aria-expanded="false" aria-controls="indice-sidebar"
+            aria-label="Abrir índice del módulo" data-tooltip="Abrir índice del módulo"
+            onclick="alternarSidebarIndice()">
+        <svg class="fab-flotante-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+    </button>
+
+    <button id="volver-arriba-toggle" type="button" class="fab-flotante fab-flotante--derecha"
+            aria-label="Volver arriba" data-tooltip="Volver arriba"
+            onclick="volverArribaModulo()">
+        <svg class="fab-flotante-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+    </button>
 
     <aside id="indice-sidebar" class="indice-sidebar" aria-label="Índice del módulo">
-        <button id="indice-toggle" class="indice-toggle" aria-expanded="false" aria-controls="indice-sidebar" title="Índice del módulo" onclick="alternarSidebarIndice()">📚 ÍNDICE</button>
-
         <div class="indice-header">
             <div class="indice-header-top">
                 <h2 class="indice-titulo">Selecciona un módulo</h2>

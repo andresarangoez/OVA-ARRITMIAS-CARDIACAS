@@ -6,9 +6,8 @@
    6 módulos, sin conocer nada del contenido clínico de ninguno.
    Requiere js/13-shell-indice.js y js/14-busqueda-modulo.js.
 
-   Reutiliza el mismo patrón visual que .aha-sidebar/.aha-toggle
-   (css/02-layout.css) y los tokens de la "Etapa 1 de rediseño
-   visual" (css/01-variables.css) — no se inventan valores nuevos.
+   Los tokens de la "Etapa 1 de rediseño visual" (css/01-variables.css)
+   se reutilizan tal cual — no se inventan valores nuevos.
    ============================================================ */
 
 /* --- SIDEBAR: ÍNDICE DEL MÓDULO --- */
@@ -29,28 +28,68 @@
 }
 .indice-sidebar.open { left: 0; }
 
-.indice-toggle {
-    position: absolute;
-    top: 20px;
-    right: -40px;
-    width: 40px;
-    height: 150px;
-    background-color: var(--fucs-azul-profundo);
-    color: white;
-    border: none;
-    border-radius: 0 8px 8px 0;
-    cursor: pointer;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-weight: bold;
-    font-size: 0.85rem;
-    display: flex;
+/* --- BOTONES FLOTANTES: ÍNDICE Y VOLVER ARRIBA --- */
+/* Sistema único de dos FAB independientes del <aside> del índice (no
+   anidados dentro): permanecen fijos en su esquina durante todo el
+   recorrido del módulo, sin "resbalar" junto con el panel al abrir/
+   cerrar. Solo visibles dentro de un módulo (ver body.modo-modulo,
+   controlado por abrirModulo()/volverHome() en 03-navegacion.js) —
+   nunca se anidan en #vista-modulo porque su animación fadeIn crea un
+   containing block para position:fixed y produciría un salto visual. */
+.fab-flotante {
+    position: fixed;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    display: none;
     align-items: center;
     justify-content: center;
-    letter-spacing: 2px;
-    transition: background-color 0.2s ease;
+    background-color: var(--fucs-azul-profundo);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--bento-radius-md);
+    cursor: pointer;
+    box-shadow: var(--fab-shadow);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1002; /* por encima del sidebar (1001), por debajo del modal (2000) */
 }
-.indice-toggle:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+body.modo-modulo .fab-flotante { display: flex; }
+.fab-flotante:hover, .fab-flotante:focus-visible {
+    background-color: var(--fucs-dorado);
+    color: var(--fucs-azul-profundo);
+    transform: translateY(-2px);
+    box-shadow: var(--fab-shadow-hover);
+}
+.fab-flotante:active { transform: translateY(0) scale(0.96); }
+.fab-flotante-icono { width: 22px; height: 22px; pointer-events: none; }
+
+.fab-flotante--izquierda { left: 24px; }
+.fab-flotante--derecha { right: 24px; }
+
+/* Tooltip: mismo lenguaje visual que .tooltip (10-componentes.css) —
+   fondo azul profundo, texto blanco, fade de opacidad — pero anclado
+   hacia arriba del botón (los FAB viven abajo) y con el lado horizontal
+   ajustado a cada botón para no salirse del viewport en la esquina. */
+.fab-flotante::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    background: var(--fucs-azul-profundo);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-md);
+}
+.fab-flotante--izquierda::after { left: 0; }
+.fab-flotante--derecha::after { right: 0; }
+.fab-flotante:hover::after, .fab-flotante:focus-visible::after { opacity: 1; transform: translateY(0); }
 
 /* --- ENCABEZADO: título, progreso, tiempo restante, buscador --- */
 .indice-header {
@@ -146,24 +185,18 @@ mark.busqueda-resaltado { background: rgba(248, 198, 128, 0.5); color: inherit; 
 mark.busqueda-resaltado.busqueda-resaltado-actual { background: var(--fucs-dorado); outline: 2px solid var(--fucs-azul-oscuro); outline-offset: 1px; }
 
 /* --- RESPONSIVE --- */
-/* Ninguna regla responsive existía para .aha-sidebar/.module-navbar antes
-   de este archivo — se agrega la línea base necesaria para que el nuevo
-   sidebar (y el ya existente) no rompan el layout en pantallas angostas. */
+/* Ninguna regla responsive existía para .module-navbar antes de este
+   archivo — se agrega la línea base necesaria para que el sidebar no
+   rompa el layout en pantallas angostas. */
 @media (max-width: 900px) {
     .indice-sidebar { width: min(360px, 92vw); left: calc(-1 * min(360px, 92vw)); }
-    .aha-sidebar { width: min(420px, 92vw); left: calc(-1 * min(420px, 92vw)); }
-    .indice-sidebar.open, .aha-sidebar.open { left: 0; }
-}
-
-@media (max-height: 480px) {
-    .indice-toggle { height: 90px; top: 12px; font-size: 0.75rem; }
-    .aha-toggle { height: 90px; top: 106px; }
+    .indice-sidebar.open { left: 0; }
 }
 
 @media (max-width: 640px) {
     .indice-header-top { flex-wrap: wrap; }
     .indice-item-btn { min-height: 44px; }
-    /* Deja espacio a la pila de pull-tabs fijos solo cuando la columna
-       central ya no tiene margen propio respecto al borde del viewport. */
-    .module-navbar.scrolled { padding-left: 50px; }
+    .fab-flotante { width: 44px; height: 44px; bottom: 16px; }
+    .fab-flotante--izquierda { left: 16px; }
+    .fab-flotante--derecha { right: 16px; }
 }
