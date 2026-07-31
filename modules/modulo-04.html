@@ -1,5 +1,11 @@
                 <!-- ============ PANTALLA DE BIENVENIDA ============ -->
                 <div class="modulo-bienvenida">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
+                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
+                        <span class="breadcrumb-item actual">Módulo 04 · Planeación</span>
+                    </div>
+
                     <div class="modulo-encabezado">
                         <span class="modulo-numero">Módulo 04</span>
                         <span class="modulo-icono-grande" aria-hidden="true">📋</span>
@@ -36,33 +42,56 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <div class="barra-progreso-wrap">
+                        <div class="barra-progreso-meta">
+                            <span>Progreso del módulo</span>
+                            <span class="porcentaje">0%</span>
+                        </div>
+                        <div class="barra-progreso"><div class="barra-progreso-fill" style="width: 0%;"></div></div>
+                    </div>
+
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Fisiopatología de las Arritmias</h3>
-                        <p>Toda arritmia se origina por uno de cuatro mecanismos eléctricos básicos. Identificar cuál está en juego orienta directamente el tipo de tratamiento que probablemente funcione.</p>
+                        <p>Toda arritmia se origina por uno de cuatro mecanismos eléctricos básicos. Identificar cuál está en juego orienta directamente el tipo de tratamiento que probablemente funcione — el mecanismo no es un dato académico, predice qué tratamiento tiene mayor probabilidad de funcionar.</p>
 
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li><strong>Alteración de la formación del impulso:</strong> un marcapasos (sinusal o ectópico) descarga demasiado rápido, demasiado lento, o aparece un marcapasos anómalo donde no debería.</li>
-                            <li><strong>Alteración de la conducción:</strong> el impulso se retrasa o se bloquea en su camino normal (ej. bloqueos AV).</li>
-                            <li><strong>Reentrada:</strong> un impulso queda "atrapado" circulando en un circuito eléctrico cerrado, reactivando tejido que ya debería estar en período refractario. Es el mecanismo más frecuente detrás de taquicardias paroxísticas.</li>
-                            <li><strong>Actividad desencadenada (pospotenciales):</strong> despolarizaciones anómalas que ocurren durante o inmediatamente después de la repolarización normal, capaces de iniciar un latido adicional.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Las arritmias por reentrada suelen responder bien a cardioversión o maniobras que interrumpan el circuito (ej. adenosina en TSVP); las causadas por automatismo anormal, en cambio, tienden a responder mejor a corregir la causa de fondo que a la terapia eléctrica.</p>
-
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> El mecanismo no es un dato académico — predice qué tratamiento tiene mayor probabilidad de funcionar.
+                        <h4>Explora los 4 mecanismos</h4>
+                        <p>Haz clic en cada uno para ver qué es y qué implica para el tratamiento.</p>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'formacion')">Formación del impulso</button>
+                                <button onclick="activarPasoStepper(this,'conduccion')">Conducción</button>
+                                <button onclick="activarPasoStepper(this,'reentrada')">Reentrada</button>
+                                <button onclick="activarPasoStepper(this,'desencadenada')">Desencadenada</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="formacion">
+                                <h5>Alteración de la formación del impulso</h5>
+                                <p><strong>Qué es:</strong> un marcapasos (sinusal o ectópico) descarga demasiado rápido, demasiado lento, o aparece un marcapasos anómalo donde no debería.</p>
+                                <p><strong>Qué implica:</strong> tiende a responder mejor a corregir la causa de fondo que a la terapia eléctrica.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="conduccion">
+                                <h5>Alteración de la conducción</h5>
+                                <p><strong>Qué es:</strong> el impulso se retrasa o se bloquea en su camino normal (ej. bloqueos AV, Módulo 03 Unidad 2).</p>
+                                <p><strong>Qué implica:</strong> el tratamiento depende del grado del bloqueo — desde observación hasta marcapasos.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="reentrada">
+                                <h5>Reentrada</h5>
+                                <p><strong>Qué es:</strong> un impulso queda "atrapado" circulando en un circuito eléctrico cerrado, reactivando tejido que ya debería estar en período refractario. Es el mecanismo más frecuente detrás de taquicardias paroxísticas.</p>
+                                <p><strong>Qué implica:</strong> suele responder bien a cardioversión o maniobras que interrumpan el circuito (ej. adenosina en TSVP).</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="desencadenada">
+                                <h5>Actividad desencadenada (pospotenciales)</h5>
+                                <p><strong>Qué es:</strong> despolarizaciones anómalas que ocurren durante o inmediatamente después de la repolarización normal, capaces de iniciar un latido adicional.</p>
+                                <p><strong>Qué implica:</strong> con frecuencia relacionada con toxicidad medicamentosa o alteraciones electrolíticas — corregir la causa suele ser la clave.</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Clasificación Clínica</h3>
-                        <p>Una vez identificado el ritmo específico (Módulo 03), clasificarlo dentro de categorías más amplias ayuda a decidir qué algoritmo de manejo aplica.</p>
+                        <p>Una vez identificado el ritmo específico (Módulo 03), clasificarlo dentro de categorías más amplias ayuda a decidir qué algoritmo de manejo aplica. Esta clasificación de cuatro categorías es exactamente la que organiza los algoritmos de la AHA: bradicardia, taquicardia de complejo estrecho y taquicardia de complejo ancho tienen árboles de decisión distintos.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>Bradiarritmias:</strong> frecuencia &lt; 60 lpm — sinusal o por bloqueo de la conducción AV.</li>
                             <li><strong>Taquiarritmias:</strong> frecuencia &gt; 100 lpm, divididas a su vez en:</li>
@@ -70,30 +99,35 @@
                             <li><strong>Ventriculares:</strong> origen en el miocardio ventricular o sistema de conducción distal, QRS ancho.</li>
                         </ul>
 
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Esta clasificación de cuatro categorías es exactamente la que organiza los algoritmos de la AHA: bradicardia, taquicardia de complejo estrecho y taquicardia de complejo ancho tienen árboles de decisión distintos.</p>
-
                         <div class="tarjeta-informativa">
                             <h4>De la Unidad 1 a la Unidad 2</h4>
                             <p><span class="etiqueta">Definición:</span> El mecanismo (Unidad 1) explica el "por qué"; la clasificación clínica (Unidad 2) organiza el "qué hacer".</p>
                             <p><span class="etiqueta">Importancia clínica:</span> Ambas son necesarias — el mecanismo sin clasificación no lleva a un algoritmo; la clasificación sin mecanismo no explica por qué el tratamiento funciona o falla.</p>
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Un paciente presenta un ritmo con frecuencia cardíaca de 160 lpm y complejo QRS ancho (&gt; 0.12 seg). Según la clasificación clínica, ¿cómo se categoriza?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-2"> Bradiarritmia</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-2"> Taquiarritmia supraventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-2" data-correcta="true"> Taquiarritmia ventricular</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
                     </div>
 
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Estratificación del Riesgo</h3>
-                        <p>El mismo ritmo puede representar un riesgo completamente distinto según el paciente que lo presente. Estratificar el riesgo es lo que convierte un diagnóstico en un plan de acción priorizado.</p>
+                        <p>El mismo ritmo puede representar un riesgo completamente distinto según el paciente que lo presente. Estratificar el riesgo es lo que convierte un diagnóstico en un plan de acción priorizado. Dos pacientes con el mismo ritmo (por ejemplo, TV monomórfica) pueden requerir manejos radicalmente distintos: uno estable permite tiempo para evaluar y tratar farmacológicamente; uno inestable exige cardioversión inmediata.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>Estabilidad hemodinámica:</strong> criterio central (ver Módulo 02, Unidad 3) — un paciente inestable siempre tiene prioridad absoluta.</li>
                             <li><strong>Signos de alarma:</strong> dolor torácico, disnea súbita, hipotensión, estado mental alterado, signos de choque.</li>
                             <li><strong>Riesgo de muerte súbita cardíaca:</strong> especialmente relevante en taquicardias ventriculares, QT prolongado y antecedentes de cardiopatía estructural.</li>
                         </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Dos pacientes con el mismo ritmo (por ejemplo, TV monomórfica) pueden requerir manejos radicalmente distintos: uno estable permite tiempo para evaluar y tratar farmacológicamente; uno inestable exige cardioversión inmediata.</p>
 
                         <div class="key-box danger">
                             <span class="alert-text">🚨 Alerta Clínica:</span> La estratificación de riesgo se repite en cada contacto con el paciente — un paciente estable puede volverse inestable en minutos.
@@ -103,43 +137,55 @@
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Algoritmos AHA/ESC</h3>
-                        <p>Los algoritmos de la AHA traducen la clasificación clínica y la estratificación de riesgo en una secuencia de decisiones estandarizada.</p>
-
-                        <h4>Puntos Clave — los tres árboles principales:</h4>
-                        <ul>
-                            <li><strong>Algoritmo de bradicardia:</strong> evalúa si el paciente está sintomático/inestable; si lo está, prioriza atropina, marcapasos transcutáneo o infusiones cronotrópicas.</li>
-                            <li><strong>Algoritmo de taquicardia con pulso:</strong> se bifurca según estabilidad (cardioversión sincronizada si inestable) y según el ancho del QRS (maniobras vagales/adenosina en QRS estrecho vs. antiarrítmicos en QRS ancho).</li>
-                            <li><strong>Algoritmo de paro sin pulso:</strong> se bifurca según el ritmo sea desfibrilable (FV/TV sin pulso) o no desfibrilable (asistolia/AESP) — ver Módulo 03, Unidad 6.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Ningún algoritmo reemplaza el juicio clínico, pero estandarizar la secuencia de decisiones reduce errores bajo presión y facilita la coordinación del equipo durante una emergencia.</p>
+                        <p>Los algoritmos de la AHA traducen la clasificación clínica y la estratificación de riesgo en una secuencia de decisiones estandarizada. Ningún algoritmo reemplaza el juicio clínico, pero estandarizar la secuencia de decisiones reduce errores bajo presión y facilita la coordinación del equipo durante una emergencia.</p>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> Los tres algoritmos comparten la misma primera pregunta: ¿el paciente está estable o inestable?
+                        </div>
+
+                        <h4>Actividad: empareja cada algoritmo con su criterio de bifurcación</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="bradicardia" onclick="manejarClicEmparejar(this)">Algoritmo de bradicardia</button>
+                                <button class="reto-emparejar-item" data-par="taquicardia" onclick="manejarClicEmparejar(this)">Algoritmo de taquicardia con pulso</button>
+                                <button class="reto-emparejar-item" data-par="paro" onclick="manejarClicEmparejar(this)">Algoritmo de paro sin pulso</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="paro" onclick="manejarClicEmparejar(this)">Se bifurca según el ritmo sea desfibrilable o no desfibrilable</button>
+                                <button class="reto-emparejar-item" data-par="bradicardia" onclick="manejarClicEmparejar(this)">Evalúa síntomas/inestabilidad; prioriza atropina, marcapasos transcutáneo o infusiones cronotrópicas</button>
+                                <button class="reto-emparejar-item" data-par="taquicardia" onclick="manejarClicEmparejar(this)">Se bifurca según estabilidad y según el ancho del QRS</button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Toma de Decisiones Clínicas</h3>
-                        <p>Esta unidad integra todo lo anterior en la pregunta central de la planeación: frente a este paciente, con este ritmo y este riesgo, ¿qué va primero?</p>
+                        <p>Esta unidad integra todo lo anterior en la pregunta central de la planeación: frente a este paciente, con este ritmo y este riesgo, ¿qué va primero? Esta forma de pensar es la que se pondrá en práctica de forma activa en el Módulo 05 (Intervención), donde estas prioridades se traducen en acciones concretas.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>Priorización por tiempo:</strong> en escenarios críticos, cada decisión debe tener una meta medible y acotada en el tiempo (ej. "estabilizar la frecuencia en menos de 10 minutos").</li>
                             <li><strong>Establecer metas de cuidado:</strong> no basta con "tratar la arritmia" — la meta debe ser específica, medible y con un plazo definido.</li>
                             <li><strong>Reevaluación constante:</strong> la prioridad puede cambiar en cualquier momento si el estado del paciente cambia.</li>
                         </ul>
 
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Esta forma de pensar — "¿qué va primero?" — es la que se pondrá en práctica de forma activa en el Módulo 05 (Intervención), donde estas prioridades se traducen en acciones concretas.</p>
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            Ante varias prioridades simultáneas, resuelve siempre primero la amenaza a la vida inmediata (ABCDE, Módulo 02).
+                        </div>
 
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Formular metas de cuidado con verbo, parámetro medible y plazo (ej. "reducir la FC a &lt; 100 lpm en 10 minutos").</li>
-                            <li>Ante varias prioridades simultáneas, resolver siempre primero la amenaza a la vida inmediata (ABCDE, Módulo 02).</li>
-                        </ul>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">¿Cuál de las siguientes es una meta de cuidado correctamente formulada?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-5"> "Tratar la arritmia del paciente"</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-5" data-correcta="true"> "Reducir la frecuencia cardíaca a menos de 100 lpm en los próximos 10 minutos"</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-04-5"> "Administrar el medicamento antiarrítmico indicado"</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
+                        </div>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> Planear no es predecir el futuro — es decidir, con la información disponible ahora, cuál es el siguiente paso correcto.
