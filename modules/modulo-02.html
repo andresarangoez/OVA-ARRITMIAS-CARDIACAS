@@ -1,5 +1,11 @@
                 <!-- ============ PANTALLA DE BIENVENIDA ============ -->
                 <div class="modulo-bienvenida">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
+                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
+                        <span class="breadcrumb-item actual">Módulo 02 · Valoración</span>
+                    </div>
+
                     <div class="modulo-encabezado">
                         <span class="modulo-numero">Módulo 02</span>
                         <span class="modulo-icono-grande" aria-hidden="true">🩺</span>
@@ -37,64 +43,98 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <div class="barra-progreso-wrap">
+                        <div class="barra-progreso-meta">
+                            <span>Progreso del módulo</span>
+                            <span class="porcentaje">0%</span>
+                        </div>
+                        <div class="barra-progreso"><div class="barra-progreso-fill" style="width: 0%;"></div></div>
+                    </div>
+
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Abordaje del Paciente (ABCDE)</h3>
-                        <p>Ante todo paciente con sospecha de arritmia, el primer paso nunca es el monitor: es un abordaje sistemático que garantice que ninguna amenaza vital pase desapercibida mientras se investiga el ritmo.</p>
+                        <p>Ante todo paciente con sospecha de arritmia, el primer paso nunca es el monitor: es un abordaje sistemático que garantice que ninguna amenaza vital pase desapercibida mientras se investiga el ritmo. El ABCDE identifica en segundos si el paciente está <strong>estable</strong> o <strong>inestable</strong>, lo que determina si hay tiempo para un análisis detallado del ECG o si se requiere acción inmediata.</p>
 
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li><strong>A — Vía aérea (Airway):</strong> Permeabilidad de la vía aérea; capacidad de hablar sin dificultad.</li>
-                            <li><strong>B — Ventilación (Breathing):</strong> Frecuencia respiratoria, saturación de oxígeno, trabajo respiratorio.</li>
-                            <li><strong>C — Circulación (Circulation):</strong> Frecuencia y calidad del pulso, tensión arterial, perfusión periférica.</li>
-                            <li><strong>D — Déficit neurológico (Disability):</strong> Nivel de consciencia, orientación, escala de Glasgow si aplica.</li>
-                            <li><strong>E — Exposición (Exposure):</strong> Inspección completa buscando signos de trauma, sangrado o causas desencadenantes.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>El ABCDE identifica en segundos si el paciente está <strong>estable</strong> o <strong>inestable</strong>, lo que determina si hay tiempo para un análisis detallado del ECG o si se requiere acción inmediata.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Repetir el ABCDE ante cualquier cambio brusco en el monitor, no solo al ingreso.</li>
-                            <li>Verbalizar y documentar cada paso, incluso cuando el hallazgo es normal.</li>
-                        </ul>
+                        <h4>Recorre el ABCDE</h4>
+                        <p>Haz clic en cada letra para ver qué evaluar y qué hacer si algo está alterado.</p>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'a')">A</button>
+                                <button onclick="activarPasoStepper(this,'b')">B</button>
+                                <button onclick="activarPasoStepper(this,'c')">C</button>
+                                <button onclick="activarPasoStepper(this,'d')">D</button>
+                                <button onclick="activarPasoStepper(this,'e')">E</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="a">
+                                <h5>A — Vía aérea (Airway)</h5>
+                                <p><strong>Qué evaluar:</strong> permeabilidad de la vía aérea; capacidad de hablar sin dificultad.</p>
+                                <p><strong>Qué hacer si está comprometida:</strong> reposicionar, aspirar secreciones si es necesario, y activar soporte avanzado de inmediato si no se resuelve — nada de lo siguiente importa si la vía aérea no está asegurada.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="b">
+                                <h5>B — Ventilación (Breathing)</h5>
+                                <p><strong>Qué evaluar:</strong> frecuencia respiratoria, saturación de oxígeno, trabajo respiratorio.</p>
+                                <p><strong>Qué hacer si está alterada:</strong> administrar oxígeno suplementario, monitorizar la SpO2 de forma continua y notificar ante cualquier signo de dificultad respiratoria franca.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="c">
+                                <h5>C — Circulación (Circulation)</h5>
+                                <p><strong>Qué evaluar:</strong> frecuencia y calidad del pulso, tensión arterial, perfusión periférica.</p>
+                                <p><strong>Qué hacer si está alterada:</strong> un pulso irregular, filiforme o ausente exige correlacionar de inmediato con el trazado del monitor y avisar al equipo tratante — este es el punto donde el ABCDE se conecta directamente con la Unidad 3.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="d">
+                                <h5>D — Déficit neurológico (Disability)</h5>
+                                <p><strong>Qué evaluar:</strong> nivel de consciencia, orientación, escala de Glasgow si aplica.</p>
+                                <p><strong>Qué hacer si está alterado:</strong> un cambio brusco del estado mental en un paciente monitorizado es tan alarmante como un cambio en el trazado — investigar ambos en paralelo, nunca uno a costa del otro.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="e">
+                                <h5>E — Exposición (Exposure)</h5>
+                                <p><strong>Qué evaluar:</strong> inspección completa buscando signos de trauma, sangrado o causas desencadenantes.</p>
+                                <p><strong>Qué hacer si hay hallazgos:</strong> correlacionarlos con la lista de causas reversibles (6H y 6T) que se revisa en la Unidad 4 — muchas veces la exposición es la que da la primera pista de la causa real.</p>
+                            </div>
+                        </div>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> El ABCDE responde primero a "¿está en riesgo la vida del paciente?" — el ritmo específico se investiga después.
                         </div>
                         <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Un paciente que "se ve mal" pero tiene un monitor "tranquilo" siempre gana: confíe en la valoración clínica sobre la pantalla.
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Un paciente que "se ve mal" pero tiene un monitor "tranquilo" siempre gana: confíe en la valoración clínica sobre la pantalla. Repita el ABCDE ante cualquier cambio brusco en el monitor, no solo al ingreso, y verbalice/documente cada paso incluso cuando el hallazgo es normal.
                         </div>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Manifestaciones Clínicas</h3>
-                        <p>Las arritmias se expresan clínicamente según qué tanto comprometen el gasto cardíaco. Reconocer estos signos y síntomas permite sospechar una arritmia incluso antes de ver el trazado.</p>
+                        <p>Las arritmias se expresan clínicamente según qué tanto comprometen el gasto cardíaco. Reconocer estos signos y síntomas permite sospechar una arritmia incluso antes de ver el trazado — ningún síntoma aislado la confirma, pero su combinación, y sobre todo su instauración súbita, orienta la sospecha clínica y la urgencia de la valoración.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
-                            <li><strong>Palpitaciones:</strong> Percepción consciente e incómoda del latido cardíaco; frecuente en taquiarritmias.</li>
-                            <li><strong>Síncope o presíncope:</strong> Pérdida transitoria (o casi) de la consciencia por hipoperfusión cerebral súbita.</li>
-                            <li><strong>Dolor torácico:</strong> Puede indicar isquemia como causa o consecuencia de la arritmia.</li>
-                            <li><strong>Disnea:</strong> Signo de compromiso del gasto cardíaco o de congestión pulmonar asociada.</li>
-                            <li><strong>Mareo o inestabilidad:</strong> Hipoperfusión cerebral leve a moderada, frecuente en bradiarritmias.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>Ningún síntoma aislado confirma una arritmia, pero su combinación —y sobre todo su instauración súbita— orienta la sospecha clínica y la urgencia de la valoración.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Preguntar activamente por palpitaciones, mareo o síncope: el paciente no siempre los reporta espontáneamente.</li>
-                            <li>Correlacionar el inicio de los síntomas con el momento exacto en que cambia el trazado del monitor.</li>
+                            <li><strong>Palpitaciones:</strong> percepción consciente e incómoda del latido cardíaco; frecuente en taquiarritmias.</li>
+                            <li><strong>Síncope o presíncope:</strong> pérdida transitoria (o casi) de la consciencia por hipoperfusión cerebral súbita.</li>
+                            <li><strong>Dolor torácico:</strong> puede indicar isquemia como causa o consecuencia de la arritmia.</li>
+                            <li><strong>Disnea:</strong> signo de compromiso del gasto cardíaco o de congestión pulmonar asociada.</li>
+                            <li><strong>Mareo o inestabilidad:</strong> hipoperfusión cerebral leve a moderada, frecuente en bradiarritmias.</li>
                         </ul>
 
                         <div class="tarjeta-informativa">
                             <h4>Síncope arrítmico</h4>
                             <p><span class="etiqueta">Definición:</span> Pérdida súbita y transitoria de la consciencia secundaria a una caída abrupta del gasto cardíaco.</p>
                             <p><span class="etiqueta">Importancia clínica:</span> A diferencia del síncope vasovagal, suele ocurrir sin pródromos y en cualquier posición, incluso sentado o acostado.</p>
+                        </div>
+
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            Pregunte activamente por palpitaciones, mareo o síncope: el paciente no siempre los reporta espontáneamente. Y correlacione siempre el inicio de los síntomas con el momento exacto en que cambia el trazado del monitor — esa correlación temporal vale tanto como el síntoma mismo.
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Un paciente refiere mareo y palpitaciones que comenzaron hace apenas 2 minutos, sin ningún síntoma previo de aviso. ¿Qué característica del síncope arrítmico coincide con este relato?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-2"> Se presenta de forma gradual, con síntomas de aviso previos</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-2" data-correcta="true"> Ausencia de pródromos y aparición súbita</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-2"> Ocurre exclusivamente en posición de pie</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
                     </div>
 
@@ -103,21 +143,11 @@
                         <h3 class="unidad-titulo">Unidad 3 · Valoración Hemodinámica</h3>
                         <p>Toda arritmia debe interpretarse a la luz de su impacto hemodinámico real sobre el paciente, no solo sobre el papel del monitor.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
-                            <li><strong>Frecuencia cardíaca (FC):</strong> Confirmar siempre por pulso palpable o auscultación, no solo por el número del monitor.</li>
-                            <li><strong>Tensión arterial (TA):</strong> Sistólica y diastólica; su tendencia importa más que un valor aislado.</li>
-                            <li><strong>Presión arterial media (PAM):</strong> PAM = TAD + 1/3 (TAS − TAD). Refleja la presión de perfusión de los órganos.</li>
-                            <li><strong>Perfusión periférica:</strong> Llenado capilar, temperatura y coloración de la piel, estado mental.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>Una PAM sostenida por debajo de 65 mmHg sugiere hipoperfusión de órganos vitales y refuerza la clasificación del paciente como hemodinámicamente inestable.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Medir la TA de forma seriada durante episodios de arritmia, no solo al inicio del turno.</li>
-                            <li>Registrar el estado mental como un signo vital más: es uno de los indicadores más tempranos de bajo gasto.</li>
+                            <li><strong>Frecuencia cardíaca (FC):</strong> confirmar siempre por pulso palpable o auscultación, no solo por el número del monitor.</li>
+                            <li><strong>Tensión arterial (TA):</strong> sistólica y diastólica; su tendencia importa más que un valor aislado.</li>
+                            <li><strong>Presión arterial media (PAM):</strong> PAM = TAD + 1/3 (TAS − TAD). Refleja la presión de perfusión de los órganos — una PAM sostenida por debajo de 65 mmHg sugiere hipoperfusión de órganos vitales.</li>
+                            <li><strong>Perfusión periférica:</strong> llenado capilar, temperatura y coloración de la piel, estado mental.</li>
                         </ul>
 
                         <table class="tabla-comparativa">
@@ -133,14 +163,28 @@
                         </table>
 
                         <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> La presencia de <strong>cualquiera</strong> de los signos de inestabilidad de la tabla, en el contexto de una arritmia, indica la necesidad de intervención inmediata (ver Módulo 05).
+                            <span class="alert-text">🚨 Alerta Clínica:</span> La presencia de <strong>cualquiera</strong> de los signos de inestabilidad de la tabla, en el contexto de una arritmia, indica la necesidad de intervención inmediata (ver Módulo 05). Mida la TA de forma seriada durante episodios de arritmia, no solo al inicio del turno, y registre el estado mental como un signo vital más: es uno de los indicadores más tempranos de bajo gasto.
+                        </div>
+
+                        <h4>¿Estable o inestable?</h4>
+                        <p>Aplica la tabla anterior al siguiente caso.</p>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Paciente con FC 150 lpm, TA 84/50 mmHg, llenado capilar de 4 segundos y discurso confuso. Según los signos de la tabla, ¿cómo se clasifica?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-3"> Estable — solo requiere observación seriada</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-3" data-correcta="true"> Inestable — requiere intervención inmediata</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-02-3"> No se puede determinar sin un ECG de 12 derivaciones</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
                     </div>
 
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Factores Desencadenantes (6H y 6T)</h3>
-                        <p>Muchas arritmias tienen una causa reversible identificable. El algoritmo de las "H y T" es la herramienta estándar para buscarlas de forma sistemática, especialmente en paro cardíaco o inestabilidad severa.</p>
+                        <p>Muchas arritmias tienen una causa reversible identificable. El algoritmo de las "H y T" es la herramienta estándar para buscarlas de forma sistemática, especialmente en paro cardíaco o inestabilidad severa. Tratar la arritmia sin buscar y corregir su causa reversible expone al paciente a recurrencias inmediatas, incluso si la terapia eléctrica o farmacológica fue exitosa.</p>
 
                         <h4>Las 6 H:</h4>
                         <ul>
@@ -162,40 +206,47 @@
                             <li><strong>Trauma</strong></li>
                         </ul>
 
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>Tratar la arritmia sin buscar y corregir su causa reversible expone al paciente a recurrencias inmediatas, incluso si la terapia eléctrica o farmacológica fue exitosa.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Revisar electrolitos séricos recientes (especialmente potasio y magnesio) ante cualquier arritmia nueva.</li>
-                            <li>Verificar antecedentes de trauma, cirugía reciente o inmovilización prolongada como pistas de trombosis.</li>
-                        </ul>
-
                         <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Las "H y T" no son solo para el paro cardíaco — son la lista de verificación mental ante cualquier arritmia de causa no evidente.
+                            <strong>💡 Concepto Clave:</strong> Las "H y T" no son solo para el paro cardíaco — son la lista de verificación mental ante cualquier arritmia de causa no evidente. Revise electrolitos séricos recientes (especialmente potasio y magnesio) ante cualquier arritmia nueva, y verifique antecedentes de trauma, cirugía reciente o inmovilización prolongada como pistas de trombosis.
+                        </div>
+
+                        <h4>Actividad: empareja cada causa con su pista clínica</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 6 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="hipovolemia" onclick="manejarClicEmparejar(this)">Hipovolemia</button>
+                                <button class="reto-emparejar-item" data-par="hipoxia" onclick="manejarClicEmparejar(this)">Hipoxia</button>
+                                <button class="reto-emparejar-item" data-par="potasio" onclick="manejarClicEmparejar(this)">Hipo/hiperpotasemia</button>
+                                <button class="reto-emparejar-item" data-par="taponamiento" onclick="manejarClicEmparejar(this)">Taponamiento cardíaco</button>
+                                <button class="reto-emparejar-item" data-par="tep" onclick="manejarClicEmparejar(this)">Trombosis pulmonar (TEP)</button>
+                                <button class="reto-emparejar-item" data-par="toxicos" onclick="manejarClicEmparejar(this)">Tóxicos</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="toxicos" onclick="manejarClicEmparejar(this)">Se investiga revisando la lista completa de medicamentos y posibles sobredosis</button>
+                                <button class="reto-emparejar-item" data-par="tep" onclick="manejarClicEmparejar(this)">Se sospecha con disnea súbita e hipotensión en paciente con factores de inmovilización</button>
+                                <button class="reto-emparejar-item" data-par="hipovolemia" onclick="manejarClicEmparejar(this)">Causa reversible más frecuente en shock hemorrágico o deshidratación severa</button>
+                                <button class="reto-emparejar-item" data-par="taponamiento" onclick="manejarClicEmparejar(this)">Se sospecha ante ruidos cardíacos velados, ingurgitación yugular e hipotensión</button>
+                                <button class="reto-emparejar-item" data-par="potasio" onclick="manejarClicEmparejar(this)">Alteración electrolítica más directamente ligada a arritmias ventriculares</button>
+                                <button class="reto-emparejar-item" data-par="hipoxia" onclick="manejarClicEmparejar(this)">Casi siempre presente cuando hay compromiso respiratorio asociado</button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Monitorización Cardíaca</h3>
-                        <p>La monitorización electrocardiográfica es la herramienta que permite detectar una arritmia en tiempo real, pero exige comprender sus alcances y sus límites.</p>
+                        <p>La monitorización electrocardiográfica es la herramienta que permite detectar una arritmia en tiempo real, pero exige comprender sus alcances y sus límites. La telemetría alerta que "algo cambió"; el ECG de 12 derivaciones responde "qué es exactamente" — ambas herramientas son complementarias, no intercambiables.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
-                            <li><strong>Telemetría / monitor de 3-5 derivaciones:</strong> Vigilancia continua del ritmo; suficiente para detectar la mayoría de arritmias, pero limitada para valorar isquemia con precisión.</li>
-                            <li><strong>ECG de 12 derivaciones:</strong> Estudio puntual y completo; indispensable para el diagnóstico definitivo y para descartar isquemia asociada.</li>
-                            <li><strong>Gestión de alarmas:</strong> Configurar límites individualizados según la condición de cada paciente para evitar la "fatiga de alarmas".</li>
+                            <li><strong>Telemetría / monitor de 3-5 derivaciones:</strong> vigilancia continua del ritmo; suficiente para detectar la mayoría de arritmias, pero limitada para valorar isquemia con precisión.</li>
+                            <li><strong>ECG de 12 derivaciones:</strong> estudio puntual y completo; indispensable para el diagnóstico definitivo y para descartar isquemia asociada.</li>
+                            <li><strong>Gestión de alarmas:</strong> configurar límites individualizados según la condición de cada paciente para evitar la "fatiga de alarmas".</li>
                         </ul>
 
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>La telemetría alerta que "algo cambió"; el ECG de 12 derivaciones responde "qué es exactamente". Ambas herramientas son complementarias, no intercambiables.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Verificar la integridad de los cables y la calidad de la señal antes de confiar en una alarma.</li>
-                            <li>Obtener un ECG de 12 derivaciones ante cualquier cambio sostenido del ritmo, no solo un registro del monitor de cabecera.</li>
-                        </ul>
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            Verifique la integridad de los cables y la calidad de la señal antes de confiar en una alarma, y obtenga un ECG de 12 derivaciones ante cualquier cambio sostenido del ritmo — no se conforme con un registro aislado del monitor de cabecera.
+                        </div>
 
                         <h4>Preguntas frecuentes</h4>
                         <div class="acordeon">
@@ -223,26 +274,50 @@
                     <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 6 · Método de Interpretación Inicial</h3>
-                        <p>Antes de nombrar una arritmia (Módulo 03), toda lectura de ECG sigue el mismo método sistemático, aplicado siempre en el mismo orden.</p>
+                        <p>Antes de nombrar una arritmia (Módulo 03), toda lectura de ECG sigue el mismo método sistemático, aplicado siempre en el mismo orden. Aplicar siempre el mismo orden evita omitir hallazgos y permite comunicar el trazado de forma estandarizada al equipo de salud.</p>
 
-                        <h4>Puntos Clave — pasos del método:</h4>
-                        <ul>
-                            <li><strong>1. Frecuencia:</strong> ¿Es normal (60-100 lpm), bradicardia (&lt; 60 lpm) o taquicardia (&gt; 100 lpm)?</li>
-                            <li><strong>2. Ritmo:</strong> ¿Es regular o irregular? Si es irregular, ¿de forma regular (patrón) o totalmente irregular?</li>
-                            <li><strong>3. Onda P:</strong> ¿Está presente? ¿Es normal, ausente o de morfología anormal? ¿Precede a cada QRS?</li>
-                            <li><strong>4. Intervalo PR:</strong> ¿Es normal (0.12-0.20 seg), prolongado o variable?</li>
-                            <li><strong>5. Complejo QRS:</strong> ¿Es estrecho (&lt; 0.12 seg) o ancho?</li>
-                            <li><strong>6. Eje e intervalos:</strong> Revisión general del eje eléctrico y del intervalo QT cuando sea relevante.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica en Arritmias:</h4>
-                        <p>Aplicar siempre el mismo orden evita omitir hallazgos y permite comunicar el trazado de forma estandarizada al equipo de salud.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Describir un ritmo usando siempre estos seis pasos, incluso antes de tener un diagnóstico específico.</li>
-                            <li>Usar este mismo método como puente directo hacia el Módulo 03: Diagnóstico.</li>
-                        </ul>
+                        <h4>Recorre el método, paso a paso</h4>
+                        <p>Haz clic en cada paso para ver qué preguntarte y una pista para interpretarlo.</p>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'frecuencia')">1. Frecuencia</button>
+                                <button onclick="activarPasoStepper(this,'ritmo')">2. Ritmo</button>
+                                <button onclick="activarPasoStepper(this,'p')">3. Onda P</button>
+                                <button onclick="activarPasoStepper(this,'pr')">4. PR</button>
+                                <button onclick="activarPasoStepper(this,'qrs')">5. QRS</button>
+                                <button onclick="activarPasoStepper(this,'eje')">6. Eje</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="frecuencia">
+                                <h5>1. Frecuencia</h5>
+                                <p><strong>Pregúntate:</strong> ¿es normal (60-100 lpm), bradicardia (&lt; 60 lpm) o taquicardia (&gt; 100 lpm)?</p>
+                                <p><strong>Pista:</strong> es el primer dato que orienta si hay tiempo para un análisis detallado o si se necesita actuar ya (enlaza directamente con el ABCDE de la Unidad 1).</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="ritmo">
+                                <h5>2. Ritmo</h5>
+                                <p><strong>Pregúntate:</strong> ¿es regular o irregular? Si es irregular, ¿de forma regular (con un patrón) o totalmente irregular?</p>
+                                <p><strong>Pista:</strong> un ritmo "irregularmente irregular" es, por sí solo, una pista diagnóstica que se retoma en el Módulo 03.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="p">
+                                <h5>3. Onda P</h5>
+                                <p><strong>Pregúntate:</strong> ¿está presente? ¿es normal, ausente o de morfología anormal? ¿precede a cada QRS?</p>
+                                <p><strong>Pista:</strong> confirma si el impulso se está originando donde debería — en el nodo SA (Módulo 01, Unidad 3).</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="pr">
+                                <h5>4. Intervalo PR</h5>
+                                <p><strong>Pregúntate:</strong> ¿es normal (0.12-0.20 seg), prolongado o variable?</p>
+                                <p><strong>Pista:</strong> un PR prolongado o variable orienta hacia un problema de conducción en el nodo AV.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="qrs">
+                                <h5>5. Complejo QRS</h5>
+                                <p><strong>Pregúntate:</strong> ¿es estrecho (&lt; 0.12 seg) o ancho?</p>
+                                <p><strong>Pista:</strong> estrecho sugiere origen supraventricular; ancho sugiere origen ventricular o un bloqueo de rama, hasta demostrar lo contrario.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="eje">
+                                <h5>6. Eje e intervalos</h5>
+                                <p><strong>Pregúntate:</strong> ¿el eje eléctrico es normal? ¿el intervalo QT está dentro de lo esperado cuando sea relevante revisarlo?</p>
+                                <p><strong>Pista:</strong> cierra el método — describir un ritmo usando siempre estos seis pasos, en este orden, es el puente directo hacia el Módulo 03: Diagnóstico.</p>
+                            </div>
+                        </div>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> Frecuencia → Ritmo → Onda P → PR → QRS → Eje/Intervalos: el mismo orden, siempre, para cualquier trazado.
