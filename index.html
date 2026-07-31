@@ -3,6 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        // El navegador restaura por defecto el scroll previo al recargar (F5) o
+        // al volver con el botón "atrás"/adelante (incluida la bfcache). Como
+        // la app siempre reinicia en la vista de inicio (más corta que
+        // cualquier módulo), esa restauración deja al usuario cerca del footer
+        // en vez de arriba — mismo síntoma que el bug ya corregido en
+        // volverHome() (js/03-navegacion.js), pero disparado por el navegador,
+        // no por nuestra navegación interna.
+        //
+        // history.scrollRestoration='manual' evita la restauración ligada al
+        // History API (navegación tipo SPA), pero no cubre por sí solo la
+        // restauración nativa de una recarga simple en todos los navegadores
+        // — por eso se refuerza con "pageshow", que se dispara después de
+        // cualquier restauración (incluida la bfcache) y así siempre gana.
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        // Un único intento en "pageshow" no basta en todos los navegadores: la
+        // restauración nativa puede reaplicarse después de ese evento, ya
+        // fuera del ciclo de vida de scripting normal. Se refuerza con varios
+        // intentos escalonados en los primeros instantes de la carga —
+        // inofensivo si el scroll ya está en 0, decisivo si no lo está.
+        function forzarScrollArriba() {
+            window.scrollTo(0, 0);
+        }
+        window.addEventListener('pageshow', forzarScrollArriba);
+        window.addEventListener('load', forzarScrollArriba);
+        [0, 50, 150, 300, 600, 1200].forEach(function (demora) {
+            setTimeout(forzarScrollArriba, demora);
+        });
+    </script>
     <title>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
