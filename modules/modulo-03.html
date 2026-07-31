@@ -1,5 +1,11 @@
                 <!-- ============ PANTALLA DE BIENVENIDA ============ -->
                 <div class="modulo-bienvenida">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
+                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
+                        <span class="breadcrumb-item actual">Módulo 03 · Diagnóstico</span>
+                    </div>
+
                     <div class="modulo-encabezado">
                         <span class="modulo-numero">Módulo 03</span>
                         <span class="modulo-icono-grande" aria-hidden="true">📈</span>
@@ -38,22 +44,55 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <div class="barra-progreso-wrap">
+                        <div class="barra-progreso-meta">
+                            <span>Progreso del módulo</span>
+                            <span class="porcentaje">0%</span>
+                        </div>
+                        <div class="barra-progreso"><div class="barra-progreso-fill" style="width: 0%;"></div></div>
+                    </div>
+
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Ritmo Sinusal Normal</h3>
-                        <p>El ritmo sinusal normal es la referencia obligada: todo diagnóstico de arritmia se hace por comparación contra este patrón.</p>
+                        <p>El ritmo sinusal normal es la referencia obligada: todo diagnóstico de arritmia se hace por comparación contra este patrón. Si alguno de los cinco criterios siguientes falla, ya no es ritmo sinusal normal — y ese criterio específico que falla es la primera pista de qué familia de arritmia estás viendo.</p>
 
-                        <h4>Puntos Clave — criterios diagnósticos:</h4>
-                        <ul>
-                            <li><strong>Frecuencia:</strong> 60-100 lpm.</li>
-                            <li><strong>Ritmo:</strong> regular.</li>
-                            <li><strong>Onda P:</strong> presente, redondeada y positiva en derivación II; precede a cada QRS.</li>
-                            <li><strong>Intervalo PR:</strong> constante, entre 0.12 y 0.20 seg.</li>
-                            <li><strong>Complejo QRS:</strong> estrecho, menor a 0.12 seg.</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Si alguno de estos cinco criterios falla, ya no es ritmo sinusal normal — y ese criterio específico que falla es la primera pista de qué familia de arritmia estás viendo.</p>
+                        <h4>Recorre los 5 criterios diagnósticos</h4>
+                        <p>Haz clic en cada criterio para ver su valor normal y hacia dónde apunta si falla.</p>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'frecuencia')">Frecuencia</button>
+                                <button onclick="activarPasoStepper(this,'ritmo')">Ritmo</button>
+                                <button onclick="activarPasoStepper(this,'p')">Onda P</button>
+                                <button onclick="activarPasoStepper(this,'pr')">PR</button>
+                                <button onclick="activarPasoStepper(this,'qrs')">QRS</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="frecuencia">
+                                <h5>Frecuencia</h5>
+                                <p><strong>Valor normal:</strong> 60-100 lpm.</p>
+                                <p><strong>Si falla:</strong> por debajo de 60, entras en la familia de bradicardias (Unidad 2); por encima de 100, en la de taquicardias (Unidades 4-5).</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="ritmo">
+                                <h5>Ritmo</h5>
+                                <p><strong>Valor normal:</strong> regular.</p>
+                                <p><strong>Si falla:</strong> una irregularidad es la primera pista hacia fibrilación auricular, extrasístoles o ciertos bloqueos AV.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="p">
+                                <h5>Onda P</h5>
+                                <p><strong>Valor normal:</strong> presente, redondeada y positiva en derivación II; precede a cada QRS.</p>
+                                <p><strong>Si falla:</strong> confirma que el impulso nace en el nodo SA (Módulo 01, Unidad 3); su ausencia o cambio de forma apunta a extrasístoles o fibrilación/flutter auricular.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="pr">
+                                <h5>Intervalo PR</h5>
+                                <p><strong>Valor normal:</strong> constante, entre 0.12 y 0.20 seg.</p>
+                                <p><strong>Si falla:</strong> un PR alterado —prolongado, progresivo o ausente de relación— apunta directamente a los bloqueos AV de la Unidad 2.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="qrs">
+                                <h5>Complejo QRS</h5>
+                                <p><strong>Valor normal:</strong> estrecho, menor a 0.12 seg.</p>
+                                <p><strong>Si falla:</strong> un QRS ancho traslada la sospecha hacia origen ventricular (Unidad 5) — la gran división que organiza el resto del módulo.</p>
+                            </div>
+                        </div>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> Un solo criterio alterado (por ejemplo, solo la frecuencia) ya redirige el diagnóstico hacia una familia distinta de ritmos.
@@ -67,7 +106,6 @@
                         <h3 class="unidad-titulo">Unidad 2 · Bradicardias</h3>
                         <p>Las bradicardias comparten una frecuencia menor a 60 lpm, pero su origen y su riesgo cambian radicalmente según dónde falle la conducción.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>Bradicardia sinusal:</strong> el nodo SA simplemente descarga más lento. Onda P y PR normales, QRS estrecho — solo cambia la frecuencia.</li>
                             <li><strong>Bloqueo AV de 1er grado:</strong> conducción 1:1 preservada (ningún latido se bloquea), pero el PR está fijo y prolongado (&gt; 200 ms).</li>
@@ -75,9 +113,6 @@
                             <li><strong>Bloqueo AV de 2do grado, Mobitz II:</strong> PR fijo (nunca se alarga), pero un latido se bloquea de forma súbita y sin aviso; suele acompañarse de QRS ancho.</li>
                             <li><strong>Bloqueo AV de 3er grado (completo):</strong> disociación AV total — las ondas P y los QRS laten cada uno a su propio ritmo, sin relación entre sí.</li>
                         </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Mobitz I suele ser benigno y transitorio; Mobitz II y el bloqueo completo son de alto riesgo de progresar a bloqueo total o asistolia, y frecuentemente requieren marcapasos.</p>
 
                         <table class="tabla-comparativa">
                             <thead>
@@ -93,7 +128,21 @@
                         </table>
 
                         <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Mobitz II y el bloqueo de 3er grado son bradiarritmias de alto riesgo — nunca esperar a que el paciente se deteriore para actuar.
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Mobitz I suele ser benigno y transitorio; Mobitz II y el bloqueo completo son de alto riesgo de progresar a bloqueo total o asistolia, y frecuentemente requieren marcapasos — nunca esperar a que el paciente se deteriore para actuar.
+                        </div>
+
+                        <h4>¿Mobitz I o Mobitz II?</h4>
+                        <p>Es la distinción de mayor peso clínico de esta unidad — ponla a prueba.</p>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Un trazado muestra un PR que se alarga progresivamente, latido a latido, hasta que un QRS se bloquea por completo, con acortamiento del R-R justo antes de la pausa. ¿Qué bloqueo es?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-2"> Bloqueo AV de 1er grado</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-2" data-correcta="true"> Mobitz I (Wenckebach)</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-2"> Mobitz II</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
 
                         <p class="placeholder-nota">Practica los cinco patrones de esta unidad en el simulador (grupo "Bradiarritmias").</p>
@@ -102,21 +151,29 @@
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Extrasístoles</h3>
-                        <p>Las extrasístoles son latidos que aparecen antes de lo esperado (prematuros), interrumpiendo el ritmo de base. Su origen —auricular o ventricular— cambia por completo su morfología y su significado clínico.</p>
+                        <p>Las extrasístoles son latidos que aparecen antes de lo esperado (prematuros), interrumpiendo el ritmo de base. Su origen —auricular o ventricular— cambia por completo su morfología y su significado clínico. Extrasístoles aisladas y ocasionales suelen ser benignas; su importancia aumenta cuando son frecuentes, multifocales o se agrupan (parejas, tripletas), ya que pueden anticipar arritmias más complejas.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>Extrasístole auricular:</strong> onda P prematura, de morfología distinta a la sinusal, seguida de un QRS estrecho normal.</li>
                             <li><strong>Extrasístole ventricular:</strong> QRS prematuro, ancho y de morfología bizarra, sin onda P que lo preceda, generalmente seguido de una pausa compensatoria.</li>
                         </ul>
 
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Extrasístoles aisladas y ocasionales suelen ser benignas. Su importancia clínica aumenta cuando son frecuentes, multifocales o se agrupan (parejas, tripletas), ya que pueden anticipar arritmias más complejas.</p>
-
                         <div class="tarjeta-informativa">
                             <h4>Pausa compensatoria</h4>
                             <p><span class="etiqueta">Definición:</span> Intervalo prolongado después de una extrasístole ventricular, que "compensa" el latido adelantado sin alterar el ritmo de base.</p>
                             <p><span class="etiqueta">Importancia clínica:</span> Ayuda a diferenciar el origen ventricular del auricular, cuyo reinicio del nodo sinusal no suele producir esta pausa completa.</p>
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Aparece un QRS antes de lo esperado, ancho y de morfología bizarra, sin onda P que lo preceda, seguido de una pausa compensatoria completa. ¿De qué tipo de extrasístole se trata?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-3"> Extrasístole auricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-3" data-correcta="true"> Extrasístole ventricular</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-03-3"> Bloqueo AV de 2do grado</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
                         </div>
 
                         <p class="placeholder-nota">Practica: compara "Extrasístole Auricular" y "Extrasístole Ventricular" en el simulador y observa la diferencia de morfología del QRS.</p>
@@ -125,26 +182,25 @@
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Taquicardias Supraventriculares</h3>
-                        <p>Estas taquicardias se originan por encima del haz de His, por lo que conservan un QRS estrecho — la diferencia entre ellas está en la onda P y la regularidad del ritmo.</p>
-
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li><strong>Taquicardia sinusal:</strong> ritmo sinusal normal, pero acelerado (&gt; 100 lpm); onda P y PR conservan su morfología habitual.</li>
-                            <li><strong>Fibrilación auricular:</strong> ausencia total de ondas P organizadas (línea de base fibrilatoria/irregular), con QRS estrecho de conducción irregularmente irregular.</li>
-                            <li><strong>Flutter auricular:</strong> ondas P reemplazadas por un patrón regular en "dientes de sierra", con QRS estrecho de conducción regular (frecuentemente 2:1 o 3:1).</li>
-                        </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>La taquicardia sinusal casi siempre tiene una causa subyacente identificable (fiebre, dolor, hipovolemia, ansiedad) — tratar la causa, no solo la frecuencia. La FA y el flutter requieren evaluar riesgo de formación de trombos y control de frecuencia o ritmo.</p>
-
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Buscar activamente la causa desencadenante ante una taquicardia sinusal, en vez de tratarla como arritmia primaria.</li>
-                            <li>Confirmar la irregularidad "irregularmente irregular" de la FA palpando el pulso, no solo mirando el monitor.</li>
-                        </ul>
+                        <p>Estas taquicardias se originan por encima del haz de His, por lo que conservan un QRS estrecho — la diferencia entre ellas está en la onda P y la regularidad del ritmo. La taquicardia sinusal casi siempre tiene una causa subyacente identificable (fiebre, dolor, hipovolemia, ansiedad): busca activamente esa causa en vez de tratarla como arritmia primaria. La FA y el flutter, en cambio, requieren evaluar riesgo de formación de trombos y control de frecuencia o ritmo — confirma la irregularidad "irregularmente irregular" de la FA palpando el pulso, no solo mirando el monitor.</p>
 
                         <div class="key-box">
                             <strong>💡 Concepto Clave:</strong> QRS estrecho + ritmo irregular sin ondas P organizadas = fibrilación auricular, hasta demostrar lo contrario.
+                        </div>
+
+                        <h4>Actividad: empareja cada ritmo con su hallazgo distintivo</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="sinusal" onclick="manejarClicEmparejar(this)">Taquicardia sinusal</button>
+                                <button class="reto-emparejar-item" data-par="fa" onclick="manejarClicEmparejar(this)">Fibrilación auricular</button>
+                                <button class="reto-emparejar-item" data-par="flutter" onclick="manejarClicEmparejar(this)">Flutter auricular</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="flutter" onclick="manejarClicEmparejar(this)">Ondas en patrón regular de "dientes de sierra", conducción frecuentemente 2:1 o 3:1</button>
+                                <button class="reto-emparejar-item" data-par="sinusal" onclick="manejarClicEmparejar(this)">Onda P y PR conservan su morfología habitual, solo aumenta la frecuencia</button>
+                                <button class="reto-emparejar-item" data-par="fa" onclick="manejarClicEmparejar(this)">Ausencia total de ondas P organizadas, QRS irregularmente irregular</button>
+                            </div>
                         </div>
 
                         <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Taquiarritmias de Complejo Angosto").</p>
@@ -153,17 +209,18 @@
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Taquicardias Ventriculares</h3>
-                        <p>Estas taquicardias se originan en el miocardio ventricular o el sistema His-Purkinje distal, por lo que producen un QRS ancho — y representan un riesgo hemodinámico considerablemente mayor que las supraventriculares.</p>
+                        <p>Estas taquicardias se originan en el miocardio ventricular o el sistema His-Purkinje distal, por lo que producen un QRS ancho — y representan un riesgo hemodinámico considerablemente mayor que las supraventriculares. Toda taquicardia de QRS ancho debe tratarse como de origen ventricular hasta demostrar lo contrario: es la postura más segura para el paciente.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
                             <li><strong>TV monomórfica:</strong> QRS ancho, rápido y de morfología uniforme, latido a latido.</li>
                             <li><strong>TV polimórfica:</strong> QRS ancho, rápido, con morfología que cambia de forma caótica e irregular, sin patrón repetitivo.</li>
                             <li><strong>Torsades de Pointes:</strong> variante de TV polimórfica con un patrón característico en "huso" (la amplitud del QRS crece y decrece de forma cíclica); típicamente asociada a QT prolongado.</li>
                         </ul>
 
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Toda taquicardia de QRS ancho debe tratarse como de origen ventricular hasta demostrar lo contrario — es la postura más segura para el paciente. Torsades obliga a buscar y corregir la causa del QT prolongado (electrolitos, medicamentos) además del tratamiento inmediato.</p>
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            Torsades obliga a buscar y corregir la causa del QT prolongado (electrolitos, medicamentos) además del tratamiento inmediato.
+                        </div>
 
                         <div class="key-box danger">
                             <span class="alert-text">🚨 Alerta Clínica:</span> El sulfato de magnesio es el tratamiento de elección en Torsades de Pointes, incluso con magnesemia normal.
@@ -175,20 +232,31 @@
                     <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 6 · Ritmos Letales</h3>
-                        <p>Estos ritmos corresponden a un paro cardíaco. Reconocerlos de inmediato — y saber cuáles son desfibrilables— es una de las competencias más críticas de este módulo.</p>
+                        <p>Estos ritmos corresponden a un paro cardíaco. Reconocerlos de inmediato — y saber cuáles son desfibrilables — es una de las competencias más críticas de este módulo. El error clínico más grave en este grupo es intentar desfibrilar Asistolia o AESP: ninguna de las dos responde a la descarga, y se pierde tiempo valioso de RCP de alta calidad y búsqueda de causa reversible.</p>
 
-                        <h4>Puntos Clave:</h4>
                         <ul>
-                            <li><strong>Fibrilación ventricular (FV):</strong> caos eléctrico total, sin complejos organizados ni ciclo reconocible. <strong>Desfibrilable.</strong></li>
-                            <li><strong>Asistolia:</strong> ausencia total de actividad eléctrica organizada — línea isoeléctrica. <strong>No desfibrilable.</strong></li>
-                            <li><strong>Actividad eléctrica sin pulso (AESP):</strong> el monitor muestra un ritmo organizado (a veces incluso de apariencia normal), pero el paciente no tiene pulso palpable. <strong>No desfibrilable</strong> — el tratamiento se centra en identificar y corregir la causa (6H y 6T, ver Módulo 02).</li>
+                            <li><strong>Fibrilación ventricular (FV):</strong> caos eléctrico total, sin complejos organizados ni ciclo reconocible.</li>
+                            <li><strong>Asistolia:</strong> ausencia total de actividad eléctrica organizada — línea isoeléctrica.</li>
+                            <li><strong>Actividad eléctrica sin pulso (AESP):</strong> el monitor muestra un ritmo organizado (a veces incluso de apariencia normal), pero el paciente no tiene pulso palpable — el tratamiento se centra en identificar y corregir la causa (6H y 6T, ver Módulo 02).</li>
                         </ul>
-
-                        <h4>Relevancia Clínica:</h4>
-                        <p>El error clínico más grave en este grupo es intentar desfibrilar Asistolia o AESP: ninguna de las dos responde a la descarga, y se pierde tiempo valioso de RCP de alta calidad y búsqueda de causa reversible.</p>
 
                         <div class="key-box danger">
                             <span class="alert-text">🚨 Alerta Clínica:</span> "Ritmo organizado en el monitor" no es sinónimo de "paciente con pulso" — en AESP, siempre se debe verificar el pulso, nunca confiar solo en el trazado.
+                        </div>
+
+                        <h4>Actividad: ¿desfibrilable o no?</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="fv" onclick="manejarClicEmparejar(this)">Fibrilación ventricular</button>
+                                <button class="reto-emparejar-item" data-par="asistolia" onclick="manejarClicEmparejar(this)">Asistolia</button>
+                                <button class="reto-emparejar-item" data-par="aesp" onclick="manejarClicEmparejar(this)">AESP</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="asistolia" onclick="manejarClicEmparejar(this)">No desfibrilable — línea isoeléctrica, sin actividad eléctrica</button>
+                                <button class="reto-emparejar-item" data-par="aesp" onclick="manejarClicEmparejar(this)">No desfibrilable — ritmo organizado en el monitor pero sin pulso palpable</button>
+                                <button class="reto-emparejar-item" data-par="fv" onclick="manejarClicEmparejar(this)">Desfibrilable — caos eléctrico total sin ciclo reconocible</button>
+                            </div>
                         </div>
 
                         <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Ritmos de Parada Cardiaca") y observa cuándo se habilita el botón de desfibrilación.</p>
@@ -197,26 +265,40 @@
                     <!-- UNIDAD 7 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 7 · Algoritmo Diagnóstico (AHA) — Simulador ECG</h3>
-                        <p>Esta unidad integra todo lo anterior en un solo flujo de trabajo, apoyado en el simulador interactivo de esta misma página.</p>
+                        <p>Esta unidad integra todo lo anterior en un solo flujo de trabajo, apoyado en el simulador interactivo de esta misma página. El algoritmo diagnóstico no es una lista de memoria — es el mismo método de 4 pasos aplicado una y otra vez, ritmo por ritmo.</p>
 
-                        <h4>Puntos Clave — algoritmo de trabajo:</h4>
-                        <ul>
-                            <li><strong>1.</strong> Aplica el método sistemático del Módulo 02 (frecuencia, ritmo, onda P, PR, QRS, eje) al ritmo del monitor.</li>
-                            <li><strong>2.</strong> Ubica el ritmo dentro de una de las seis familias de este módulo (sinusal, bradicardia, extrasístole, taquicardia supraventricular, taquicardia ventricular o ritmo letal).</li>
-                            <li><strong>3.</strong> Dentro de esa familia, confirma el diagnóstico específico usando los criterios distintivos de cada unidad.</li>
-                            <li><strong>4.</strong> Verifica el estado hemodinámico del paciente (Módulo 02, Unidad 3) para decidir la urgencia de la respuesta.</li>
-                        </ul>
+                        <h4>Recorre el algoritmo de 4 pasos</h4>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'metodo')">1. Método</button>
+                                <button onclick="activarPasoStepper(this,'familia')">2. Familia</button>
+                                <button onclick="activarPasoStepper(this,'diagnostico')">3. Diagnóstico</button>
+                                <button onclick="activarPasoStepper(this,'hemodinamica')">4. Hemodinámica</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="metodo">
+                                <h5>1. Aplica el método</h5>
+                                <p>Aplica el método sistemático del Módulo 02 (frecuencia, ritmo, onda P, PR, QRS, eje) al ritmo del monitor.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="familia">
+                                <h5>2. Ubica la familia</h5>
+                                <p>Ubica el ritmo dentro de una de las seis familias de este módulo: sinusal, bradicardia, extrasístole, taquicardia supraventricular, taquicardia ventricular o ritmo letal.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="diagnostico">
+                                <h5>3. Confirma el diagnóstico</h5>
+                                <p>Dentro de esa familia, confirma el diagnóstico específico usando los criterios distintivos de cada unidad.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="hemodinamica">
+                                <h5>4. Verifica la hemodinámica</h5>
+                                <p>Verifica el estado hemodinámico del paciente (Módulo 02, Unidad 3) para decidir la urgencia de la respuesta.</p>
+                            </div>
+                        </div>
 
-                        <h4>Cómo usar el simulador de esta unidad:</h4>
+                        <h4>Cómo usar el simulador de esta unidad</h4>
                         <ul>
                             <li>Selecciona cualquier ritmo del listado y observa el trazado, los signos vitales y el registro clínico en tiempo real.</li>
                             <li>Antes de mirar el nombre del ritmo seleccionado, intenta nombrarlo tú mismo aplicando el algoritmo de los 4 pasos.</li>
                             <li>En los ritmos de paro, identifica si el botón de desfibrilación se habilita — y recuerda por qué (Unidad 6).</li>
                         </ul>
-
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> El algoritmo diagnóstico no es una lista de memoria — es el mismo método de 4 pasos aplicado una y otra vez, ritmo por ritmo.
-                        </div>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
