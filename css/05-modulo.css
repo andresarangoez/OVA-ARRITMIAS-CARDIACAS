@@ -134,3 +134,10 @@
 .modulo-bibliografia h3 { color: var(--fucs-azul-profundo); font-size: 1rem; margin-bottom: 12px; }
 .modulo-bibliografia ol { margin: 0; padding-left: 22px; }
 .modulo-bibliografia li { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+
+/* --- FINALIZAR MÓDULO --- */
+/* Mismo separador que .modulo-actividad/.modulo-caso-clinico; el botón
+   reutiliza .btn-comenzar tal cual (sin CSS de botón nuevo). Requiere
+   js/13-shell-indice.js (finalizarModuloActual). */
+.modulo-finalizar-wrap { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-azul-profundo); text-align: center; }
+.modulo-finalizar-wrap p { color: var(--text-muted); margin: 0 0 16px 0; }

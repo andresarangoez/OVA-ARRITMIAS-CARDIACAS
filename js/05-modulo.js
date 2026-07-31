@@ -20,7 +20,7 @@ function iniciarModulo(idModulo) {
     if (bienvenida) bienvenida.style.display = 'none';
     if (desarrollo) {
         desarrollo.style.display = 'block';
-        activarBarraProgreso(desarrollo);
+        activarBarraProgreso(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onProgresoUnidad);
     }
 
     // El simulador solo se revela al entrar al desarrollo del módulo, y solo
@@ -53,6 +53,13 @@ function reiniciarEstadoModulo(idModulo) {
 
     const simulador = document.getElementById('simulador-wrapper');
     if (simulador) simulador.style.display = 'none';
+
+    // Inicializa el shell de navegación del curso (sidebar de índice, tiempo
+    // restante, etc.) si está cargado — opcional y sin efecto si no existe,
+    // para que módulos/páginas sin este shell sigan funcionando igual.
+    if (OVA.ShellModulo && typeof OVA.ShellModulo.prepararModulo === 'function') {
+        OVA.ShellModulo.prepararModulo(idModulo, contenedor);
+    }
 }
 
 // --- BARRA DE PROGRESO (opcional — no hace nada si el módulo no la incluye) ---
@@ -61,24 +68,62 @@ function reiniciarEstadoModulo(idModulo) {
 // visto el estudiante mientras hace scroll. Se activa una sola vez por
 // contenedor (guardia en dataset) para no acumular observers si el
 // estudiante entra y sale del módulo varias veces en la misma sesión.
-function activarBarraProgreso(desarrollo) {
+//
+// onProgreso (opcional) permite que otro componente (el sidebar de índice
+// del curso, ver js/13-shell-indice.js) se entere de cada actualización sin
+// que este archivo sepa nada de él — se le pasa un solo objeto con todo lo
+// que podría necesitar, no argumentos posicionales sueltos:
+//   { indiceActual, elementoActual, indicesVistos, totalUnidades, porcentaje }
+// indiceActual es la unidad visible más arriba en pantalla ahora mismo (se
+// conserva la última conocida si momentáneamente ninguna cumple el umbral,
+// para no "parpadear" a 0 en huecos de scroll). indicesVistos es la lista
+// completa de unidades vistas alguna vez (igual que vistas.size, pero con
+// el detalle de cuáles, no solo cuántas).
+function activarBarraProgreso(desarrollo, onProgreso) {
     const barra = desarrollo.querySelector('.barra-progreso-fill');
     if (!barra || desarrollo.dataset.progresoActivo === 'true') return;
     desarrollo.dataset.progresoActivo = 'true';
 
-    const unidades = desarrollo.querySelectorAll('.modulo-unidad');
+    const unidades = Array.from(desarrollo.querySelectorAll('.modulo-unidad'));
     if (unidades.length === 0) return;
 
     const meta = desarrollo.querySelector('.barra-progreso-meta .porcentaje');
     const vistas = new Set();
+    const actualmenteVisibles = new Set();
+    let indiceActual = 0;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) vistas.add(entry.target);
+            if (entry.isIntersecting) {
+                vistas.add(entry.target);
+                actualmenteVisibles.add(entry.target);
+            } else {
+                actualmenteVisibles.delete(entry.target);
+            }
         });
+
+        if (actualmenteVisibles.size > 0) {
+            indiceActual = unidades.findIndex(unidad => actualmenteVisibles.has(unidad));
+        }
+
         const porcentaje = Math.round((vistas.size / unidades.length) * 100);
         barra.style.width = porcentaje + '%';
         if (meta) meta.textContent = porcentaje + '%';
+
+        if (typeof onProgreso === 'function') {
+            const indicesVistos = unidades.reduce((acc, unidad, indice) => {
+                if (vistas.has(unidad)) acc.push(indice);
+                return acc;
+            }, []);
+
+            onProgreso({
+                indiceActual,
+                elementoActual: unidades[indiceActual],
+                indicesVistos,
+                totalUnidades: unidades.length,
+                porcentaje
+            });
+        }
     }, { threshold: 0.3 });
 
     unidades.forEach(unidad => observer.observe(unidad));

@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +14,7 @@
     <link rel="stylesheet" href="css/04-simulator.css">
     <link rel="stylesheet" href="css/05-modulo.css">
     <link rel="stylesheet" href="css/10-componentes.css">
+    <link rel="stylesheet" href="css/11-shell-modulo.css">
 </head>
 <body>
 
@@ -85,6 +87,37 @@
         </div>
     </aside>
 
+    <aside id="indice-sidebar" class="indice-sidebar" aria-label="Índice del módulo">
+        <button id="indice-toggle" class="indice-toggle" aria-expanded="false" aria-controls="indice-sidebar" title="Índice del módulo" onclick="alternarSidebarIndice()">📚 ÍNDICE</button>
+
+        <div class="indice-header">
+            <div class="indice-header-top">
+                <h2 class="indice-titulo">Selecciona un módulo</h2>
+                <button class="indice-btn-buscar" onclick="alternarBusqueda()" aria-label="Buscar en el módulo" title="Buscar en el módulo">🔍</button>
+            </div>
+            <div class="indice-progreso-linea">
+                <span class="indice-porcentaje">0% completado</span>
+            </div>
+            <div class="indice-barra"><div class="indice-barra-fill" style="width: 0%;"></div></div>
+            <div class="indice-meta-linea">
+                <span class="indice-conteo">0 de 0 unidades</span>
+                <span class="indice-tiempo-restante"></span>
+            </div>
+        </div>
+
+        <div class="indice-busqueda">
+            <input type="text" class="indice-busqueda-input" placeholder="Buscar en el módulo…" oninput="ejecutarBusqueda(this.value)" onkeydown="manejarTeclaBusqueda(event)" aria-label="Texto a buscar">
+            <span class="indice-busqueda-contador">0 de 0</span>
+            <button class="indice-busqueda-nav" onclick="irACoincidenciaAnterior()" aria-label="Resultado anterior">‹</button>
+            <button class="indice-busqueda-nav" onclick="irACoincidenciaSiguiente()" aria-label="Resultado siguiente">›</button>
+            <button class="indice-busqueda-cerrar" onclick="alternarBusqueda()" aria-label="Cerrar búsqueda">×</button>
+        </div>
+
+        <div class="indice-lista-wrap">
+            <ul class="indice-lista"></ul>
+        </div>
+    </aside>
+
     <header class="header-container">
         <span class="header-eyebrow">Facultad de Enfermería · Universidad FUCS</span>
         <h1>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</h1>
@@ -109,34 +142,34 @@
             </div>
             <div class="modules-column">
                 <div class="dashboard-grid">
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('01', 'Fundamentos')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
                 <div class="card-icon" aria-hidden="true">⚡</div>
                 <h3>Módulo 01</h3>
                 <h4>Fundamentos</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('02', 'Valoración')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="02" data-modulo-titulo="Valoración" onclick="abrirModulo('02', 'Valoración')">
                 <div class="card-icon" aria-hidden="true">🩺</div>
                 <h3>Módulo 02</h3>
                 <h4>Valoración</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('03', 'Diagnóstico')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
                 <div class="card-icon" aria-hidden="true">📈</div>
                 <h3>Módulo 03</h3>
                 <h4>Diagnóstico</h4>
                 <span class="card-badge">Simulador interactivo</span>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('04', 'Planeación')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="04" data-modulo-titulo="Planeación" onclick="abrirModulo('04', 'Planeación')">
                 <div class="card-icon" aria-hidden="true">📋</div>
                 <h3>Módulo 04</h3>
                 <h4>Planeación</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('05', 'Intervención')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
                 <div class="card-icon" aria-hidden="true">💉</div>
                 <h3>Módulo 05</h3>
                 <h4>Intervención</h4>
                 <span class="card-badge">Simulador interactivo</span>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('06', 'Evaluación')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
                 <div class="card-icon" aria-hidden="true">✅</div>
                 <h3>Módulo 06</h3>
                 <h4>Evaluación</h4>
@@ -250,6 +283,20 @@
 
     </main>
 
+    <div id="modal-finalizacion" class="modal-overlay" aria-hidden="true">
+        <div class="modal-caja modal-finalizacion">
+            <button class="modal-cerrar" onclick="cerrarModal('modal-finalizacion')" aria-label="Cerrar">×</button>
+            <div class="modal-finalizacion-check" aria-hidden="true">✓</div>
+            <h2 class="modal-finalizacion-titulo">¡Felicitaciones!</h2>
+            <p class="modal-finalizacion-texto">Has concluido exitosamente este módulo.</p>
+            <div class="modal-finalizacion-progreso">100% completado</div>
+            <div class="modal-finalizacion-acciones">
+                <button id="modal-finalizacion-siguiente" class="btn-comenzar" onclick="continuarSiguienteModulo()">Continuar al siguiente módulo</button>
+                <button class="btn-accion" onclick="cerrarModal('modal-finalizacion'); volverHome();">Volver al inicio</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="fucs-footer">
         <div class="footer-brand">
             <img src="assets/images/logo-fucs.png" alt="Logo Universidad FUCS" class="footer-logo">
@@ -297,5 +344,7 @@
     <script src="js/10-componentes.js"></script>
     <script src="js/11-contenido-dinamico.js"></script>
     <script src="js/12-widgets-aprendizaje.js"></script>
+    <script src="js/13-shell-indice.js"></script>
+    <script src="js/14-busqueda-modulo.js"></script>
 </body>
 </html>
