@@ -12,11 +12,12 @@
 //
 // Convención angular: 0° = derivación I (derecha), 90° = aVF (abajo),
 // los grados aumentan en sentido horario — igual que el sistema hexaxial
-// clínico estándar. No requiere inicialización: el diagrama SVG y las
-// derivaciones en miniatura ya vienen con marcado estático por defecto en
-// modules/modulo-01.html (ángulo inicial 45°), y este archivo solo
-// reacciona a los eventos onpointerdown/onclick declarados ahí — mismo
-// patrón que el resto de los widgets de aprendizaje del proyecto.
+// clínico estándar. El diagrama hexaxial ya viene con marcado estático por
+// defecto en modules/modulo-01.html (ángulo inicial 45°); el trazado de las
+// 6 derivaciones sí necesita JavaScript para dibujarse (ver el listener de
+// "animationstart" más abajo). El resto de la interacción reacciona a los
+// eventos onpointerdown/onclick declarados en el HTML — mismo patrón que el
+// resto de los widgets de aprendizaje del proyecto.
 
 const DERIVACIONES = ['I', 'II', 'III', 'aVR', 'aVL', 'aVF'];
 const GRADOS_DERIVACION = { I: 0, II: 60, III: 120, aVR: 210, aVL: 330, aVF: 90 };
@@ -48,14 +49,114 @@ function clasificarEje(grado) {
     return CUADRANTES.find(c => gComparable >= c.desde && gComparable < c.hasta) || CUADRANTES[0];
 }
 
-// --- DIBUJO (actualiza el vector, la lectura y las 6 tiras en miniatura) ---
+// --- TRAZADO DE LAS 6 DERIVACIONES ---
+//
+// Geometría de cada latido (arco P, PQ, complejo QRS con lógica de umbral
+// R/S, ST, arco T) reproducida sin modificaciones a partir de drawQRS() y
+// drawEcgLine() en resources/js/ecgDrawing.js del proyecto original —
+// mismo origen y licencia que la nota del encabezado. Traducida de llamadas
+// canvas (ctx.arc/ctx.lineTo) a comandos de un path SVG equivalente, para
+// no depender de <canvas> ni de un paso de inicialización (ver más abajo).
 
-function puntosTira(amplitud) {
-    const base = 15;
-    const pico = (base - amplitud * 12).toFixed(1);
-    const rebote = (base + amplitud * 4).toFixed(1);
-    return `0,${base} 35,${base} 45,${pico} 55,${rebote} 65,${base} 100,${base}`;
+const UMBRAL_QRS = 0.25;
+const FACTOR_TRAZO = 17; // "1 cm" del ECG, en unidades del viewBox
+const X_INICIO_TRAZO = 30;
+const ALTO_FILA = 35;
+const LATIDOS_POR_TIRA = 3;
+
+function arcoSuperior(cx, cy, r) {
+    // Asume que el trazo ya está en (cx-r, cy); dibuja el semicírculo
+    // superior hasta (cx+r, cy) — equivalente a ctx.arc(cx, cy, r, PI, 0).
+    return ' A ' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0,1 ' + (cx + r).toFixed(1) + ',' + cy;
 }
+
+function segmentoLatido(x0, y, amplitud) {
+    const f = FACTOR_TRAZO;
+    let d = arcoSuperior(x0 + 0.25 * f, y, 0.25 * f); // onda P
+
+    const finPQ = x0 + f;
+    d += ' L ' + finPQ.toFixed(1) + ',' + y; // segmento PQ
+
+    let p1y, p2y;
+    if (amplitud >= UMBRAL_QRS) {
+        p1y = y - amplitud * f * 2;
+        p2y = y + amplitud * f * 0.6;
+    } else if (amplitud >= 0) {
+        p1y = y - UMBRAL_QRS * f * 2;
+        p2y = y + Math.max(UMBRAL_QRS * 0.6, (UMBRAL_QRS - amplitud) * 2) * f;
+    } else if (amplitud > -UMBRAL_QRS) {
+        p1y = y - Math.max(UMBRAL_QRS * 0.6, (UMBRAL_QRS + amplitud) * 2) * f;
+        p2y = y + UMBRAL_QRS * 2 * f;
+    } else {
+        p1y = y + amplitud * f * 0.6;
+        p2y = y - amplitud * f * 2;
+    }
+    const p1x = x0 + f + f * 0.17;
+    const p2x = x0 + f + f * 0.34;
+    const p3x = x0 + f + f * 0.5;
+    d += ' L ' + p1x.toFixed(1) + ',' + p1y.toFixed(1);
+    d += ' L ' + p2x.toFixed(1) + ',' + p2y.toFixed(1);
+    d += ' L ' + p3x.toFixed(1) + ',' + y; // fin del QRS
+
+    const inicioST = x0 + 2.6 * f - 0.4 * f;
+    d += ' L ' + inicioST.toFixed(1) + ',' + y; // segmento ST (plano)
+    d += arcoSuperior(x0 + 2.6 * f, y, 0.4 * f); // onda T
+
+    return d;
+}
+
+function construirTrazado(amplitud, y) {
+    let d = 'M ' + X_INICIO_TRAZO + ',' + y;
+    let x = X_INICIO_TRAZO;
+    for (let i = 0; i < LATIDOS_POR_TIRA; i++) {
+        d += segmentoLatido(x, y, amplitud);
+        const siguiente = x + 5 * FACTOR_TRAZO;
+        d += ' L ' + siguiente.toFixed(1) + ',' + y; // línea isoeléctrica hasta el próximo latido
+        x = siguiente;
+    }
+    return d;
+}
+
+function dibujarTrazado(raiz, angulo) {
+    DERIVACIONES.forEach((nombre, indice) => {
+        const trazo = raiz.querySelector('.simulador-eje-trazo[data-derivacion="' + nombre + '"]');
+        if (!trazo) return;
+        const amplitud = calcularAmplitud(angulo, GRADOS_DERIVACION[nombre]);
+        const y = ALTO_FILA / 2 + indice * ALTO_FILA;
+        trazo.setAttribute('d', construirTrazado(amplitud, y));
+    });
+}
+
+// El HTML de cada módulo se inyecta con innerHTML (js/03-navegacion.js) y
+// los <script> inyectados así no se ejecutan — no hay ningún momento
+// "el módulo ya cargó" al que engancharse para dibujar el trazado por
+// primera vez. Un MutationObserver sobre #vista-modulo (ancestro estable,
+// siempre presente en index.html) detecta la inserción sin importar en qué
+// módulo ocurra ni qué tan anidado esté el widget — no depende de
+// animaciones/compositing, a diferencia de otros trucos de "detectar
+// montaje" (se probó con CSS animationstart y no disparaba de forma
+// confiable). El guardado en dataset evita redibujar en cada mutación no
+// relacionada que ocurra en el resto del módulo (mini-retos, autoevaluación).
+const observadorMontajeEje = new MutationObserver((mutaciones) => {
+    mutaciones.forEach((mutacion) => {
+        mutacion.addedNodes.forEach((nodo) => {
+            if (nodo.nodeType !== 1) return;
+            const raices = nodo.classList && nodo.classList.contains('simulador-eje')
+                ? [nodo]
+                : (nodo.querySelectorAll ? Array.from(nodo.querySelectorAll('.simulador-eje')) : []);
+            raices.forEach((raiz) => {
+                if (raiz.dataset.trazadoListo === 'true') return;
+                raiz.dataset.trazadoListo = 'true';
+                dibujarTrazado(raiz, parseFloat(raiz.dataset.angulo) || 45);
+            });
+        });
+    });
+});
+
+const vistaModuloEje = document.getElementById('vista-modulo');
+if (vistaModuloEje) observadorMontajeEje.observe(vistaModuloEje, { childList: true, subtree: true });
+
+// --- DIBUJO (actualiza el vector, la lectura y el trazado) ---
 
 function actualizarDiagrama(raiz, angulo, ocultarLectura) {
     const rad = gradosARad(angulo);
@@ -75,12 +176,7 @@ function actualizarDiagrama(raiz, angulo, ocultarLectura) {
             : cuadrante.nombre + ' · ' + Math.round(normalizar360(angulo)) + '°';
     }
 
-    DERIVACIONES.forEach(nombre => {
-        const tira = raiz.querySelector('.simulador-eje-tira[data-derivacion="' + nombre + '"] polyline');
-        if (!tira) return;
-        const amplitud = calcularAmplitud(angulo, GRADOS_DERIVACION[nombre]);
-        tira.setAttribute('points', puntosTira(amplitud));
-    });
+    dibujarTrazado(raiz, angulo);
 
     return cuadrante;
 }
@@ -117,12 +213,17 @@ document.addEventListener('pointercancel', () => { arrastreActivo = null; });
 
 // --- MODO PRÁCTICA (casos al azar + puntaje, reutiliza el mismo diagrama) ---
 
+// Banco fijo de 16 casos (≥ 4 por cuadrante), con margen respecto a cada
+// límite para que ningún caso quede ambiguo entre dos categorías.
+const CASOS_PRACTICA = [
+    -15, 15, 45, 75,        // normal
+    105, 130, 150, 170,     // desviación derecha
+    195, 215, 235, 255,     // indeterminado
+    280, 295, 310, 322      // desviación izquierda
+];
+
 function anguloAleatorioValido() {
-    const cuadrante = CUADRANTES[Math.floor(Math.random() * CUADRANTES.length)];
-    const margen = 8; // evita ángulos justo en el límite entre dos cuadrantes
-    const min = cuadrante.desde + margen;
-    const max = cuadrante.hasta - margen;
-    return min + Math.random() * (max - min);
+    return CASOS_PRACTICA[Math.floor(Math.random() * CASOS_PRACTICA.length)];
 }
 
 function nuevoCaso(boton) {
