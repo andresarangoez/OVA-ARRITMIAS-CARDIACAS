@@ -337,13 +337,53 @@
 
                         <p><strong>En este apartado vas a:</strong> relacionar la posición del vector del eje con la polaridad que produce en cada derivación, y practicar su clasificación en las 4 categorías que usa este curso (normal, desviación izquierda, desviación derecha, indeterminado).</p>
 
-                        <p><strong>Instrucciones:</strong> arrastra la flecha azul dentro del círculo (o desliza el dedo en pantallas táctiles) para rotar el eje y observa en tiempo real cómo cambia la polaridad de las 6 derivaciones. Cuando quieras ponerte a prueba, usa "Practicar con casos".</p>
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Derivación I</th><th>Derivación aVF</th><th>Eje resultante</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Positiva</td><td>Positiva</td><td>Normal (-30° a +90°)</td></tr>
+                                <tr><td>Positiva</td><td>Negativa</td><td>Desviación izquierda</td></tr>
+                                <tr><td>Negativa</td><td>Positiva</td><td>Desviación derecha</td></tr>
+                                <tr><td>Negativa</td><td>Negativa</td><td>Indeterminado / extremo</td></tr>
+                            </tbody>
+                        </table>
+
+                        <p><strong>Instrucciones:</strong> arrastra la flecha azul dentro del círculo (o desliza el dedo en pantallas táctiles) para rotar el eje y observa en tiempo real cómo cambia la polaridad de las 6 derivaciones.</p>
 
                         <div class="simulador-eje" data-angulo="45" data-modo-practica="false" data-aciertos="0" data-intentos="0">
                             <p class="simulador-eje-etiqueta">🧭 Eje interactivo — arrastra para ver</p>
 
                             <div class="simulador-eje-grid">
-                                <svg class="simulador-eje-svg" viewBox="-115 -115 230 230" role="img" aria-label="Diagrama hexaxial interactivo del eje eléctrico cardíaco">
+                                <div class="simulador-eje-columna-circulo">
+                                <p class="simulador-eje-lectura">Normal · 45°</p>
+                                <svg class="simulador-eje-svg" viewBox="-130 -130 260 260" role="img" aria-label="Diagrama hexaxial interactivo del eje eléctrico cardíaco">
+                                    <g class="simulador-eje-grados">
+                                        <line x1="85" y1="0" x2="92" y2="0"></line>
+                                        <text x="115" y="0">0°</text>
+                                        <line x1="73.6" y1="42.5" x2="79.7" y2="46"></line>
+                                        <text x="99.6" y="57.5">+30°</text>
+                                        <line x1="42.5" y1="73.6" x2="46" y2="79.7"></line>
+                                        <text x="57.5" y="99.6">+60°</text>
+                                        <line x1="0" y1="85" x2="0" y2="92"></line>
+                                        <text x="0" y="115">+90°</text>
+                                        <line x1="-42.5" y1="73.6" x2="-46" y2="79.7"></line>
+                                        <text x="-57.5" y="99.6">+120°</text>
+                                        <line x1="-73.6" y1="42.5" x2="-79.7" y2="46"></line>
+                                        <text x="-99.6" y="57.5">+150°</text>
+                                        <line x1="-85" y1="0" x2="-92" y2="0"></line>
+                                        <text x="-115" y="0">180°</text>
+                                        <line x1="-73.6" y1="-42.5" x2="-79.7" y2="-46"></line>
+                                        <text x="-99.6" y="-57.5">-150°</text>
+                                        <line x1="-42.5" y1="-73.6" x2="-46" y2="-79.7"></line>
+                                        <text x="-57.5" y="-99.6">-120°</text>
+                                        <line x1="0" y1="-85" x2="0" y2="-92"></line>
+                                        <text x="0" y="-115">-90°</text>
+                                        <line x1="42.5" y1="-73.6" x2="46" y2="-79.7"></line>
+                                        <text x="57.5" y="-99.6">-60°</text>
+                                        <line x1="73.6" y1="-42.5" x2="79.7" y2="-46"></line>
+                                        <text x="99.6" y="-57.5">-30°</text>
+                                    </g>
                                     <g class="simulador-eje-cuadrantes">
                                         <path class="simulador-eje-cuadrante simulador-eje-cuadrante--normal" d="M0,0 L73.61,-42.5 A85,85 0 0,1 0,85 Z"></path>
                                         <path class="simulador-eje-cuadrante simulador-eje-cuadrante--derecha" d="M0,0 L0,85 A85,85 0 0,1 -85,0 Z"></path>
@@ -370,9 +410,9 @@
                                         <circle class="simulador-eje-asa" cx="48.1" cy="48.1" r="9"></circle>
                                     </g>
                                 </svg>
+                                </div>
 
                                 <div class="simulador-eje-derivaciones-mini">
-                                    <p class="simulador-eje-lectura">Normal · 45°</p>
                                     <div class="simulador-eje-trazado-wrap">
                                         <svg class="simulador-eje-trazado" viewBox="0 0 300 210" preserveAspectRatio="none" role="img" aria-label="Trazado de las 6 derivaciones del plano frontal para el eje actual">
                                             <g class="simulador-eje-trazado-etiquetas">
@@ -395,7 +435,11 @@
                             </div>
 
                             <div class="simulador-eje-practica">
-                                <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.alternarModoPractica(this)">Practicar con casos</button>
+                                <div class="simulador-eje-controles">
+                                    <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.alternarModoPractica(this)">Practicar con casos</button>
+                                    <button type="button" class="btn-accion simulador-eje-boton-siguiente" onclick="OVA.SimuladorEje.nuevoCaso(this)" hidden>Nuevo caso</button>
+                                    <span class="simulador-eje-marcador-wrap" hidden>Respuestas correctas: <span class="simulador-eje-marcador">0/0</span></span>
+                                </div>
                                 <div class="simulador-eje-respuestas" hidden>
                                     <div class="actividad-opciones">
                                         <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'normal')">Normal</button>
@@ -404,10 +448,6 @@
                                         <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'indeterminado')">Indeterminado</button>
                                     </div>
                                     <p class="simulador-eje-feedback"></p>
-                                    <div class="simulador-eje-marcador-wrap">
-                                        <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.nuevoCaso(this)">Nuevo caso</button>
-                                        <span>Aciertos: <span class="simulador-eje-marcador">0/0</span></span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -415,7 +455,7 @@
                         </div>
 
                         <h4>Interpretación clínica</h4>
-                        <p>Con el eje ya identificado, la lectura es directa: un eje <strong>normal</strong> confirma que el vector medio de despolarización va de arriba-derecha hacia abajo-izquierda, como se espera en un corazón sin sobrecarga estructural relevante. Una <strong>desviación izquierda</strong> o <strong>derecha</strong> no diagnostica una causa por sí sola — es una pista que se combina con el resto del trazado (Unidad 6) y con la clínica del paciente. Un eje <strong>indeterminado</strong> (también llamado "noroeste") es el hallazgo menos frecuente y el que más debe llamar la atención, porque casi siempre acompaña patología significativa.</p>
+                        <p>Con el eje ya identificado, la lectura es directa: un eje <strong>normal</strong> confirma que el vector medio de despolarización va de arriba-derecha hacia abajo-izquierda, como se espera en un corazón sin sobrecarga estructural relevante. Una <strong>desviación izquierda</strong> o <strong>derecha</strong> no diagnostica una causa por sí sola — es una pista que se combina con el resto del trazado (Unidad 6) y con la clínica del paciente. Un eje <strong>indeterminado</strong> (también llamado "desviación extrema") es el hallazgo menos frecuente y el que más debe llamar la atención, porque casi siempre acompaña patología significativa.</p>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>

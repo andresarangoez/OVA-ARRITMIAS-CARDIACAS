@@ -35,6 +35,8 @@
     .simulador-eje-grid { grid-template-columns: 1fr; }
 }
 
+.simulador-eje-columna-circulo { display: flex; flex-direction: column; align-items: center; }
+
 .simulador-eje-svg {
     width: 100%;
     max-width: 300px;
@@ -52,6 +54,15 @@
 .simulador-eje-cuadrante--derecha { fill: var(--info); }
 .simulador-eje-cuadrante--indeterminado { fill: var(--danger); }
 .simulador-eje-cuadrante--izquierda { fill: var(--warning); }
+
+.simulador-eje-grados line { stroke: var(--text-muted); stroke-width: 1; }
+.simulador-eje-grados text {
+    fill: var(--text-muted);
+    font-size: 8.5px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
 
 .simulador-eje-derivaciones line {
     stroke: rgba(9, 39, 85, 0.35);
@@ -116,6 +127,18 @@
 
 .simulador-eje-practica { margin-top: 20px; text-align: center; }
 
+/* Los 3 controles (alternar modo, avanzar de caso, marcador) quedan en la
+   misma fila y a la misma altura, se muestren o no según el modo. */
+.simulador-eje-controles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.simulador-eje-marcador-wrap { font-size: 0.85rem; color: var(--text-muted); }
+
 .simulador-eje-respuestas { margin-top: 16px; }
 .simulador-eje-respuestas .actividad-opciones {
     flex-direction: row;
@@ -134,22 +157,17 @@
     transition: 0.2s;
 }
 .simulador-eje-respuesta:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.1); }
+.simulador-eje-respuesta:disabled { opacity: 0.4; cursor: not-allowed; }
+.simulador-eje-respuesta:disabled:hover { border-color: var(--fucs-gris); background: #ffffff; }
 
 .simulador-eje-feedback { margin: 12px 0 0 0; font-weight: 600; font-size: 0.88rem; min-height: 1.2em; }
 .simulador-eje-feedback.correcto { color: var(--success); }
 .simulador-eje-feedback.incorrecto { color: var(--danger); }
 
-.simulador-eje-marcador-wrap {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
 .simulador-eje-creditos {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
     margin: 20px 0 0 0;
     padding-top: 12px;
     border-top: 1px solid var(--fucs-gris);

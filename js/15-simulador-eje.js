@@ -226,6 +226,10 @@ function anguloAleatorioValido() {
     return CASOS_PRACTICA[Math.floor(Math.random() * CASOS_PRACTICA.length)];
 }
 
+function fijarRespuestasHabilitadas(raiz, habilitadas) {
+    raiz.querySelectorAll('.simulador-eje-respuesta').forEach((boton) => { boton.disabled = !habilitadas; });
+}
+
 function nuevoCaso(boton) {
     const raiz = (boton ? boton.closest('.simulador-eje') : document.querySelector('.simulador-eje[data-modo-practica="true"]'));
     if (!raiz) return;
@@ -233,6 +237,7 @@ function nuevoCaso(boton) {
     raiz.dataset.angulo = angulo;
     const feedback = raiz.querySelector('.simulador-eje-feedback');
     if (feedback) { feedback.textContent = ''; feedback.className = 'simulador-eje-feedback'; }
+    fijarRespuestasHabilitadas(raiz, true);
     actualizarDiagrama(raiz, angulo, true);
 }
 
@@ -240,19 +245,25 @@ function alternarModoPractica(boton) {
     const raiz = boton.closest('.simulador-eje');
     if (!raiz) return;
     const activo = raiz.dataset.modoPractica === 'true';
-    const panel = raiz.querySelector('.simulador-eje-respuestas');
+    const panelRespuestas = raiz.querySelector('.simulador-eje-respuestas');
+    const botonSiguiente = raiz.querySelector('.simulador-eje-boton-siguiente');
+    const marcadorWrap = raiz.querySelector('.simulador-eje-marcador-wrap');
 
     if (activo) {
         raiz.dataset.modoPractica = 'false';
         boton.textContent = 'Practicar con casos';
-        if (panel) panel.hidden = true;
+        if (panelRespuestas) panelRespuestas.hidden = true;
+        if (botonSiguiente) botonSiguiente.hidden = true;
+        if (marcadorWrap) marcadorWrap.hidden = true;
         const anguloExploracion = 45;
         raiz.dataset.angulo = anguloExploracion;
         actualizarDiagrama(raiz, anguloExploracion, false);
     } else {
         raiz.dataset.modoPractica = 'true';
         boton.textContent = 'Volver a modo exploración';
-        if (panel) panel.hidden = false;
+        if (panelRespuestas) panelRespuestas.hidden = false;
+        if (botonSiguiente) botonSiguiente.hidden = false;
+        if (marcadorWrap) marcadorWrap.hidden = false;
         nuevoCaso(boton);
     }
 }
@@ -275,9 +286,16 @@ function responder(boton, clase) {
 
     const feedback = raiz.querySelector('.simulador-eje-feedback');
     if (feedback) {
-        feedback.textContent = acierto ? 'Correcto — ' + cuadrante.nombre + '.' : 'No — el vector corresponde a ' + cuadrante.nombre + '.';
+        feedback.textContent = acierto
+            ? 'Correcto — ' + cuadrante.nombre + '. Pulsa "Nuevo caso" para continuar.'
+            : 'No — el vector corresponde a ' + cuadrante.nombre + '. Intenta de nuevo.';
         feedback.className = 'simulador-eje-feedback ' + (acierto ? 'correcto' : 'incorrecto');
     }
+
+    // Una vez acertado, se bloquean las respuestas para que el estudiante no
+    // pueda seguir probando opciones al azar — la única acción posible pasa
+    // a ser avanzar al siguiente caso.
+    if (acierto) fijarRespuestasHabilitadas(raiz, false);
 
     actualizarDiagrama(raiz, angulo, false);
 }
