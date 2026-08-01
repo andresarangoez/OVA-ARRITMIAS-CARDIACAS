@@ -7,8 +7,6 @@
 .modulo-bienvenida { max-width: 640px; margin: 0 auto; }
 
 .modulo-encabezado { margin-bottom: 32px; text-align: center; }
-.modulo-numero { display: inline-block; color: var(--fucs-azul-oscuro); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-.modulo-icono-grande { font-size: 2.4rem; display: block; margin-bottom: 10px; }
 .modulo-titulo-bienvenida { color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; margin: 0 0 14px 0; }
 .modulo-meta { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.9rem; }
 .modulo-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fucs-gris); }
@@ -141,3 +139,32 @@
    js/13-shell-indice.js (finalizarModuloActual). */
 .modulo-finalizar-wrap { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-azul-profundo); text-align: center; }
 .modulo-finalizar-wrap p { color: var(--text-muted); margin: 0 0 16px 0; }
+
+/* --- ALINEACIÓN DE TEXTO ACADÉMICO ---
+   Párrafos de contenido (desarrollo de unidad, explicación clínica,
+   caso clínico) y cajas de nota/alerta se justifican para dar una
+   apariencia más cercana a un texto académico impreso. :where() le
+   quita especificidad a la regla general, así cualquier excepción de
+   una sola clase la gana sin depender del orden en la hoja de estilos. */
+:where(.modulo-unidad, .modulo-caso-clinico) p {
+    text-align: justify;
+}
+.error-frecuente, .dato-curioso, .perla-clinica, .caja-exito, .key-box {
+    text-align: justify;
+}
+
+/* Excepciones: preguntas, respuestas, leyendas de imagen, tarjetas y
+   textos de interfaz de widgets nunca se justifican, aunque vivan
+   dentro de un contenedor justificado. */
+.mini-reto-enunciado,
+.mini-reto-feedback,
+.actividad-enunciado,
+.figura-caption,
+.caso-clinico-preguntas p,
+.caso-clinico-campo p,
+.tarjeta-informativa p,
+.simulador-eje-lectura,
+.simulador-eje-feedback,
+.simulador-eje-creditos {
+    text-align: left;
+}

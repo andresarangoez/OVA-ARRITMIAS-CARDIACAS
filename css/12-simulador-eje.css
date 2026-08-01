@@ -166,13 +166,7 @@
 
 .simulador-eje-creditos {
     display: block;
-    /* Márgenes negativos iguales al padding de .simulador-eje (24px): así el
-       borde superior y el fondo del texto llegan de extremo a extremo de la
-       tarjeta, en vez de quedar cortos por el padding del contenedor. El
-       padding interno vuelve a alinear el texto con el resto del contenido. */
-    margin: 20px -24px 0;
-    padding: 12px 24px 0;
-    border-top: 1px solid var(--fucs-gris);
+    margin: 20px 0 0 0;
     font-size: 0.62rem;
     color: var(--text-muted);
     text-align: center;
