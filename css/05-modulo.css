@@ -165,6 +165,8 @@
 .tarjeta-informativa p,
 .simulador-eje-lectura,
 .simulador-eje-feedback,
-.simulador-eje-creditos {
+.simulador-eje-creditos,
+.corazon-estructuras-nombre,
+.corazon-estructuras-texto {
     text-align: left;
 }

@@ -31,3 +31,17 @@ El cálculo de amplitud por derivación y la clasificación del eje en `js/15-si
 > SOFTWARE.
 
 Ningún archivo del repositorio original fue copiado ni modificado directamente. El OVA reimplementa el principio matemático (proyección coseno del vector del eje sobre cada derivación) como funciones propias dentro de su propia arquitectura (`OVA.SimuladorEje`), con interfaz, estilos e interacción construidos desde cero para este proyecto.
+
+---
+
+## Estructuras del corazón (Módulo 01, Unidad 1)
+
+El widget interactivo de identificación de estructuras cardíacas en `js/16-corazon-estructuras.js` / `css/13-corazon-estructuras.css` está inspirado en el simulador **Heart Structures** de Human Bio Media.
+
+- Sitio: https://humanbiomedia.org
+- Simulador de referencia: https://humanbiomedia.org/simulations/circulatory-system/cardiac-cycle/heart-structures.html
+- Licencia: Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+> Human Bio Media materials are open-source and can be adapted and shared by anyone, including commercial organizations, according to the Creative Commons Attribution 4.0 International (CC BY 4.0) guidelines. If you are redistributing Human Bio Media materials in print or digital formats, you should include on every page the following attribution: Access for free at https://humanbiomedia.org.
+
+El simulador original es una animación de Adobe Animate/CreateJS exportada a `<canvas>`, sin código ni archivo de imagen descargable — no existe un "archivo fuente" que copiar. La imagen `assets/images/corazon-estructuras-diagrama.png` se obtuvo exportando el propio `<canvas>` renderizado del simulador (`canvas.toDataURL()`), recortando únicamente el diagrama del corazón (sin la interfaz propia de Human Bio Media). El código de interacción (`js/16-corazon-estructuras.js`, `css/13-corazon-estructuras.css`) es propio, construido desde cero para la identidad visual del OVA. Las 14 estructuras, sus textos en español y su ubicación sobre la imagen fueron tomados y adaptados del contenido del simulador de referencia. La atribución requerida por la licencia aparece de forma visible al pie del widget en `modules/modulo-01.html`.
