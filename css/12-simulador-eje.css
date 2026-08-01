@@ -1,0 +1,185 @@
+/* ============================================================
+   SIMULADOR DE EJE ELÉCTRICO — Módulo 01, Unidad 5
+   Interacción y cálculo en js/15-simulador-eje.js.
+   ============================================================ */
+
+.simulador-eje {
+    background: var(--bg-shell);
+    border-radius: var(--bento-radius-xl);
+    box-shadow: var(--bento-shadow-soft);
+    padding: 24px;
+    margin: 20px 0;
+}
+
+.simulador-eje-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 62, 124, 0.08);
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin: 0 0 18px 0;
+}
+
+.simulador-eje-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .simulador-eje-grid { grid-template-columns: 1fr; }
+}
+
+.simulador-eje-columna-circulo { display: flex; flex-direction: column; align-items: center; }
+
+.simulador-eje-svg {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+    overflow: visible;
+}
+.simulador-eje-svg:active { cursor: grabbing; }
+
+.simulador-eje-cuadrante { opacity: 0.55; }
+.simulador-eje-cuadrante--normal { fill: var(--success); }
+.simulador-eje-cuadrante--derecha { fill: var(--info); }
+.simulador-eje-cuadrante--indeterminado { fill: var(--danger); }
+.simulador-eje-cuadrante--izquierda { fill: var(--warning); }
+
+.simulador-eje-grados line { stroke: var(--text-muted); stroke-width: 1; }
+.simulador-eje-grados text {
+    fill: var(--text-muted);
+    font-size: 8.5px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.simulador-eje-derivaciones line {
+    stroke: rgba(9, 39, 85, 0.35);
+    stroke-width: 1;
+}
+.simulador-eje-derivaciones text {
+    fill: var(--fucs-azul-profundo);
+    font-size: 11px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.simulador-eje-vector {
+    stroke: var(--fucs-azul-profundo);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+.simulador-eje-asa {
+    fill: var(--fucs-azul-profundo);
+    stroke: white;
+    stroke-width: 2;
+}
+
+.simulador-eje-derivaciones-mini { display: flex; flex-direction: column; gap: 6px; }
+
+.simulador-eje-lectura {
+    margin: 0 0 6px 0;
+    font-weight: 700;
+    color: var(--fucs-azul-profundo);
+    font-size: 0.95rem;
+}
+
+/* Papel de ECG: cuadrícula fina (1 mm) + cuadrícula gruesa (5 mm), mismo
+   patrón visual que el papel milimetrado real, en proporción 5:1. */
+.simulador-eje-trazado-wrap {
+    background-color: #fff9f9;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(255, 172, 172, 0.55) 0 1px, transparent 1px 30px),
+        repeating-linear-gradient(90deg, rgba(255, 172, 172, 0.55) 0 1px, transparent 1px 30px),
+        repeating-linear-gradient(0deg, rgba(255, 211, 211, 0.6) 0 1px, transparent 1px 6px),
+        repeating-linear-gradient(90deg, rgba(255, 211, 211, 0.6) 0 1px, transparent 1px 6px);
+    border: 1px solid var(--fucs-gris);
+    border-radius: var(--radius-sm);
+}
+
+.simulador-eje-trazado { width: 100%; display: block; }
+
+.simulador-eje-trazado-etiquetas text {
+    font-size: 9px;
+    font-weight: 700;
+    fill: var(--fucs-azul-profundo);
+    dominant-baseline: middle;
+}
+
+.simulador-eje-trazo {
+    fill: none;
+    stroke: #1a1a1a;
+    stroke-width: 1.4;
+    vector-effect: non-scaling-stroke;
+}
+
+.simulador-eje-practica { margin-top: 20px; text-align: center; }
+
+/* Los 3 controles (alternar modo, avanzar de caso, marcador) quedan en la
+   misma fila y a la misma altura, se muestren o no según el modo. */
+.simulador-eje-controles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.simulador-eje-marcador-wrap { font-size: 0.85rem; color: var(--text-muted); }
+
+.simulador-eje-respuestas { margin-top: 16px; }
+.simulador-eje-respuestas .actividad-opciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.simulador-eje-respuesta {
+    background: #ffffff;
+    color: var(--fucs-azul-profundo);
+    border: 1px solid var(--fucs-gris);
+    border-radius: var(--bento-radius-md);
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.simulador-eje-respuesta:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.1); }
+.simulador-eje-respuesta:disabled { opacity: 0.4; cursor: not-allowed; }
+.simulador-eje-respuesta:disabled:hover { border-color: var(--fucs-gris); background: #ffffff; }
+
+.simulador-eje-feedback { margin: 12px 0 0 0; font-weight: 600; font-size: 0.88rem; min-height: 1.2em; }
+.simulador-eje-feedback.correcto { color: var(--success); }
+.simulador-eje-feedback.incorrecto { color: var(--danger); }
+
+.simulador-eje-creditos {
+    display: block;
+    /* Márgenes negativos iguales al padding de .simulador-eje (24px): así el
+       borde superior y el fondo del texto llegan de extremo a extremo de la
+       tarjeta, en vez de quedar cortos por el padding del contenedor. El
+       padding interno vuelve a alinear el texto con el resto del contenido. */
+    margin: 20px -24px 0;
+    padding: 12px 24px 0;
+    border-top: 1px solid var(--fucs-gris);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-align: center;
+    white-space: nowrap;
+}
+.simulador-eje-creditos a { color: var(--fucs-azul-oscuro); }
+
+@media (max-width: 780px) {
+    .simulador-eje-creditos { white-space: normal; }
+}
