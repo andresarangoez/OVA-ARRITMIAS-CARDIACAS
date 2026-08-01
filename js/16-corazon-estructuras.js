@@ -3,7 +3,7 @@
 
 // --- ESTRUCTURAS DEL CORAZÓN (Módulo 01, Unidad 1) ---
 //
-// Diagrama e interacción propios; el contenido (qué 14 estructuras
+// Diagrama e interacción propios; el contenido (qué 16 estructuras
 // mostrar y el texto de cada una) está inspirado en el simulador de
 // Human Bio Media (https://humanbiomedia.org), usado conforme a su
 // licencia CC BY 4.0 — ver docs/CREDITOS-TERCEROS.md. El nombre y el
