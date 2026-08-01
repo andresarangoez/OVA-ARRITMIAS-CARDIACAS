@@ -2,6 +2,38 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        // El navegador restaura por defecto el scroll previo al recargar (F5) o
+        // al volver con el botón "atrás"/adelante (incluida la bfcache). Como
+        // la app siempre reinicia en la vista de inicio (más corta que
+        // cualquier módulo), esa restauración deja al usuario cerca del footer
+        // en vez de arriba — mismo síntoma que el bug ya corregido en
+        // volverHome() (js/03-navegacion.js), pero disparado por el navegador,
+        // no por nuestra navegación interna.
+        //
+        // history.scrollRestoration='manual' evita la restauración ligada al
+        // History API (navegación tipo SPA), pero no cubre por sí solo la
+        // restauración nativa de una recarga simple en todos los navegadores
+        // — por eso se refuerza con "pageshow", que se dispara después de
+        // cualquier restauración (incluida la bfcache) y así siempre gana.
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        // Un único intento en "pageshow" no basta en todos los navegadores: la
+        // restauración nativa puede reaplicarse después de ese evento, ya
+        // fuera del ciclo de vida de scripting normal. Se refuerza con varios
+        // intentos escalonados en los primeros instantes de la carga —
+        // inofensivo si el scroll ya está en 0, decisivo si no lo está.
+        function forzarScrollArriba() {
+            window.scrollTo(0, 0);
+        }
+        window.addEventListener('pageshow', forzarScrollArriba);
+        window.addEventListener('load', forzarScrollArriba);
+        [0, 50, 150, 300, 600, 1200].forEach(function (demora) {
+            setTimeout(forzarScrollArriba, demora);
+        });
+    </script>
     <title>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,75 +45,58 @@
     <link rel="stylesheet" href="css/04-simulator.css">
     <link rel="stylesheet" href="css/05-modulo.css">
     <link rel="stylesheet" href="css/10-componentes.css">
+    <link rel="stylesheet" href="css/11-shell-modulo.css">
 </head>
 <body>
 
-    <aside id="aha-sidebar" class="aha-sidebar" aria-label="Panel de referencia rápida: algoritmo ACLS">
-        <button id="aha-toggle" class="aha-toggle" aria-expanded="false" aria-controls="aha-sidebar">ACLS</button>
-        <div class="aha-content">
-            <h2>Algoritmo para Interpretación de Arritmias (ACLS)</h2>
-            <h3>1. ¿EL PACIENTE TIENE PULSO?</h3>
-            <p class="alert-text">NO tiene pulso → Paro cardíaco</p>
-            <ul>
-                <li><strong>Ritmo desfibrilable:</strong> FV, TVSP<br>→ <span class="action-text">RCP + Desfibrilación + Adrenalina + Amiodarona</span></li>
-                <li><strong>Ritmo no desfibrilable:</strong> Asistolia, AESP<br>→ <span class="action-text">RCP + Adrenalina + buscar 6H y 6T</span></li>
-            </ul>
-            <p class="success-text">SÍ tiene pulso → continuar</p>
-            
-            <h3>2. ¿ESTÁ HEMODINÁMICAMENTE ESTABLE?</h3>
-            <p><em>(Hipotensión, alteración de conciencia, dolor torácico, shock)</em></p>
-            <ul>
-                <li><strong>INESTABLE:</strong> <span class="action-text">Cardioversión eléctrica sincronizada</span><br><em>(excepto FV/TV sin pulso → desfibrilar)</em></li>
-                <li><strong>ESTABLE:</strong> Continuar análisis del ECG</li>
-            </ul>
-            
-            <h3>3. FRECUENCIA CARDÍACA</h3>
-            <p><strong>&lt; 60 lpm → BRADIARRITMIA</strong><br><em>(Bradicardia sinusal, Bloqueos AV)</em></p>
-            <ul>
-                <li><strong>Sintomático:</strong> <span class="action-text">Atropina → Dopamina/Adrenalina → Marcapaso</span></li>
-                <li><strong>Asintomático:</strong> Observación y corregir causas</li>
-            </ul>
-            <p><strong>&gt; 100 lpm → TAQUIARRITMIA</strong> → continuar al paso 4</p>
-            
-            <h3>4. ANCHO DEL QRS</h3>
-            <p><strong>QRS ESTRECHO (&lt; 0.12 s) → SUPRAVENTRICULAR</strong></p>
-            <ul>
-                <li><strong>Regular</strong> <em>(Taqui Sinusal, TSVP)</em>: <span class="action-text">Maniobras vagales, Adenosina, Betabloqueador/Calcioantagonista.</span></li>
-                <li><strong>Irregular</strong> <em>(FA, Flutter)</em>: <span class="action-text">Control de FC, Anticoagulación, Cardioversión si inestable.</span></li>
-            </ul>
-            <p><strong>QRS ANCHO (≥ 0.12 s) → VENTRICULAR HASTA DEMOSTRAR LO CONTRARIO</strong></p>
-            <ul>
-                <li><strong>Estable:</strong> <span class="action-text">Amiodarona / Antiarrítmicos</span></li>
-                <li><strong>Inestable:</strong> <span class="action-text">Cardioversión</span></li>
-                <li><strong>Sin pulso:</strong> <span class="action-text">Desfibrilación</span></li>
-            </ul>
-            
-            <h3>5. ¿ESPIGAS DE MARCAPASO?</h3>
-            <p>Evaluar: Captura, Fallo de captura, Fallo de sensado, Fallo de estimulación.</p>
-            
-            <h3>6. ¿HAY LATIDOS PREMATUROS?</h3>
-            <p><em>(EAP, EV)</em> → Generalmente observación, corregir causas (electrolitos, hipoxia).</p>
-            
-            <div class="key-box">
-                <h4>RESUMEN OPERATIVO RÁPIDO</h4>
-                <ul>
-                    <li><strong>Pulso:</strong> ¿sí o no?</li>
-                    <li><strong>Estabilidad:</strong> ¿estable o inestable?</li>
-                    <li><strong>Frecuencia:</strong> ¿lento o rápido?</li>
-                    <li><strong>QRS:</strong> ¿estrecho o ancho?</li>
-                    <li><strong>Regularidad:</strong> ¿regular o irregular?</li>
-                </ul>
+    <button id="indice-toggle" type="button" class="fab-flotante fab-flotante--izquierda"
+            aria-expanded="false" aria-controls="indice-sidebar"
+            aria-label="Abrir índice del módulo" data-tooltip="Abrir índice del módulo"
+            onclick="alternarSidebarIndice()">
+        <svg class="fab-flotante-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+    </button>
+
+    <button id="volver-arriba-toggle" type="button" class="fab-flotante fab-flotante--derecha"
+            aria-label="Volver arriba" data-tooltip="Volver arriba"
+            onclick="volverArribaModulo()">
+        <svg class="fab-flotante-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+    </button>
+
+    <aside id="indice-sidebar" class="indice-sidebar" aria-label="Índice del módulo">
+        <div class="indice-header">
+            <div class="indice-header-top">
+                <h2 class="indice-titulo">Selecciona un módulo</h2>
+                <button class="indice-btn-buscar" onclick="alternarBusqueda()" aria-label="Buscar en el módulo" title="Buscar en el módulo">🔍</button>
             </div>
-            <div class="key-box danger">
-                <h4 class="alert-text">CLAVES CLÍNICAS</h4>
-                <ul>
-                    <li>QRS ancho = TV hasta demostrar lo contrario</li>
-                    <li>Paciente inestable = Electricidad</li>
-                    <li>Paciente sin pulso = Protocolo de paro</li>
-                    <li>Siempre buscar causas reversibles (6H y 6T)</li>
-                </ul>
+            <div class="indice-progreso-linea">
+                <span class="indice-porcentaje">0% completado</span>
             </div>
-            <br><br>
+            <div class="indice-barra"><div class="indice-barra-fill" style="width: 0%;"></div></div>
+            <div class="indice-meta-linea">
+                <span class="indice-conteo">0 de 0 unidades</span>
+                <span class="indice-tiempo-restante"></span>
+            </div>
+        </div>
+
+        <div class="indice-busqueda">
+            <input type="text" class="indice-busqueda-input" placeholder="Buscar en el módulo…" oninput="ejecutarBusqueda(this.value)" onkeydown="manejarTeclaBusqueda(event)" aria-label="Texto a buscar">
+            <span class="indice-busqueda-contador">0 de 0</span>
+            <button class="indice-busqueda-nav" onclick="irACoincidenciaAnterior()" aria-label="Resultado anterior">‹</button>
+            <button class="indice-busqueda-nav" onclick="irACoincidenciaSiguiente()" aria-label="Resultado siguiente">›</button>
+            <button class="indice-busqueda-cerrar" onclick="alternarBusqueda()" aria-label="Cerrar búsqueda">×</button>
+        </div>
+
+        <div class="indice-lista-wrap">
+            <ul class="indice-lista"></ul>
         </div>
     </aside>
 
@@ -109,34 +124,34 @@
             </div>
             <div class="modules-column">
                 <div class="dashboard-grid">
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('01', 'Fundamentos')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
                 <div class="card-icon" aria-hidden="true">⚡</div>
                 <h3>Módulo 01</h3>
                 <h4>Fundamentos</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('02', 'Valoración')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="02" data-modulo-titulo="Valoración" onclick="abrirModulo('02', 'Valoración')">
                 <div class="card-icon" aria-hidden="true">🩺</div>
                 <h3>Módulo 02</h3>
                 <h4>Valoración</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('03', 'Diagnóstico')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
                 <div class="card-icon" aria-hidden="true">📈</div>
                 <h3>Módulo 03</h3>
                 <h4>Diagnóstico</h4>
                 <span class="card-badge">Simulador interactivo</span>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('04', 'Planeación')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="04" data-modulo-titulo="Planeación" onclick="abrirModulo('04', 'Planeación')">
                 <div class="card-icon" aria-hidden="true">📋</div>
                 <h3>Módulo 04</h3>
                 <h4>Planeación</h4>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('05', 'Intervención')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
                 <div class="card-icon" aria-hidden="true">💉</div>
                 <h3>Módulo 05</h3>
                 <h4>Intervención</h4>
                 <span class="card-badge">Simulador interactivo</span>
             </div>
-            <div class="module-card" role="button" tabindex="0" onclick="abrirModulo('06', 'Evaluación')">
+            <div class="module-card" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
                 <div class="card-icon" aria-hidden="true">✅</div>
                 <h3>Módulo 06</h3>
                 <h4>Evaluación</h4>
@@ -215,32 +230,25 @@
                                 <option value="bav3">Bloqueo AV de 3er Grado</option>
                             </optgroup>
 
-                            <optgroup label="2. Ritmos de Marcapasos">
-                                <option value="mp_ventricular">Marcapasos: Captura Ventricular Efectiva</option>
-                                <option value="mp_fallo_est">Marcapasos: Fallo de Estimulación</option>
-                            </optgroup>
-
-                            <optgroup label="3. Taquiarritmias de Complejo Angosto">
+                            <optgroup label="2. Taquiarritmias de Complejo Angosto">
                                 <option value="taqui_sinusal">Taquicardia Sinusal</option>
-                                <option value="tsvp">Taquicardia Supraventricular</option>
                                 <option value="flutter">Flutter Auricular</option>
                                 <option value="fa">Fibrilación Auricular</option>
                             </optgroup>
 
-                            <optgroup label="4. Taquiarritmias de Complejo Ancho">
+                            <optgroup label="3. Taquiarritmias de Complejo Ancho">
                                 <option value="tv_mono">Taquicardia Ventricular Monomórfica</option>
                                 <option value="tv_poli">Taquicardia Ventricular Polimórfica</option>
                                 <option value="torsades">Torsades de Pointes</option>
                             </optgroup>
 
-                            <optgroup label="5. Ritmos de Parada Cardiaca">
+                            <optgroup label="4. Ritmos de Parada Cardiaca">
                                 <option value="fv">Fibrilación Ventricular</option>
-                                <option value="tvsp">Taquicardia Ventricular Sin Pulso</option>
                                 <option value="asistolia">Asistolia</option>
                                 <option value="aesp">Actividad Eléctrica Sin Pulso</option>
                             </optgroup>
 
-                            <optgroup label="6. Extrasístoles">
+                            <optgroup label="5. Extrasístoles">
                                 <option value="eap">Extrasístole Auricular</option>
                                 <option value="ev">Extrasístole Ventricular</option>
                             </optgroup>
@@ -256,6 +264,20 @@
         </div>
 
     </main>
+
+    <div id="modal-finalizacion" class="modal-overlay" aria-hidden="true">
+        <div class="modal-caja modal-finalizacion">
+            <button class="modal-cerrar" onclick="cerrarModal('modal-finalizacion')" aria-label="Cerrar">×</button>
+            <div class="modal-finalizacion-check" aria-hidden="true">✓</div>
+            <h2 class="modal-finalizacion-titulo">¡Felicitaciones!</h2>
+            <p class="modal-finalizacion-texto">Has concluido exitosamente este módulo.</p>
+            <div class="modal-finalizacion-progreso">100% completado</div>
+            <div class="modal-finalizacion-acciones">
+                <button id="modal-finalizacion-siguiente" class="btn-comenzar" onclick="continuarSiguienteModulo()">Continuar al siguiente módulo</button>
+                <button class="btn-accion" onclick="cerrarModal('modal-finalizacion'); volverHome();">Volver al inicio</button>
+            </div>
+        </div>
+    </div>
 
     <footer class="fucs-footer">
         <div class="footer-brand">
@@ -303,5 +325,8 @@
     <script src="js/04-simulador.js"></script>
     <script src="js/10-componentes.js"></script>
     <script src="js/11-contenido-dinamico.js"></script>
+    <script src="js/12-widgets-aprendizaje.js"></script>
+    <script src="js/13-shell-indice.js"></script>
+    <script src="js/14-busqueda-modulo.js"></script>
 </body>
 </html>

@@ -1,0 +1,202 @@
+/* ============================================================
+   SHELL DE NAVEGACIÓN DEL CURSO
+   ============================================================
+   Índice de módulo (sidebar), modal de finalización y resaltado
+   de búsqueda — arquitectura de navegación reutilizable para los
+   6 módulos, sin conocer nada del contenido clínico de ninguno.
+   Requiere js/13-shell-indice.js y js/14-busqueda-modulo.js.
+
+   Los tokens de la "Etapa 1 de rediseño visual" (css/01-variables.css)
+   se reutilizan tal cual — no se inventan valores nuevos.
+   ============================================================ */
+
+/* --- SIDEBAR: ÍNDICE DEL MÓDULO --- */
+.indice-sidebar {
+    position: fixed;
+    top: 0;
+    left: -360px;
+    width: 360px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 12px 0 30px rgba(9, 39, 85, 0.18);
+    border-right: 4px solid var(--fucs-dorado);
+    transition: left 0.4s ease;
+    z-index: 1001;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.indice-sidebar.open { left: 0; }
+
+/* --- BOTONES FLOTANTES: ÍNDICE Y VOLVER ARRIBA --- */
+/* Sistema único de dos FAB independientes del <aside> del índice (no
+   anidados dentro): permanecen fijos en su esquina durante todo el
+   recorrido del módulo, sin "resbalar" junto con el panel al abrir/
+   cerrar. Solo visibles dentro de un módulo (ver body.modo-modulo,
+   controlado por abrirModulo()/volverHome() en 03-navegacion.js) —
+   nunca se anidan en #vista-modulo porque su animación fadeIn crea un
+   containing block para position:fixed y produciría un salto visual. */
+.fab-flotante {
+    position: fixed;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--fucs-azul-profundo);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--bento-radius-md);
+    cursor: pointer;
+    box-shadow: var(--fab-shadow);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1002; /* por encima del sidebar (1001), por debajo del modal (2000) */
+}
+body.modo-modulo .fab-flotante { display: flex; }
+.fab-flotante:hover, .fab-flotante:focus-visible {
+    background-color: var(--fucs-dorado);
+    color: var(--fucs-azul-profundo);
+    transform: translateY(-2px);
+    box-shadow: var(--fab-shadow-hover);
+}
+.fab-flotante:active { transform: translateY(0) scale(0.96); }
+.fab-flotante-icono { width: 22px; height: 22px; pointer-events: none; }
+
+.fab-flotante--izquierda { left: 24px; }
+.fab-flotante--derecha { right: 24px; }
+
+/* Tooltip: mismo lenguaje visual que .tooltip (10-componentes.css) —
+   fondo azul profundo, texto blanco, fade de opacidad — pero anclado
+   hacia arriba del botón (los FAB viven abajo) y con el lado horizontal
+   ajustado a cada botón para no salirse del viewport en la esquina. */
+.fab-flotante::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    background: var(--fucs-azul-profundo);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-md);
+}
+.fab-flotante--izquierda::after { left: 0; }
+.fab-flotante--derecha::after { right: 0; }
+.fab-flotante:hover::after, .fab-flotante:focus-visible::after { opacity: 1; transform: translateY(0); }
+
+/* --- ENCABEZADO: título, progreso, tiempo restante, buscador --- */
+.indice-header {
+    background: linear-gradient(135deg, var(--fucs-azul-profundo), var(--fucs-azul-oscuro));
+    color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.indice-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.indice-titulo { margin: 0; font-size: 1.05rem; font-weight: 800; line-height: 1.3; }
+.indice-btn-buscar {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15); border: none; color: #ffffff;
+    font-size: 0.95rem; cursor: pointer; transition: background-color 0.2s ease;
+}
+.indice-btn-buscar:hover, .indice-btn-buscar.activo { background: rgba(255, 255, 255, 0.3); }
+
+.indice-progreso-linea { display: flex; justify-content: space-between; font-size: 0.78rem; opacity: 0.9; margin-bottom: 6px; }
+.indice-porcentaje { font-weight: 700; }
+
+.indice-barra { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.25); border-radius: 20px; overflow: hidden; }
+.indice-barra-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--fucs-dorado), #ffffff); border-radius: 20px; transition: width 0.3s ease; }
+
+.indice-meta-linea { display: flex; justify-content: space-between; font-size: 0.74rem; opacity: 0.85; margin-top: 8px; }
+
+/* --- FILA DE BÚSQUEDA (colapsable) --- */
+.indice-busqueda {
+    display: none; align-items: center; gap: 6px;
+    padding: 10px 16px; background: var(--fucs-niebla);
+    border-bottom: 1px solid var(--fucs-gris);
+}
+.indice-busqueda.abierta { display: flex; }
+.indice-busqueda-input {
+    flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid var(--fucs-gris);
+    border-radius: 6px; font-size: 0.85rem; font-family: var(--font-main);
+}
+.indice-busqueda-contador { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.indice-busqueda-nav, .indice-busqueda-cerrar {
+    background: none; border: none; color: var(--fucs-azul-oscuro);
+    font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 2px 4px;
+}
+.indice-busqueda-nav:hover, .indice-busqueda-cerrar:hover { color: var(--fucs-dorado); }
+
+/* --- LISTA DE UNIDADES --- */
+.indice-lista-wrap {
+    flex: 1; overflow-y: auto; padding: 8px 0;
+    scrollbar-width: thin; scrollbar-color: var(--fucs-azul-oscuro) transparent;
+}
+.indice-lista-wrap::-webkit-scrollbar { width: 6px; }
+.indice-lista-wrap::-webkit-scrollbar-track { background: transparent; }
+.indice-lista-wrap::-webkit-scrollbar-thumb { background-color: var(--fucs-azul-oscuro); border-radius: 10px; }
+
+.indice-lista { list-style: none; margin: 0; padding: 0; }
+.indice-item { margin: 2px 8px; }
+.indice-item-btn {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; background: none; border: none; border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0; text-align: left; cursor: pointer;
+    font-size: 0.85rem; font-family: var(--font-main); color: var(--text-body);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.indice-item-btn:hover { background: rgba(248, 198, 128, 0.1); }
+.indice-item-icono { flex-shrink: 0; width: 18px; text-align: center; font-size: 0.9rem; color: var(--fucs-gris); }
+.indice-item.actual .indice-item-btn { border-left-color: var(--fucs-dorado); background: rgba(248, 198, 128, 0.16); font-weight: 700; color: var(--fucs-azul-profundo); }
+.indice-item.actual .indice-item-icono { color: var(--fucs-dorado); }
+.indice-item.completado .indice-item-icono { color: var(--success); }
+
+/* --- CONTENIDO DEL MODAL DE FINALIZACIÓN --- */
+/* El overlay/caja son .modal-overlay/.modal-caja (css/10-componentes.css,
+   ya funcionales) — aquí solo se estiliza el contenido interno. */
+.modal-finalizacion { text-align: center; max-width: 440px; animation: modalFinalizacionEntrada 0.3s ease; }
+@keyframes modalFinalizacionEntrada {
+    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-finalizacion-check {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 18px auto;
+    background: rgba(39, 174, 96, 0.12); color: var(--success);
+    font-size: 2rem; display: flex; align-items: center; justify-content: center;
+}
+.modal-finalizacion-titulo { color: var(--fucs-azul-profundo); font-size: 1.4rem; margin: 0 0 10px 0; }
+.modal-finalizacion-texto { color: var(--text-body); line-height: 1.6; margin: 0 0 20px 0; }
+.modal-finalizacion-progreso {
+    background: var(--fucs-niebla); border-radius: var(--radius-md);
+    padding: 10px 16px; font-size: 0.85rem; color: var(--fucs-azul-oscuro);
+    font-weight: 700; margin-bottom: 24px;
+}
+.modal-finalizacion-acciones { display: flex; flex-direction: column; gap: 10px; }
+.modal-finalizacion-acciones .btn-comenzar, .modal-finalizacion-acciones .btn-accion { width: 100%; box-sizing: border-box; justify-content: center; }
+
+/* --- RESALTADO DE BÚSQUEDA --- */
+mark.busqueda-resaltado { background: rgba(248, 198, 128, 0.5); color: inherit; border-radius: 2px; padding: 0 1px; }
+mark.busqueda-resaltado.busqueda-resaltado-actual { background: var(--fucs-dorado); outline: 2px solid var(--fucs-azul-oscuro); outline-offset: 1px; }
+
+/* --- RESPONSIVE --- */
+/* Ninguna regla responsive existía para .module-navbar antes de este
+   archivo — se agrega la línea base necesaria para que el sidebar no
+   rompa el layout en pantallas angostas. */
+@media (max-width: 900px) {
+    .indice-sidebar { width: min(360px, 92vw); left: calc(-1 * min(360px, 92vw)); }
+    .indice-sidebar.open { left: 0; }
+}
+
+@media (max-width: 640px) {
+    .indice-header-top { flex-wrap: wrap; }
+    .indice-item-btn { min-height: 44px; }
+    .fab-flotante { width: 44px; height: 44px; bottom: 16px; }
+    .fab-flotante--izquierda { left: 16px; }
+    .fab-flotante--derecha { right: 16px; }
+}

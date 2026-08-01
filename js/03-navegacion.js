@@ -53,6 +53,17 @@
 
         document.getElementById('titulo-modulo-activo').innerText = "Módulo " + idModulo + ": " + titulo;
 
+        // Siempre se abre un módulo desde su pantalla de bienvenida (ver más
+        // abajo), así que el título del módulo debe quedar visible arriba —
+        // nunca arrastrar el scroll de la vista anterior.
+        window.scrollTo(0, 0);
+
+        // Los FAB de índice/volver-arriba (css/11-shell-modulo.css) solo
+        // tienen sentido dentro de un módulo — se muestran/ocultan vía esta
+        // clase en vez de vivir anidados en #vista-modulo, para no quedar
+        // ligados al containing block que crea su animación fadeIn.
+        document.body.classList.add('modo-modulo');
+
         const todosLosContenidos = document.querySelectorAll('[id^="contenido-modulo-"]');
         todosLosContenidos.forEach(div => {
             div.style.display = 'none';
@@ -71,13 +82,25 @@
             }
         }
 
+        // El simulador NUNCA se muestra en la pantalla de bienvenida — solo
+        // debe aparecer una vez que el estudiante entra al desarrollo del
+        // módulo (ver iniciarModulo en 05-modulo.js), aunque el módulo sea
+        // uno de los que sí lo incluyen.
         const simulador = document.getElementById('simulador-wrapper');
         if (simulador) {
-            simulador.style.display = MODULOS_CON_SIMULADOR.includes(idModulo) ? 'block' : 'none';
+            simulador.style.display = 'none';
         }
     }
 
     function volverHome() {
+        // Reset del scroll ANTES del swap de vistas (no después): en este
+        // punto el documento todavía es el módulo largo, así que volver a
+        // 0 es inmediato y no compite con el reflow que provoca el cambio
+        // de display de las vistas. Sin esto, el navegador clampa el
+        // scroll a la altura de la home (más corta) y el usuario aterriza
+        // cerca del footer en vez de arriba del todo.
+        window.scrollTo(0, 0);
+
         document.getElementById('vista-modulo').classList.remove('view-active');
         document.getElementById('vista-modulo').classList.add('view-hidden');
 
@@ -90,13 +113,9 @@
         if (simulador) {
             simulador.style.display = 'block';
         }
-    }
 
-    // --- LÓGICA DE LOS PANELES LATERALES ---
-    document.getElementById('aha-toggle').addEventListener('click', function() {
-        const abierto = document.getElementById('aha-sidebar').classList.toggle('open');
-        this.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-    });
+        document.body.classList.remove('modo-modulo');
+    }
 
     // --- ACCESIBILIDAD: activar tarjetas de módulo con Enter/Espacio ---
     document.querySelectorAll('.module-card').forEach(function(card) {

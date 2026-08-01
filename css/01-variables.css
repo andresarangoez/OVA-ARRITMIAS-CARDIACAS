@@ -48,6 +48,22 @@
     --bento-radius-xl: 28px;
     --bento-radius-md: 18px;
     --bento-shadow-soft: 0 10px 30px rgba(9, 39, 85, 0.08);
+
+    /* Alto real del navbar sticky del módulo (~81px: top:12px + su padding
+       y contenido) más margen de respiro — usado por scroll-padding-top
+       más abajo para que nunca tape el título de una unidad. */
+    --offset-navbar-scroll: 112px;
+    --fab-shadow: 0 6px 20px rgba(9, 39, 85, 0.22);
+    --fab-shadow-hover: 0 10px 26px rgba(9, 39, 85, 0.28);
+}
+
+/* Evita que el navbar sticky del módulo (.module-navbar, css/02-layout.css)
+   tape el título al saltar a una unidad desde el índice o a un resultado
+   de búsqueda (ambos usan scrollIntoView). <html> es el único elemento que
+   realmente scrollea en este proyecto (body no define overflow-y), así que
+   un solo ajuste aquí cubre ambos casos sin anotar cada selector de destino. */
+html {
+    scroll-padding-top: var(--offset-navbar-scroll);
 }
 
 :focus-visible {

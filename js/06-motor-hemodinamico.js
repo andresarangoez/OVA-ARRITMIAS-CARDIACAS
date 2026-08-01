@@ -37,7 +37,7 @@ function aplicarVariabilidad(valorBase, magnitud) {
 // de nada más que sus parámetros, para que el futuro Motor de Eventos (2.5)
 // y Motor de Pacientes (2.4) puedan reutilizarla sin duplicar la regla.
 function clasificarEstadoClinico(vitales, ritmo) {
-    const RITMOS_DE_PARO = ['fv', 'tvsp', 'asistolia', 'aesp'];
+    const RITMOS_DE_PARO = ['fv', 'asistolia', 'aesp'];
 
     if (RITMOS_DE_PARO.includes(ritmo) || vitales.fc === 0) {
         return 'paro';

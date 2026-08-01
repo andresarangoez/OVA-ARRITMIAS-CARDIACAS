@@ -1,28 +1,38 @@
                 <!-- ============ PANTALLA DE BIENVENIDA ============ -->
                 <div class="modulo-bienvenida">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
+                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
+                        <span class="breadcrumb-item actual">Módulo 05 · Intervención</span>
+                    </div>
+
                     <div class="modulo-encabezado">
                         <span class="modulo-numero">Módulo 05</span>
                         <span class="modulo-icono-grande" aria-hidden="true">💉</span>
                         <h2 class="modulo-titulo-bienvenida">Intervención</h2>
                         <div class="modulo-meta">
-                            <span>Tiempo estimado: 45 minutos</span>
+                            <span>Tiempo estimado: 60 minutos</span>
                             <span class="dot" aria-hidden="true"></span>
-                            <span>3 unidades</span>
+                            <span>7 unidades</span>
                         </div>
                     </div>
 
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Aplicar los algoritmos de soporte vital cardiovascular avanzado (ACLS).</li>
-                            <li>Reconocer las indicaciones del manejo farmacológico antiarrítmico.</li>
-                            <li>Diferenciar cardioversión sincronizada de desfibrilación.</li>
+                            <li>Reconocer los principios generales, indicaciones y contraindicaciones del tratamiento de arritmias.</li>
+                            <li>Comprender el mecanismo y uso clínico de los principales grupos de antiarrítmicos.</li>
+                            <li>Diferenciar cardioversión sincronizada de desfibrilación, y saber cuándo usar cada una.</li>
+                            <li>Reconocer los tipos de marcapasos y sus indicaciones.</li>
+                            <li>Aplicar RCP de alta calidad integrada con los algoritmos ACLS.</li>
+                            <li>Planificar los cuidados de enfermería posteriores a una intervención.</li>
                         </ul>
                     </div>
 
                     <div class="modulo-introduccion">
                         <h3>Introducción</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>El Módulo 04 definió el plan: qué prioridad tiene este paciente y qué meta de cuidado se persigue. Este módulo es donde ese plan se convierte en acción — farmacológica, eléctrica o mecánica.</p>
+                        <p>El simulador de esta OVA (Módulo 03) incluye los mismos botones de "Desfibrilar" y "Administrar Fármaco" que aquí se explican: úsalo para practicar el efecto de cada intervención sobre el ritmo y los signos vitales.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -33,41 +43,226 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
+                    <div class="barra-progreso-wrap">
+                        <div class="barra-progreso-meta">
+                            <span>Progreso del módulo</span>
+                            <span class="porcentaje">0%</span>
+                        </div>
+                        <div class="barra-progreso"><div class="barra-progreso-fill" style="width: 0%;"></div></div>
+                    </div>
+
+                    <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 1 · Algoritmos de soporte vital (AHA)</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                        <h3 class="unidad-titulo">Unidad 1 · Principios Generales del Tratamiento</h3>
+                        <p>Antes de elegir una intervención específica, toda decisión de tratamiento responde a los mismos tres principios. La misma arritmia puede requerir observación, fármacos, terapia eléctrica o marcapasos según el contexto — la intervención correcta depende del paciente, no solo del ritmo.</p>
+
+                        <h4>Explora los 3 principios</h4>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'objetivos')">Objetivos</button>
+                                <button onclick="activarPasoStepper(this,'indicaciones')">Indicaciones</button>
+                                <button onclick="activarPasoStepper(this,'contraindicaciones')">Contraindicaciones</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="objetivos">
+                                <h5>Objetivos</h5>
+                                <p>Restaurar la estabilidad hemodinámica, controlar o terminar la arritmia, y prevenir complicaciones (embolismo, progresión a paro).</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="indicaciones">
+                                <h5>Indicaciones</h5>
+                                <p>Se derivan directamente de la clasificación clínica y la estratificación de riesgo del Módulo 04 — no del nombre del ritmo por sí solo.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="contraindicaciones">
+                                <h5>Contraindicaciones</h5>
+                                <p>Por ejemplo, nunca desfibrilar Asistolia o AESP (Módulo 03, Unidad 6); usar con precaución los antiarrítmicos en pacientes con disfunción hepática o renal severa.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Toda intervención debe poder responder: ¿qué objetivo persigue, por qué está indicada en este paciente, y qué la contraindicaría?
                         </div>
                     </div>
+
+                    <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 2 · Manejo farmacológico antiarrítmico</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                        <h3 class="unidad-titulo">Unidad 2 · Tratamiento Farmacológico</h3>
+                        <p>Los antiarrítmicos se agrupan según su mecanismo de acción (clasificación de Vaughan Williams). Lo importante no es memorizar la lista, sino entender <em>cuándo</em> y <em>por qué</em> se usa cada uno — un antiarrítmico "correcto" en el ritmo equivocado puede empeorar al paciente, el mecanismo debe coincidir con la causa.</p>
+
+                        <h4>Clasificación de Vaughan Williams</h4>
+                        <ul>
+                            <li><strong>Clase I:</strong> bloqueadores de canales de sodio — enlentecen la conducción.</li>
+                            <li><strong>Clase II:</strong> betabloqueadores — reducen el automatismo y la conducción AV.</li>
+                            <li><strong>Clase III:</strong> bloqueadores de canales de potasio (ej. amiodarona) — prolongan la repolarización.</li>
+                            <li><strong>Clase IV:</strong> calcioantagonistas — enlentecen la conducción a través del nodo AV.</li>
+                        </ul>
+
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            Confirma la indicación del fármaco según el ritmo y el estado hemodinámico antes de administrarlo, nunca por protocolo automático, y vigila respuesta y efectos adversos inmediatamente después de cada dosis.
+                        </div>
+
+                        <h4>Actividad: empareja cada fármaco con su indicación</h4>
+                        <p>Estos cuatro son los de uso frecuente fuera de la clasificación de Vaughan Williams.</p>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 4 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="adenosina" onclick="manejarClicEmparejar(this)">Adenosina</button>
+                                <button class="reto-emparejar-item" data-par="atropina" onclick="manejarClicEmparejar(this)">Atropina</button>
+                                <button class="reto-emparejar-item" data-par="magnesio" onclick="manejarClicEmparejar(this)">Sulfato de magnesio</button>
+                                <button class="reto-emparejar-item" data-par="digoxina" onclick="manejarClicEmparejar(this)">Digoxina</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="magnesio" onclick="manejarClicEmparejar(this)">Tratamiento de elección en Torsades de Pointes</button>
+                                <button class="reto-emparejar-item" data-par="digoxina" onclick="manejarClicEmparejar(this)">Control de frecuencia en fibrilación auricular, útil si coexiste falla cardíaca</button>
+                                <button class="reto-emparejar-item" data-par="adenosina" onclick="manejarClicEmparejar(this)">Primera línea en TSVP; interrumpe brevemente la conducción por el nodo AV</button>
+                                <button class="reto-emparejar-item" data-par="atropina" onclick="manejarClicEmparejar(this)">Primera línea en bradicardia sintomática</button>
+                            </div>
+                        </div>
+
+                        <p class="placeholder-nota">Practica: en el simulador (Módulo 03), usa "Administrar Fármaco" en distintos ritmos y observa qué medicamento se sugiere para cada uno.</p>
+                    </div>
+
+                    <!-- UNIDAD 3 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 3 · Cardioversión Sincronizada</h3>
+                        <p>La cardioversión es una descarga eléctrica <strong>sincronizada</strong> con la onda R del paciente, reservada para taquiarritmias con pulso. Confundir cardioversión con desfibrilación (Unidad 4) es un error grave: administrar una descarga no sincronizada a un paciente con pulso puede inducir un ritmo letal.</p>
+
+                        <ul>
+                            <li>La sincronización evita que la descarga caiga sobre la onda T (fenómeno "R sobre T"), que podría desencadenar fibrilación ventricular.</li>
+                            <li>Se usa en taquiarritmias con pulso e inestables: FA, flutter, TSVP o TV monomórfica con pulso que no responden a otras medidas.</li>
+                            <li>Requiere que el paciente tenga un ritmo organizado con el que sincronizar — por eso nunca se usa en FV.</li>
+                        </ul>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Siempre verificar que el equipo esté en modo "sincronizado" antes de cardiovertir a un paciente con pulso.
                         </div>
                     </div>
+
+                    <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 3 · Terapia eléctrica: cardioversión y desfibrilación</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <h3 class="unidad-titulo">Unidad 4 · Desfibrilación</h3>
+                        <p>La desfibrilación es una descarga eléctrica <strong>no sincronizada</strong>, de alta energía, reservada exclusivamente para ritmos de paro desfibrilables. La desfibrilación temprana, combinada con RCP de alta calidad (Unidad 6), es la intervención con mayor impacto en la supervivencia del paro cardíaco desfibrilable.</p>
+
+                        <ul>
+                            <li>Indicada únicamente en Fibrilación Ventricular y Taquicardia Ventricular sin pulso (Módulo 03, Unidad 6).</li>
+                            <li>No requiere sincronización porque no existe una onda R organizada con la cual sincronizar.</li>
+                            <li>Cada minuto de retraso en la desfibrilación reduce significativamente la probabilidad de supervivencia.</li>
+                        </ul>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Desfibrilación = sin sincronizar, solo ritmos de paro desfibrilables. Cardioversión = sincronizada, solo taquiarritmias con pulso.
+                        </div>
+
+                        <h4>¿Cardioversión o desfibrilación?</h4>
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Un paciente presenta taquicardia ventricular monomórfica <strong>con pulso</strong>, pero está hipotenso y con alteración del estado mental. ¿Qué intervención eléctrica corresponde?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-4"> Desfibrilación (200J, sin sincronizar)</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-4" data-correcta="true"> Cardioversión sincronizada</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-4"> Ninguna, solo RCP</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
+                        </div>
+
+                        <p class="placeholder-nota">Practica: en el simulador (Módulo 03), selecciona "Fibrilación Ventricular" y observa cómo se habilita el botón "⚡ Desfibrilar (200J)".</p>
+                    </div>
+
+                    <!-- UNIDAD 5 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 5 · Marcapasos</h3>
+                        <p>Cuando el problema es una conducción demasiado lenta, la solución puede ser sustituir eléctricamente al sistema de conducción del paciente. El marcapasos transcutáneo está indicado en bradicardia sintomática que no responde a atropina (Módulo 02 y Módulo 04) — es un puente hacia una solución más definitiva, no un tratamiento final.</p>
+
                         <div class="tarjeta-informativa">
-                            <h4>Concepto de ejemplo</h4>
-                            <p><span class="etiqueta">Definición:</span> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu </p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Espacio reservado para contenido definitivo.</p>
+                            <h4>Captura eléctrica</h4>
+                            <p><span class="etiqueta">Definición:</span> Cada espiga del marcapasos debe ir seguida de un complejo QRS — eso confirma que el estímulo realmente despolarizó al ventrículo.</p>
+                            <p><span class="etiqueta">Importancia clínica:</span> Una espiga sin QRS después ("fallo de captura") significa que el paciente NO está siendo estimulado eficazmente, aunque el dispositivo esté encendido.</p>
+                        </div>
+
+                        <h4>Actividad: empareja cada tipo de marcapasos con su característica</h4>
+                        <div class="reto-emparejar">
+                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="transcutaneo" onclick="manejarClicEmparejar(this)">Transcutáneo</button>
+                                <button class="reto-emparejar-item" data-par="transvenoso" onclick="manejarClicEmparejar(this)">Transvenoso</button>
+                                <button class="reto-emparejar-item" data-par="permanente" onclick="manejarClicEmparejar(this)">Permanente</button>
+                            </div>
+                            <div class="reto-emparejar-columna">
+                                <button class="reto-emparejar-item" data-par="permanente" onclick="manejarClicEmparejar(this)">Dispositivo implantado quirúrgicamente, indicado cuando la causa no es reversible</button>
+                                <button class="reto-emparejar-item" data-par="transcutaneo" onclick="manejarClicEmparejar(this)">Parches externos, uso inmediato en emergencias, suele ser doloroso</button>
+                                <button class="reto-emparejar-item" data-par="transvenoso" onclick="manejarClicEmparejar(this)">Electrodo por vía venosa hasta el ventrículo derecho, solución temporal más estable</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 6 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 6 · RCP y Algoritmos ACLS</h3>
+                        <p>En el paro cardíaco, ninguna intervención eléctrica o farmacológica reemplaza una reanimación cardiopulmonar (RCP) de alta calidad — todas se integran alrededor de ella. Las interrupciones prolongadas de las compresiones —incluso para verificar el ritmo o cargar el desfibrilador— reducen la presión de perfusión coronaria y empeoran el pronóstico.</p>
+
+                        <ul>
+                            <li><strong>RCP de alta calidad:</strong> compresiones a 100-120/min, profundidad de 5-6 cm, permitir la expansión completa del tórax, minimizar interrupciones.</li>
+                            <li><strong>Ciclos ACLS:</strong> 2 minutos de RCP entre cada verificación de ritmo y cada dosis de medicamento o descarga.</li>
+                            <li><strong>Integración:</strong> el algoritmo específico (desfibrilable vs. no desfibrilable, Módulo 03 Unidad 6) determina si el ciclo incluye descargas, pero la RCP continua nunca se detiene por eso.</li>
+                        </ul>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Minimizar las pausas en las compresiones es tan importante como elegir el fármaco o la energía de descarga correctos.
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">Durante RCP de alta calidad, ¿cuál es la frecuencia de compresiones recomendada?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-6"> 60-80/min</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-6" data-correcta="true"> 100-120/min</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-05-6"> 140-160/min</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
+                        </div>
+                    </div>
+
+                    <!-- UNIDAD 7 -->
+                    <div class="modulo-unidad">
+                        <h3 class="unidad-titulo">Unidad 7 · Cuidados Post-Tratamiento</h3>
+                        <p>Una intervención exitosa no termina en el momento en que el ritmo se normaliza — comienza una nueva fase de vigilancia. Muchas recurrencias evitables ocurren porque se trató el ritmo pero no su causa: el trabajo de enfermería después de la intervención es tan crítico como durante ella.</p>
+
+                        <h4>Recorre los 4 frentes de cuidado</h4>
+                        <div class="stepper-fases">
+                            <div class="stepper-nav">
+                                <button class="activo" onclick="activarPasoStepper(this,'monitorizacion')">Monitorización</button>
+                                <button onclick="activarPasoStepper(this,'causa')">Causa de fondo</button>
+                                <button onclick="activarPasoStepper(this,'postrce')">Post-RCE</button>
+                                <button onclick="activarPasoStepper(this,'documentacion')">Documentación</button>
+                            </div>
+                            <div class="stepper-panel activo" data-paso="monitorizacion">
+                                <h5>Monitorización continua</h5>
+                                <p>El ritmo tratado puede recurrir; mantener vigilancia electrocardiográfica y de signos vitales.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="causa">
+                                <h5>Revalorar la causa de fondo</h5>
+                                <p>Si no se corrige la causa (6H y 6T, Módulo 02), la arritmia puede repetirse.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="postrce">
+                                <h5>Cuidados post-RCE</h5>
+                                <p>Retorno de la circulación espontánea: optimizar oxigenación, presión arterial y considerar manejo de temperatura, según protocolo institucional.</p>
+                            </div>
+                            <div class="stepper-panel" data-paso="documentacion">
+                                <h5>Documentación</h5>
+                                <p>Registrar la intervención, dosis, hora y respuesta del paciente.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-box">
+                            <strong>💡 Concepto Clave:</strong> Toda intervención exitosa exige la misma pregunta de cierre: ¿qué causó esto, y ya se corrigió?
                         </div>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo incluye el simulador ECG interactivo — desplázate hasta el final para practicar las intervenciones clínicas.</p>
+                        <p class="placeholder-nota">Este módulo comparte el simulador ECG interactivo del Módulo 03 — practica ahí las intervenciones descritas en cada unidad (desfibrilación y administración de fármacos).</p>
                     </div>
 
                     <!-- CASO CLÍNICO -->
@@ -76,35 +271,35 @@
                         <div class="caso-clinico-grid">
                             <div class="caso-clinico-campo">
                                 <h5>Motivo de consulta</h5>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmo</p>
+                                <p>Paciente en paro cardíaco; el monitor muestra Fibrilación Ventricular.</p>
                             </div>
                             <div class="caso-clinico-campo">
                                 <h5>Antecedentes</h5>
-                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nis</p>
+                                <p>Cardiopatía isquémica conocida.</p>
                             </div>
                             <div class="caso-clinico-campo">
-                                <h5>Signos vitales</h5>
-                                <p>Lorem ipsum: FC 000 lpm · TA 000/00 mmHg · SpO2 00%</p>
+                                <h5>Estado actual</h5>
+                                <p>RCP en curso, vía intravenosa permeable, desfibrilador disponible y cargado.</p>
                             </div>
                             <div class="caso-clinico-campo">
-                                <h5>Valoración</h5>
-                                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum </p>
+                                <h5>Decisión requerida</h5>
+                                <p>El equipo debe decidir el siguiente paso inmediato del algoritmo.</p>
                             </div>
                         </div>
                         <div class="caso-clinico-preguntas">
                             <h4>Preguntas del caso</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <p>¿Esta descarga debe ser sincronizada o no sincronizada, y por qué (Unidades 3 y 4)? Además de la descarga, ¿qué otras dos acciones de la Unidad 6 deben continuar sin interrupción?</p>
                         </div>
                     </div>
 
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
-                        <p class="actividad-enunciado">Lorem ipsum dolor sit amet, enunciado de la actividad de ejemplo.</p>
+                        <p class="actividad-enunciado">¿Cuál es la diferencia clave entre cardioversión y desfibrilación?</p>
                         <div class="actividad-opciones">
-                            <label class="actividad-opcion"><input type="radio" name="act-05" value="A"> Opción A — Lorem ipsum dolor</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-05" value="B"> Opción B — Lorem ipsum dolor</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-05" value="C"> Opción C — Lorem ipsum dolor</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-05" value="A"> A — La cardioversión usa más energía que la desfibrilación</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-05" value="B"> B — La cardioversión está sincronizada con la onda R; la desfibrilación no</label>
+                            <label class="actividad-opcion"><input type="radio" name="act-05" value="C"> C — Solo la desfibrilación requiere sedación</label>
                         </div>
                         <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
                     </div>
@@ -113,34 +308,92 @@
                     <div class="modulo-resumen">
                         <h3>Resumen</h3>
                         <ul>
-                            <li>Punto clave de ejemplo 1 — contenido pendiente.</li>
-                            <li>Punto clave de ejemplo 2 — contenido pendiente.</li>
-                            <li>Punto clave de ejemplo 3 — contenido pendiente.</li>
+                            <li>Toda intervención responde a un objetivo, una indicación y una posible contraindicación — nunca se elige solo por el nombre del ritmo.</li>
+                            <li>Los antiarrítmicos se agrupan por mecanismo (Vaughan Williams I-IV); lo esencial es el cuándo y el por qué, no la memorización.</li>
+                            <li>Cardioversión = sincronizada, para taquiarritmias con pulso. Desfibrilación = no sincronizada, solo para ritmos de paro desfibrilables.</li>
+                            <li>El marcapasos (transcutáneo, transvenoso, permanente) sustituye eléctricamente al sistema de conducción cuando la bradiarritmia lo requiere.</li>
+                            <li>La RCP de alta calidad, con mínimas interrupciones, es la base sobre la que se integran las demás intervenciones del algoritmo ACLS.</li>
+                            <li>Toda intervención exitosa exige monitorización continua y buscar/corregir la causa de fondo después del tratamiento.</li>
                         </ul>
                     </div>
 
                     <!-- AUTOEVALUACIÓN -->
                     <div class="modulo-autoevaluacion">
                         <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">3 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+                        <p class="autoevaluacion-meta">6 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
+
                         <div class="autoevaluacion-pregunta">
-                            <h5>1. Pregunta de ejemplo — contenido pendiente.</h5>
+                            <h5>1. La adenosina es el fármaco de primera línea para:</h5>
                             <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Opción A</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Opción B</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Opción C</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Bradicardia sintomática</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Taquicardia supraventricular paroxística</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-1"> Torsades de Pointes</label>
                             </div>
                         </div>
-                        <button class="btn-enviar-eval" onclick="verificarActividad(this)">Enviar respuestas</button>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>2. La cardioversión sincronizada se sincroniza con:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-2"> La onda T</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-2"> La onda R</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-2"> La onda P</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>3. ¿Cuál de los siguientes tipos de marcapasos es el de uso inmediato en una emergencia?</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-3"> Transcutáneo</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-3"> Transvenoso</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-3"> Permanente</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>4. En un fallo de captura del marcapasos:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-4"> No aparece espiga en el trazado</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-4"> La espiga aparece pero no es seguida de un QRS</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-4"> El QRS aparece sin ninguna espiga previa</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>5. Durante RCP, minimizar las interrupciones de las compresiones es importante porque:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-5"> Ahorra tiempo del equipo</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-5"> Mantiene la presión de perfusión coronaria</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-5"> Es un requisito administrativo</label>
+                            </div>
+                        </div>
+
+                        <div class="autoevaluacion-pregunta">
+                            <h5>6. Después de una intervención exitosa, la enfermera debe priorizar:</h5>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-6"> Suspender la monitorización, el ritmo ya se resolvió</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-6"> Vigilancia continua y búsqueda de la causa de fondo</label>
+                                <label class="actividad-opcion"><input type="radio" name="eval-05-6"> Dar de alta al paciente de inmediato</label>
+                            </div>
+                        </div>
+
+                        <button class="btn-enviar-eval" onclick="verificarAutoevaluacion(this)">Enviar respuestas</button>
                     </div>
 
                     <!-- BIBLIOGRAFÍA -->
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>Autor AA. Título del artículo o capítulo. Nombre de la revista. Año;Volumen(Número):páginas.</li>
+                            <li>American Heart Association. Aspectos destacados de las guías de la AHA para RCP y atención cardiovascular de emergencia (ACLS/BLS).</li>
+                            <li>Herdman TH, Kamitsuru S, editores. NANDA International: Diagnósticos enfermeros. Definiciones y clasificación.</li>
+                            <li>Moorhead S, Johnson M, Maas ML, Swanson E. Clasificación de Resultados de Enfermería (NOC).</li>
+                            <li>Bulechek GM, Butcher HK, Dochterman JM, Wagner CM. Clasificación de Intervenciones de Enfermería (NIC).</li>
                         </ol>
                     </div>
 
+                    <!-- FINALIZAR MÓDULO -->
+                    <div class="modulo-finalizar-wrap">
+                        <p>¿Completaste todas las unidades de este módulo?</p>
+                        <button class="btn-comenzar" onclick="finalizarModuloActual()">Finalizar módulo</button>
+                    </div>
+
                 </div>
-            
