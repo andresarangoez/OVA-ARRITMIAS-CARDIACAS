@@ -1,0 +1,86 @@
+/* ============================================================
+   ESTRUCTURAS DEL CORAZÓN — Módulo 01, Unidad 1
+   Interacción en js/16-corazon-estructuras.js. Diagrama propio
+   inspirado en Human Bio Media (CC BY 4.0) — ver el crédito visible
+   en el propio widget y docs/CREDITOS-TERCEROS.md.
+   ============================================================ */
+
+.corazon-estructuras {
+    background: var(--bg-shell);
+    border-radius: var(--bento-radius-xl);
+    box-shadow: var(--bento-shadow-soft);
+    padding: 24px;
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .corazon-estructuras { grid-template-columns: 1fr; }
+}
+
+.corazon-estructuras-imagen-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.corazon-estructuras-imagen {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+/* Los puntos rojos ya están dibujados en la imagen (son parte del
+   diagrama original) — este botón es un objetivo de clic transparente
+   posicionado exactamente encima de cada uno, del tamaño suficiente para
+   ser un blanco cómodo en pantallas táctiles. Solo se ve un anillo dorado
+   cuando el punto está seleccionado, sin tapar el marcador real. */
+.corazon-marcador {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.corazon-marcador:hover { background: rgba(9, 39, 85, 0.12); }
+.corazon-marcador.activo { border-color: var(--fucs-dorado); }
+
+.corazon-estructuras-panel {
+    background: #ffffff;
+    border: 1px solid var(--fucs-gris);
+    border-radius: var(--bento-radius-md);
+    padding: 16px 20px;
+}
+.corazon-estructuras-panel h5 {
+    margin: 0 0 8px 0;
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.corazon-estructuras-nombre {
+    margin: 0 0 8px 0;
+    font-weight: 700;
+    color: var(--fucs-azul-profundo);
+    font-size: 1.05rem;
+}
+.corazon-estructuras-texto { margin: 0; color: var(--text-body); font-size: 0.92rem; line-height: 1.6; }
+
+.corazon-estructuras-creditos {
+    grid-column: 1 / -1;
+    margin: 4px 0 0 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+.corazon-estructuras-creditos a { color: var(--fucs-azul-oscuro); }
