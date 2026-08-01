@@ -11,7 +11,7 @@
                         <span class="modulo-icono-grande" aria-hidden="true">⚡</span>
                         <h2 class="modulo-titulo-bienvenida">Fundamentos de las Arritmias Cardíacas</h2>
                         <div class="modulo-meta">
-                            <span>Tiempo estimado: 75 minutos</span>
+                            <span>Tiempo estimado: 80 minutos</span>
                             <span class="dot" aria-hidden="true"></span>
                             <span>7 unidades</span>
                         </div>
@@ -24,7 +24,7 @@
                             <li>Comprender la electrofisiología celular cardíaca: potencial de acción, automatismo, excitabilidad, conductividad y refractariedad.</li>
                             <li>Reconocer la jerarquía funcional del sistema de conducción cardíaco.</li>
                             <li>Relacionar el ciclo cardíaco (sístole y diástole) con la actividad eléctrica que lo desencadena.</li>
-                            <li>Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la frecuencia cardíaca.</li>
+                            <li>Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la frecuencia cardíaca y la determinación del eje eléctrico.</li>
                             <li>Identificar las ondas, segmentos e intervalos normales del ECG.</li>
                             <li>Reconocer las generalidades de las arritmias cardíacas como puente hacia la valoración clínica.</li>
                         </ul>
@@ -332,15 +332,136 @@
                             Willem Einthoven inventó el galvanómetro de cuerda en 1901 y registró con él los primeros electrocardiogramas humanos — por eso las derivaciones I, II y III todavía se conocen como el "triángulo de Einthoven". Recibió el Premio Nobel de Medicina en 1924 por este trabajo.
                         </div>
 
-                        <h4>Aplicación en Enfermería:</h4>
-                        <ul>
-                            <li>Garantizar la correcta preparación de la piel (minimizar artefactos).</li>
-                            <li>Colocar electrodos en las posiciones anatómicas exactas para evitar falsos diagnósticos.</li>
-                        </ul>
+                        <h4>Eje eléctrico cardíaco</h4>
+                        <p>El eje eléctrico representa la dirección predominante hacia la que viaja el impulso de despolarización ventricular, visto desde el plano frontal — las mismas derivaciones I, II, III, aVR, aVL y aVF que ya conoces. Calcular la frecuencia cardíaca (arriba) y determinar el eje son de los primeros pasos de la lectura sistemática de cualquier ECG, antes de analizar cada onda en detalle (Unidad 6).</p>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> No trate el monitor, trate al paciente. Verifique siempre el pulso y estado clínico antes de asumir una línea plana como asistolia (podría ser un cable desconectado).
+                        <p><strong>En este apartado vas a:</strong> relacionar la posición del vector del eje con la polaridad que produce en cada derivación, y practicar su clasificación en las 4 categorías que usa este curso (normal, desviación izquierda, desviación derecha, indeterminado).</p>
+
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Derivación I</th><th>Derivación aVF</th><th>Eje resultante</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Positiva</td><td>Positiva</td><td>Normal (-30° a +90°)</td></tr>
+                                <tr><td>Positiva</td><td>Negativa</td><td>Desviación izquierda</td></tr>
+                                <tr><td>Negativa</td><td>Positiva</td><td>Desviación derecha</td></tr>
+                                <tr><td>Negativa</td><td>Negativa</td><td>Indeterminado / extremo</td></tr>
+                            </tbody>
+                        </table>
+
+                        <p><strong>Instrucciones:</strong> arrastra la flecha azul dentro del círculo (o desliza el dedo en pantallas táctiles) para rotar el eje y observa en tiempo real cómo cambia la polaridad de las 6 derivaciones.</p>
+
+                        <div class="simulador-eje" data-angulo="45" data-modo-practica="false" data-aciertos="0" data-intentos="0">
+                            <p class="simulador-eje-etiqueta">🧭 Eje interactivo — arrastra para ver</p>
+
+                            <div class="simulador-eje-grid">
+                                <div class="simulador-eje-columna-circulo">
+                                <p class="simulador-eje-lectura">Normal · 45°</p>
+                                <svg class="simulador-eje-svg" viewBox="-130 -130 260 260" role="img" aria-label="Diagrama hexaxial interactivo del eje eléctrico cardíaco">
+                                    <g class="simulador-eje-grados">
+                                        <line x1="85" y1="0" x2="92" y2="0"></line>
+                                        <text x="115" y="0">0°</text>
+                                        <line x1="73.6" y1="42.5" x2="79.7" y2="46"></line>
+                                        <text x="99.6" y="57.5">+30°</text>
+                                        <line x1="42.5" y1="73.6" x2="46" y2="79.7"></line>
+                                        <text x="57.5" y="99.6">+60°</text>
+                                        <line x1="0" y1="85" x2="0" y2="92"></line>
+                                        <text x="0" y="115">+90°</text>
+                                        <line x1="-42.5" y1="73.6" x2="-46" y2="79.7"></line>
+                                        <text x="-57.5" y="99.6">+120°</text>
+                                        <line x1="-73.6" y1="42.5" x2="-79.7" y2="46"></line>
+                                        <text x="-99.6" y="57.5">+150°</text>
+                                        <line x1="-85" y1="0" x2="-92" y2="0"></line>
+                                        <text x="-115" y="0">180°</text>
+                                        <line x1="-73.6" y1="-42.5" x2="-79.7" y2="-46"></line>
+                                        <text x="-99.6" y="-57.5">-150°</text>
+                                        <line x1="-42.5" y1="-73.6" x2="-46" y2="-79.7"></line>
+                                        <text x="-57.5" y="-99.6">-120°</text>
+                                        <line x1="0" y1="-85" x2="0" y2="-92"></line>
+                                        <text x="0" y="-115">-90°</text>
+                                        <line x1="42.5" y1="-73.6" x2="46" y2="-79.7"></line>
+                                        <text x="57.5" y="-99.6">-60°</text>
+                                        <line x1="73.6" y1="-42.5" x2="79.7" y2="-46"></line>
+                                        <text x="99.6" y="-57.5">-30°</text>
+                                    </g>
+                                    <g class="simulador-eje-cuadrantes">
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--normal" d="M0,0 L73.61,-42.5 A85,85 0 0,1 0,85 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--derecha" d="M0,0 L0,85 A85,85 0 0,1 -85,0 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--indeterminado" d="M0,0 L-85,0 A85,85 0 0,1 0,-85 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--izquierda" d="M0,0 L0,-85 A85,85 0 0,1 73.61,-42.5 Z"></path>
+                                    </g>
+                                    <g class="simulador-eje-derivaciones">
+                                        <line x1="-85" y1="0" x2="85" y2="0"></line>
+                                        <text x="98" y="0">I</text>
+                                        <line x1="-42.5" y1="-73.61" x2="42.5" y2="73.61"></line>
+                                        <text x="48.5" y="84.9">II</text>
+                                        <line x1="42.5" y1="-73.61" x2="-42.5" y2="73.61"></line>
+                                        <text x="-48.5" y="84.9">III</text>
+                                        <line x1="73.61" y1="42.5" x2="-73.61" y2="-42.5"></line>
+                                        <text x="-84.9" y="-48.5">aVR</text>
+                                        <line x1="-73.61" y1="42.5" x2="73.61" y2="-42.5"></line>
+                                        <text x="84.9" y="-48.5">aVL</text>
+                                        <line x1="0" y1="-85" x2="0" y2="85"></line>
+                                        <text x="0" y="98">aVF</text>
+                                    </g>
+                                    <g class="simulador-eje-manija" onpointerdown="OVA.SimuladorEje.iniciarArrastre(event)">
+                                        <line class="simulador-eje-vector-hit" x1="0" y1="0" x2="48.1" y2="48.1"></line>
+                                        <line class="simulador-eje-vector" x1="0" y1="0" x2="48.1" y2="48.1"></line>
+                                        <circle class="simulador-eje-asa" cx="48.1" cy="48.1" r="9"></circle>
+                                    </g>
+                                </svg>
+                                </div>
+
+                                <div class="simulador-eje-derivaciones-mini">
+                                    <div class="simulador-eje-trazado-wrap">
+                                        <svg class="simulador-eje-trazado" viewBox="0 0 300 210" preserveAspectRatio="none" role="img" aria-label="Trazado de las 6 derivaciones del plano frontal para el eje actual">
+                                            <g class="simulador-eje-trazado-etiquetas">
+                                                <text x="4" y="17.5">I</text>
+                                                <text x="4" y="52.5">II</text>
+                                                <text x="4" y="87.5">III</text>
+                                                <text x="4" y="122.5">aVR</text>
+                                                <text x="4" y="157.5">aVL</text>
+                                                <text x="4" y="192.5">aVF</text>
+                                            </g>
+                                            <path class="simulador-eje-trazo" data-derivacion="I"></path>
+                                            <path class="simulador-eje-trazo" data-derivacion="II"></path>
+                                            <path class="simulador-eje-trazo" data-derivacion="III"></path>
+                                            <path class="simulador-eje-trazo" data-derivacion="aVR"></path>
+                                            <path class="simulador-eje-trazo" data-derivacion="aVL"></path>
+                                            <path class="simulador-eje-trazo" data-derivacion="aVF"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="simulador-eje-practica">
+                                <div class="simulador-eje-controles">
+                                    <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.alternarModoPractica(this)">Practicar con casos</button>
+                                    <button type="button" class="btn-accion simulador-eje-boton-siguiente" onclick="OVA.SimuladorEje.nuevoCaso(this)" hidden>Nuevo caso</button>
+                                    <span class="simulador-eje-marcador-wrap" hidden>Respuestas correctas: <span class="simulador-eje-marcador">0/0</span></span>
+                                </div>
+                                <div class="simulador-eje-respuestas" hidden>
+                                    <div class="actividad-opciones">
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'normal')">Normal</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'izquierda')">Desviación izquierda</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'derecha')">Desviación derecha</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'indeterminado')">Indeterminado</button>
+                                    </div>
+                                    <p class="simulador-eje-feedback"></p>
+                                </div>
+                            </div>
+
+                            <p class="simulador-eje-creditos">Simulador del eje cardíaco adaptado e integrado a partir del proyecto <a href="https://github.com/david-shrk/ecgaxistrainer" target="_blank" rel="noopener">ECG Axis Trainer</a>, desarrollado por David Schaack, utilizado conforme a su licencia MIT.</p>
                         </div>
+
+                        <h4>Interpretación clínica</h4>
+                        <p>Con el eje ya identificado, la lectura es directa: un eje <strong>normal</strong> confirma que el vector medio de despolarización va de arriba-derecha hacia abajo-izquierda, como se espera en un corazón sin sobrecarga estructural relevante. Una <strong>desviación izquierda</strong> o <strong>derecha</strong> no diagnostica una causa por sí sola — es una pista que se combina con el resto del trazado (Unidad 6) y con la clínica del paciente. Un eje <strong>indeterminado</strong> (también llamado "desviación extrema") es el hallazgo menos frecuente y el que más debe llamar la atención, porque casi siempre acompaña patología significativa.</p>
+
+                        <div class="error-frecuente">
+                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
+                            Confundir el eje eléctrico con la frecuencia o el ritmo. El eje no dice nada sobre qué tan rápido late el corazón ni si el ritmo es regular — describe únicamente la dirección espacial del impulso ventricular. Tampoco es, por sí solo, una arritmia: es un dato adicional de la lectura sistemática que orienta hacia otras alteraciones (hipertrofia ventricular, hemibloqueos, EPOC, entre otras). El diagnóstico diferencial completo de cada desviación se retoma en el Módulo 03: Diagnóstico.
+                        </div>
+
                     </div>
 
                     <!-- UNIDAD 6 -->
@@ -495,6 +616,7 @@
                             <li>La despolarización (eléctrica) siempre precede a la contracción (mecánica) — QRS marca el inicio de la sístole, el final de la T marca el inicio de la diástole.</li>
                             <li>El papel milimetrado permite calcular la frecuencia cardíaca con métodos simples y reproducibles.</li>
                             <li>P, PR, QRS, ST, T, QT y U son los componentes normales de todo trazado — la base para diagnosticar cualquier arritmia.</li>
+                            <li>El eje eléctrico (cuadrantes con las derivaciones I y aVF) es otro paso de la lectura sistemática del ECG, independiente de la frecuencia y el ritmo.</li>
                             <li>Una arritmia es cualquier alteración de la frecuencia, regularidad u origen del ritmo cardíaco normal.</li>
                         </ul>
                     </div>
