@@ -11,7 +11,7 @@
                         <span class="modulo-icono-grande" aria-hidden="true">⚡</span>
                         <h2 class="modulo-titulo-bienvenida">Fundamentos de las Arritmias Cardíacas</h2>
                         <div class="modulo-meta">
-                            <span>Tiempo estimado: 75 minutos</span>
+                            <span>Tiempo estimado: 80 minutos</span>
                             <span class="dot" aria-hidden="true"></span>
                             <span>7 unidades</span>
                         </div>
@@ -24,7 +24,7 @@
                             <li>Comprender la electrofisiología celular cardíaca: potencial de acción, automatismo, excitabilidad, conductividad y refractariedad.</li>
                             <li>Reconocer la jerarquía funcional del sistema de conducción cardíaco.</li>
                             <li>Relacionar el ciclo cardíaco (sístole y diástole) con la actividad eléctrica que lo desencadena.</li>
-                            <li>Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la frecuencia cardíaca.</li>
+                            <li>Explicar los fundamentos del registro electrocardiográfico, incluyendo el cálculo de la frecuencia cardíaca y la determinación del eje eléctrico.</li>
                             <li>Identificar las ondas, segmentos e intervalos normales del ECG.</li>
                             <li>Reconocer las generalidades de las arritmias cardíacas como puente hacia la valoración clínica.</li>
                         </ul>
@@ -332,6 +332,60 @@
                             Willem Einthoven inventó el galvanómetro de cuerda en 1901 y registró con él los primeros electrocardiogramas humanos — por eso las derivaciones I, II y III todavía se conocen como el "triángulo de Einthoven". Recibió el Premio Nobel de Medicina en 1924 por este trabajo.
                         </div>
 
+                        <h4>Eje eléctrico cardíaco</h4>
+                        <p>El eje eléctrico representa la dirección predominante hacia la que viaja el impulso de despolarización ventricular, visto desde el plano frontal — las mismas derivaciones I, II, III, aVR, aVL y aVF que ya conoces. Calcular la frecuencia cardíaca (arriba) y determinar el eje son de los primeros pasos de la lectura sistemática de cualquier ECG, antes de analizar cada onda en detalle (Unidad 6).</p>
+
+                        <h4>Método rápido: cuadrantes con las derivaciones I y aVF</h4>
+                        <p>Una primera aproximación no requiere calcular grados con precisión: basta con observar si el QRS es predominantemente positivo o negativo en dos derivaciones — I y aVF — y ubicar el resultado en un cuadrante.</p>
+
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Derivación I</th><th>Derivación aVF</th><th>Eje resultante</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Positiva</td><td>Positiva</td><td>Normal (-30° a +90°)</td></tr>
+                                <tr><td>Positiva</td><td>Negativa</td><td>Desviación izquierda</td></tr>
+                                <tr><td>Negativa</td><td>Positiva</td><td>Desviación derecha</td></tr>
+                                <tr><td>Negativa</td><td>Negativa</td><td>Indeterminado / extremo</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Relevancia Clínica:</h4>
+                        <p>Una desviación del eje no es, por sí sola, una arritmia — es un dato adicional de la lectura sistemática que orienta hacia otras alteraciones estructurales o de conducción (hipertrofia ventricular, hemibloqueos, EPOC, entre otras). El diagnóstico diferencial completo de cada tipo de desviación se retoma en el Módulo 03: Diagnóstico; por ahora, lo importante es reconocer el patrón de cuadrantes.</p>
+
+                        <div class="error-frecuente">
+                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
+                            Confundir el eje eléctrico con la frecuencia o el ritmo. El eje no dice nada sobre qué tan rápido late el corazón ni si el ritmo es regular — describe únicamente la dirección espacial del impulso ventricular.
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">QRS positivo en I y positivo en aVF. ¿Qué eje corresponde?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-3" data-correcta="true"> Eje normal</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Desviación izquierda</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Desviación derecha</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
+                        </div>
+
+                        <div class="mini-reto">
+                            <span class="mini-reto-titulo">🎯 Mini reto</span>
+                            <p class="mini-reto-enunciado">QRS negativo en I y positivo en aVF. ¿Qué eje corresponde?</p>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Eje normal</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Desviación izquierda</label>
+                                <label class="actividad-opcion"><input type="radio" name="mr-01-4" data-correcta="true"> Desviación derecha</label>
+                            </div>
+                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                            <p class="mini-reto-feedback"></p>
+                        </div>
+
+                        <div class="key-box danger">
+                            <span class="alert-text">🚨 Alerta Clínica:</span> Un eje que cambia respecto a un ECG previo del mismo paciente es tan relevante como su valor absoluto — documentar y comunicar ese cambio es responsabilidad de enfermería, incluso antes de establecerse la causa.
+                        </div>
+
                         <h4>Aplicación en Enfermería:</h4>
                         <ul>
                             <li>Garantizar la correcta preparación de la piel (minimizar artefactos).</li>
@@ -495,6 +549,7 @@
                             <li>La despolarización (eléctrica) siempre precede a la contracción (mecánica) — QRS marca el inicio de la sístole, el final de la T marca el inicio de la diástole.</li>
                             <li>El papel milimetrado permite calcular la frecuencia cardíaca con métodos simples y reproducibles.</li>
                             <li>P, PR, QRS, ST, T, QT y U son los componentes normales de todo trazado — la base para diagnosticar cualquier arritmia.</li>
+                            <li>El eje eléctrico (cuadrantes con las derivaciones I y aVF) es otro paso de la lectura sistemática del ECG, independiente de la frecuencia y el ritmo.</li>
                             <li>Una arritmia es cualquier alteración de la frecuencia, regularidad u origen del ritmo cardíaco normal.</li>
                         </ul>
                     </div>
