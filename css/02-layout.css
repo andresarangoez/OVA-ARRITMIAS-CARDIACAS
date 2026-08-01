@@ -62,15 +62,27 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
    hasta arriba para volver al menú (requisito de navegación persistente).
    z-index 900: por debajo de ambos sidebars (1000/1001) y del modal (2000),
    para que un panel abierto o el modal de finalización siempre lo cubran. */
+/* En reposo (arriba del todo, antes de scrollear) casi no tiene fondo, para
+   no competir con el contenido que todavía no se le monta encima. Al
+   scrollear, JS agrega .scrolled (13-shell-indice.js) y ahí sí gana un fondo
+   translúcido con desenfoque — necesario para que el texto siga siendo
+   legible sobre contenido que se desplaza debajo, sin volver a ser una
+   barra sólida y pesada. */
 .module-navbar {
     display: flex; align-items: center; justify-content: space-between;
-    background: var(--fucs-niebla); padding: 10px 20px;
-    border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-dorado);
+    background: rgba(232, 232, 232, 0.25);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    padding: 8px 20px;
+    border-radius: var(--bento-radius-md); border-left: 4px solid transparent;
     margin-bottom: 20px;
     position: sticky; top: 12px; z-index: 900;
-    transition: box-shadow 0.2s ease;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.module-navbar.scrolled { box-shadow: var(--bento-shadow-soft); }
+.module-navbar.scrolled {
+    background: rgba(232, 232, 232, 0.9);
+    border-left-color: var(--fucs-dorado);
+    box-shadow: var(--bento-shadow-soft);
+}
 
 /* Botón "Volver al menú": elemento secundario de navegación, no debe
    competir visualmente con el contenido. En reposo es casi invisible
@@ -93,7 +105,7 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
     background-color: rgba(9, 39, 85, 0.08);
     transform: translateX(-2px);
 }
-.module-title-display { color: var(--fucs-azul-profundo); margin: 0; font-size: 1.4rem; text-transform: uppercase; }
+.module-title-display { color: var(--fucs-azul-profundo); margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
 .pedagogy-container { background: white; border-radius: var(--bento-radius-xl); padding: 30px; min-height: 100px; margin-bottom: 30px; box-shadow: var(--bento-shadow-soft); line-height: 1.6; }
 .pedagogy-container h2 { color: var(--fucs-azul-profundo); font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid var(--fucs-dorado); padding-bottom: 14px; margin: 0 0 24px 0; }
 .pedagogy-container h4 { color: var(--fucs-azul-oscuro); font-size: 1rem; font-weight: 700; margin: 20px 0 8px 0; }
