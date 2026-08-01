@@ -64,15 +64,35 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
    para que un panel abierto o el modal de finalización siempre lo cubran. */
 .module-navbar {
     display: flex; align-items: center; justify-content: space-between;
-    background: var(--fucs-niebla); padding: 15px 20px;
+    background: var(--fucs-niebla); padding: 10px 20px;
     border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-dorado);
     margin-bottom: 20px;
     position: sticky; top: 12px; z-index: 900;
     transition: box-shadow 0.2s ease;
 }
 .module-navbar.scrolled { box-shadow: var(--bento-shadow-soft); }
-.btn-back { background-color: var(--fucs-azul-profundo); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-.btn-back:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); transform: scale(1.02); }
+
+/* Botón "Volver al menú": elemento secundario de navegación, no debe
+   competir visualmente con el contenido. En reposo es casi invisible
+   (fondo transparente, opacidad reducida); solo se revela al pasar el
+   cursor o recibir foco, con una transición suave. */
+.btn-back {
+    background-color: transparent;
+    color: var(--fucs-azul-profundo);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
+}
+.btn-back:hover, .btn-back:focus-visible {
+    opacity: 1;
+    background-color: rgba(9, 39, 85, 0.08);
+    transform: translateX(-2px);
+}
 .module-title-display { color: var(--fucs-azul-profundo); margin: 0; font-size: 1.4rem; text-transform: uppercase; }
 .pedagogy-container { background: white; border-radius: var(--bento-radius-xl); padding: 30px; min-height: 100px; margin-bottom: 30px; box-shadow: var(--bento-shadow-soft); line-height: 1.6; }
 .pedagogy-container h2 { color: var(--fucs-azul-profundo); font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid var(--fucs-dorado); padding-bottom: 14px; margin: 0 0 24px 0; }
