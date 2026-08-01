@@ -335,55 +335,106 @@
                         <h4>Eje eléctrico cardíaco</h4>
                         <p>El eje eléctrico representa la dirección predominante hacia la que viaja el impulso de despolarización ventricular, visto desde el plano frontal — las mismas derivaciones I, II, III, aVR, aVL y aVF que ya conoces. Calcular la frecuencia cardíaca (arriba) y determinar el eje son de los primeros pasos de la lectura sistemática de cualquier ECG, antes de analizar cada onda en detalle (Unidad 6).</p>
 
-                        <h4>Método rápido: cuadrantes con las derivaciones I y aVF</h4>
-                        <p>Una primera aproximación no requiere calcular grados con precisión: basta con observar si el QRS es predominantemente positivo o negativo en dos derivaciones — I y aVF — y ubicar el resultado en un cuadrante.</p>
+                        <p><strong>En este apartado vas a:</strong> relacionar la posición del vector del eje con la polaridad que produce en cada derivación, y practicar su clasificación en las 4 categorías que usa este curso (normal, desviación izquierda, desviación derecha, indeterminado).</p>
 
-                        <table class="tabla-comparativa">
-                            <thead>
-                                <tr><th>Derivación I</th><th>Derivación aVF</th><th>Eje resultante</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Positiva</td><td>Positiva</td><td>Normal (-30° a +90°)</td></tr>
-                                <tr><td>Positiva</td><td>Negativa</td><td>Desviación izquierda</td></tr>
-                                <tr><td>Negativa</td><td>Positiva</td><td>Desviación derecha</td></tr>
-                                <tr><td>Negativa</td><td>Negativa</td><td>Indeterminado / extremo</td></tr>
-                            </tbody>
-                        </table>
+                        <p><strong>Instrucciones:</strong> arrastra la flecha azul dentro del círculo (o desliza el dedo en pantallas táctiles) para rotar el eje y observa en tiempo real cómo cambia la polaridad de las 6 derivaciones. Cuando quieras ponerte a prueba, usa "Practicar con casos".</p>
 
-                        <h4>Relevancia Clínica:</h4>
-                        <p>Una desviación del eje no es, por sí sola, una arritmia — es un dato adicional de la lectura sistemática que orienta hacia otras alteraciones estructurales o de conducción (hipertrofia ventricular, hemibloqueos, EPOC, entre otras). El diagnóstico diferencial completo de cada tipo de desviación se retoma en el Módulo 03: Diagnóstico; por ahora, lo importante es reconocer el patrón de cuadrantes.</p>
+                        <div class="simulador-eje" data-angulo="45" data-modo-practica="false" data-aciertos="0" data-intentos="0">
+                            <p class="simulador-eje-etiqueta">🧭 Eje interactivo — arrastra para ver</p>
+
+                            <div class="simulador-eje-grid">
+                                <svg class="simulador-eje-svg" viewBox="-115 -115 230 230" role="img" aria-label="Diagrama hexaxial interactivo del eje eléctrico cardíaco">
+                                    <g class="simulador-eje-cuadrantes">
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--normal" d="M0,0 L73.61,-42.5 A85,85 0 0,1 0,85 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--derecha" d="M0,0 L0,85 A85,85 0 0,1 -85,0 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--indeterminado" d="M0,0 L-85,0 A85,85 0 0,1 0,-85 Z"></path>
+                                        <path class="simulador-eje-cuadrante simulador-eje-cuadrante--izquierda" d="M0,0 L0,-85 A85,85 0 0,1 73.61,-42.5 Z"></path>
+                                    </g>
+                                    <g class="simulador-eje-derivaciones">
+                                        <line x1="-85" y1="0" x2="85" y2="0"></line>
+                                        <text x="98" y="0">I</text>
+                                        <line x1="-42.5" y1="-73.61" x2="42.5" y2="73.61"></line>
+                                        <text x="48.5" y="84.9">II</text>
+                                        <line x1="42.5" y1="-73.61" x2="-42.5" y2="73.61"></line>
+                                        <text x="-48.5" y="84.9">III</text>
+                                        <line x1="73.61" y1="42.5" x2="-73.61" y2="-42.5"></line>
+                                        <text x="-84.9" y="-48.5">aVR</text>
+                                        <line x1="-73.61" y1="42.5" x2="73.61" y2="-42.5"></line>
+                                        <text x="84.9" y="-48.5">aVL</text>
+                                        <line x1="0" y1="-85" x2="0" y2="85"></line>
+                                        <text x="0" y="98">aVF</text>
+                                    </g>
+                                    <g class="simulador-eje-manija" onpointerdown="OVA.SimuladorEje.iniciarArrastre(event)">
+                                        <line class="simulador-eje-vector-hit" x1="0" y1="0" x2="48.1" y2="48.1"></line>
+                                        <line class="simulador-eje-vector" x1="0" y1="0" x2="48.1" y2="48.1"></line>
+                                        <circle class="simulador-eje-asa" cx="48.1" cy="48.1" r="9"></circle>
+                                    </g>
+                                </svg>
+
+                                <div class="simulador-eje-derivaciones-mini">
+                                    <p class="simulador-eje-lectura">Normal · 45°</p>
+                                    <div class="simulador-eje-tira" data-derivacion="I">
+                                        <span>I</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,6.5 55,17.8 65,15 100,15"></polyline></svg>
+                                    </div>
+                                    <div class="simulador-eje-tira" data-derivacion="II">
+                                        <span>II</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,3.4 55,18.9 65,15 100,15"></polyline></svg>
+                                    </div>
+                                    <div class="simulador-eje-tira" data-derivacion="III">
+                                        <span>III</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,11.9 55,16.0 65,15 100,15"></polyline></svg>
+                                    </div>
+                                    <div class="simulador-eje-tira" data-derivacion="aVR">
+                                        <span>aVR</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,26.6 55,11.1 65,15 100,15"></polyline></svg>
+                                    </div>
+                                    <div class="simulador-eje-tira" data-derivacion="aVL">
+                                        <span>aVL</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,11.9 55,16.0 65,15 100,15"></polyline></svg>
+                                    </div>
+                                    <div class="simulador-eje-tira" data-derivacion="aVF">
+                                        <span>aVF</span>
+                                        <svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 35,15 45,6.5 55,17.8 65,15 100,15"></polyline></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="simulador-eje-practica">
+                                <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.alternarModoPractica(this)">Practicar con casos</button>
+                                <div class="simulador-eje-respuestas" hidden>
+                                    <div class="actividad-opciones">
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'normal')">Normal</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'izquierda')">Desviación izquierda</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'derecha')">Desviación derecha</button>
+                                        <button type="button" class="simulador-eje-respuesta" onclick="OVA.SimuladorEje.responder(this,'indeterminado')">Indeterminado</button>
+                                    </div>
+                                    <p class="simulador-eje-feedback"></p>
+                                    <div class="simulador-eje-marcador-wrap">
+                                        <button type="button" class="btn-accion" onclick="OVA.SimuladorEje.nuevoCaso(this)">Nuevo caso</button>
+                                        <span>Aciertos: <span class="simulador-eje-marcador">0/0</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="simulador-eje-creditos">Simulador del eje cardíaco adaptado e integrado a partir del proyecto <a href="https://github.com/david-shrk/ecgaxistrainer" target="_blank" rel="noopener">ECG Axis Trainer</a>, desarrollado por David Schaack, utilizado conforme a su licencia MIT.</p>
+                        </div>
+
+                        <h4>Interpretación clínica</h4>
+                        <p>Con el eje ya identificado, la lectura es directa: un eje <strong>normal</strong> confirma que el vector medio de despolarización va de arriba-derecha hacia abajo-izquierda, como se espera en un corazón sin sobrecarga estructural relevante. Una <strong>desviación izquierda</strong> o <strong>derecha</strong> no diagnostica una causa por sí sola — es una pista que se combina con el resto del trazado (Unidad 6) y con la clínica del paciente. Un eje <strong>indeterminado</strong> (también llamado "noroeste") es el hallazgo menos frecuente y el que más debe llamar la atención, porque casi siempre acompaña patología significativa.</p>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Confundir el eje eléctrico con la frecuencia o el ritmo. El eje no dice nada sobre qué tan rápido late el corazón ni si el ritmo es regular — describe únicamente la dirección espacial del impulso ventricular.
+                            Confundir el eje eléctrico con la frecuencia o el ritmo. El eje no dice nada sobre qué tan rápido late el corazón ni si el ritmo es regular — describe únicamente la dirección espacial del impulso ventricular. Tampoco es, por sí solo, una arritmia: es un dato adicional de la lectura sistemática que orienta hacia otras alteraciones (hipertrofia ventricular, hemibloqueos, EPOC, entre otras). El diagnóstico diferencial completo de cada desviación se retoma en el Módulo 03: Diagnóstico.
                         </div>
 
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">QRS positivo en I y positivo en aVF. ¿Qué eje corresponde?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-3" data-correcta="true"> Eje normal</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Desviación izquierda</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Desviación derecha</label>
-                            </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
-                        </div>
+                        <p><strong>¿Por qué le importa a enfermería?</strong> Un eje que cambia respecto a un ECG previo del mismo paciente es tan relevante como su valor absoluto — documentar y comunicar ese cambio es responsabilidad de enfermería, incluso antes de establecerse la causa.</p>
 
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">QRS negativo en I y positivo en aVF. ¿Qué eje corresponde?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Eje normal</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Desviación izquierda</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-4" data-correcta="true"> Desviación derecha</label>
-                            </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
-                        </div>
+                        <p><strong>Relación con el resto del ECG:</strong> el eje se calcula con el mismo trazado de 12 derivaciones que ya usas para medir la frecuencia (arriba) y que usarás en la Unidad 6 para reconocer P, QRS y T — no es una prueba aparte, es una lectura más del mismo papel milimetrado.</p>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Un eje que cambia respecto a un ECG previo del mismo paciente es tan relevante como su valor absoluto — documentar y comunicar ese cambio es responsabilidad de enfermería, incluso antes de establecerse la causa.
+                        <div class="caja-exito">
+                            <span class="caja-exito-titulo">✅ Para cerrar</span>
+                            Si puedes mirar la polaridad de I y aVF y ubicar el eje en su cuadrante correcto, ya tienes la base que la Unidad 6 va a completar con el resto de las ondas del ECG normal.
                         </div>
 
                         <h4>Aplicación en Enfermería:</h4>

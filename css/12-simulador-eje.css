@@ -1,0 +1,154 @@
+/* ============================================================
+   SIMULADOR DE EJE ELÉCTRICO — Módulo 01, Unidad 5
+   Interacción y cálculo en js/15-simulador-eje.js.
+   ============================================================ */
+
+.simulador-eje {
+    background: var(--bg-shell);
+    border-radius: var(--bento-radius-xl);
+    box-shadow: var(--bento-shadow-soft);
+    padding: 24px;
+    margin: 20px 0;
+}
+
+.simulador-eje-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 62, 124, 0.08);
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin: 0 0 18px 0;
+}
+
+.simulador-eje-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 300px) 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .simulador-eje-grid { grid-template-columns: 1fr; }
+}
+
+.simulador-eje-svg {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+    overflow: visible;
+}
+.simulador-eje-svg:active { cursor: grabbing; }
+
+.simulador-eje-cuadrante { opacity: 0.55; }
+.simulador-eje-cuadrante--normal { fill: var(--success); }
+.simulador-eje-cuadrante--derecha { fill: var(--info); }
+.simulador-eje-cuadrante--indeterminado { fill: var(--danger); }
+.simulador-eje-cuadrante--izquierda { fill: var(--warning); }
+
+.simulador-eje-derivaciones line {
+    stroke: rgba(9, 39, 85, 0.35);
+    stroke-width: 1;
+}
+.simulador-eje-derivaciones text {
+    fill: var(--fucs-azul-profundo);
+    font-size: 11px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+.simulador-eje-vector {
+    stroke: var(--fucs-azul-profundo);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+.simulador-eje-asa {
+    fill: var(--fucs-azul-profundo);
+    stroke: white;
+    stroke-width: 2;
+}
+
+.simulador-eje-derivaciones-mini { display: flex; flex-direction: column; gap: 6px; }
+
+.simulador-eje-lectura {
+    margin: 0 0 6px 0;
+    font-weight: 700;
+    color: var(--fucs-azul-profundo);
+    font-size: 0.95rem;
+}
+
+.simulador-eje-tira {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    align-items: center;
+    gap: 8px;
+}
+.simulador-eje-tira span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+.simulador-eje-tira svg {
+    width: 100%;
+    height: 24px;
+    background: #fff5f5;
+    border-radius: var(--radius-sm);
+}
+.simulador-eje-tira polyline {
+    fill: none;
+    stroke: var(--fucs-azul-profundo);
+    stroke-width: 1.6;
+}
+
+.simulador-eje-practica { margin-top: 20px; text-align: center; }
+
+.simulador-eje-respuestas { margin-top: 16px; }
+.simulador-eje-respuestas .actividad-opciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.simulador-eje-respuesta {
+    background: #ffffff;
+    color: var(--fucs-azul-profundo);
+    border: 1px solid var(--fucs-gris);
+    border-radius: var(--bento-radius-md);
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.simulador-eje-respuesta:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.1); }
+
+.simulador-eje-feedback { margin: 12px 0 0 0; font-weight: 600; font-size: 0.88rem; min-height: 1.2em; }
+.simulador-eje-feedback.correcto { color: var(--success); }
+.simulador-eje-feedback.incorrecto { color: var(--danger); }
+
+.simulador-eje-marcador-wrap {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.simulador-eje-creditos {
+    margin: 20px 0 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--fucs-gris);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+.simulador-eje-creditos a { color: var(--fucs-azul-oscuro); }
