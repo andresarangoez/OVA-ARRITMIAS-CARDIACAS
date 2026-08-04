@@ -115,7 +115,7 @@
 /* --- TOOLTIP --- */
 /* Uso: definiciones rápidas. Solo CSS (hover + foco de teclado) — no
    requiere JS. Marcar el término con: <span class="tooltip" data-tooltip="texto">término</span> */
-.tooltip { position: relative; border-bottom: 1px dashed var(--fucs-azul-oscuro); cursor: help; }
+.tooltip { position: relative; cursor: help; }
 .tooltip::after {
     content: attr(data-tooltip);
     position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
@@ -128,14 +128,11 @@
 
 /* --- ZOOM DE IMÁGENES --- */
 /* Uso: especialmente para electrocardiogramas. Envolver la imagen con
-   esta clase; js/06-componentes.js abre el modal con la versión grande. */
+   esta clase; js/06-componentes.js abre el modal con la versión grande.
+   Sin ícono superpuesto (una lupa fija tapaba etiquetas/detalles de la
+   propia imagen) — el cursor "zoom-in" ya indica que es clicable. */
 .zoom-imagen { position: relative; display: inline-block; cursor: zoom-in; }
 .zoom-imagen img { display: block; border-radius: var(--radius-md); }
-.zoom-imagen::after {
-    content: "🔍"; position: absolute; bottom: 8px; right: 8px; background: rgba(9, 39, 85, 0.75);
-    color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
-    justify-content: center; font-size: 0.85rem; pointer-events: none;
-}
 
 /* --- CONTENEDOR DE VIDEO --- */
 /* Uso: contenedor estándar y responsive (16:9) para video embebido. */

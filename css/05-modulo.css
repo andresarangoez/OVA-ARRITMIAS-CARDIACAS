@@ -29,10 +29,32 @@
 .modulo-unidad:first-child { margin-top: 0; padding-top: 0; border-top: none; }
 .unidad-titulo { color: var(--fucs-azul-oscuro); font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; }
 
-/* --- FIGURA / IMAGEN --- */
-.figura { margin: 20px 0; }
-.figura-caption { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+/* --- FILA TEXTO + FIGURA ---
+   Grid de dos columnas: el apartado de texto y su imagen quedan
+   centrados verticalmente entre sí (align-items: center), en vez de
+   que la imagen quede pegada arriba dejando un hueco en blanco cuando
+   el texto es más alto que ella. En pantallas angostas se apila. */
+.figura-fila { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: center; margin: 20px 0; }
+.figura-fila-texto > *:first-child { margin-top: 0; }
+.figura-fila-texto > *:last-child { margin-bottom: 0; }
+.figura-fila-texto li { text-align: justify; }
+
+/* --- FIGURA / IMAGEN ---
+   Misma tarjeta visual que .corazon-estructuras (fondo, radio y sombra
+   suaves). Clicable (.zoom-imagen, hacerZoom() en js/10-componentes.js)
+   para ampliarla en el modal genérico ya existente en el sitio. */
+.figura {
+    padding: 12px; background: var(--bg-shell);
+    border-radius: var(--bento-radius-md); box-shadow: var(--bento-shadow-soft);
+}
+.figura .zoom-imagen { display: block; width: 100%; }
+.figura img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); }
+.figura-caption { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
 .figura-caption strong { color: var(--fucs-azul-oscuro); }
+
+@media (max-width: 780px) {
+    .figura-fila { grid-template-columns: 1fr; }
+}
 
 /* --- ESPACIO RESERVADO (genérico: diagramas, video, 3D, imágenes) --- */
 .espacio-reservado { border: 2px dashed var(--fucs-gris); border-radius: var(--bento-radius-md); padding: 36px 20px; text-align: center; color: var(--text-muted); background: var(--fucs-niebla); font-size: 0.88rem; }
@@ -153,13 +175,14 @@
     text-align: justify;
 }
 
-/* Excepciones: preguntas, respuestas, leyendas de imagen, tarjetas y
-   textos de interfaz de widgets nunca se justifican, aunque vivan
-   dentro de un contenedor justificado. */
+/* Excepciones: preguntas, respuestas, tarjetas y textos de interfaz de
+   widgets nunca se justifican, aunque vivan dentro de un contenedor
+   justificado. Las leyendas de figura (.figura-caption) sí se justifican
+   — a diferencia del resto de estas excepciones, son texto explicativo
+   largo, no una etiqueta de interfaz corta. */
 .mini-reto-enunciado,
 .mini-reto-feedback,
 .actividad-enunciado,
-.figura-caption,
 .caso-clinico-preguntas p,
 .caso-clinico-campo p,
 .tarjeta-informativa p,
