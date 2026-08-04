@@ -108,8 +108,13 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
 .module-title-display { color: var(--fucs-azul-profundo); margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
 .pedagogy-container { background: white; border-radius: var(--bento-radius-xl); padding: 30px; min-height: 100px; margin-bottom: 30px; box-shadow: var(--bento-shadow-soft); line-height: 1.6; }
 .pedagogy-container h2 { color: var(--fucs-azul-profundo); font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid var(--fucs-dorado); padding-bottom: 14px; margin: 0 0 24px 0; }
-.pedagogy-container h4 { color: var(--fucs-azul-oscuro); font-size: 1rem; font-weight: 700; margin: 20px 0 8px 0; }
-.pedagogy-container p, .pedagogy-container li { color: var(--text-body); max-width: 75ch; }
+.pedagogy-container h4 { color: var(--fucs-azul-profundo); font-size: 1.1rem; font-weight: 700; margin: 28px 0 10px 0; }
+.pedagogy-container h5 { color: var(--fucs-azul-oscuro); font-size: 1.05rem; font-weight: 600; margin: 20px 0 8px 0; }
+.pedagogy-container p, .pedagogy-container li { color: var(--text-body); font-size: 1rem; font-weight: 400; }
+
+/* Número de sección/subsección inyectado por generarSubindices()
+   (js/13-shell-indice.js) delante de cada h4/h5 real de una unidad. */
+.numero-encabezado { color: var(--fucs-azul-oscuro); opacity: 0.6; font-variant-numeric: tabular-nums; margin-right: 2px; }
 .pedagogy-container ul { padding-left: 22px; margin-top: 8px; }
 .pedagogy-container li { margin-bottom: 6px; }
 .section-title { color: var(--fucs-azul-oscuro); font-size: 1.15rem; font-weight: 700; border-bottom: 2px dashed var(--fucs-amarillo); padding-bottom: 8px; margin-top: 32px; margin-bottom: 16px; }
