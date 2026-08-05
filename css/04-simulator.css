@@ -17,16 +17,14 @@
 .vitals-panel { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 .vital-box { text-align: left; background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: var(--radius-sm); border-left: 3px solid currentColor; display: flex; flex-direction: column; justify-content: center; }
 .label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #888; }
-.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; }
+.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; color: inherit; }
 .value.small-text { font-size: 1.6rem; }
 
-.fc { color: #2ecc71; }
+.fc { color: #2ecc71; border-left-color: #2ecc71; }
 .ta { color: #e74c3c; border-left-color: #e74c3c; }
-.ta .label { color: #c0392b; }
-.ta .value { color: #e74c3c; }
-.spo2 { color: #3498db; }
-.fr { color: #f1c40f; }
-.temp { color: #e67e22; }
+.spo2 { color: #3498db; border-left-color: #3498db; }
+.fr { color: #f1c40f; border-left-color: #f1c40f; }
+.temp { color: #e67e22; border-left-color: #e67e22; }
 
 /* --- ZONA INFERIOR: dos columnas (mismo patrón de grid que .controls) --- */
 .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; align-items: start; }
@@ -45,9 +43,9 @@
 
 /* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */
 .controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 22px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 0.65fr 1.35fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
-.control-group { display: flex; flex-direction: column; gap: 8px; }
-.control-group label { color: var(--fucs-azul-profundo); font-size: 1.05rem; }
-.control-group select { padding: 8px 10px; font-size: 0.95rem; }
+.control-group { display: flex; flex-direction: column; gap: 4px; }
+.control-group label { color: var(--fucs-azul-profundo); font-size: 0.9rem; font-weight: 600; }
+.control-group select { padding: 6px 8px; font-size: 0.9rem; }
 
 /* --- ANIMACIÓN DE DESFIBRILADOR Y LOGS --- */
 @keyframes pulse-charge {
