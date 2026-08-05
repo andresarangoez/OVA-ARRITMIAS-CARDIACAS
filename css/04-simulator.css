@@ -1,48 +1,117 @@
 /* --- CONTENEDOR PRINCIPAL --- */
-.main-container { display: flex; flex-direction: column; gap: 20px; width: 1100px; margin: 0 auto;}
-.top-row { display: flex; gap: 20px; width: 100%; }
+/* Fluido en vez de ancho fijo: se encoge en laptop sin necesidad de media
+   query; el breakpoint de abajo (900px) cubre la reestructuración a
+   columna única para tablet. */
+.main-container { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
 
-/* --- MONITOR EKG Y SIGNOS --- */
-.monitor-frame { background-color: #000; border: 5px solid #333; border-radius: 12px; display: flex; padding: 15px; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); flex-grow: 1; color: var(--text-light); }
-.canvas-container { position: relative; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 20px 20px; border-right: 2px solid #222; padding-right: 15px; }
+/* --- MONITOR EKG (protagonista, a todo el ancho) --- */
+.monitor-frame { background-color: #000; border: 5px solid #333; border-radius: 12px; display: flex; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: var(--text-light); }
+.canvas-container { position: relative; width: 100%; background-image: linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px); background-size: 20px 20px; }
+.canvas-container canvas { display: block; width: 100%; height: 224px; }
 
-.vitals-panel { width: 200px; display: flex; flex-direction: column; gap: 6px; }
-.vital-box { text-align: left; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: var(--radius-sm); border-left: 3px solid currentColor; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+/* --- SIGNOS VITALES: fila horizontal, mismo tamaño, color propio por tarjeta ---
+   Grid en vez de flex: con auto-fit + minmax, si en pantallas angostas las
+   tarjetas envuelven a una segunda fila, cada columna mantiene el ancho ya
+   establecido por la primera fila en vez de estirarse a ocupar todo el
+   ancho sobrante (lo que pasaría con flex-wrap + flex:1). */
+.vitals-panel { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.vital-box { text-align: left; background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: var(--radius-sm); border-left: 3px solid currentColor; display: flex; flex-direction: column; justify-content: center; }
 .label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #888; }
-.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; }
+.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; color: inherit; }
 .value.small-text { font-size: 1.6rem; }
 
-.fc { color: #2ecc71; } 
-.ta { color: #ffffff; } 
-.spo2 { color: #3498db; } 
-.fr { color: #f1c40f; } 
-.temp { color: #e67e22; }
+.fc { color: #2ecc71; border-left-color: #2ecc71; }
+.ta { color: #e74c3c; border-left-color: #e74c3c; }
+.spo2 { color: #3498db; border-left-color: #3498db; }
+.fr { color: #f1c40f; border-left-color: #f1c40f; }
+.temp { color: #e67e22; border-left-color: #e67e22; }
 
-/* --- PANEL DE ACCIONES CLÍNICAS --- */
-.clinical-panel { width: 320px; background: #ffffff; color: var(--fucs-azul-oscuro); border: 1px solid var(--fucs-gris); border-top: 4px solid var(--fucs-dorado); border-radius: var(--radius-lg); padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-md); }
-.clinical-panel h3 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 1.1rem; text-align: center; padding-bottom: 10px; border-bottom: 1px solid var(--fucs-gris); text-transform: uppercase; letter-spacing: 0.5px; }
+/* --- ZONA INFERIOR: dos columnas (mismo patrón de grid que .controls) --- */
+/* align-items por defecto (stretch): ambos paneles quedan a la misma altura y
+   el registro crece (flex-grow) para llenar su columna. */
+.bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
 
-.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 10px; font-family: var(--font-mono); font-size: 0.8rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--fucs-gris); }
+/* --- PANEL DE ACCIONES CLÍNICAS / INTERVENCIONES --- */
+/* Mismo tratamiento de tarjeta para ambos paneles — se define una sola vez
+   y comparten estilo, sin duplicar. */
+.clinical-panel, .intervenciones-panel { background: #ffffff; color: var(--fucs-azul-oscuro); border: 1px solid var(--fucs-gris); border-top: 4px solid var(--fucs-dorado); border-radius: var(--radius-lg); padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-md); }
+.clinical-panel h3, .intervenciones-panel h3 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 1.1rem; text-align: center; padding-bottom: 10px; border-bottom: 1px solid var(--fucs-gris); text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* --- CONTROLES MANUALES --- */
-.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 22px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
-.control-group { display: flex; flex-direction: column; gap: 8px; }
-.control-group label { color: var(--fucs-azul-profundo); font-size: 1.05rem; }
+/* --- REGISTRO CLÍNICO EN FORMATO LÍNEA DE TIEMPO ---
+   Cada entrada es un punto sobre una línea vertical continua. El punto usa
+   currentColor, así que hereda el color semántico de la entrada (alert,
+   success, action, warning) sin necesidad de reglas por tipo. Es solo
+   presentación: registrarLog() en js/04-simulador.js sigue creando el mismo
+   <div class="log-entry"> de siempre. */
+.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 14px 12px 14px 10px; font-size: 0.85rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 0; border: 1px solid var(--fucs-gris); scrollbar-width: thin; scrollbar-color: var(--fucs-gris) transparent; }
+.log-entry { position: relative; margin-left: 5px; padding: 0 0 12px 20px; border-left: 2px solid var(--fucs-gris); line-height: 1.45; }
+.log-entry::before { content: ''; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: currentColor; border: 2px solid var(--fucs-niebla); }
+/* Separador fino entre entradas, alineado con el texto (no con la línea). */
+.log-entry::after { content: ''; position: absolute; left: 20px; right: 0; bottom: 6px; height: 1px; background: var(--fucs-gris); }
+/* La última entrada no prolonga la línea ni lleva separador. */
+.log-entry:last-child { border-left-color: transparent; padding-bottom: 0; }
+.log-entry:last-child::after { display: none; }
 
-/* --- ANIMACIÓN DE DESFIBRILADOR Y LOGS --- */
+/* Barra de desplazamiento discreta (Chrome/Edge; Firefox usa scrollbar-width
+   y scrollbar-color, ya declarados arriba). */
+.log-container::-webkit-scrollbar { width: 8px; }
+.log-container::-webkit-scrollbar-track { background: transparent; }
+.log-container::-webkit-scrollbar-thumb { background: var(--fucs-gris); border-radius: 4px; }
+.log-container::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* --- PANEL DE INTERVENCIONES (escenario preparado, sin lógica todavía) --- */
+.intervenciones-grupo h4 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+/* Dos columnas por grupo (auto-fit: cae a una sola en pantallas angostas). */
+.intervenciones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.intervencion-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; }
+.intervencion-item:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
+.intervencion-nombre { flex: 1; font-size: 0.9rem; color: var(--fucs-azul-oscuro); }
+.intervencion-item input { margin: 0; accent-color: var(--fucs-azul-profundo); }
+
+/* Opción elegida, todavía sin aplicar. */
+.intervencion-item:has(input:checked) { border-color: var(--fucs-azul-profundo); background: rgba(9, 39, 85, 0.05); }
+
+/* Veredicto ya aplicado. Las clases las pone resolverIntervencion() en
+   04-simulador.js a partir del resultado del motor de intervenciones. */
+.intervencion-item.ok { border-color: var(--success); background: rgba(46, 204, 113, 0.1); }
+.intervencion-item.medio { border-color: var(--warning); background: rgba(241, 196, 15, 0.12); }
+.intervencion-item.mal { border-color: var(--danger); background: rgba(231, 76, 60, 0.1); }
+
+.intervenciones-nota { margin: 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+/* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */
+.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 16px 20px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
+.control-group { display: flex; flex-direction: column; gap: 4px; }
+.control-group label { color: var(--fucs-azul-profundo); font-size: 0.9rem; font-weight: 600; }
+.control-group select { padding: 6px 8px; font-size: 0.9rem; }
+/* El grupo del selector va en fila (etiqueta al lado, no encima): es lo que
+   adelgaza la barra de cabecera. El .instruccion-box conserva su columna. */
+.control-group:not(.instruccion-box) { flex-direction: row; align-items: center; gap: 10px; }
+.control-group:not(.instruccion-box) label { white-space: nowrap; }
+.control-group:not(.instruccion-box) select { flex: 1; min-width: 0; }
+
+/* --- ANIMACIÓN DE CARGA DEL DESFIBRILADOR Y LOGS --- */
+/* Se aplica sobre la propia opción de la lista (cardioversión/desfibrilación)
+   mientras corren los 2.5 s de carga, no sobre un botón aparte. */
 @keyframes pulse-charge {
-    0% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0.7); }
-    50% { transform: scale(1.03); background-color: var(--danger); color: white; box-shadow: 0 0 15px rgba(231, 76, 60, 0.8); }
-    100% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
+    0%   { border-color: var(--warning); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
+    50%  { border-color: var(--danger); box-shadow: 0 0 14px rgba(231, 76, 60, 0.55); }
+    100% { border-color: var(--warning); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
 }
 
-.btn-shock.charging {
+.intervencion-item.cargando {
     animation: pulse-charge 0.8s infinite;
     pointer-events: none;
-    border-color: transparent;
 }
 
-.log-entry.alert { color: var(--danger); font-weight: bold; } 
-.log-entry.success { color: var(--success); font-weight: bold; } 
+.log-entry.alert { color: var(--danger); font-weight: bold; }
+.log-entry.success { color: var(--success); font-weight: bold; }
 .log-entry.action { color: var(--fucs-azul-profundo); font-weight: bold; }
 .log-entry.warning { color: #d35400; font-weight: bold; }
+
+/* --- RESPONSIVE (tablet y menor) --- */
+/* .vitals-panel no necesita entrar aquí: su grid auto-fit ya se adapta
+   solo a cualquier ancho. */
+@media (max-width: 900px) {
+    .controls, .bottom-row { grid-template-columns: 1fr; }
+}
