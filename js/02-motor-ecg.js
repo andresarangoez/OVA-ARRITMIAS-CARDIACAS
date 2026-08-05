@@ -18,28 +18,72 @@
 //    generadores pueden compartir una misma primitiva geométrica sin dejar
 //    de ser modelos independientes.
 
+// --- DURACIONES DEL LATIDO (milisegundos reales, no fracciones del ciclo) ---
+// La despolarización dura lo que dura: al subir la frecuencia cardíaca el PR y
+// el QRS no se acortan de forma apreciable, lo que se acorta es la diástole.
+// Por eso estas medidas van en tiempo real. Definidas como fracción del ciclo
+// —como estaban antes— el mismo trazado daba un PR de 80 ms a 75 lpm y de
+// 150 ms a 40 lpm: ninguno medible como en un ECG real, y a frecuencias
+// normales la P quedaba pegada al QRS sin segmento PR visible.
+const P_INICIO_MS = 40;
+const P_DURACION_MS = 90;                                   // normal < 120 ms
+const PR_INTERVALO_MS = 160;                                // inicio de P → inicio de QRS (normal 120-200 ms)
+const QRS_INICIO_MS = P_INICIO_MS + PR_INTERVALO_MS;        // 200 ms
+
+// Q + R + S = 80 ms → QRS angosto (normal < 120 ms).
+const Q_DURACION_MS = 18;
+const R_DURACION_MS = 34;
+const S_DURACION_MS = 28;
+const QRS_ANCHO_DURACION_MS = 140;                          // > 120 ms = inequívocamente ancho
+
+const QTC_MS = 400;                                         // QT corregido normal
+
 // --- PRIMITIVAS DE DIBUJO (compartidas entre generadores) ---
-function dibujarP(tiempo) {
-    if (tiempo > 0.05 && tiempo < 0.12) return 12 * Math.sin((tiempo - 0.05) * Math.PI / 0.07);
+// Todas reciben `ms` = milisegundos transcurridos desde el inicio del latido.
+
+function dibujarP(ms) {
+    if (ms > P_INICIO_MS && ms < P_INICIO_MS + P_DURACION_MS) {
+        return 12 * Math.sin((ms - P_INICIO_MS) * Math.PI / P_DURACION_MS);
+    }
     return 0;
 }
 
-function dibujarQRS(tiempo, ancho = false) {
-    let v = 0;
+function dibujarQRS(ms, ancho = false) {
+    const desde = ms - QRS_INICIO_MS;
+    if (desde < 0) return 0;
+
     if (ancho) {
-        // Complejo ancho para EV o Escape Ventricular
-        if (tiempo > 0.15 && tiempo < 0.28) v += 35 * Math.sin((tiempo - 0.15) * Math.PI / 0.13);
-    } else {
-        if (tiempo > 0.15 && tiempo < 0.17) v -= 15;
-        else if (tiempo >= 0.17 && tiempo < 0.20) v += 80;
-        else if (tiempo >= 0.20 && tiempo < 0.23) v -= 25;
+        // Complejo ancho para EV, escape ventricular o bloqueo infra-Hisiano
+        if (desde < QRS_ANCHO_DURACION_MS) {
+            return 35 * Math.sin(desde * Math.PI / QRS_ANCHO_DURACION_MS);
+        }
+        return 0;
     }
-    return v;
+
+    if (desde < Q_DURACION_MS) return -15;
+    if (desde < Q_DURACION_MS + R_DURACION_MS) return 80;
+    if (desde < Q_DURACION_MS + R_DURACION_MS + S_DURACION_MS) return -25;
+    return 0;
 }
 
-function dibujarT(tiempo, invertida = false) {
-    if (tiempo > 0.35 && tiempo < 0.50) {
-        let val = 18 * Math.sin((tiempo - 0.35) * Math.PI / 0.15);
+// La repolarización SÍ depende de la frecuencia: se aplica la fórmula de
+// Bazett (QT = QTc · √RR) para que el QT se acorte al subir la FC, como en un
+// ECG real. El tope impide que a frecuencias altas la T invada el latido
+// siguiente, cosa que la cortaría en seco a mitad de onda.
+function calcularQtMs(ciclo) {
+    const qtBazett = QTC_MS * Math.sqrt(ciclo / 1000);
+    const qtMaximo = ciclo * 0.92 - QRS_INICIO_MS;
+    return Math.max(120, Math.min(qtBazett, qtMaximo));
+}
+
+function dibujarT(ms, ciclo, invertida = false) {
+    const qt = calcularQtMs(ciclo);
+    // La T ocupa el último 45% del QT; el tramo previo es el segmento ST.
+    const inicio = QRS_INICIO_MS + qt * 0.55;
+    const fin = QRS_INICIO_MS + qt;
+
+    if (ms > inicio && ms < fin) {
+        const val = 18 * Math.sin((ms - inicio) * Math.PI / (fin - inicio));
         return invertida ? -val : val;
     }
     return 0;
@@ -54,13 +98,15 @@ function dibujarT(tiempo, invertida = false) {
 // de extrasístole auricular/ventricular).
 function generarConExtrasistoles(ctx) {
     let amplitud = 0;
-    const t = ctx.t;
+    const ms = ctx.ms;
     if (ctx.tipoLatidoActual === 'EV') {
-        amplitud += dibujarQRS(t, true) + dibujarT(t, true); // QRS Ancho y T invertida
+        amplitud += dibujarQRS(ms, true) + dibujarT(ms, ctx.ciclo, true); // QRS ancho y T invertida
     } else if (ctx.tipoLatidoActual === 'EAP') {
-        amplitud += dibujarP(t - 0.03) + dibujarQRS(t) + dibujarT(t); // P adelantada
+        // Foco auricular ectópico: la P nace fuera del nodo sinusal y conduce
+        // por una vía más corta, así que el PR queda acortado (120 ms).
+        amplitud += dibujarP(ms - 40) + dibujarQRS(ms) + dibujarT(ms, ctx.ciclo);
     } else {
-        amplitud += dibujarP(t) + dibujarQRS(t) + dibujarT(t); // Normal
+        amplitud += dibujarP(ms) + dibujarQRS(ms) + dibujarT(ms, ctx.ciclo); // Normal
     }
     return amplitud;
 }
@@ -70,23 +116,17 @@ function generarConExtrasistoles(ctx) {
 // único hallazgo es un PR fijo y prolongado (> 200 ms; aquí 280 ms, un valor
 // inequívocamente patológico para que sea fácil de reconocer).
 //
-// El retraso se calcula en milisegundos reales y se convierte a fracción de
-// ciclo usando ctx.cicloActual (el largo real del ciclo a la FC de ESTE
-// ritmo) — no un número de fase arbitrario. Así el PR resultante es
-// clínicamente correcto sin importar a qué FC esté configurado el ritmo en
+// El retraso es la diferencia entre el PR patológico buscado y el PR normal
+// del modelo (PR_INTERVALO_MS): se le suma al QRS y arrastra con él a la T,
+// dejando la P donde estaba. Al estar todo en milisegundos reales, el PR
+// resultante es el mismo sin importar a qué FC esté configurado el ritmo en
 // 01-data-ritmos.js.
 function generarBav1(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-
+    const ms = ctx.ms;
     const PR_OBJETIVO_MS = 280;
-    const PR_BASE_FRACCION = 0.10; // PR intrínseco del modelo: P onset (0.05) a QRS onset (0.15)
-    const retraso = Math.max(0, PR_OBJETIVO_MS / ctx.cicloActual - PR_BASE_FRACCION);
+    const retraso = PR_OBJETIVO_MS - PR_INTERVALO_MS;
 
-    amplitud += dibujarP(t);
-    const tQRS = t - retraso;
-    if (tQRS > 0) amplitud += dibujarQRS(tQRS) + dibujarT(tQRS);
-    return amplitud;
+    return dibujarP(ms) + dibujarQRS(ms - retraso) + dibujarT(ms - retraso, ctx.ciclo);
 }
 
 // Bloqueo AV 2do grado Mobitz I (Wenckebach): fatiga progresiva del nodo AV.
@@ -99,20 +139,16 @@ function generarBav1(ctx) {
 // bloquea por completo y el ciclo reinicia. QRS angosto: el bloqueo es
 // nodal, el sistema His-Purkinje está intacto.
 function generarBav2Wenckebach(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-    amplitud += dibujarP(t);
+    const ms = ctx.ms;
+    let amplitud = dibujarP(ms);
 
-    const PR_BASE_FRACCION = 0.10;
     // PR objetivo (ms) para los latidos 1, 2 y 3 del grupo — incrementos
     // decrecientes (100 ms, luego 40 ms) para lograr el acortamiento del R-R.
     const PR_POR_LATIDO_MS = [180, 280, 320];
 
     if (ctx.contadorNodal <= 3) {
-        const prObjetivo = PR_POR_LATIDO_MS[ctx.contadorNodal - 1];
-        const retraso = Math.max(0, prObjetivo / ctx.cicloActual - PR_BASE_FRACCION);
-        const tQRS = t - retraso;
-        if (tQRS > 0) amplitud += dibujarQRS(tQRS) + dibujarT(tQRS);
+        const retraso = PR_POR_LATIDO_MS[ctx.contadorNodal - 1] - PR_INTERVALO_MS;
+        amplitud += dibujarQRS(ms - retraso) + dibujarT(ms - retraso, ctx.ciclo);
     }
     // contadorNodal === 4: latido bloqueado, no se dibuja QRS/T (la P sí se dibujó arriba)
     return amplitud;
@@ -127,17 +163,14 @@ function generarBav2Wenckebach(ctx) {
 // la clave para diferenciarlos.
 // Conducción 3:2 — se bloquea 1 de cada 3 impulsos, siempre de forma súbita.
 function generarBav2Mobitz2(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-    amplitud += dibujarP(t);
+    const ms = ctx.ms;
+    let amplitud = dibujarP(ms);
 
     const PR_FIJO_MS = 220; // fijo, puede estar levemente prolongado, pero NUNCA cambia
-    const PR_BASE_FRACCION = 0.10;
-    const retraso = Math.max(0, PR_FIJO_MS / ctx.cicloActual - PR_BASE_FRACCION);
-    const tQRS = t - retraso;
+    const retraso = PR_FIJO_MS - PR_INTERVALO_MS;
 
-    if (ctx.contadorRatio % 3 !== 0 && tQRS > 0) {
-        amplitud += dibujarQRS(tQRS, true) + dibujarT(tQRS, true);
+    if (ctx.contadorRatio % 3 !== 0) {
+        amplitud += dibujarQRS(ms - retraso, true) + dibujarT(ms - retraso, ctx.ciclo, true);
     }
     return amplitud;
 }
@@ -156,8 +189,8 @@ function generarBav2Mobitz2(ctx) {
 // que no se puede lograr sincronizando ambas ondas al mismo reloj.
 function generarBav3(ctx) {
     let amplitud = 0;
-    amplitud += dibujarP(ctx.t_aur);
-    amplitud += dibujarQRS(ctx.t, true) + dibujarT(ctx.t, true);
+    amplitud += dibujarP(ctx.ms_aur);
+    amplitud += dibujarQRS(ctx.ms, true) + dibujarT(ctx.ms, ctx.ciclo, true);
     return amplitud;
 }
 
@@ -166,20 +199,16 @@ function generarBav3(ctx) {
 function generarFlutter(ctx) {
     let amplitud = 0;
     amplitud += 8 * Math.sin(ctx.t_aur * Math.PI * 2);
-    amplitud += dibujarQRS(ctx.t) + dibujarT(ctx.t);
+    amplitud += dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
     return amplitud;
 }
 
 // Fibrilación Auricular: línea de base irregular ("fibrilatoria") sin onda P,
 // con QRS estrecho de conducción irregular.
 function generarFA(ctx) {
-    let amplitud = 0;
-    const t = ctx.t;
-    amplitud += 4 * Math.sin(t * 40) + 3 * Math.random();
-    if (t > 0.15 && t < 0.18) amplitud -= 10;
-    else if (t >= 0.18 && t < 0.22) amplitud += 65;
-    else if (t >= 0.22 && t < 0.25) amplitud -= 15;
-    if (t > 0.35 && t < 0.45) amplitud += 12 * Math.sin((t - 0.35) * Math.PI / 0.10);
+    // Donde iría la P hay ondas f a ~430/min (período de 138 ms), no una P.
+    let amplitud = 4 * Math.sin(ctx.ms / 22) + 3 * Math.random();
+    amplitud += dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
     return amplitud;
 }
 
@@ -327,12 +356,23 @@ class MotorMatematicoECG {
         //    Si el ritmo no tiene generador registrado todavía, se comporta
         //    igual que antes del refactor: amplitud 0 (línea plana).
         const contexto = {
+            // Fases normalizadas (0 a 1). Las siguen usando los ritmos cuyo
+            // trazado es una oscilación continua sin latidos discretos (TV,
+            // Torsades, dientes de sierra del flutter).
             t: this.fase,
             t_aur: this.faseAuricular,
+
+            // Tiempo real transcurrido dentro del latido, en milisegundos: es
+            // lo que usan las primitivas P/QRS/T para que el PR y el QRS midan
+            // siempre lo mismo, independientemente de la frecuencia cardíaca.
+            ms: this.fase * cicloActual,
+            ms_aur: this.faseAuricular * cicloAuricular,
+
+            ciclo: cicloActual, // largo real del ciclo (ms), necesario para el QT de Bazett
+
             tipoLatidoActual: this.tipoLatidoActual,
             contadorNodal: this.contadorNodal,
             contadorRatio: this.contadorRatio,
-            cicloActual: cicloActual, // largo real del ciclo (ms) — permite calcular PR/intervalos en tiempo real, no en fracciones arbitrarias
         };
 
         const generador = GENERADORES_RITMO[ritmo];
