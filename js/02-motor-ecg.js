@@ -284,6 +284,7 @@ class MotorMatematicoECG {
         this.contadorRatio = 1; // Para Mobitz II
 
         // Lógica de extrasístoles
+        this.contadorLatido = 0; // Para intercalar la extrasístole cada 4 latidos
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
     }
@@ -297,6 +298,7 @@ class MotorMatematicoECG {
         this.faseAuricular = 0;
         this.contadorNodal = 1;
         this.contadorRatio = 1;
+        this.contadorLatido = 0;
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
     }
@@ -328,16 +330,24 @@ class MotorMatematicoECG {
             else if (this.tipoLatidoActual === 'EAP') this.pausaCompensatoria = false;
             else if (this.pausaCompensatoria) this.pausaCompensatoria = false;
 
-            // Generador espontáneo de extrasístoles
-            if (['sinusal', 'bradi_sinusal', 'eap', 'ev'].includes(ritmo)) {
-                let rng = Math.random() * 100;
-                if (ritmo === 'ev' || (rng < 8 && !this.pausaCompensatoria)) {
-                    this.tipoLatidoActual = 'EV';
-                } else if (ritmo === 'eap' || (rng >= 8 && rng < 16 && !this.pausaCompensatoria)) {
-                    this.tipoLatidoActual = 'EAP';
-                } else {
-                    this.tipoLatidoActual = 'NORMAL';
-                }
+            // Extrasístoles: SOLO en las dos vistas dedicadas a ellas.
+            //
+            // El ritmo sinusal y la bradicardia sinusal deben verse
+            // perfectamente regulares: son la referencia contra la cual el
+            // estudiante compara todo lo demás. Antes recibían un 8% de
+            // latidos ventriculares y un 8% de auriculares al azar, así que
+            // el "ritmo normal" aparecía irregular y con complejos anchos
+            // intercalados — imposible aprender la alteración si la
+            // referencia ya está alterada.
+            //
+            // Y una extrasístole es, por definición, un latido aislado sobre
+            // un ritmo de base normal: se intercala 1 cada 4, no en todos
+            // (antes, en las vistas 'ev'/'eap', TODOS los latidos eran
+            // ectópicos, que es otra arritmia distinta).
+            if (ritmo === 'ev' || ritmo === 'eap') {
+                this.contadorLatido++;
+                const tocaEctopico = this.contadorLatido % 4 === 0 && !this.pausaCompensatoria;
+                this.tipoLatidoActual = tocaEctopico ? (ritmo === 'ev' ? 'EV' : 'EAP') : 'NORMAL';
             } else {
                 this.tipoLatidoActual = 'NORMAL';
             }
