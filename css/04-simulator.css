@@ -35,17 +35,39 @@
 .clinical-panel, .intervenciones-panel { background: #ffffff; color: var(--fucs-azul-oscuro); border: 1px solid var(--fucs-gris); border-top: 4px solid var(--fucs-dorado); border-radius: var(--radius-lg); padding: 15px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-md); }
 .clinical-panel h3, .intervenciones-panel h3 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 1.1rem; text-align: center; padding-bottom: 10px; border-bottom: 1px solid var(--fucs-gris); text-transform: uppercase; letter-spacing: 0.5px; }
 
-.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 10px; font-family: var(--font-mono); font-size: 0.8rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--fucs-gris); }
+/* --- REGISTRO CLÍNICO EN FORMATO LÍNEA DE TIEMPO ---
+   Cada entrada es un punto sobre una línea vertical continua. El punto usa
+   currentColor, así que hereda el color semántico de la entrada (alert,
+   success, action, warning) sin necesidad de reglas por tipo. Es solo
+   presentación: registrarLog() en js/04-simulador.js sigue creando el mismo
+   <div class="log-entry"> de siempre. */
+.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 14px 12px 14px 10px; font-size: 0.85rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 0; border: 1px solid var(--fucs-gris); }
+.log-entry { position: relative; margin-left: 5px; padding: 0 0 12px 20px; border-left: 2px solid var(--fucs-gris); line-height: 1.45; }
+.log-entry::before { content: ''; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: currentColor; border: 2px solid var(--fucs-niebla); }
+/* La última entrada no prolonga la línea por debajo de su propio punto. */
+.log-entry:last-child { border-left-color: transparent; padding-bottom: 0; }
 
 /* --- PANEL DE INTERVENCIONES (escenario preparado, sin lógica todavía) --- */
 .intervenciones-grupo h4 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+/* Dos columnas por grupo (auto-fit: cae a una sola en pantallas angostas). */
+.intervenciones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.intervencion-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; }
+.intervencion-item:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
+.intervencion-icono { font-size: 0.95rem; line-height: 1; }
+.intervencion-nombre { flex: 1; font-size: 0.9rem; color: var(--fucs-azul-oscuro); }
+.intervencion-item input { margin: 0; accent-color: var(--fucs-azul-profundo); }
 .intervenciones-nota { margin: 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
 
 /* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */
-.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 22px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 0.65fr 1.35fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
+.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 16px 20px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
 .control-group { display: flex; flex-direction: column; gap: 4px; }
 .control-group label { color: var(--fucs-azul-profundo); font-size: 0.9rem; font-weight: 600; }
 .control-group select { padding: 6px 8px; font-size: 0.9rem; }
+/* El grupo del selector va en fila (etiqueta al lado, no encima): es lo que
+   adelgaza la barra de cabecera. El .instruccion-box conserva su columna. */
+.control-group:not(.instruccion-box) { flex-direction: row; align-items: center; gap: 10px; }
+.control-group:not(.instruccion-box) label { white-space: nowrap; }
+.control-group:not(.instruccion-box) select { flex: 1; min-width: 0; }
 
 /* --- ANIMACIÓN DE DESFIBRILADOR Y LOGS --- */
 @keyframes pulse-charge {
