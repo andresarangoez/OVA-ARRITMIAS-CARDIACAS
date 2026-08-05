@@ -30,12 +30,10 @@
         document.getElementById('val-spo2').innerText = strSpO2;
         document.getElementById('val-fr').innerText = hmd_actual.fr;
         document.getElementById('val-temp').innerText = hmd_actual.temp.toFixed(1);
-    
-        // --- Mostrar botón en desfibrilables Y en Asistolia/AESP ---
-        const esRitmoDeParo = ['fv', 'asistolia', 'aesp'].includes(estado.ritmo);
-        document.getElementById('btn-shock').style.display = (estado.datos.desf || esRitmoDeParo) ? 'block' : 'none';
-        
-        document.getElementById('btn-meds').innerText = `💉 Admin. ${estado.datos.med.split(' / ')[0]}`;
+
+        // El panel de intervenciones no se adapta al ritmo a propósito: mostrar
+        // solo las opciones válidas delataría la respuesta. El estudiante elige
+        // y el registro le explica después si acertó.
     }
     
     function cambiarRitmo(nuevoRitmo) {
@@ -54,6 +52,10 @@
         
         document.getElementById('selectorRitmo').value = nuevoRitmo;
         actualizarMonitor();
+
+        // Escenario nuevo: se borra la selección y las marcas de acierto/error
+        // de la ronda anterior.
+        reiniciarIntervenciones();
     }
     
     document.getElementById('selectorRitmo').addEventListener('change', function() {
@@ -62,80 +64,111 @@
     });
     
     // --- INTERACCIONES CLÍNICAS ---
-    document.getElementById('btn-shock').addEventListener('click', function() {
-        const btn = this;
-        
-        // Obtenemos el ritmo que está seleccionado actualmente
-        const ritmoActual = document.getElementById('selectorRitmo').value;
-        
-        // Definimos cuáles son los ritmos de paro
-        const ritmosParo = ['fv', 'asistolia', 'aesp'];
-    
-        // --- LÓGICA DE EVALUACIÓN: ERRORES FATALES ---
-        if (ritmosParo.includes(ritmoActual)) {
-            // Si el paciente está en paro, pero es NO desfibrilable:
-            if (ritmoActual === 'asistolia' || ritmoActual === 'aesp') {
-                registrarLog("❌ ERROR FATAL CLÍNICO: Intento de desfibrilar Asistolia o AESP.", "alert");
-                registrarLog("⚠️ Protocolo: Estos ritmos NO se desfibrilan. Priorice RCP y Adrenalina.", "alert");
-                
-                // Pequeño efecto visual rojo en el botón para indicar el error
-                btn.style.backgroundColor = "var(--danger)";
-                setTimeout(() => { btn.style.backgroundColor = ""; }, 1500);
-                
-                return; // 🛑 Detiene la función aquí, NO carga el desfibrilador
-            }
-        } else {
-            // Si NO es un ritmo de paro, respetamos tu lógica original
-            if (!estado.datos.desf) return; 
-        }
-    
-        // --- SECUENCIA DE DESCARGA NORMAL (Para FV, TVSP o si aplica) ---
-        
-        // 1. Inicia efecto de carga
-        btn.classList.add('charging');
-        btn.innerText = "🔋 Cargando 200J...";
-        registrarLog("🔋 Cargando condensadores a 200J...", "warning");
-    
-        // 2. Espera 2.5 segundos de carga
-        setTimeout(() => {
-            btn.classList.remove('charging');
-            btn.innerText = "⚡ Desfibrilar (200J)";
-            registrarLog("⚡ ¡CLEAR! Descarga de 200J administrada.", "action");
-            
-            // 3. Evalúa si el paciente sale del paro
+    // El estudiante elige UNA intervención de la lista y la aplica. Quién
+    // decide si estaba indicada es MotorClinico.Intervenciones (08-motor-
+    // medicamentos.js); aquí solo se orquesta la interacción y el registro.
+
+    const VEREDICTOS = {
+        indicado:       { icono: '✅', titulo: 'Intervención indicada',  clase: 'success', marca: 'ok' },
+        parcial:        { icono: '⚠️', titulo: 'No es la prioridad',     clase: 'warning', marca: 'medio' },
+        incorrecto:     { icono: '❌', titulo: 'No indicada',            clase: 'alert',   marca: 'mal' },
+        contraindicado: { icono: '⛔', titulo: 'Contraindicada',         clase: 'alert',   marca: 'mal' }
+    };
+
+    const btnAplicar = document.getElementById('btn-aplicar-intervencion');
+    const opcionesIntervencion = Array.from(document.querySelectorAll('input[name="intervencion"]'));
+
+    function intervencionSeleccionada() {
+        return opcionesIntervencion.find(opcion => opcion.checked) || null;
+    }
+
+    function sincronizarBotonAplicar() {
+        const seleccion = intervencionSeleccionada();
+        btnAplicar.disabled = !seleccion;
+        btnAplicar.innerText = seleccion
+            ? `Aplicar ${MotorClinico.Intervenciones.CATALOGO[seleccion.value].nombre}`
+            : 'Seleccione una intervención';
+    }
+
+    // Se llama también desde cambiarRitmo(): cada ritmo nuevo es un escenario
+    // nuevo y no debe arrastrar las marcas de la ronda anterior.
+    function reiniciarIntervenciones() {
+        opcionesIntervencion.forEach(opcion => { opcion.checked = false; });
+        document.querySelectorAll('.intervencion-item').forEach(item => {
+            item.classList.remove('ok', 'medio', 'mal', 'cargando');
+        });
+        sincronizarBotonAplicar();
+    }
+
+    opcionesIntervencion.forEach(opcion => {
+        opcion.addEventListener('change', sincronizarBotonAplicar);
+    });
+
+    btnAplicar.addEventListener('click', function () {
+        const seleccion = intervencionSeleccionada();
+        if (!seleccion) return;
+
+        const resultado = MotorClinico.Intervenciones.evaluar(seleccion.value, estado.ritmo);
+        if (!resultado) return;
+
+        const item = seleccion.closest('.intervencion-item');
+        const info = resultado.intervencion;
+
+        // El ritmo sobre el que se aplicó. Las fases diferidas (carga y
+        // respuesta del paciente) lo comprueban antes de escribir en el
+        // registro: si el estudiante cambió de ritmo mientras tanto, ese
+        // veredicto ya no corresponde al paciente que hay en pantalla.
+        const ritmoAlAplicar = estado.ritmo;
+
+        registrarLog(`${info.nombre} — ${info.dosis}`, 'action');
+
+        // Cardioversión y desfibrilación conservan su secuencia de carga: es
+        // parte de lo que hay que aprender del procedimiento.
+        if (info.requiereCarga) {
+            item.classList.add('cargando');
+            btnAplicar.disabled = true;
+            registrarLog('🔋 Cargando el desfibrilador...', 'warning');
+
             setTimeout(() => {
-                if (Math.random() > 0.4) {
-                    registrarLog("✅ ROSC: Ritmo organizado detectado.", "success");
-                    // Actualiza visualmente el select al ritmo sinusal
-                    document.getElementById('selectorRitmo').value = 'sinusal';
-                    cambiarRitmo('sinusal');
-                } else {
-                    registrarLog("❌ Descarga inefectiva. Continúa paro.", "alert");
-                }
-            }, 2000);
-    
-        }, 2500);
+                item.classList.remove('cargando');
+                sincronizarBotonAplicar();
+                if (estado.ritmo !== ritmoAlAplicar) return;
+
+                registrarLog('⚡ ¡CLEAR! Descarga administrada.', 'action');
+                resolverIntervencion(item, resultado, ritmoAlAplicar);
+            }, 2500);
+            return;
+        }
+
+        resolverIntervencion(item, resultado, ritmoAlAplicar);
     });
-    
-    document.getElementById('btn-meds').addEventListener('click', () => {
-        registrarLog(`💉 Administrado: ${estado.datos.med}`, "action");
+
+    function resolverIntervencion(item, resultado, ritmoAlAplicar) {
+        const veredicto = VEREDICTOS[resultado.veredicto];
+
+        registrarLog(`${veredicto.icono} ${veredicto.titulo}. ${resultado.nota}`, veredicto.clase);
+
+        item.classList.remove('ok', 'medio', 'mal');
+        item.classList.add(veredicto.marca);
+
+        // Solo las intervenciones capaces de reorganizar el ritmo abren la
+        // segunda fase (la respuesta del paciente). El oxígeno, por ejemplo,
+        // es correcto pero no revierte nada por sí solo.
+        if (!resultado.resuelveA) return;
+
         setTimeout(() => {
-            const cat = estado.datos.cat;
-            if (cat === 5) { // Paro
-                if(Math.random() > 0.7) {
-                    registrarLog("⚠️ ROSC post-fármaco detectado.", "success");
-                    cambiarRitmo(estado.ritmo === 'asistolia' ? 'aesp' : 'sinusal');
-                } else { registrarLog("❌ Sin cambios. Continúe RCP.", "alert"); }
-            } 
-            else if ([1,3,4].includes(cat)) { // Arritmias con pulso
-                if(Math.random() > 0.3) {
-                    registrarLog("✅ El ritmo se estabiliza.", "success");
-                    cambiarRitmo('sinusal');
-                } else { registrarLog("⚠️ Ritmo persiste. Reevaluar clínica.", "alert"); }
+            if (estado.ritmo !== ritmoAlAplicar) return;
+
+            if (Math.random() < resultado.probabilidad) {
+                registrarLog('✅ Ritmo organizado tras la intervención.', 'success');
+                cambiarRitmo(resultado.resuelveA);
+            } else {
+                registrarLog('⚠️ Sin respuesta todavía. Reevalúe y continúe el algoritmo.', 'warning');
             }
-        }, 2500);
-    });
-    
+        }, 1800);
+    }
+
+
     // --- MOTOR GRÁFICO HÍBRIDO (El Renderizador) ---
     const canvas = document.getElementById('ekgCanvas');
     const ctx = canvas.getContext('2d');

@@ -263,35 +263,33 @@
 
                     <div class="intervenciones-panel">
                         <h3>Intervenciones</h3>
+                        <!-- Radio, no checkbox: se elige UNA intervención y se
+                             aplica con el botón de abajo. La desfibrilación y la
+                             solución salina son dos opciones más de la lista, ya
+                             no botones aparte. -->
                         <div class="intervenciones-grupo">
                             <h4>Medicamentos</h4>
                             <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-nombre">Adenosina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Atropina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Adrenalina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Amiodarona</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Adenosina</span><input type="radio" name="intervencion" value="adenosina"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Atropina</span><input type="radio" name="intervencion" value="atropina"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Adrenalina</span><input type="radio" name="intervencion" value="adrenalina"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Amiodarona</span><input type="radio" name="intervencion" value="amiodarona"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Solución salina</span><input type="radio" name="intervencion" value="salina"></label>
                             </div>
                         </div>
                         <div class="intervenciones-grupo">
                             <h4>Procedimientos</h4>
                             <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-nombre">Cardioversión</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Desfibrilación</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Marcapasos</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Oxígeno</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Cardioversión</span><input type="radio" name="intervencion" value="cardioversion"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Desfibrilación</span><input type="radio" name="intervencion" value="desfibrilacion"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Marcapasos</span><input type="radio" name="intervencion" value="marcapasos"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Oxígeno</span><input type="radio" name="intervencion" value="oxigeno"></label>
                             </div>
                         </div>
 
-                        <!-- Acciones ejecutables: viven aquí (no en el panel de
-                             registro) para que "Acciones Clínicas" quede como
-                             línea de tiempo limpia. btn-shock se muestra/oculta
-                             solo, según el ritmo, desde actualizarMonitor(). -->
-                        <div class="intervenciones-acciones">
-                            <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
-                            <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
-                        </div>
+                        <button id="btn-aplicar-intervencion" class="btn-action btn-aplicar" disabled>Seleccione una intervención</button>
 
-                        <p class="intervenciones-nota">Próximamente: dosis, validaciones y lógica clínica por intervención.</p>
+                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué.</p>
                     </div>
                 </div>
             </div>

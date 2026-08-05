@@ -67,9 +67,16 @@
 .intervencion-item:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
 .intervencion-nombre { flex: 1; font-size: 0.9rem; color: var(--fucs-azul-oscuro); }
 .intervencion-item input { margin: 0; accent-color: var(--fucs-azul-profundo); }
-/* Botones ejecutables del panel. Columna flex: cuando actualizarMonitor()
-   pone btn-shock en display:none, el gap se colapsa solo y no deja hueco. */
-.intervenciones-acciones { display: flex; flex-direction: column; gap: 10px; }
+
+/* Opción elegida, todavía sin aplicar. */
+.intervencion-item:has(input:checked) { border-color: var(--fucs-azul-profundo); background: rgba(9, 39, 85, 0.05); }
+
+/* Veredicto ya aplicado. Las clases las pone resolverIntervencion() en
+   04-simulador.js a partir del resultado del motor de intervenciones. */
+.intervencion-item.ok { border-color: var(--success); background: rgba(46, 204, 113, 0.1); }
+.intervencion-item.medio { border-color: var(--warning); background: rgba(241, 196, 15, 0.12); }
+.intervencion-item.mal { border-color: var(--danger); background: rgba(231, 76, 60, 0.1); }
+
 .intervenciones-nota { margin: 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
 
 /* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */
@@ -83,17 +90,18 @@
 .control-group:not(.instruccion-box) label { white-space: nowrap; }
 .control-group:not(.instruccion-box) select { flex: 1; min-width: 0; }
 
-/* --- ANIMACIÓN DE DESFIBRILADOR Y LOGS --- */
+/* --- ANIMACIÓN DE CARGA DEL DESFIBRILADOR Y LOGS --- */
+/* Se aplica sobre la propia opción de la lista (cardioversión/desfibrilación)
+   mientras corren los 2.5 s de carga, no sobre un botón aparte. */
 @keyframes pulse-charge {
-    0% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0.7); }
-    50% { transform: scale(1.03); background-color: var(--danger); color: white; box-shadow: 0 0 15px rgba(231, 76, 60, 0.8); }
-    100% { transform: scale(1); background-color: var(--warning); color: var(--fucs-azul-profundo); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
+    0%   { border-color: var(--warning); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
+    50%  { border-color: var(--danger); box-shadow: 0 0 14px rgba(231, 76, 60, 0.55); }
+    100% { border-color: var(--warning); box-shadow: 0 0 0 rgba(241, 196, 15, 0); }
 }
 
-.btn-shock.charging {
+.intervencion-item.cargando {
     animation: pulse-charge 0.8s infinite;
     pointer-events: none;
-    border-color: transparent;
 }
 
 .log-entry.alert { color: var(--danger); font-weight: bold; }
