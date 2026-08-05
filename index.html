@@ -193,37 +193,12 @@
 
         <div id="simulador-wrapper">
             <div class="main-container">
-                <div class="top-row">
-                    <div class="monitor-frame">
-                        <div class="canvas-container">
-                            <canvas id="ekgCanvas" width="520" height="320" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
-                        </div>
-                        <div class="vitals-panel">
-                            <div class="vital-box fc"><div class="label">FC (LPM)</div><div class="value" id="val-fc">75</div></div>
-                            <div class="vital-box ta"><div class="label">TA (mmHg) / PAM</div><div class="value small-text" id="val-ta">120/80 (93)</div></div>
-                            <div class="vital-box spo2"><div class="label">SpO2 (%)</div><div class="value" id="val-spo2">98</div></div>
-                            <div class="vital-box fr"><div class="label">FR (RPM)</div><div class="value" id="val-fr">16</div></div>
-                            <div class="vital-box temp"><div class="label">T° (°C)</div><div class="value" id="val-temp">36.5</div></div>
-                        </div>
-                    </div>
-
-                    <div class="clinical-panel">
-                        <h3>Acciones Clínicas</h3>
-                        <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
-                        <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
-                        <div class="log-container" id="clinical-log" role="log" aria-live="polite" aria-label="Registro de eventos clínicos">
-                            <div class="log-entry">-- Inicio de Simulación --</div>
-                            <div class="log-entry">Paciente monitorizado. Seleccione un ritmo.</div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="controls">
                     <div class="control-group">
                         <label for="selectorRitmo"><strong>Selección de Ritmo Clínico:</strong></label>
                         <select id="selectorRitmo">
                             <option value="sinusal">Ritmo Sinusal</option>
-                            
+
                             <optgroup label="1. Bradiarritmias">
                                 <option value="bradi_sinusal">Bradicardia Sinusal</option>
                                 <option value="bav1">Bloqueo AV de 1er Grado</option>
@@ -258,8 +233,57 @@
                     </div>
                     <div class="control-group instruccion-box">
                         <p style="margin: 0; font-size: 0.9rem;">
-                            <strong>Instrucción:</strong> Al cambiar el ritmo, el simulador aplicará automáticamente la lógica de la categoría seleccionada (hemodinamia, pulso, medicamentos y opciones de desfibrilación).
+                            <strong>Instrucción:</strong> Al cambiar el ritmo, el simulador actualizará automáticamente el estado clínico del paciente.
                         </p>
+                    </div>
+                </div>
+
+                <div class="monitor-frame">
+                    <div class="canvas-container">
+                        <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
+                    </div>
+                </div>
+
+                <div class="vitals-panel">
+                    <div class="vital-box fc"><div class="label">FC (LPM)</div><div class="value" id="val-fc">75</div></div>
+                    <div class="vital-box ta"><div class="label">TA (mmHg) / PAM</div><div class="value small-text" id="val-ta">120/80 (93)</div></div>
+                    <div class="vital-box spo2"><div class="label">SpO2 (%)</div><div class="value" id="val-spo2">98</div></div>
+                    <div class="vital-box fr"><div class="label">FR (RPM)</div><div class="value" id="val-fr">16</div></div>
+                    <div class="vital-box temp"><div class="label">T° (°C)</div><div class="value" id="val-temp">36.5</div></div>
+                </div>
+
+                <div class="bottom-row">
+                    <div class="clinical-panel">
+                        <h3>Acciones Clínicas</h3>
+                        <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
+                        <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
+                        <div class="log-container" id="clinical-log" role="log" aria-live="polite" aria-label="Registro de eventos clínicos">
+                            <div class="log-entry">-- Inicio de Simulación --</div>
+                            <div class="log-entry">Paciente monitorizado. Seleccione un ritmo.</div>
+                        </div>
+                    </div>
+
+                    <div class="intervenciones-panel">
+                        <h3>Intervenciones</h3>
+                        <div class="intervenciones-grupo">
+                            <h4>Medicamentos</h4>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="checkbox"> Adenosina</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Atropina</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Adrenalina</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Amiodarona</label>
+                            </div>
+                        </div>
+                        <div class="intervenciones-grupo">
+                            <h4>Procedimientos</h4>
+                            <div class="actividad-opciones">
+                                <label class="actividad-opcion"><input type="checkbox"> Cardioversión</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Desfibrilación</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Marcapasos</label>
+                                <label class="actividad-opcion"><input type="checkbox"> Oxígeno</label>
+                            </div>
+                        </div>
+                        <p class="intervenciones-nota">Próximamente: dosis, validaciones y lógica clínica por intervención.</p>
                     </div>
                 </div>
             </div>
