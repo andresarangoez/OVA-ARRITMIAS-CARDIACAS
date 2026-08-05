@@ -157,6 +157,42 @@ body.modo-modulo .fab-flotante { display: flex; }
 .indice-item.actual .indice-item-icono { color: var(--fucs-dorado); }
 .indice-item.completado .indice-item-icono { color: var(--success); }
 
+/* --- SUB-ÍNDICE ANIDADO (h4/h5 de cada unidad, generado por generarSubindices()) --- */
+.indice-sublista { list-style: none; margin: 2px 0 4px 0; padding: 0; }
+.indice-subitem { margin: 0 0 0 20px; }
+.indice-subitem.nivel-2 { margin-left: 30px; }
+.indice-subitem-btn {
+    width: 100%; display: flex; align-items: baseline; gap: 8px;
+    padding: 5px 10px; background: none; border: none; border-left: 2px solid transparent;
+    border-radius: 0 6px 6px 0; text-align: left; cursor: pointer;
+    font-size: 0.78rem; font-family: var(--font-main); color: var(--text-muted);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.indice-subitem-btn:hover { background: rgba(248, 198, 128, 0.1); color: var(--text-body); }
+.indice-subitem-numero { flex-shrink: 0; color: var(--fucs-gris); font-variant-numeric: tabular-nums; }
+
+/* --- MINI-ÍNDICE DESPLEGABLE DENTRO DE CADA UNIDAD --- */
+.unidad-mini-indice { margin: 0 0 24px 0; }
+.unidad-mini-indice-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; padding: 4px 0; cursor: pointer;
+    font-size: 0.82rem; font-weight: 600; color: var(--fucs-azul-oscuro);
+    opacity: 0.75; transition: opacity 0.2s ease;
+}
+.unidad-mini-indice-toggle:hover { opacity: 1; }
+.unidad-mini-indice-toggle .icono { display: inline-block; transition: transform 0.2s ease; }
+.unidad-mini-indice.abierto .unidad-mini-indice-toggle .icono { transform: rotate(90deg); }
+.unidad-mini-indice-lista {
+    list-style: none; margin: 8px 0 0 0; padding: 12px 16px; display: none;
+    background: var(--fucs-niebla); border-radius: var(--bento-radius-md);
+}
+.unidad-mini-indice.abierto .unidad-mini-indice-lista { display: block; }
+.unidad-mini-indice-lista li { margin-bottom: 6px; font-size: 0.85rem; }
+.unidad-mini-indice-lista li:last-child { margin-bottom: 0; }
+.unidad-mini-indice-lista li.nivel-2 { margin-left: 18px; }
+.unidad-mini-indice-lista a { color: var(--fucs-azul-oscuro); text-decoration: none; cursor: pointer; }
+.unidad-mini-indice-lista a:hover { text-decoration: underline; }
+
 /* --- CONTENIDO DEL MODAL DE FINALIZACIÓN --- */
 /* El overlay/caja son .modal-overlay/.modal-caja (css/10-componentes.css,
    ya funcionales) — aquí solo se estiliza el contenido interno. */

@@ -65,6 +65,7 @@
         }
 
         generarIndiceUnidades(desarrollo);
+        generarSubindices(desarrollo);
         actualizarResumenProgreso({ porcentaje: 0, indicesVistos: [], totalUnidades: desarrollo.querySelectorAll('.modulo-unidad').length });
 
         if (OVA.BusquedaModulo && typeof OVA.BusquedaModulo.limpiarResaltado === 'function') {
@@ -115,6 +116,169 @@
             item.appendChild(boton);
             lista.appendChild(item);
         });
+    }
+
+    // --- SUB-ÍNDICES: numera automáticamente los h4/h5 propios de cada
+    // unidad (2, 2.1, 2.2, 3...) y los publica en dos lugares: anidados bajo
+    // la unidad en el sidebar global, y como un mini-índice desplegable
+    // dentro de la propia unidad. Se recalcula en cada apertura del módulo,
+    // así que nunca queda desincronizado del contenido real — no depende de
+    // numeración escrita a mano en el HTML. Usa :scope > h4/h5 para no
+    // recoger encabezados internos de widgets (ej. el h5 "Estructura" del
+    // panel de identificación de estructuras del corazón).
+    function generarSubindices(desarrollo) {
+        const unidades = desarrollo.querySelectorAll('.modulo-unidad');
+
+        unidades.forEach((unidad, indiceUnidad) => {
+            const miniPrevio = unidad.querySelector('.unidad-mini-indice');
+            if (miniPrevio) miniPrevio.remove();
+
+            // ":scope .figura-fila-texto > h4/h5" cubre los encabezados que
+            // viven dentro de una fila texto+imagen (necesario para poder
+            // centrar la imagen verticalmente junto a su apartado) sin
+            // recoger encabezados de otros widgets anidados (ej. el h5
+            // "Estructura" del panel de identificación de estructuras).
+            const encabezados = unidad.querySelectorAll(':scope > h4, :scope > h5, :scope > .figura-fila > .figura-fila-texto > h4, :scope > .figura-fila > .figura-fila-texto > h5');
+            if (encabezados.length === 0) return;
+
+            const entradas = [];
+            let mayor = 0;
+            let menor = 0;
+
+            encabezados.forEach((encabezado, i) => {
+                if (encabezado.tagName === 'H4') {
+                    mayor += 1;
+                    menor = 0;
+                } else {
+                    menor += 1;
+                }
+                const numero = menor > 0 ? (mayor + '.' + menor) : String(mayor);
+                const idEncabezado = 'unidad-' + indiceUnidad + '-sub-' + i;
+                encabezado.id = idEncabezado;
+
+                // Guarda el texto original una sola vez (dataset persiste en el
+                // propio nodo) para poder reponer el número sin duplicarlo si
+                // el módulo se reabre y esta función se ejecuta de nuevo.
+                if (!encabezado.dataset.textoOriginal) {
+                    encabezado.dataset.textoOriginal = encabezado.textContent.trim();
+                }
+                const textoOriginal = encabezado.dataset.textoOriginal;
+
+                encabezado.innerHTML = '';
+                const numeroSpan = document.createElement('span');
+                numeroSpan.className = 'numero-encabezado';
+                numeroSpan.textContent = numero + '.';
+                encabezado.appendChild(numeroSpan);
+                encabezado.appendChild(document.createTextNode(' ' + textoOriginal));
+
+                entradas.push({
+                    numero,
+                    texto: textoOriginal,
+                    id: idEncabezado,
+                    nivel: encabezado.tagName === 'H4' ? 1 : 2
+                });
+            });
+
+            publicarSublistaSidebar(indiceUnidad, entradas);
+            publicarMiniIndiceUnidad(unidad, indiceUnidad, entradas);
+        });
+    }
+
+    function publicarSublistaSidebar(indiceUnidad, entradas) {
+        const itemSidebar = document.querySelector('.indice-lista .indice-item[data-unidad-index="' + indiceUnidad + '"]');
+        if (!itemSidebar) return;
+
+        const sublista = document.createElement('ul');
+        sublista.className = 'indice-sublista';
+
+        entradas.forEach(entrada => {
+            const li = document.createElement('li');
+            li.className = 'indice-subitem nivel-' + entrada.nivel;
+
+            const boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = 'indice-subitem-btn';
+            boton.onclick = () => irASubindice(indiceUnidad, entrada.id);
+
+            const numero = document.createElement('span');
+            numero.className = 'indice-subitem-numero';
+            numero.textContent = entrada.numero;
+
+            const texto = document.createElement('span');
+            texto.textContent = entrada.texto;
+
+            boton.appendChild(numero);
+            boton.appendChild(texto);
+            li.appendChild(boton);
+            sublista.appendChild(li);
+        });
+
+        itemSidebar.appendChild(sublista);
+    }
+
+    function publicarMiniIndiceUnidad(unidad, indiceUnidad, entradas) {
+        const tituloUnidad = unidad.querySelector('.unidad-titulo');
+        if (!tituloUnidad) return;
+
+        const mini = document.createElement('div');
+        mini.className = 'unidad-mini-indice';
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'unidad-mini-indice-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML = '<span class="icono" aria-hidden="true">›</span> En esta unidad';
+        toggle.onclick = () => {
+            const abierto = mini.classList.toggle('abierto');
+            toggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        };
+
+        const lista = document.createElement('ul');
+        lista.className = 'unidad-mini-indice-lista';
+
+        entradas.forEach(entrada => {
+            const li = document.createElement('li');
+            li.className = 'nivel-' + entrada.nivel;
+
+            const link = document.createElement('a');
+            link.href = '#' + entrada.id;
+            link.textContent = entrada.numero + '. ' + entrada.texto;
+            link.onclick = (evento) => {
+                evento.preventDefault();
+                const destino = document.getElementById(entrada.id);
+                if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+
+            li.appendChild(link);
+            lista.appendChild(li);
+        });
+
+        mini.appendChild(toggle);
+        mini.appendChild(lista);
+        tituloUnidad.insertAdjacentElement('afterend', mini);
+    }
+
+    // --- SALTAR A UN SUB-ENCABEZADO DESDE EL SIDEBAR GLOBAL ---
+    function irASubindice(indiceUnidad, idEncabezado) {
+        if (!idModuloActivo) return;
+        const contenedor = document.getElementById('contenido-modulo-' + idModuloActivo);
+        if (!contenedor) return;
+        const desarrollo = contenedor.querySelector('.modulo-desarrollo');
+
+        const marcarYDesplazar = () => {
+            document.querySelectorAll('.indice-lista .indice-item').forEach(item => {
+                item.classList.toggle('actual', Number(item.dataset.unidadIndex) === indiceUnidad);
+            });
+            const destino = document.getElementById(idEncabezado);
+            if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        if (desarrollo && desarrollo.style.display === 'none') {
+            if (typeof window.iniciarModulo === 'function') window.iniciarModulo(idModuloActivo);
+            setTimeout(marcarYDesplazar, 50);
+        } else {
+            marcarYDesplazar();
+        }
     }
 
     // --- CALLBACK QUE RECIBE activarBarraProgreso() (js/05-modulo.js) ---
