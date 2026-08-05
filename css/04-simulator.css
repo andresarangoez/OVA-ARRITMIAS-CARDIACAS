@@ -27,7 +27,9 @@
 .temp { color: #e67e22; border-left-color: #e67e22; }
 
 /* --- ZONA INFERIOR: dos columnas (mismo patrón de grid que .controls) --- */
-.bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; align-items: start; }
+/* align-items por defecto (stretch): ambos paneles quedan a la misma altura y
+   el registro crece (flex-grow) para llenar su columna. */
+.bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
 
 /* --- PANEL DE ACCIONES CLÍNICAS / INTERVENCIONES --- */
 /* Mismo tratamiento de tarjeta para ambos paneles — se define una sola vez
@@ -41,11 +43,21 @@
    success, action, warning) sin necesidad de reglas por tipo. Es solo
    presentación: registrarLog() en js/04-simulador.js sigue creando el mismo
    <div class="log-entry"> de siempre. */
-.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 14px 12px 14px 10px; font-size: 0.85rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 0; border: 1px solid var(--fucs-gris); }
+.log-container { background: var(--fucs-niebla); flex-grow: 1; border-radius: var(--bento-radius-md); padding: 14px 12px 14px 10px; font-size: 0.85rem; overflow-y: auto; height: 180px; color: var(--fucs-azul-oscuro); display: flex; flex-direction: column; gap: 0; border: 1px solid var(--fucs-gris); scrollbar-width: thin; scrollbar-color: var(--fucs-gris) transparent; }
 .log-entry { position: relative; margin-left: 5px; padding: 0 0 12px 20px; border-left: 2px solid var(--fucs-gris); line-height: 1.45; }
 .log-entry::before { content: ''; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: currentColor; border: 2px solid var(--fucs-niebla); }
-/* La última entrada no prolonga la línea por debajo de su propio punto. */
+/* Separador fino entre entradas, alineado con el texto (no con la línea). */
+.log-entry::after { content: ''; position: absolute; left: 20px; right: 0; bottom: 6px; height: 1px; background: var(--fucs-gris); }
+/* La última entrada no prolonga la línea ni lleva separador. */
 .log-entry:last-child { border-left-color: transparent; padding-bottom: 0; }
+.log-entry:last-child::after { display: none; }
+
+/* Barra de desplazamiento discreta (Chrome/Edge; Firefox usa scrollbar-width
+   y scrollbar-color, ya declarados arriba). */
+.log-container::-webkit-scrollbar { width: 8px; }
+.log-container::-webkit-scrollbar-track { background: transparent; }
+.log-container::-webkit-scrollbar-thumb { background: var(--fucs-gris); border-radius: 4px; }
+.log-container::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* --- PANEL DE INTERVENCIONES (escenario preparado, sin lógica todavía) --- */
 .intervenciones-grupo h4 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -53,9 +65,11 @@
 .intervenciones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 .intervencion-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; }
 .intervencion-item:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
-.intervencion-icono { font-size: 0.95rem; line-height: 1; }
 .intervencion-nombre { flex: 1; font-size: 0.9rem; color: var(--fucs-azul-oscuro); }
 .intervencion-item input { margin: 0; accent-color: var(--fucs-azul-profundo); }
+/* Botones ejecutables del panel. Columna flex: cuando actualizarMonitor()
+   pone btn-shock en display:none, el gap se colapsa solo y no deja hueco. */
+.intervenciones-acciones { display: flex; flex-direction: column; gap: 10px; }
 .intervenciones-nota { margin: 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
 
 /* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */

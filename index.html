@@ -255,8 +255,6 @@
                 <div class="bottom-row">
                     <div class="clinical-panel">
                         <h3>Acciones Clínicas</h3>
-                        <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
-                        <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
                         <div class="log-container" id="clinical-log" role="log" aria-live="polite" aria-label="Registro de eventos clínicos">
                             <div class="log-entry">-- Inicio de Simulación --</div>
                             <div class="log-entry">Paciente monitorizado. Seleccione un ritmo.</div>
@@ -268,21 +266,31 @@
                         <div class="intervenciones-grupo">
                             <h4>Medicamentos</h4>
                             <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">💉</span><span class="intervencion-nombre">Adenosina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">💉</span><span class="intervencion-nombre">Atropina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">💉</span><span class="intervencion-nombre">Adrenalina</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">💉</span><span class="intervencion-nombre">Amiodarona</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Adenosina</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Atropina</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Adrenalina</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Amiodarona</span><input type="checkbox"></label>
                             </div>
                         </div>
                         <div class="intervenciones-grupo">
                             <h4>Procedimientos</h4>
                             <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">⚡</span><span class="intervencion-nombre">Cardioversión</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">⚡</span><span class="intervencion-nombre">Desfibrilación</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">⚡</span><span class="intervencion-nombre">Marcapasos</span><input type="checkbox"></label>
-                                <label class="intervencion-item"><span class="intervencion-icono" aria-hidden="true">🫁</span><span class="intervencion-nombre">Oxígeno</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Cardioversión</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Desfibrilación</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Marcapasos</span><input type="checkbox"></label>
+                                <label class="intervencion-item"><span class="intervencion-nombre">Oxígeno</span><input type="checkbox"></label>
                             </div>
                         </div>
+
+                        <!-- Acciones ejecutables: viven aquí (no en el panel de
+                             registro) para que "Acciones Clínicas" quede como
+                             línea de tiempo limpia. btn-shock se muestra/oculta
+                             solo, según el ritmo, desde actualizarMonitor(). -->
+                        <div class="intervenciones-acciones">
+                            <button id="btn-shock" class="btn-action btn-shock">⚡ Desfibrilar (200J)</button>
+                            <button id="btn-meds" class="btn-action btn-meds">💉 Administrar Fármaco</button>
+                        </div>
+
                         <p class="intervenciones-nota">Próximamente: dosis, validaciones y lógica clínica por intervención.</p>
                     </div>
                 </div>
