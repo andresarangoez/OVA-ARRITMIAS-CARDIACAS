@@ -164,16 +164,15 @@
 .simulador-eje-feedback.correcto { color: var(--success); }
 .simulador-eje-feedback.incorrecto { color: var(--danger); }
 
+/* La atribución exigida por la licencia MIT tiene que verse entera: nada de
+   white-space:nowrap aquí. Forzarlo a una sola línea desbordaba el contenedor
+   en cualquier ancho menor que el del texto, y la frase quedaba cortada. */
 .simulador-eje-creditos {
     display: block;
     margin: 20px 0 0 0;
     font-size: 0.62rem;
+    line-height: 1.6;
     color: var(--text-muted);
-    text-align: center;
-    white-space: nowrap;
+    text-wrap: pretty;
 }
 .simulador-eje-creditos a { color: var(--fucs-azul-oscuro); }
-
-@media (max-width: 780px) {
-    .simulador-eje-creditos { white-space: normal; }
-}

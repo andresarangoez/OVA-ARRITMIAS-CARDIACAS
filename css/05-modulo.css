@@ -38,6 +38,10 @@
 .figura-fila-texto > *:first-child { margin-top: 0; }
 .figura-fila-texto > *:last-child { margin-bottom: 0; }
 .figura-fila-texto li { text-align: justify; }
+/* Variante con la imagen a la izquierda. La columna ancha cambia de lado y en
+   el HTML el bloque .figura va primero; al apilarse en móvil, la imagen queda
+   arriba, que es el orden de lectura que corresponde. */
+.figura-fila.imagen-izquierda { grid-template-columns: 320px 1fr; }
 
 /* --- FIGURA / IMAGEN ---
    Misma tarjeta visual que .corazon-estructuras (fondo, radio y sombra
@@ -53,7 +57,11 @@
 .figura-caption strong { color: var(--fucs-azul-oscuro); }
 
 @media (max-width: 780px) {
-    .figura-fila { grid-template-columns: 1fr; }
+    /* La variante se nombra explícitamente porque .figura-fila.imagen-izquierda
+       tiene más especificidad que .figura-fila: sin esto, esa figura no se
+       apilaría y el texto quedaría aplastado junto a la imagen. */
+    .figura-fila,
+    .figura-fila.imagen-izquierda { grid-template-columns: 1fr; }
 }
 
 /* --- ESPACIO RESERVADO (genérico: diagramas, video, 3D, imágenes) --- */
