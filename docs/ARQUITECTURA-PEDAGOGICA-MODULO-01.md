@@ -19,7 +19,7 @@ Sirve para tres cosas:
 > 1. **De 7 a 6 unidades.** «Sistema de Conducción», que era la Unidad 3, se absorbe en la Unidad 1 (Anatomía Cardíaca Funcional).
 > 2. **Se retira el modelo de Benner como escala operativa.** Los niveles ya no son novato/principiante avanzado/competente, sino **niveles de complejidad del aprendizaje**: reconocer, comprender, interpretar, priorizar, aplicar y evaluar. La razón se explica en la sección 2.1.
 >
-> **Brecha de implementación abierta:** `modules/modulo-01.html` todavía contiene **7 unidades, 7 objetivos y 7 preguntas** de autoevaluación. Este documento describe la estructura aprobada, no la implementada. Ver sección 8.
+> **Estado de implementación (11 de agosto de 2026): cerrado.** `modules/modulo-01.html` ya implementa las 6 unidades y los 6 objetivos, con el contenido redactado de la Unidad 1 integrado desde el documento de desarrollo. La autoevaluación conserva **7 preguntas**; ver la nota al final de la sección 4.
 
 ---
 
@@ -92,6 +92,8 @@ Por diseño, el Módulo 01 no tiene fase asignada en el Proceso de Atención de 
 | 6 | Reconocer las generalidades de las arritmias cardíacas como puente hacia la valoración clínica | **Comprender / Analizar** (anticipatorio) | Unidad 6 · Generalidades de las Arritmias | Tabla comparativa de clasificación; pregunta 6 |
 
 **Lectura del mapa:** la correspondencia es 1:1 entre unidad, objetivo y pregunta de autoevaluación. Este principio —que ningún objetivo quede sin instrumento propio— es el criterio de calidad que los Módulos 02-05 todavía no cumplen (ver el cuadro comparativo en cada uno de sus documentos).
+
+**Nota sobre el número de preguntas.** La autoevaluación implementada tiene **7 preguntas para 6 objetivos**: el objetivo 1 recibe dos (una sobre irrigación coronaria y otra sobre la frecuencia intrínseca del nodo AV). No es una desviación del principio de correspondencia —que exige que ningún objetivo quede *sin* instrumento—, sino su consecuencia: al absorber una unidad entera, el objetivo 1 pasó a cubrir anatomía, válvulas, irrigación y sistema de conducción, y una sola pregunta no alcanza a verificarlo. Eliminar una de las dos para cuadrar el número sacrificaría cobertura real a cambio de simetría.
 
 **Consecuencia de la fusión:** el objetivo que antes decía «Reconocer la jerarquía funcional del sistema de conducción» desaparece como objetivo independiente y se integra en el objetivo 1. Conviene tenerlo presente al redactar la Unidad 1: la jerarquía de marcapasos (frecuencias intrínsecas del nodo SA, el nodo AV y el sistema His-Purkinje, y qué ocurre cuando uno falla) es contenido **funcional**, no anatómico. Al vivir dentro de una unidad titulada «Anatomía», corre el riesgo de quedar reducida a una lista de ubicaciones. La redacción debe cubrir explícitamente el comportamiento de la jerarquía, no solo su localización.
 
@@ -191,8 +193,9 @@ Coherente con el ciclo de Kolb: concepto → interacción activa → aplicación
 
 | Brecha | Estado |
 |---|---|
-| `modules/modulo-01.html` sigue con 7 unidades, 7 objetivos y 7 preguntas | 🔴 Abierta — este documento describe la estructura aprobada, no la implementada |
-| La jerarquía funcional del sistema de conducción queda dentro de una unidad titulada «Anatomía» | ⚠️ Riesgo de redacción — ver nota en la sección 4 |
+| `modules/modulo-01.html` seguía con 7 unidades, 7 objetivos y 7 preguntas | ✅ Cerrada el 11/08/2026 — implementadas 6 unidades y 6 objetivos con el contenido redactado de la Unidad 1 |
+| La jerarquía funcional del sistema de conducción queda dentro de una unidad titulada «Anatomía» | ✅ Resuelta en la redacción — el apartado 5.7 «Jerarquía de marcapasos» desarrolla el comportamiento (frecuencias intrínsecas, ritmos de escape), no solo la localización |
+| Las figuras 1.1, 1.2 y 1.3 se adaptan del Atlas de Netter, obra con derechos vigentes | ⚠️ Abierta — verificar autorización con la Facultad antes del despliegue definitivo (ver `docs/CREDITOS-TERCEROS.md`) |
 | El bloque de ECG diagnóstico del syllabus (crecimiento de cavidades, isquemia, bloqueos de rama, alteraciones electrolíticas) no aparece en ningún módulo | ⚠️ Por confirmar con la asesora si entra en el alcance |
 
 ---
