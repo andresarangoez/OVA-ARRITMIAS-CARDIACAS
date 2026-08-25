@@ -1,0 +1,113 @@
+/* ============================================================
+   PUNTOS INTERACTIVOS SOBRE EL MODELO 3D (Módulo 01, Unidad 1)
+   ============================================================
+   Marcadores anclados a coordenadas del modelo del sistema de
+   conducción. <model-viewer> los coloca por su cuenta a partir de
+   data-position / data-normal; aquí solo se define su aspecto.
+
+   Con data-visibility-attribute="visible", model-viewer estampa el
+   atributo data-visible en los marcadores que miran a la cámara —
+   los que quedan detrás del corazón se atenúan en vez de flotar
+   encima, que es lo que los haría ilegibles al girar el modelo. */
+
+.hotspot-conduccion {
+    /* reset del botón: model-viewer lo posiciona en absolute */
+    border: 2px solid #ffffff;
+    background: var(--fucs-azul-profundo);
+    color: #ffffff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    padding: 0;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hotspot-conduccion:hover,
+.hotspot-conduccion:focus-visible {
+    background: var(--fucs-dorado);
+    color: var(--fucs-azul-profundo);
+    transform: scale(1.18);
+    outline: none;
+}
+
+/* Marcador que queda al otro lado del modelo: se atenúa y deja de
+   capturar el ratón, para no poder pulsar algo que no se ve. */
+.hotspot-conduccion:not([data-visible]) {
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* --- Etiqueta emergente --- */
+.hotspot-etiqueta {
+    position: absolute;
+    left: 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: max-content;
+    max-width: 230px;
+    background: #ffffff;
+    color: var(--fucs-azul-oscuro);
+    border: 1px solid var(--fucs-gris);
+    border-left: 4px solid var(--fucs-dorado);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 400;
+    box-shadow: var(--shadow-md);
+    /* oculta hasta que se pulse o se enfoque el marcador */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 2;
+}
+
+.hotspot-conduccion.abierto .hotspot-etiqueta,
+.hotspot-conduccion:focus-visible .hotspot-etiqueta {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hotspot-etiqueta strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--fucs-azul-profundo);
+    margin-bottom: 4px;
+}
+
+.hotspot-etiqueta span {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text-body);
+}
+
+.hotspot-etiqueta .frecuencia {
+    margin-top: 6px;
+    font-weight: 600;
+    color: var(--fucs-azul-oscuro);
+}
+
+/* El modelo con marcadores necesita más alto que el contenedor genérico
+   de 320 px: con menos, las etiquetas se salen por arriba y por abajo. */
+.modelo-3d-container.con-puntos { height: 460px; }
+
+@media (max-width: 780px) {
+    .modelo-3d-container.con-puntos { height: 360px; }
+    /* En pantalla estrecha la etiqueta a la derecha se sale del marco:
+       se coloca debajo del marcador y se estrecha. */
+    .hotspot-etiqueta {
+        left: 50%;
+        top: 34px;
+        transform: translateX(-50%);
+        max-width: 200px;
+    }
+}
