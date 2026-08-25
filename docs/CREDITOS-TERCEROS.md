@@ -65,10 +65,16 @@ La CC BY 3.0 permite adaptar y redistribuir la obra, incluso con fines comercial
 
 El archivo `assets/models/sistema-conduccion-cardiaco.glb` es una versión modificada de un modelo de terceros.
 
-- Obra original: *Cardiac conduction system*
-- Autor: **E-learning UMCG** (Universitair Medisch Centrum Groningen)
-- Fuente: https://sketchfab.com/3d-models/cardiac-conduction-system-20a5e36391474f2b99e1a4c94c707b47 (https://skfb.ly/6WsDv)
+- Obra original: *Leiden-Delft-Groningen — 3D model Cardiac Conduction System*
+- **Autora: Anna Sieben** — https://annasieben.com/
+- Publicado por: E-learning UMCG (Universitair Medisch Centrum Groningen) — https://sketchfab.com/eLearningUMCG
+- Ficha oficial: https://anatomytool.org/content/leiden-delft-groningen-3d-model-cardiac-conduction-system-numbered-english-labels
+- Descarga: https://sketchfab.com/3d-models/cardiac-conduction-system-20a5e36391474f2b99e1a4c94c707b47 (https://skfb.ly/6WsDv)
 - Licencia: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0) — https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+> **Texto de atribución exigido por el autor**, reproducido literalmente al pie del modelo en el OVA:
+>
+> «Leiden-Delft-Groningen — 3D model Cardiac Conduction System» de Anna Sieben, licencia CC BY-NC-SA. De E-learning UMCG.
 
 ### Modificación realizada (la licencia exige declararla)
 
@@ -82,7 +88,13 @@ Se convirtieron los dos materiales al modelo estándar `pbrMetallicRoughness`. L
 | Metalicidad | specular nulo ⇒ dieléctrico | `metallicFactor 0` |
 | Rugosidad | `glossinessFactor 0` | `roughnessFactor 1` |
 
-Se conservaron sin cambios `alphaMode: BLEND`, `doubleSided` y el `emissiveFactor [1,1,0]` que da el amarillo característico a la red de conducción. **La geometría no se tocó**: el bloque binario del GLB se copió byte a byte, y se verificó que accesores, vistas de búfer, desplazamientos y valores mínimo/máximo quedaran idénticos.
+Además se corrigieron tres defectos de material que impedían ver el modelo correctamente:
+
+- **`baseColorFactor` a 1.0.** El modelo lleva los colores pintados en los vértices (`COLOR_0`) y en glTF el color final es `baseColorFactor × COLOR_0`; el `[0.5, 0.5, 0.5]` original atenuaba a la mitad el trabajo de color de la autora.
+- **`alphaMode` a OPAQUE y doble cara.** El miocardio venía con `BLEND` (alfa 0,983, una transparencia del 1,7% que no aportaba nada) y con las caras traseras descartadas. Como el modelo está seccionado, al mirar dentro de las cavidades se veía la cara interna de la pared opuesta, que al no dibujarse dejaba pasar el fondo: aparecían huecos transparentes.
+- **Color de las fibras.** El `emissiveFactor` se fijó en `#FFDE21` (convertido a espacio lineal, que es como glTF almacena ese campo) para que la red de conducción tenga un amarillo definido y uniforme.
+
+**La geometría no se tocó** en ninguna de estas modificaciones: el bloque binario del GLB se copió byte a byte, y se verificó que accesores, vistas de búfer, desplazamientos y valores mínimo/máximo quedaran idénticos.
 
 Al ser una obra derivada bajo CC BY-NC-SA, el archivo modificado queda cubierto por la misma licencia. La atribución aparece de forma visible al pie del modelo en `modules/modulo-01.html`, y la nota de modificación va también incrustada en el campo `asset.copyright` del propio GLB.
 

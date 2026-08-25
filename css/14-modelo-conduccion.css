@@ -100,6 +100,20 @@
    de 320 px: con menos, las etiquetas se salen por arriba y por abajo. */
 .modelo-3d-container.con-puntos { height: 460px; }
 
+/* Descripción del modelo, tomada de la ficha del autor. Va entre el modelo y
+   la línea de atribución, con el mismo tratamiento visual que una nota. */
+.modelo-descripcion {
+    margin: 12px 0 6px 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-body);
+    background: var(--fucs-niebla);
+    border-left: 3px solid var(--fucs-gris);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+}
+.modelo-descripcion strong { color: var(--fucs-azul-profundo); }
+
 @media (max-width: 780px) {
     .modelo-3d-container.con-puntos { height: 360px; }
     /* En pantalla estrecha la etiqueta a la derecha se sale del marco:
