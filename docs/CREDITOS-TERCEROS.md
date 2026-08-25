@@ -61,6 +61,35 @@ La CC BY 3.0 permite adaptar y redistribuir la obra, incluso con fines comercial
 
 ---
 
+## Modelo 3D del sistema de conducción (Módulo 01, Unidad 1)
+
+El archivo `assets/models/sistema-conduccion-cardiaco.glb` es una versión modificada de un modelo de terceros.
+
+- Obra original: *Cardiac conduction system*
+- Autor: **E-learning UMCG** (Universitair Medisch Centrum Groningen)
+- Fuente: https://sketchfab.com/3d-models/cardiac-conduction-system-20a5e36391474f2b99e1a4c94c707b47 (https://skfb.ly/6WsDv)
+- Licencia: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0) — https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+### Modificación realizada (la licencia exige declararla)
+
+El modelo original declaraba `KHR_materials_pbrSpecularGlossiness` como extensión **requerida**. Esa extensión está archivada por Khronos y three.js retiró su soporte en la versión r155, de modo que `model-viewer` la ignora y descarta los materiales: el modelo se cargaba con ambas mallas en blanco puro y totalmente opacas, lo que dejaba el sistema de conducción encerrado e invisible dentro del miocardio.
+
+Se convirtieron los dos materiales al modelo estándar `pbrMetallicRoughness`. La conversión es exacta —sin pérdida— porque ningún material usa texturas y ambos tenían `specularFactor [0,0,0]` con `glossinessFactor 0`:
+
+| | Original (specGloss) | Convertido (metalRough) |
+|---|---|---|
+| Color | `diffuseFactor [0.5, 0.5, 0.5, α]` | `baseColorFactor [0.5, 0.5, 0.5, α]` |
+| Metalicidad | specular nulo ⇒ dieléctrico | `metallicFactor 0` |
+| Rugosidad | `glossinessFactor 0` | `roughnessFactor 1` |
+
+Se conservaron sin cambios `alphaMode: BLEND`, `doubleSided` y el `emissiveFactor [1,1,0]` que da el amarillo característico a la red de conducción. **La geometría no se tocó**: el bloque binario del GLB se copió byte a byte, y se verificó que accesores, vistas de búfer, desplazamientos y valores mínimo/máximo quedaran idénticos.
+
+Al ser una obra derivada bajo CC BY-NC-SA, el archivo modificado queda cubierto por la misma licencia. La atribución aparece de forma visible al pie del modelo en `modules/modulo-01.html`, y la nota de modificación va también incrustada en el campo `asset.copyright` del propio GLB.
+
+> ⚠️ **Cláusula NonCommercial:** esta licencia prohíbe el uso comercial. Que un OVA educativo de una universidad privada con matrícula encaje en «uso no comercial» es una zona gris reconocida por la propia Creative Commons. Conviene confirmarlo con la Facultad antes del despliegue definitivo.
+
+---
+
 ## Nota pendiente sobre las figuras 1.1, 1.2 y 1.3
 
 Las figuras 1.1 (tabiques), 1.2 (capas de la pared cardíaca) y 1.3 (válvulas) se acreditan en el OVA como «modificada y adaptada de Netter FH. *Atlas de anatomía humana*. 2.ª ed. 1999».
