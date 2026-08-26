@@ -61,6 +61,47 @@ La CC BY 3.0 permite adaptar y redistribuir la obra, incluso con fines comercial
 
 ---
 
+## Modelo 3D del sistema de conducción (Módulo 01, Unidad 1)
+
+El archivo `assets/models/sistema-conduccion-cardiaco.glb` es una versión modificada de un modelo de terceros.
+
+- Obra original: *Leiden-Delft-Groningen — 3D model Cardiac Conduction System*
+- **Autora: Anna Sieben** — https://annasieben.com/
+- Publicado por: E-learning UMCG (Universitair Medisch Centrum Groningen) — https://sketchfab.com/eLearningUMCG
+- Ficha oficial: https://anatomytool.org/content/leiden-delft-groningen-3d-model-cardiac-conduction-system-numbered-english-labels
+- Descarga: https://sketchfab.com/3d-models/cardiac-conduction-system-20a5e36391474f2b99e1a4c94c707b47 (https://skfb.ly/6WsDv)
+- Licencia: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA 4.0) — https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+> **Texto de atribución exigido por el autor**, reproducido literalmente al pie del modelo en el OVA:
+>
+> «Leiden-Delft-Groningen — 3D model Cardiac Conduction System» de Anna Sieben, licencia CC BY-NC-SA. De E-learning UMCG.
+
+### Modificación realizada (la licencia exige declararla)
+
+El modelo original declaraba `KHR_materials_pbrSpecularGlossiness` como extensión **requerida**. Esa extensión está archivada por Khronos y three.js retiró su soporte en la versión r155, de modo que `model-viewer` la ignora y descarta los materiales: el modelo se cargaba con ambas mallas en blanco puro y totalmente opacas, lo que dejaba el sistema de conducción encerrado e invisible dentro del miocardio.
+
+Se convirtieron los dos materiales al modelo estándar `pbrMetallicRoughness`. La conversión es exacta —sin pérdida— porque ningún material usa texturas y ambos tenían `specularFactor [0,0,0]` con `glossinessFactor 0`:
+
+| | Original (specGloss) | Convertido (metalRough) |
+|---|---|---|
+| Color | `diffuseFactor [0.5, 0.5, 0.5, α]` | `baseColorFactor [0.5, 0.5, 0.5, α]` |
+| Metalicidad | specular nulo ⇒ dieléctrico | `metallicFactor 0` |
+| Rugosidad | `glossinessFactor 0` | `roughnessFactor 1` |
+
+Además se corrigieron tres defectos de material que impedían ver el modelo correctamente:
+
+- **`baseColorFactor` a 1.0.** El modelo lleva los colores pintados en los vértices (`COLOR_0`) y en glTF el color final es `baseColorFactor × COLOR_0`; el `[0.5, 0.5, 0.5]` original atenuaba a la mitad el trabajo de color de la autora.
+- **`alphaMode` a OPAQUE y doble cara.** El miocardio venía con `BLEND` (alfa 0,983, una transparencia del 1,7% que no aportaba nada) y con las caras traseras descartadas. Como el modelo está seccionado, al mirar dentro de las cavidades se veía la cara interna de la pared opuesta, que al no dibujarse dejaba pasar el fondo: aparecían huecos transparentes.
+- **Color de las fibras.** El `emissiveFactor` se fijó en `#FFDE21` (convertido a espacio lineal, que es como glTF almacena ese campo) para que la red de conducción tenga un amarillo definido y uniforme.
+
+**La geometría no se tocó** en ninguna de estas modificaciones: el bloque binario del GLB se copió byte a byte, y se verificó que accesores, vistas de búfer, desplazamientos y valores mínimo/máximo quedaran idénticos.
+
+Al ser una obra derivada bajo CC BY-NC-SA, el archivo modificado queda cubierto por la misma licencia. La atribución aparece de forma visible al pie del modelo en `modules/modulo-01.html`, y la nota de modificación va también incrustada en el campo `asset.copyright` del propio GLB.
+
+> ⚠️ **Cláusula NonCommercial:** esta licencia prohíbe el uso comercial. Que un OVA educativo de una universidad privada con matrícula encaje en «uso no comercial» es una zona gris reconocida por la propia Creative Commons. Conviene confirmarlo con la Facultad antes del despliegue definitivo.
+
+---
+
 ## Nota pendiente sobre las figuras 1.1, 1.2 y 1.3
 
 Las figuras 1.1 (tabiques), 1.2 (capas de la pared cardíaca) y 1.3 (válvulas) se acreditan en el OVA como «modificada y adaptada de Netter FH. *Atlas de anatomía humana*. 2.ª ed. 1999».

@@ -5,6 +5,10 @@
 .key-box { background: rgba(251, 215, 133, 0.14); padding: 15px; margin-top: 20px; border-radius: var(--radius-md); border: 1px solid var(--fucs-gris); border-left: 4px solid var(--fucs-amarillo); box-shadow: var(--shadow-sm); }
 .key-box.danger { background: rgba(231, 76, 60, 0.06); border-left-color: var(--danger); }
 .key-box ul { margin: 5px 0 0 0; padding-left: 20px; }
+/* El rótulo del recuadro va en su propia línea, igual que en .perla-clinica y
+   .error-frecuente. Se resuelve aquí y no en cada módulo porque el patrón
+   <strong>💡 Concepto Clave:</strong> se repite 14 veces en los seis. */
+.key-box > strong:first-child { display: block; margin-bottom: 4px; color: var(--fucs-azul-profundo); }
 
 .instruccion-box { background: rgba(251, 215, 133, 0.14); padding: 12px; border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-amarillo); display: flex; align-items: center; box-shadow: var(--shadow-sm); }
 
