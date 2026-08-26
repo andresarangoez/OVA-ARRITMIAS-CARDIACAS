@@ -11,7 +11,14 @@
    encima, que es lo que los haría ilegibles al girar el modelo. */
 
 .hotspot-conduccion {
-    /* reset del botón: model-viewer lo posiciona en absolute */
+    /* position:relative es necesario para poder aplicarle z-index: model-viewer
+       deja el botón en static y sus envoltorios (.annotation-wrapper y los
+       contenedores del shadow DOM) van todos con z-index auto y sin transform,
+       así que no crean contexto de apilamiento propio. Sin esto, los
+       marcadores posteriores en el DOM se pintan encima de la etiqueta abierta
+       y tapan el texto. */
+    position: relative;
+    z-index: 1;
     border: 2px solid #ffffff;
     background: var(--fucs-azul-profundo);
     color: #ffffff;
@@ -74,6 +81,19 @@
 .hotspot-conduccion:focus-visible .hotspot-etiqueta {
     opacity: 1;
     visibility: visible;
+}
+
+/* El marcador abierto sube de capa para que su etiqueta quede por encima del
+   resto de números, que si no la atraviesan. */
+.hotspot-conduccion.abierto,
+.hotspot-conduccion:focus-visible { z-index: 20; }
+
+/* Cerca del borde derecho la etiqueta se saldría del visor (que recorta con
+   overflow:hidden), así que se vuelca al otro lado. La clase la pone
+   alternarPuntoConduccion() midiendo el espacio disponible. */
+.hotspot-conduccion.etiqueta-izquierda .hotspot-etiqueta {
+    left: auto;
+    right: 34px;
 }
 
 .hotspot-etiqueta strong {

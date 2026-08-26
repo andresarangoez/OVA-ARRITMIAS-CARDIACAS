@@ -30,6 +30,29 @@
         if (!abierto) {
             boton.classList.add('abierto');
             boton.setAttribute('aria-expanded', 'true');
+            colocarEtiqueta(boton, visor);
+        }
+    }
+
+    // La etiqueta sale por defecto a la derecha del marcador. Si ahí no cabe,
+    // el visor la recorta (overflow:hidden), así que se vuelca a la izquierda.
+    // Se decide en cada apertura porque el marcador se mueve al girar el modelo.
+    function colocarEtiqueta(boton, visor) {
+        const etiqueta = boton.querySelector('.hotspot-etiqueta');
+        if (!etiqueta || !visor) return;
+
+        boton.classList.remove('etiqueta-izquierda');
+
+        const limite = visor.getBoundingClientRect();
+        const marcador = boton.getBoundingClientRect();
+        const anchoEtiqueta = etiqueta.offsetWidth || 230;
+        const SEPARACION = 34;
+
+        // ¿Se sale por la derecha? Si además cabe por la izquierda, se vuelca.
+        const desbordaDerecha = marcador.right + SEPARACION + anchoEtiqueta > limite.right;
+        const cabeIzquierda = marcador.left - SEPARACION - anchoEtiqueta > limite.left;
+        if (desbordaDerecha && cabeIzquierda) {
+            boton.classList.add('etiqueta-izquierda');
         }
     }
 
