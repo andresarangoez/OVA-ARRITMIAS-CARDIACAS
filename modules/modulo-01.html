@@ -367,42 +367,28 @@
                             <p class="corazon-estructuras-creditos">Diagrama adaptado del simulador interactivo de estructuras cardíacas de <a href="https://humanbiomedia.org" target="_blank" rel="noopener">Human Bio Media</a>, usado conforme a su licencia Creative Commons Attribution 4.0 International (CC BY 4.0). Acceso gratuito en humanbiomedia.org.</p>
                         </div>
 
-                        <h4>Explora el corazón en 3D</h4>
-                        <div class="modelo-3d-container">
-                            <model-viewer src="assets/models/Heart.glb" alt="Modelo 3D del corazón humano" auto-rotate camera-controls rotation-per-second="8deg" shadow-intensity="0.8"></model-viewer>
-
-                            <div class="visor-3d-controles">
-                                <button type="button" class="visor-3d-btn" onclick="alternarAyudaVisor(this)" aria-expanded="false" aria-label="Ayuda de navegación" title="Cómo navegar el modelo">?</button>
-                                <button type="button" class="visor-3d-btn activo" onclick="alternarGiroVisor(this)" aria-pressed="true" aria-label="Giro automático" title="Detener el giro automático">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
-                                </button>
-                                <button type="button" class="visor-3d-btn" onclick="pantallaCompletaVisor(this)" aria-label="Pantalla completa" title="Pantalla completa">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                        <p class="figura-caption">Gira y explora el modelo para identificar las 4 cavidades y orientarte anatómicamente — este modelo muestra la anatomía general del corazón; no marca visualmente las válvulas descritas arriba, ni las vías del sistema de conducción (se detallan más arriba, en esta misma unidad).</p>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Electrofisiología Cardíaca</h3>
-                        <p>La contracción cardíaca es el resultado de un proceso eléctrico celular conocido como <strong>potencial de acción</strong>. Este proceso depende del intercambio de iones (Sodio [Na+], Potasio [K+] y Calcio [Ca++]) a través de la membrana celular de los miocitos, generando cambios de voltaje que se traducen en despolarización y repolarización.</p>
+                        <h4>Potencial de membrana en reposo</h4>
+                        <p>Toda célula del cuerpo mantiene una diferencia de voltaje entre el interior y el exterior de su membrana. En reposo, el interior de la célula cardíaca es más negativo que el líquido que la rodea. En el <strong class="tooltip" tabindex="0" data-tooltip="Célula muscular auricular o ventricular común, encargada de contraerse; se distingue de las células especializadas del sistema de conducción.">miocito de trabajo</strong>, esa diferencia se sitúa entre −80 y −90 milivoltios (4).</p>
 
-                        <h4>Las cuatro propiedades eléctricas del miocito</h4>
-                        <ul>
-                            <li><strong>Automatismo:</strong> capacidad de generar un impulso eléctrico espontáneamente, sin estímulo externo — propia de las células marcapasos.</li>
-                            <li><strong>Excitabilidad:</strong> capacidad de responder a un estímulo generando un potencial de acción.</li>
-                            <li><strong>Conductividad:</strong> capacidad de transmitir ese impulso de una célula a la siguiente, a través de uniones especializadas (discos intercalares).</li>
-                            <li><strong>Refractariedad:</strong> incapacidad temporal de generar un nuevo potencial de acción inmediatamente después del anterior — un mecanismo de protección.</li>
-                        </ul>
+                        <p>Ese voltaje se mantiene porque la membrana, en reposo, deja salir potasio con mucha más facilidad de la que deja entrar sodio, y porque la <strong class="tooltip" tabindex="0" data-tooltip="Proteína de membrana que expulsa sodio e introduce potasio consumiendo ATP; sostiene el gradiente iónico de la célula.">bomba sodio-potasio</strong> (Na⁺-K⁺ ATPasa) saca sodio e introduce potasio de forma constante, gastando energía para sostener esa diferencia (4). El resultado es un interior cargado negativamente mientras la célula no ha sido estimulada.</p>
+
+                        <p>Este equilibrio no es igual en todas las células cardíacas. Las del nódulo sinusal, encargadas de generar el impulso que inicia cada latido, <strong>nunca alcanzan un verdadero reposo</strong>: su potencial se queda entre −55 y −60 milivoltios y, además, no se mantiene fijo — se va acercando a valores menos negativos hasta disparar un nuevo impulso (4). Esa diferencia es la razón por la que el nódulo sinusal genera impulsos por sí mismo y el resto del miocardio no.</p>
+
+                        <p>El valor del potencial de reposo no es un dato aislado: determina qué tan fácil o difícil es excitar la célula. Cuanto más negativo sea el reposo, más estímulo se necesita para generar un potencial de acción; cuanto menos negativo, más cerca está de activarse.</p>
 
                         <div class="dato-curioso">
                             <span class="dato-curioso-titulo">💡 Dato curioso</span>
                             El corazón humano late en promedio unas 100.000 veces al día — cada uno de esos latidos comienza con el mismo ciclo de apertura y cierre de canales iónicos que vas a recorrer en esta unidad.
                         </div>
 
-                        <h4>Construye el potencial de acción</h4>
+                        <h4>Potencial de acción cardíaco</h4>
+                        <p>A partir del potencial de reposo, un estímulo suficiente dispara un cambio brusco y momentáneo del voltaje de la membrana: el <strong>potencial de acción</strong>. En el miocito de trabajo ese cambio no es simétrico ni instantáneo — pasa por cinco fases sucesivas, numeradas de 0 a 4, cada una caracterizada por la apertura o el cierre de un tipo distinto de canal iónico (4).</p>
+
                         <p>Haz clic en cada fase para ver qué ocurre a nivel iónico y por qué le importa a la enfermería.</p>
                         <div class="stepper-fases">
                             <div class="stepper-nav">
@@ -425,26 +411,48 @@
                             <div class="stepper-panel" data-paso="fase2">
                                 <h5>Fase 2 — Meseta</h5>
                                 <p><strong>Qué ocurre:</strong> entrada lenta y sostenida de Ca++ a través de canales tipo L, equilibrada con salida de K+ — esto mantiene la célula despolarizada por más tiempo que en una neurona.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> este calcio es el mismo que dispara la contracción muscular (acoplamiento excitación-contracción, Unidad 4). Los calcioantagonistas actúan en esta fase.</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> este calcio es el mismo que dispara la contracción muscular (acoplamiento excitación-contracción, Unidad 3). Los calcioantagonistas actúan en esta fase.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase3">
                                 <h5>Fase 3 — Repolarización rápida</h5>
                                 <p><strong>Qué ocurre:</strong> salida masiva de K+, devolviendo la célula a su potencial de reposo.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> los antiarrítmicos de clase III (ej. amiodarona) prolongan esta fase — de ahí que puedan alargar el intervalo QT (Unidad 6) y, en exceso, favorecer Torsades de Pointes (Módulo 03).</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> los antiarrítmicos de clase III (ej. amiodarona) prolongan esta fase — de ahí que puedan alargar el intervalo QT (Unidad 5) y, en exceso, favorecer Torsades de Pointes (Módulo 03).</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase4">
                                 <h5>Fase 4 — Reposo (o despolarización diastólica)</h5>
                                 <p><strong>Qué ocurre:</strong> en un miocito contráctil normal, es un potencial de reposo estable. En las células marcapasos (nodo SA, nodo AV), en cambio, esta fase es inestable — una corriente de entrada lenta despolariza la célula progresivamente hasta disparar una nueva Fase 0 por sí sola. Esta inestabilidad es la base del <strong>automatismo</strong>.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> esta es la propiedad que hace que el corazón pueda generar su propio ritmo sin necesidad de un marcapasos externo (Unidad 3).</p>
+                                <p><strong>Por qué le importa a enfermería:</strong> esta es la propiedad que hace que el corazón pueda generar su propio ritmo sin necesidad de un marcapasos externo (Unidad 1).</p>
                             </div>
                         </div>
 
-                        <h4>Período refractario</h4>
-                        <p>Mientras dura el <span class="tooltip" data-tooltip="Intervalo en el que la célula no puede generar un nuevo potencial de acción sin importar la intensidad del estímulo.">período refractario absoluto</span>, la célula no puede responder a un nuevo estímulo — la <strong>refractariedad</strong> impide que el corazón se reexcite antes de completar un ciclo.</p>
+                        <h4>Las cuatro propiedades eléctricas del corazón</h4>
+                        <p>El potencial de acción no ocurre de forma aislada en una sola célula: se genera, se transmite y se repite de manera ordenada gracias a cuatro propiedades del miocardio. No son fenómenos separados, sino partes de esa misma actividad eléctrica; cada una responde a una pregunta distinta.</p>
+
+                        <h5>Automatismo</h5>
+                        <p>Es la capacidad de generar un potencial de acción sin estímulo externo. Ya se vio en la fase 4: mientras el miocito de trabajo mantiene un reposo estable, las células del nódulo sinusal tienen una fase 4 que se despolariza sola hasta el umbral (4). Lo que falta explicar es por qué manda el nódulo sinusal y no cualquier otra célula automática.</p>
+
+                        <p>La respuesta está en la <strong>velocidad</strong>. El nódulo sinusal alcanza su umbral entre 70 y 80 veces por minuto; el nódulo AV, entre 40 y 60; las fibras de Purkinje, entre 15 y 40 (4). Cada vez que el nódulo sinusal dispara, su impulso llega también a los demás y los descarga, reiniciando su cuenta hacia el umbral antes de que alcancen a dispararse solos. Impone su ritmo simplemente porque <em>siempre llega primero</em>.</p>
+
+                        <p>Esto explica que, si el nódulo sinusal deja de funcionar, el corazón no se detenga: otra célula automática toma el relevo a su propia frecuencia, más lenta. Y explica el mecanismo opuesto: si una célula fuera del nódulo sinusal se vuelve anormalmente excitable y se dispara más rápido que él, se impone como <strong class="tooltip" tabindex="0" data-tooltip="Foco que asume el mando del ritmo desde una localización distinta al nódulo sinusal; mecanismo básico de varias arritmias.">marcapasos ectópico</strong> (4).</p>
+
+                        <h5>Excitabilidad</h5>
+                        <p>Es la facilidad con la que una célula puede ser llevada desde su reposo hasta el umbral. Cuanto más negativo es el reposo, más lejos está del umbral y más estímulo necesita; cuanto menos negativo, más cerca está de activarse (4).</p>
+
+                        <p>Tiene una aplicación clínica directa: el exceso de potasio extracelular hace menos negativo el potencial de reposo y lo acerca al umbral (4). Pero si esa despolarización se sostiene, los canales de sodio de la fase 0 quedan inactivados y el potencial de acción pierde intensidad — <strong>el corazón no se vuelve más excitable, sino más débil y más lento para conducir</strong>, y con potasio muy alto puede bloquearse la conducción entre aurículas y ventrículos (4).</p>
+
+                        <h5>Conductividad</h5>
+                        <p>Es la velocidad con la que el potencial de acción se transmite de una célula a la siguiente, y varía según el tejido: de 0,3 a 0,5 metros por segundo en el músculo auricular y ventricular común, frente a varios metros por segundo en el tejido especializado de conducción (4). Depende de cuántas uniones conectan las células vecinas y de con qué facilidad dejan pasar la corriente (4).</p>
+
+                        <p>La variación es funcional, no un defecto: en el nódulo auriculoventricular la conducción es deliberadamente lenta, lo que da tiempo a que las aurículas vacíen su sangre antes de la contracción ventricular; en las fibras de His-Purkinje es mucho más rápida, para que el impulso llegue casi a la vez a todo el ventrículo (4).</p>
+
+                        <h5>Refractariedad</h5>
+                        <p>Es el período durante el cual una célula que acaba de generar un potencial de acción <strong>no puede excitarse de nuevo, por fuerte que sea el estímulo</strong>. Se debe a que los canales de sodio inactivados en la fase 1 no pueden reabrirse hasta que la célula se haya repolarizado lo suficiente (4). En el ventrículo dura entre 0,25 y 0,30 segundos; en la aurícula, alrededor de 0,15 (4).</p>
+
+                        <p>Esa pausa obligada funciona como protección: al durar casi lo mismo que la contracción que provoca, impide que el corazón reciba un segundo estímulo antes de relajarse — evita que se <strong class="tooltip" tabindex="0" data-tooltip="Contracción sostenida por estímulos muy seguidos, propia del músculo esquelético; en el corazón sería incompatible con el bombeo.">tetanice</strong> como lo haría un músculo esquelético.</p>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Confundir "despolarización" con "contracción". La despolarización es un evento <em>eléctrico</em> (cambio de voltaje); la contracción mecánica ocurre milisegundos después, acoplada por el calcio de la Fase 2 (Unidad 4). Un ECG puede mostrar actividad eléctrica organizada mientras el corazón no bombea sangre de forma eficaz — de eso trata la <strong>actividad eléctrica sin pulso</strong> (Módulo 03).
+                            Confundir "despolarización" con "contracción". La despolarización es un evento <em>eléctrico</em> (cambio de voltaje); la contracción mecánica ocurre milisegundos después, acoplada por el calcio de la Fase 2 (Unidad 3). Un ECG puede mostrar actividad eléctrica organizada mientras el corazón no bombea sangre de forma eficaz — de eso trata la <strong>actividad eléctrica sin pulso</strong> (Módulo 03).
                         </div>
 
                         <div class="key-box danger">
@@ -477,12 +485,26 @@
                         <h3 class="unidad-titulo">Unidad 3 · Ciclo Cardíaco</h3>
                         <p>El ciclo cardíaco es la secuencia mecánica de contracción y relajación que resulta de todo lo visto hasta ahora: la electricidad (Unidades 1-2) no es un fin en sí misma, es la señal que dispara el bombeo real de sangre.</p>
 
-                        <h4>Puntos Clave:</h4>
-                        <ul>
-                            <li><strong>Sístole ventricular:</strong> fase de contracción y eyección. Las válvulas AV se cierran (S1) y las semilunares se abren para eyectar sangre hacia la aorta y la arteria pulmonar.</li>
-                            <li><strong>Diástole ventricular:</strong> fase de relajación y llenado. Las válvulas semilunares se cierran (S2) y las AV se abren, permitiendo el llenado ventricular — primero pasivo, y al final reforzado por la contracción auricular ("patada auricular").</li>
-                            <li><strong>Relación mecánico-eléctrica:</strong> la despolarización (evento eléctrico) siempre precede a la contracción (evento mecánico) por un breve retraso — el acoplamiento excitación-contracción visto en la Unidad 2.</li>
-                        </ul>
+                        <h4>Sístole</h4>
+                        <p>La sístole es el período en el que el ventrículo se contrae y expulsa sangre hacia las arterias. Comienza inmediatamente después de que el potencial de acción despolariza el miocito ventricular, y se divide en dos momentos con comportamientos de presión muy distintos.</p>
+
+                        <p>En el primero, la <strong class="tooltip" tabindex="0" data-tooltip="Fase en la que el ventrículo se contrae con todas las válvulas cerradas: la presión sube pero el volumen no cambia.">contracción isovolumétrica</strong>, el ventrículo ya se contrae y su presión sube con rapidez, pero como todavía es menor que la de la aorta la válvula aórtica sigue cerrada y no sale sangre: <em>cambia la presión, no el volumen</em> (4,5). En cuanto la presión intraventricular supera la aórtica, la válvula se abre y comienza la eyección: la sangre sale mientras la presión alcanza su máximo y luego cae, a medida que el ventrículo se vacía (4,5).</p>
+
+                        <p>La sístole termina cuando la presión ventricular cae por debajo de la aórtica y la válvula aórtica se cierra, dando paso a la diástole.</p>
+
+                        <h4>Diástole</h4>
+                        <p>La diástole es el período en el que el ventrículo se relaja y se llena. Empieza con la <strong class="tooltip" tabindex="0" data-tooltip="Fase en la que el ventrículo se relaja con todas las válvulas cerradas: la presión cae pero el volumen no cambia.">relajación isovolumétrica</strong>: la presión ventricular cae por debajo de la aórtica y esa válvula se cierra, pero la mitral aún no se abre porque la presión ventricular sigue siendo mayor que la auricular — el volumen no cambia mientras la presión sigue bajando (4-6).</p>
+
+                        <p>En cuanto la presión ventricular cae por debajo de la auricular se abre la mitral y comienza el llenado: primero rápido, luego más lento a medida que el ventrículo se acerca a su volumen máximo (<strong class="tooltip" tabindex="0" data-tooltip="Fase media de la diástole, de llenado lento, entre el llenado rápido inicial y la contracción auricular.">diástasis</strong>) y, justo antes de terminar, la aurícula se contrae y añade un último volumen (6).</p>
+
+                        <p>A frecuencia normal la diástole dura más que la sístole, pero esa diferencia se pierde si el corazón se acelera: al subir la frecuencia, <strong>la diástole se acorta proporcionalmente más que la sístole</strong> (6). El corazón taquicárdico gana tiempo de eyección a costa de su tiempo de llenado.</p>
+
+                        <h4>Relación mecánico-eléctrica</h4>
+                        <p>Cada evento mecánico del ciclo está precedido por el evento eléctrico que lo dispara. El ECG, de hecho, es lo que permite ubicar en el tiempo cada fase mecánica sin medir presión ni volumen directamente.</p>
+
+                        <p>La <strong>onda P</strong> marca la despolarización auricular y aparece justo antes de que la aurícula se contraiga, al final de la diástole (4,6). El <strong>complejo QRS</strong> marca la despolarización ventricular, y su inicio coincide con el comienzo de la sístole: es la señal eléctrica la que dispara la contracción isovolumétrica (4,6). La <strong>onda T</strong> marca la repolarización ventricular y aparece un poco antes de que termine la contracción, anunciando la relajación isovolumétrica y el paso a la diástole (4).</p>
+
+                        <p>Esta secuencia es la razón por la que el ECG permite inferir qué está haciendo el corazón mecánicamente en cada instante: cada onda es la causa eléctrica de la fase mecánica que viene inmediatamente después.</p>
 
                         <table class="tabla-comparativa">
                             <thead>
