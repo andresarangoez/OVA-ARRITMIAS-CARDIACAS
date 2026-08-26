@@ -328,11 +328,6 @@
 
                         <p>Este mecanismo de respaldo explica dos cosas: por qué la pérdida del nodo SA no suele ser, por sí sola, causa de un paro cardíaco (el corazón rara vez se queda completamente sin ritmo), y por qué los ritmos de escape tienen una característica en común: <strong>son lentos</strong>.</p>
 
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            La frecuencia de un ritmo de escape orienta el nivel del problema sin necesidad de estudios adicionales: ~40-60 lpm sugiere escape de la unión AV; ~20-40 lpm sugiere escape ventricular (Purkinje).
-                        </div>
-
                         <h4>Identifica las estructuras del corazón</h4>
                         <p>Haz clic en cada punto marcado para ver el nombre y la función de esa estructura.</p>
 
@@ -381,15 +376,10 @@
 
                         <p>El valor del potencial de reposo no es un dato aislado: determina qué tan fácil o difícil es excitar la célula. Cuanto más negativo sea el reposo, más estímulo se necesita para generar un potencial de acción; cuanto menos negativo, más cerca está de activarse.</p>
 
-                        <div class="dato-curioso">
-                            <span class="dato-curioso-titulo">💡 Dato curioso</span>
-                            El corazón humano late en promedio unas 100.000 veces al día — cada uno de esos latidos comienza con el mismo ciclo de apertura y cierre de canales iónicos que vas a recorrer en esta unidad.
-                        </div>
-
                         <h4>Potencial de acción cardíaco</h4>
                         <p>A partir del potencial de reposo, un estímulo suficiente dispara un cambio brusco y momentáneo del voltaje de la membrana: el <strong>potencial de acción</strong>. En el miocito de trabajo ese cambio no es simétrico ni instantáneo — pasa por cinco fases sucesivas, numeradas de 0 a 4, cada una caracterizada por la apertura o el cierre de un tipo distinto de canal iónico (4).</p>
 
-                        <p>Haz clic en cada fase para ver qué ocurre a nivel iónico y por qué le importa a la enfermería.</p>
+                        <p>Haz clic en cada fase para ver qué ocurre a nivel iónico.</p>
                         <div class="stepper-fases">
                             <div class="stepper-nav">
                                 <button class="activo" onclick="activarPasoStepper(this,'fase0')">Fase 0</button>
@@ -400,33 +390,44 @@
                             </div>
                             <div class="stepper-panel activo" data-paso="fase0">
                                 <h5>Fase 0 — Despolarización rápida</h5>
-                                <p><strong>Qué ocurre:</strong> apertura de canales rápidos de Na+ y entrada masiva de sodio a la célula — el ascenso más pronunciado de todo el potencial de acción. Corresponde a la propiedad de <strong>excitabilidad</strong>.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> la velocidad de este ascenso determina la velocidad de conducción del impulso (propiedad de <strong>conductividad</strong>). Los antiarrítmicos de clase I actúan bloqueando estos canales de sodio.</p>
+                                <p>Al alcanzarse el umbral se abren los <strong>canales rápidos de sodio</strong>. El sodio entra en masa y el potencial salta de −85 a cerca de +20 mV en una fracción de milisegundo. Es el ascenso más pronunciado de toda la curva, y su velocidad marca la rapidez con que el impulso pasa de una célula a la siguiente.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase1">
                                 <h5>Fase 1 — Repolarización inicial</h5>
-                                <p><strong>Qué ocurre:</strong> cierre de los canales de Na+ y una salida transitoria y breve de K+, que produce una pequeña muesca en la curva.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> marca la transición hacia la fase de meseta; alteraciones aquí contribuyen a ciertos patrones de repolarización anómala.</p>
+                                <p>Los canales de sodio <strong>se inactivan solos</strong>, sin que el estímulo desaparezca, y a la vez empieza a salir potasio. El potencial baja un poco: la muesca que se ve entre el pico y la meseta. Esa autoinactivación es la razón de que la célula no pueda reexcitarse enseguida.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase2">
                                 <h5>Fase 2 — Meseta</h5>
-                                <p><strong>Qué ocurre:</strong> entrada lenta y sostenida de Ca++ a través de canales tipo L, equilibrada con salida de K+ — esto mantiene la célula despolarizada por más tiempo que en una neurona.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> este calcio es el mismo que dispara la contracción muscular (acoplamiento excitación-contracción, Unidad 3). Los calcioantagonistas actúan en esta fase.</p>
+                                <p>Entra <strong>calcio por canales lentos tipo L</strong> mientras la salida de potasio se frena. El potencial se sostiene alto entre 0,2 y 0,3 segundos — el rasgo que distingue al miocardio de una neurona o del músculo esquelético. Ese calcio es el mismo que dispara la contracción.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase3">
                                 <h5>Fase 3 — Repolarización rápida</h5>
-                                <p><strong>Qué ocurre:</strong> salida masiva de K+, devolviendo la célula a su potencial de reposo.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> los antiarrítmicos de clase III (ej. amiodarona) prolongan esta fase — de ahí que puedan alargar el intervalo QT (Unidad 5) y, en exceso, favorecer Torsades de Pointes (Módulo 03).</p>
+                                <p>Se cierran los canales de calcio y <strong>el potasio sale con rapidez</strong>, ya sin nada que lo compense. El potencial cae tan deprisa como había subido, hasta devolver la célula a −85 mV. Aquí termina el potencial de acción.</p>
                             </div>
                             <div class="stepper-panel" data-paso="fase4">
                                 <h5>Fase 4 — Reposo (o despolarización diastólica)</h5>
-                                <p><strong>Qué ocurre:</strong> en un miocito contráctil normal, es un potencial de reposo estable. En las células marcapasos (nodo SA, nodo AV), en cambio, esta fase es inestable — una corriente de entrada lenta despolariza la célula progresivamente hasta disparar una nueva Fase 0 por sí sola. Esta inestabilidad es la base del <strong>automatismo</strong>.</p>
-                                <p><strong>Por qué le importa a enfermería:</strong> esta es la propiedad que hace que el corazón pueda generar su propio ritmo sin necesidad de un marcapasos externo (Unidad 1).</p>
+                                <p>En el miocito de trabajo es un <strong>reposo estable</strong> que se mantiene hasta el siguiente estímulo. En las células marcapasos no: la membrana nunca cierra del todo el paso a sodio y calcio, así que el potencial sube solo, poco a poco, hasta disparar por sí mismo una nueva fase 0. Ahí está el automatismo.</p>
                             </div>
                         </div>
 
                         <h4>Las cuatro propiedades eléctricas del corazón</h4>
                         <p>El potencial de acción no ocurre de forma aislada en una sola célula: se genera, se transmite y se repite de manera ordenada gracias a cuatro propiedades del miocardio. No son fenómenos separados, sino partes de esa misma actividad eléctrica; cada una responde a una pregunta distinta.</p>
+
+                        <p>En farmacología y en la historia clínica estas propiedades aparecen casi siempre con su nombre en <em>-tropismo</em>, y conviene reconocerlas por ambos: cuando se lee que un fármaco tiene «efecto cronotrópico negativo», se está diciendo que baja la frecuencia.</p>
+
+                        <table class="tabla-comparativa">
+                            <thead>
+                                <tr><th>Propiedad</th><th>Otro nombre</th><th>Qué modifica</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Automatismo</td><td>Cronotropismo</td><td>La frecuencia con que se generan los impulsos</td></tr>
+                                <tr><td>Excitabilidad</td><td>Batmotropismo</td><td>Cuánto estímulo hace falta para excitar la célula</td></tr>
+                                <tr><td>Conductividad</td><td>Dromotropismo</td><td>La velocidad a la que viaja el impulso</td></tr>
+                                <tr><td>Refractariedad</td><td>—</td><td>Cuánto tarda la célula en poder reexcitarse</td></tr>
+                            </tbody>
+                        </table>
+
+                        <p>Se oirán también otros dos que <strong>no son propiedades eléctricas sino mecánicas</strong>, y por eso no figuran en la tabla: el <strong class="tooltip" tabindex="0" data-tooltip="Fuerza de contracción del miocardio. Un inotrópico positivo, como la dobutamina, hace que el corazón se contraiga con más fuerza.">inotropismo</strong>, que es la fuerza de contracción, y el <strong class="tooltip" tabindex="0" data-tooltip="Capacidad del miocardio para relajarse durante la diástole. Un lusitrópico positivo mejora el llenado ventricular.">lusitropismo</strong>, que es la capacidad de relajarse en diástole.</p>
 
                         <h5>Automatismo</h5>
                         <p>Es la capacidad de generar un potencial de acción sin estímulo externo. Ya se vio en la fase 4: mientras el miocito de trabajo mantiene un reposo estable, las células del nódulo sinusal tienen una fase 4 que se despolariza sola hasta el umbral (4). Lo que falta explicar es por qué manda el nódulo sinusal y no cualquier otra célula automática.</p>
@@ -449,6 +450,15 @@
                         <p>Es el período durante el cual una célula que acaba de generar un potencial de acción <strong>no puede excitarse de nuevo, por fuerte que sea el estímulo</strong>. Se debe a que los canales de sodio inactivados en la fase 1 no pueden reabrirse hasta que la célula se haya repolarizado lo suficiente (4). En el ventrículo dura entre 0,25 y 0,30 segundos; en la aurícula, alrededor de 0,15 (4).</p>
 
                         <p>Esa pausa obligada funciona como protección: al durar casi lo mismo que la contracción que provoca, impide que el corazón reciba un segundo estímulo antes de relajarse — evita que se <strong class="tooltip" tabindex="0" data-tooltip="Contracción sostenida por estímulos muy seguidos, propia del músculo esquelético; en el corazón sería incompatible con el bombeo.">tetanice</strong> como lo haría un músculo esquelético.</p>
+
+                        <h4>Por qué le importa a enfermería</h4>
+                        <p>Cada fase del potencial de acción es la diana de un grupo de fármacos distinto, y esa correspondencia explica sus efectos y sus riesgos:</p>
+                        <ul>
+                            <li>La <strong>velocidad de la fase 0</strong> determina la velocidad de conducción del impulso. Los <strong>antiarrítmicos de clase I</strong> bloquean esos canales de sodio: enlentecen la conducción.</li>
+                            <li>El <strong>calcio de la fase 2</strong> es el que dispara la contracción — el acoplamiento excitación-contracción (Unidad 3). Es donde actúan los <strong>calcioantagonistas</strong>.</li>
+                            <li>Los <strong>antiarrítmicos de clase III</strong> (por ejemplo la amiodarona) prolongan la <strong>fase 3</strong>. Por eso alargan el intervalo QT (Unidad 5) y, en exceso, favorecen la Torsades de Pointes (Módulo 03).</li>
+                            <li>La <strong>fase 4</strong> inestable de las células marcapasos es lo que permite al corazón generar su propio ritmo sin un marcapasos externo (Unidad 1).</li>
+                        </ul>
 
                         <div class="error-frecuente">
                             <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
