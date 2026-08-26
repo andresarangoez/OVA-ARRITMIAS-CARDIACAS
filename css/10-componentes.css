@@ -142,8 +142,71 @@
 /* --- CONTENEDOR DE MODELO 3D --- */
 /* Uso: modelos GLB embebidos dentro del contenido de un módulo (distinto
    del corazón protagonista del home, que usa .heart-showcase). */
-.modelo-3d-container { width: 100%; height: 320px; border-radius: var(--bento-radius-md); background: var(--fucs-niebla); overflow: hidden; margin: 20px 0; }
+.modelo-3d-container { position: relative; width: 100%; height: 320px; border-radius: var(--bento-radius-md); background: var(--fucs-niebla); overflow: hidden; margin: 20px 0; }
 .modelo-3d-container model-viewer { width: 100%; height: 100%; background-color: transparent; }
+
+/* --- CONTROLES DEL VISOR 3D (genéricos: sirven a cualquier modelo) ---
+   Ver js/18-visor-3d.js. Los botones van en el HTML; el panel de ayuda lo
+   construye el JS la primera vez que se pide. */
+.visor-3d-controles { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; z-index: 3; }
+.visor-3d-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--fucs-gris); background: rgba(255, 255, 255, 0.92);
+    color: var(--fucs-azul-profundo); font-size: 1rem; font-weight: 700; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: var(--shadow-sm); transition: 0.2s;
+}
+.visor-3d-btn:hover, .visor-3d-btn:focus-visible {
+    background: var(--fucs-dorado); border-color: var(--fucs-dorado);
+    transform: scale(1.08); outline: none;
+}
+.visor-3d-btn svg { width: 17px; height: 17px; }
+/* Estado encendido del giro automático: se distingue del hover porque el
+   botón es un interruptor y su estado tiene que leerse sin pasar el ratón. */
+.visor-3d-btn.activo { background: var(--fucs-azul-profundo); border-color: var(--fucs-azul-profundo); color: #ffffff; }
+.visor-3d-btn.activo:hover, .visor-3d-btn.activo:focus-visible { background: var(--fucs-dorado); border-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+
+/* En pantalla completa el contenedor debe ocupar todo: sin esto conservaría
+   su altura fija de 320/460 px y quedaría una franja en medio del negro. */
+.modelo-3d-container:fullscreen { width: 100vw; height: 100vh; border-radius: 0; margin: 0; background: #0d1117; }
+.modelo-3d-container:fullscreen model-viewer { height: 100%; }
+
+/* --- PANEL DE AYUDA --- */
+.visor-3d-ayuda {
+    position: absolute; inset: 0; z-index: 4;
+    background: rgba(9, 39, 85, 0.94); color: #ffffff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 20px; text-align: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.visor-3d-ayuda.abierta { opacity: 1; visibility: visible; }
+.visor-3d-ayuda-titulo { margin: 0 0 20px 0; font-size: 1rem; color: var(--fucs-dorado); text-transform: uppercase; letter-spacing: 1px; }
+.visor-3d-ayuda-cerrar {
+    position: absolute; top: 10px; right: 14px;
+    background: none; border: none; color: #ffffff; font-size: 1.7rem; line-height: 1;
+    cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm);
+}
+.visor-3d-ayuda-cerrar:hover, .visor-3d-ayuda-cerrar:focus-visible { color: var(--fucs-dorado); outline: none; }
+
+.visor-3d-ayuda-rejilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 620px; width: 100%; }
+.visor-3d-ayuda-item svg { width: 30px; height: 30px; color: var(--fucs-dorado); margin-bottom: 8px; }
+.visor-3d-ayuda-item strong { display: block; font-size: 0.95rem; margin-bottom: 6px; }
+.visor-3d-ayuda-item span { display: block; font-size: 0.78rem; line-height: 1.5; color: rgba(255, 255, 255, 0.82); }
+.visor-3d-ayuda-item .tactil { color: rgba(255, 255, 255, 0.55); font-style: italic; }
+
+.visor-3d-ayuda-pie { margin-top: 22px; }
+.visor-3d-ayuda-reset {
+    font: inherit; font-size: 0.82rem; padding: 8px 18px; border-radius: var(--radius-sm);
+    border: 1px solid var(--fucs-dorado); background: transparent; color: var(--fucs-dorado); cursor: pointer;
+}
+.visor-3d-ayuda-reset:hover, .visor-3d-ayuda-reset:focus-visible { background: var(--fucs-dorado); color: var(--fucs-azul-profundo); outline: none; }
+
+/* Con el contenedor a 320 px, tres columnas no caben legibles. */
+@media (max-width: 640px) {
+    .visor-3d-ayuda-rejilla { grid-template-columns: 1fr; gap: 14px; }
+    .visor-3d-ayuda-titulo { margin-bottom: 12px; font-size: 0.9rem; }
+    .visor-3d-ayuda-item svg { width: 22px; height: 22px; margin-bottom: 4px; }
+}
 
 /* --- DATO CURIOSO --- */
 /* Uso: dato curioso o cifra llamativa, sin carga clínica — solo interés.

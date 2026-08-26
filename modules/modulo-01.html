@@ -235,8 +235,18 @@
                                         data-visibility-attribute="visible" aria-expanded="false"
                                         aria-label="Fibras de Purkinje" onclick="alternarPuntoConduccion(this)">9<div class="hotspot-etiqueta"><strong>Fibras de Purkinje</strong><span>La red se distribuye por ambos ventrículos: por eso la despolarización ventricular es prácticamente simultánea.</span><span class="frecuencia">20-40 lpm</span></div></button>
                             </model-viewer>
+
+                            <div class="visor-3d-controles">
+                                <button type="button" class="visor-3d-btn" onclick="alternarAyudaVisor(this)" aria-expanded="false" aria-label="Ayuda de navegación" title="Cómo navegar el modelo">?</button>
+                                <button type="button" class="visor-3d-btn activo" onclick="alternarGiroVisor(this)" aria-pressed="true" aria-label="Giro automático" title="Detener el giro automático">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+                                </button>
+                                <button type="button" class="visor-3d-btn" onclick="pantallaCompletaVisor(this)" aria-label="Pantalla completa" title="Pantalla completa">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                </button>
+                            </div>
                         </div>
-                        <p class="modelo-descripcion"><strong>Descripción:</strong> Sistema de conducción cardíaca. Este modelo representa las partes principales del sistema de conducción cardíaca. Los componentes principales son el nódulo SA, el nódulo AV, el haz de His, las ramas del haz y las fibras de Purkinje. Cabe destacar que no se muestran todos los detalles del sistema de conducción, ya que el modelo se basa en una impresión 3D.</p>
+                        <p class="modelo-descripcion"><strong>Descripción:</strong> Sistema de conducción cardíaca. Este modelo representa las partes principales del sistema de conducción cardíaca. Los componentes principales son el nódulo SA, el nódulo AV, el haz de His, las ramas del haz y las fibras de Purkinje.</p>
 
                         <p class="figura-caption"><a href="https://anatomytool.org/content/leiden-delft-groningen-3d-model-cardiac-conduction-system-numbered-english-labels" target="_blank" rel="noopener">«Leiden-Delft-Groningen — 3D model Cardiac Conduction System»</a> de <a href="https://annasieben.com/" target="_blank" rel="noopener">Anna Sieben</a>, licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA</a>. De <a href="https://sketchfab.com/eLearningUMCG" target="_blank" rel="noopener">E-learning UMCG</a>. Modificado para este OVA.</p>
 
@@ -360,6 +370,16 @@
                         <h4>Explora el corazón en 3D</h4>
                         <div class="modelo-3d-container">
                             <model-viewer src="assets/models/Heart.glb" alt="Modelo 3D del corazón humano" auto-rotate camera-controls rotation-per-second="8deg" shadow-intensity="0.8"></model-viewer>
+
+                            <div class="visor-3d-controles">
+                                <button type="button" class="visor-3d-btn" onclick="alternarAyudaVisor(this)" aria-expanded="false" aria-label="Ayuda de navegación" title="Cómo navegar el modelo">?</button>
+                                <button type="button" class="visor-3d-btn activo" onclick="alternarGiroVisor(this)" aria-pressed="true" aria-label="Giro automático" title="Detener el giro automático">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+                                </button>
+                                <button type="button" class="visor-3d-btn" onclick="pantallaCompletaVisor(this)" aria-label="Pantalla completa" title="Pantalla completa">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <p class="figura-caption">Gira y explora el modelo para identificar las 4 cavidades y orientarte anatómicamente — este modelo muestra la anatomía general del corazón; no marca visualmente las válvulas descritas arriba, ni las vías del sistema de conducción (se detallan más arriba, en esta misma unidad).</p>
                     </div>
