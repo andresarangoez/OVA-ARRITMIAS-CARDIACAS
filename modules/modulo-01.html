@@ -181,14 +181,60 @@
                         <h4>Sistema de conducción</h4>
                         <p>El sistema de conducción cardíaco es un conjunto de células especializadas, capaces de generar y conducir el impulso eléctrico a través del corazón (4). Sus componentes son el nodo sinoauricular (sinusal), las vías internodales, el nodo auriculoventricular, el haz de His y la red de Purkinje (2,4).</p>
 
-                        <p>Antes de recorrer cada componente, orientate en el espacio: gira el modelo para ver por dónde discurre la red de conducción —resaltada en amarillo— dentro de la masa del miocardio.</p>
+                        <p>Antes de recorrer cada componente, orientate en el espacio: gira el modelo para ver por dónde discurre la red de conducción —resaltada en amarillo— dentro de la masa del miocardio. <strong>Pulsa cada punto numerado</strong> para identificar la estructura y su frecuencia intrínseca; el recorrido va del 1 al 9 siguiendo el camino del impulso.</p>
 
-                        <div class="modelo-3d-container">
+                        <div class="modelo-3d-container con-puntos">
                             <model-viewer src="assets/models/sistema-conduccion-cardiaco.glb"
-                                alt="Modelo tridimensional del corazón con el sistema de conducción resaltado en amarillo: nodo sinoauricular, nodo auriculoventricular, haz de His con sus ramas y red de Purkinje"
+                                alt="Modelo tridimensional del corazón con el sistema de conducción resaltado en amarillo: nódulo sinoauricular, vías internodales, nódulo auriculoventricular, haz de His con sus ramas, banda moderadora y red de Purkinje"
                                 camera-controls auto-rotate rotation-per-second="8deg"
                                 shadow-intensity="0.6"
-                                loading="lazy"></model-viewer>
+                                loading="lazy">
+
+                                <button class="hotspot-conduccion" slot="hotspot-sa"
+                                        data-position="-0.4045179931762515m 1.1816542836478807m -1.5402663284302773m" data-normal="-0.041968728112014374m -0.6522729102928257m 0.7568214296376571m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Nódulo sinoauricular (SA)" onclick="alternarPuntoConduccion(this)">1<div class="hotspot-etiqueta"><strong>Nódulo sinoauricular (SA)</strong><span>Marcapasos natural: genera el impulso de forma espontánea y regular, antes de que ninguna otra estructura alcance su umbral.</span><span class="frecuencia">60-100 lpm</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-internodal"
+                                        data-position="-0.8386114382837175m 0.11741077510864417m -1.83799219648599m" data-normal="0.2792793916120064m 0.47050251582980424m 0.8370366802110003m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Vías internodales" onclick="alternarPuntoConduccion(this)">2<div class="hotspot-etiqueta"><strong>Vías internodales</strong><span>Conducen el impulso del nódulo SA al AV más rápido que el resto del músculo auricular. Del trayecto anterior nace el haz de Bachmann, que activa la aurícula izquierda casi a la vez que la derecha.</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-av"
+                                        data-position="0.6348271979171507m -0.17880165286818184m -0.8122454058689255m" data-normal="-0.9941156582351907m -0.09211651162789965m 0.05699654671224399m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Nódulo auriculoventricular (AV)" onclick="alternarPuntoConduccion(this)">3<div class="hotspot-etiqueta"><strong>Nódulo auriculoventricular (AV)</strong><span>Retrasa el impulso unos 0,16 s para que las aurículas terminen de vaciarse. Es la única puerta eléctrica hacia los ventrículos.</span><span class="frecuencia">40-60 lpm</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-his"
+                                        data-position="0.7940709722285645m 0.04624964796132913m -0.5027225515089304m" data-normal="-0.45100584834137114m 0.2695590771002172m 0.8508417177799636m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Haz de His" onclick="alternarPuntoConduccion(this)">4<div class="hotspot-etiqueta"><strong>Haz de His</strong><span>Atraviesa el anillo fibroso y reparte el impulso a las dos ramas con conducción muy rápida.</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-rama-izq"
+                                        data-position="0.9937861730650892m -0.288018606329839m -0.11322588384633736m" data-normal="0.7009818330532933m 0.6650430495727209m 0.2575698195524089m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Rama izquierda del haz" onclick="alternarPuntoConduccion(this)">5<div class="hotspot-etiqueta"><strong>Rama izquierda del haz</strong><span>Conduce el impulso por el tabique hasta el ventrículo izquierdo.</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-rama-der"
+                                        data-position="0.8411935641505683m -0.3625288413048219m 0.028729669689349313m" data-normal="-0.49887999520043913m 0.5982194116638363m 0.6270983064060877m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Rama derecha del haz" onclick="alternarPuntoConduccion(this)">6<div class="hotspot-etiqueta"><strong>Rama derecha del haz</strong><span>Conduce el impulso por el tabique hasta el ventrículo derecho.</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-banda-moderadora"
+                                        data-position="0.7334580898339449m -0.6769441275228957m 0.4305165187462847m" data-normal="0.04938928966256573m 0.8646227875201539m 0.49998813322668595m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Banda moderadora" onclick="alternarPuntoConduccion(this)">7<div class="hotspot-etiqueta"><strong>Banda moderadora</strong><span>Puente muscular del ventrículo derecho: lleva la rama derecha hasta el músculo papilar anterior, acortando el trayecto y sincronizando su contracción.</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-purkinje-1"
+                                        data-position="2.104140072998225m -0.788169976157931m 0.26788866081761653m" data-normal="0.815282123962563m -0.15621648269117783m 0.5575943587256681m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Fibras de Purkinje" onclick="alternarPuntoConduccion(this)">8<div class="hotspot-etiqueta"><strong>Fibras de Purkinje</strong><span>Activan casi toda la masa ventricular al mismo tiempo, en milisegundos, para que la contracción sea coordinada.</span><span class="frecuencia">20-40 lpm</span></div></button>
+
+                                <button class="hotspot-conduccion" slot="hotspot-purkinje-2"
+                                        data-position="-0.12897264019941534m -0.55372643615207m 0.46533603716299177m" data-normal="0.36431394883007917m 0.8437438569542748m 0.3941721077648171m"
+                                        data-visibility-attribute="visible" aria-expanded="false"
+                                        aria-label="Fibras de Purkinje" onclick="alternarPuntoConduccion(this)">9<div class="hotspot-etiqueta"><strong>Fibras de Purkinje</strong><span>La red se distribuye por ambos ventrículos: por eso la despolarización ventricular es prácticamente simultánea.</span><span class="frecuencia">20-40 lpm</span></div></button>
+                            </model-viewer>
                         </div>
                         <p class="modelo-descripcion"><strong>Descripción:</strong> Sistema de conducción cardíaca. Este modelo representa las partes principales del sistema de conducción cardíaca. Los componentes principales son el nódulo SA, el nódulo AV, el haz de His, las ramas del haz y las fibras de Purkinje. Cabe destacar que no se muestran todos los detalles del sistema de conducción, ya que el modelo se basa en una impresión 3D.</p>
 
