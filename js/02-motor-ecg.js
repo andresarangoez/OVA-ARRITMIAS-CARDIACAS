@@ -147,51 +147,41 @@ function generarBav1(ctx) {
 // hasta que una no pasa. La pausa le da tiempo de recuperarse, y la P
 // siguiente vuelve a conducir con el PR más corto del grupo.
 //
-// Los incrementos van DECRECIENDO (+60, +40, +30 ms), como en el Wenckebach
-// típico. Es lo que hace que el R-R se acorte antes de la pausa, tal como lo
-// enseña el Módulo 03: con incrementos iguales el R-R quedaría constante y el
-// trazado contradiría el texto. Ningún escalón baja de 30 ms, para que el
-// desplazamiento del QRS se vea latido a latido.
-const SECUENCIA_WENCKEBACH = [160, 220, 260, 290, null];
+// Escalones iguales de 60 ms, dimensionados para la escala del monitor: a
+// 120 px/s cada uno corre el QRS 7 px respecto de su P, y el segmento PR pasa
+// de 8 a 30 px dentro del grupo. Con escalones de 30-40 ms (4-5 px, lo mismo
+// que el grosor de la línea más el error de muestreo por fotograma) el
+// alargamiento existía en la señal pero a la vista el PR parecía constante.
+const SECUENCIA_WENCKEBACH = [160, 220, 280, 340, null];
 
-// Mobitz II, conducción 3:2. Bloqueo INFRA-HISIANO: el PR es FIJO —nunca se
-// alarga— y una P se queda sin QRS de forma súbita, sin aviso previo.
+// Mobitz II, conducción 4:3. El PR es FIJO —nunca se alarga— y una P se queda
+// sin QRS de forma súbita, sin aviso previo.
 //
-// 3:2 y no 2:1 a propósito: en un 2:1 nunca hay dos latidos conducidos
-// seguidos, así que no hay forma de ver si el PR es fijo o se alarga, y el
-// trazado es indistinguible de un Wenckebach 2:1. Para reconocer Mobitz II
-// hacen falta al menos dos PR consecutivos iguales antes de la P bloqueada.
-const SECUENCIA_MOBITZ_II = [180, 180, null];
+// Tres PR iguales seguidos antes de la P bloqueada: es lo que permite ver que
+// el PR no cambia. En un 2:1 nunca hay dos latidos conducidos seguidos, así
+// que no se podría distinguir de un Wenckebach 2:1.
+const SECUENCIA_MOBITZ_II = [180, 180, 180, null];
 
 // La pausa sale sola de la secuencia, sin programarla: el R-R que contiene la
 // P bloqueada mide dos P-P menos lo que se acortó el PR. En Wenckebach eso da
-// MENOS de dos P-P (el PR pasa de 290 a 160); en Mobitz II, como el PR no
-// cambia, da EXACTAMENTE dos P-P. Esa diferencia también es diagnóstica.
+// MENOS de dos P-P (el PR pasa de 340 a 160); en Mobitz II, como el PR no
+// cambia, da EXACTAMENTE dos P-P.
 
-// Wenckebach: QRS angosto — el bloqueo es nodal y el His-Purkinje está intacto.
-function generarBav2Wenckebach(ctx) {
+// Generador común a Mobitz I y Mobitz II. Cada latido conducido es el mismo
+// latido del ritmo sinusal —misma P, mismo QRS con Q, R y S, misma T— con el
+// QRS y la T corridos en bloque hasta donde marca su PR. Lo único que
+// distingue a los dos bloqueos es su secuencia de conducción.
+//
+// Mobitz II usaba antes el QRS "ancho" (una sola joroba senoidal, sin Q/R/S,
+// con la misma forma que la P pero más grande) y la T invertida: el complejo
+// parecía una P gigante y no se reconocía como QRS.
+function generarBloqueoAV2doGrado(ctx) {
     const { ms, latido } = ctx;
     let amplitud = dibujarP(ms); // la P se dibuja SIEMPRE, conduzca o no
 
     if (latido.conducido) {
         const retraso = latido.prMs - PR_INTERVALO_MS;
         amplitud += dibujarQRS(ms - retraso) + dibujarT(ms - retraso, ctx.ciclo);
-    }
-    return amplitud;
-}
-
-// Mobitz II: QRS ANCHO con T invertida (cambios secundarios de
-// repolarización). El bloqueo infra-Hisiano casi siempre coexiste con
-// enfermedad del sistema de conducción distal (bloqueo de rama de base). Ese
-// contraste QRS angosto (Wenckebach) vs QRS ancho (Mobitz II) es, junto con
-// el PR que se alarga o no, la clave para diferenciarlos.
-function generarBav2Mobitz2(ctx) {
-    const { ms, latido } = ctx;
-    let amplitud = dibujarP(ms); // la P se dibuja SIEMPRE, conduzca o no
-
-    if (latido.conducido) {
-        const retraso = latido.prMs - PR_INTERVALO_MS;
-        amplitud += dibujarQRS(ms - retraso, true) + dibujarT(ms - retraso, ctx.ciclo, true);
     }
     return amplitud;
 }
@@ -282,8 +272,8 @@ const GENERADORES_RITMO = {
     ev: generarConExtrasistoles,
 
     bav1: generarBav1,
-    bav2_1: generarBav2Wenckebach,
-    bav2_2: generarBav2Mobitz2,
+    bav2_1: generarBloqueoAV2doGrado,
+    bav2_2: generarBloqueoAV2doGrado,
     bav3: generarBav3,
     flutter: generarFlutter,
 
