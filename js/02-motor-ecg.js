@@ -6,8 +6,8 @@
 // ARQUITECTURA:
 // El motor se divide en dos responsabilidades separadas:
 //
-// 1. RELOJ DEL MOTOR (dentro de la clase MotorMatematicoECG): fases, contadores
-//    de bloqueo AV y lógica de extrasístoles. Esto es mecánica compartida del
+// 1. RELOJ DEL MOTOR (dentro de la clase MotorMatematicoECG): fases, avance de
+//    las secuencias de conducción AV y lógica de extrasístoles. Esto es mecánica compartida del
 //    "reloj clínico", no pertenece a ninguna arritmia en particular.
 //
 // 2. GENERADORES POR ARRITMIA (GENERADORES_RITMO): cada arritmia tiene su propia
@@ -91,7 +91,7 @@ function dibujarT(ms, ciclo, invertida = false) {
 
 // --- GENERADORES INDEPENDIENTES POR ARRITMIA ---
 // Cada función recibe el "contexto" del reloj (fase actual, tipo de latido,
-// contadores de bloqueo) y devuelve la amplitud de la señal en ese instante.
+// latido AV en curso) y devuelve la amplitud de la señal en ese instante.
 
 // Ritmos organizados con lógica de extrasístoles espontáneas (sinusal,
 // bradicardia sinusal, taquicardia sinusal, AESP, y las vistas dedicadas
@@ -129,48 +129,60 @@ function generarBav1(ctx) {
     return dibujarP(ms) + dibujarQRS(ms - retraso) + dibujarT(ms - retraso, ctx.ciclo);
 }
 
-// Bloqueo AV 2do grado Mobitz I (Wenckebach): fatiga progresiva del nodo AV.
-// El PR se alarga latido a latido con INCREMENTOS DECRECIENTES (no
-// constantes) — ese detalle es el que hace que el R-R se vaya ACORTANDO
-// antes de la pausa (el hallazgo clásico "agrupamiento" que distingue
-// Wenckebach a simple vista). Con incrementos constantes el R-R quedaría
-// igual entre latidos conducidos y ese patrón desaparecería.
-// 4 de cada 4 impulsos auriculares: 3 conducen (PR creciente), el 4to se
-// bloquea por completo y el ciclo reinicia. QRS angosto: el bloqueo es
-// nodal, el sistema His-Purkinje está intacto.
-function generarBav2Wenckebach(ctx) {
-    const ms = ctx.ms;
-    let amplitud = dibujarP(ms);
+// --- BLOQUEOS AV DE 2DO GRADO: SECUENCIAS DE CONDUCCIÓN ---
+//
+// El nodo sinusal no se entera del bloqueo: sigue disparando a ritmo regular.
+// Por eso en estos ritmos cada ciclo del reloj es un intervalo P-P, y lo único
+// que cambia de un ciclo a otro es qué hace el sistema de conducción con esa
+// P: dejarla pasar con cierto PR, o no dejarla pasar.
+//
+// Cada bloqueo se describe entonces como una secuencia con un elemento por
+// onda P del grupo: un número es el PR (ms) con el que esa P conduce, y
+// `null` es una P bloqueada. El reloj la recorre en bucle y el generador
+// dibuja el QRS a la distancia de su P que marca ese PR: el QRS se desplaza de
+// verdad en el tiempo, no se le cambia una etiqueta.
 
-    // PR objetivo (ms) para los latidos 1, 2 y 3 del grupo — incrementos
-    // decrecientes (100 ms, luego 40 ms) para lograr el acortamiento del R-R.
-    const PR_POR_LATIDO_MS = [180, 280, 320];
+// Mobitz I (Wenckebach), conducción 5:4. Fatiga progresiva del nodo AV: cada
+// P lo encuentra menos recuperado que la anterior y tarda más en cruzarlo,
+// hasta que una no pasa. La pausa le da tiempo de recuperarse, y la P
+// siguiente vuelve a conducir con el PR más corto del grupo.
+//
+// Escalones iguales de 100 ms, dimensionados para la escala del monitor: a
+// 120 px/s cada uno corre el QRS 12 px respecto de su P, y en el cuarto latido
+// la P ya queda a medio camino entre la T anterior y su propio QRS. Con
+// escalones de 30-60 ms (4-7 px en un ciclo de ~110 px) el alargamiento
+// existía en la señal, pero en el monitor el PR se veía constante y el
+// trazado no se distinguía de un Mobitz II.
+const SECUENCIA_WENCKEBACH = [160, 260, 360, 460, null];
 
-    if (ctx.contadorNodal <= 3) {
-        const retraso = PR_POR_LATIDO_MS[ctx.contadorNodal - 1] - PR_INTERVALO_MS;
+// Mobitz II, conducción 4:3. El PR es FIJO —nunca se alarga— y una P se queda
+// sin QRS de forma súbita, sin aviso previo.
+//
+// Tres PR iguales seguidos antes de la P bloqueada: es lo que permite ver que
+// el PR no cambia. En un 2:1 nunca hay dos latidos conducidos seguidos, así
+// que no se podría distinguir de un Wenckebach 2:1.
+const SECUENCIA_MOBITZ_II = [180, 180, 180, null];
+
+// La pausa sale sola de la secuencia, sin programarla: el R-R que contiene la
+// P bloqueada mide dos P-P menos lo que se acortó el PR. En Wenckebach eso da
+// MENOS de dos P-P (el PR pasa de 460 a 160); en Mobitz II, como el PR no
+// cambia, da EXACTAMENTE dos P-P.
+
+// Generador común a Mobitz I y Mobitz II. Cada latido conducido es el mismo
+// latido del ritmo sinusal —misma P, mismo QRS con Q, R y S, misma T— con el
+// QRS y la T corridos en bloque hasta donde marca su PR. Lo único que
+// distingue a los dos bloqueos es su secuencia de conducción.
+//
+// Mobitz II usaba antes el QRS "ancho" (una sola joroba senoidal, sin Q/R/S,
+// con la misma forma que la P pero más grande) y la T invertida: el complejo
+// parecía una P gigante y no se reconocía como QRS.
+function generarBloqueoAV2doGrado(ctx) {
+    const { ms, latido } = ctx;
+    let amplitud = dibujarP(ms); // la P se dibuja SIEMPRE, conduzca o no
+
+    if (latido.conducido) {
+        const retraso = latido.prMs - PR_INTERVALO_MS;
         amplitud += dibujarQRS(ms - retraso) + dibujarT(ms - retraso, ctx.ciclo);
-    }
-    // contadorNodal === 4: latido bloqueado, no se dibuja QRS/T (la P sí se dibujó arriba)
-    return amplitud;
-}
-
-// Bloqueo AV 2do grado Mobitz II: bloqueo INFRA-HISIANO — a diferencia de
-// Wenckebach, el PR es FIJO (nunca se alarga) y el latido se cae SIN AVISO.
-// QRS ANCHO con T invertida (cambios secundarios de repolarización): el
-// bloqueo infra-Hisiano casi siempre coexiste con enfermedad del sistema de
-// conducción distal (bloqueo de rama de base). Ese contraste QRS angosto
-// (Wenckebach) vs QRS ancho (Mobitz II) es, junto con el aviso previo o no,
-// la clave para diferenciarlos.
-// Conducción 3:2 — se bloquea 1 de cada 3 impulsos, siempre de forma súbita.
-function generarBav2Mobitz2(ctx) {
-    const ms = ctx.ms;
-    let amplitud = dibujarP(ms);
-
-    const PR_FIJO_MS = 220; // fijo, puede estar levemente prolongado, pero NUNCA cambia
-    const retraso = PR_FIJO_MS - PR_INTERVALO_MS;
-
-    if (ctx.contadorRatio % 3 !== 0) {
-        amplitud += dibujarQRS(ms - retraso, true) + dibujarT(ms - retraso, ctx.ciclo, true);
     }
     return amplitud;
 }
@@ -261,8 +273,8 @@ const GENERADORES_RITMO = {
     ev: generarConExtrasistoles,
 
     bav1: generarBav1,
-    bav2_1: generarBav2Wenckebach,
-    bav2_2: generarBav2Mobitz2,
+    bav2_1: generarBloqueoAV2doGrado,
+    bav2_2: generarBloqueoAV2doGrado,
     bav3: generarBav3,
     flutter: generarFlutter,
 
@@ -275,13 +287,46 @@ const GENERADORES_RITMO = {
     asistolia: generarAsistolia,
 };
 
+// Ritmos cuyo reloj marca las P y no los QRS, con su secuencia de conducción.
+const SECUENCIAS_CONDUCCION_AV = {
+    bav2_1: SECUENCIA_WENCKEBACH,
+    bav2_2: SECUENCIA_MOBITZ_II,
+};
+
+// Largo del ciclo P-P. La FC del monitor cuenta QRS, y en un bloqueo de 2do
+// grado hay más P que QRS: la frecuencia auricular es la ventricular por la
+// proporción P/QRS de la secuencia. Antes el reloj tomaba la FC ventricular
+// como si fuera la auricular, y las P salían a 45 y 35 lpm — una bradicardia
+// sinusal que no existe, con las P tan separadas que el patrón no se leía.
+function calcularCicloAuricularAV(secuencia, fc) {
+    const conducidas = secuencia.filter(pr => pr !== null).length;
+    return (60000 / fc) * conducidas / secuencia.length;
+}
+
+// El evento del latido en curso: cuándo aparece la P, si conduce, con qué PR
+// y cuándo aparece su QRS. Los generadores dibujan a partir de él sin volver
+// a decidir nada sobre la conducción. Tiempos en ms desde el inicio del ciclo.
+function describirLatidoAV(secuencia, indice, cicloMs) {
+    const posicion = indice % secuencia.length;
+    const prMs = secuencia[posicion];
+    const conducido = prMs !== null;
+    return {
+        posicionEnGrupo: posicion + 1,
+        cicloMs,                                             // intervalo P-P
+        eventoAuricularMs: P_INICIO_MS,                      // inicio de la P
+        conducido,
+        prMs: conducido ? prMs : null,
+        eventoVentricularMs: conducido ? P_INICIO_MS + prMs : null, // inicio del QRS
+    };
+}
+
 class MotorMatematicoECG {
     constructor() {
         // Relojes (El cerebro clínico)
         this.fase = 0; // Fase global/ventricular (0 a 1)
         this.faseAuricular = 0; // Reloj independiente para aurículas (Disociación/Flutter)
-        this.contadorNodal = 1; // Para Wenckebach (Mobitz I)
-        this.contadorRatio = 1; // Para Mobitz II
+        this.indiceConduccion = 0; // Posición de la P actual dentro de su secuencia de conducción AV
+        this.latidoActual = null;  // Evento del latido en curso (solo bloqueos de 2do grado)
 
         // Lógica de extrasístoles
         this.contadorLatido = 0; // Para intercalar la extrasístole cada 4 latidos
@@ -296,8 +341,8 @@ class MotorMatematicoECG {
     reiniciar() {
         this.fase = 0;
         this.faseAuricular = 0;
-        this.contadorNodal = 1;
-        this.contadorRatio = 1;
+        this.indiceConduccion = 0;
+        this.latidoActual = null;
         this.contadorLatido = 0;
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
@@ -313,6 +358,10 @@ class MotorMatematicoECG {
         if (this.tipoLatidoActual === 'EAP') cicloActual = cicloBase * 0.70;
         if (this.tipoLatidoActual === 'EV') cicloActual = cicloBase * 0.60;
         if (this.pausaCompensatoria) cicloActual = cicloBase * 1.40;
+
+        // En los bloqueos de 2do grado el ciclo es el P-P, no el R-R.
+        const secuenciaAV = SECUENCIAS_CONDUCCION_AV[ritmo];
+        if (secuenciaAV) cicloActual = calcularCicloAuricularAV(secuenciaAV, fc);
 
         // 2. Avanzamos los relojes
         this.fase += deltaTime / cicloActual;
@@ -352,15 +401,15 @@ class MotorMatematicoECG {
                 this.tipoLatidoActual = 'NORMAL';
             }
 
-            // Avance de contadores de bloqueo AV
-            if (ritmo === 'bav2_1') {
-                this.contadorNodal++;
-                if (this.contadorNodal > 4) this.contadorNodal = 1;
-            }
-            if (ritmo === 'bav2_2') this.contadorRatio++;
+            // Bloqueos de 2do grado: pasa a la P siguiente de la secuencia.
+            if (secuenciaAV) this.indiceConduccion = (this.indiceConduccion + 1) % secuenciaAV.length;
         }
 
         if (this.faseAuricular > 1) this.faseAuricular -= 1;
+
+        this.latidoActual = secuenciaAV
+            ? describirLatidoAV(secuenciaAV, this.indiceConduccion, cicloActual)
+            : null;
 
         // 4. Delegamos el cálculo de amplitud al generador propio de este ritmo.
         //    Si el ritmo no tiene generador registrado todavía, se comporta
@@ -381,8 +430,7 @@ class MotorMatematicoECG {
             ciclo: cicloActual, // largo real del ciclo (ms), necesario para el QT de Bazett
 
             tipoLatidoActual: this.tipoLatidoActual,
-            contadorNodal: this.contadorNodal,
-            contadorRatio: this.contadorRatio,
+            latido: this.latidoActual,
         };
 
         const generador = GENERADORES_RITMO[ritmo];
