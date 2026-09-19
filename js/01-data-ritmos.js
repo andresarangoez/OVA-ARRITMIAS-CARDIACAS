@@ -14,13 +14,15 @@
     // --- BASE DE DATOS CLÍNICA (Actualizada con Flutter) ---
     // En los bloqueos AV de 2do grado `fc` es la frecuencia VENTRICULAR (la que
     // cuenta el monitor); el motor deriva de ella la de las P según la
-    // proporción de conducción. 56 lpm en 5:4 y 52 lpm en 4:3 dejan las P a
-    // ~70 lpm: el nodo sinusal sigue normal y lo que falla es la conducción.
+    // proporción de conducción: el nodo sinusal sigue normal y lo que falla es
+    // la conducción. 48 lpm en 5:4 dejan las P de Wenckebach a 60 lpm (hace
+    // falta ese P-P para que un PR de 460 ms no lleve la T encima de la P
+    // siguiente); 52 lpm en 4:3 dejan las de Mobitz II a ~70 lpm.
     const RITMOS_DB = {
         'sinusal': { cat: 0, onda: ondas_base.normal, pulso: true, desf: false, med: "Solución Salina", hmd: {fc: 75, sis: 120, dia: 80, fr: 16, temp: 36.5} },
         'bradi_sinusal': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Atropina 1mg", hmd: {fc: 40, sis: 90, dia: 60, fr: 14, temp: 36.2} },
         'bav1': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Observación", hmd: {fc: 55, sis: 110, dia: 70, fr: 16, temp: 36.5} },
-        'bav2_1': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Atropina 1mg", hmd: {fc: 56, sis: 100, dia: 60, fr: 15, temp: 36.4} },
+        'bav2_1': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Atropina 1mg", hmd: {fc: 48, sis: 100, dia: 60, fr: 15, temp: 36.4} },
         'bav2_2': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Atropina / Marcapaso", hmd: {fc: 52, sis: 85, dia: 50, fr: 14, temp: 36.1} },
         'bav3': { cat: 1, onda: ondas_base.lenta, pulso: true, desf: false, med: "Dopamina / Marcapaso", hmd: {fc: 30, sis: 70, dia: 40, fr: 16, temp: 36.0} },
         'taqui_sinusal': { cat: 3, onda: ondas_base.normal, pulso: true, desf: false, med: "Betabloqueador", hmd: {fc: 120, sis: 130, dia: 85, fr: 20, temp: 37.8} },

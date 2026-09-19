@@ -147,12 +147,13 @@ function generarBav1(ctx) {
 // hasta que una no pasa. La pausa le da tiempo de recuperarse, y la P
 // siguiente vuelve a conducir con el PR más corto del grupo.
 //
-// Escalones iguales de 60 ms, dimensionados para la escala del monitor: a
-// 120 px/s cada uno corre el QRS 7 px respecto de su P, y el segmento PR pasa
-// de 8 a 30 px dentro del grupo. Con escalones de 30-40 ms (4-5 px, lo mismo
-// que el grosor de la línea más el error de muestreo por fotograma) el
-// alargamiento existía en la señal pero a la vista el PR parecía constante.
-const SECUENCIA_WENCKEBACH = [160, 220, 280, 340, null];
+// Escalones iguales de 100 ms, dimensionados para la escala del monitor: a
+// 120 px/s cada uno corre el QRS 12 px respecto de su P, y en el cuarto latido
+// la P ya queda a medio camino entre la T anterior y su propio QRS. Con
+// escalones de 30-60 ms (4-7 px en un ciclo de ~110 px) el alargamiento
+// existía en la señal, pero en el monitor el PR se veía constante y el
+// trazado no se distinguía de un Mobitz II.
+const SECUENCIA_WENCKEBACH = [160, 260, 360, 460, null];
 
 // Mobitz II, conducción 4:3. El PR es FIJO —nunca se alarga— y una P se queda
 // sin QRS de forma súbita, sin aviso previo.
@@ -164,7 +165,7 @@ const SECUENCIA_MOBITZ_II = [180, 180, 180, null];
 
 // La pausa sale sola de la secuencia, sin programarla: el R-R que contiene la
 // P bloqueada mide dos P-P menos lo que se acortó el PR. En Wenckebach eso da
-// MENOS de dos P-P (el PR pasa de 340 a 160); en Mobitz II, como el PR no
+// MENOS de dos P-P (el PR pasa de 460 a 160); en Mobitz II, como el PR no
 // cambia, da EXACTAMENTE dos P-P.
 
 // Generador común a Mobitz I y Mobitz II. Cada latido conducido es el mismo
