@@ -1,43 +1,129 @@
-/* Título principal */
+/* --- BARRA INSTITUCIONAL ---
+   Acompaña a las dos vistas (home y módulo), así que es identidad, no portada:
+   marca a la izquierda, metadatos a la derecha. El título del recurso vive
+   ahora en la portada (.portada-titulo, css/15-portada.css) y el del módulo en
+   su propia barra (.module-navbar), para no repetirlo en pantalla. */
 .header-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    gap: 16px;
     width: 100%;
     max-width: 1100px;
-    padding: 22px 15px 26px 15px;
+    /* Sin esto el relleno se suma al máximo (el proyecto no fija box-sizing
+       global) y la barra queda más ancha que las vistas, que sí miden 1100. */
+    box-sizing: border-box;
+    padding: 14px 22px;
     margin-bottom: 24px;
     background: #ffffff;
     border-radius: var(--bento-radius-xl);
     box-shadow: var(--bento-shadow-soft);
 }
-.header-eyebrow {
-    color: var(--fucs-azul-oscuro);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
+.marca-institucional { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+.marca-logo { height: 42px; width: auto; display: block; }
+/* Universidad y facultad en una sola línea (se apilan solo si no caben). */
+.marca-texto { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; line-height: 1.3; }
+.marca-universidad { color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px; }
+.marca-separador { color: var(--fucs-gris); font-size: 0.9rem; }
+.marca-facultad { color: var(--fucs-azul-oscuro); font-size: 0.9rem; font-weight: 400; }
+
+.header-meta { display: flex; align-items: center; gap: 12px; }
+
+/* --- BOTÓN DE AYUDA (abre la guía de navegación) --- */
+.btn-ayuda {
+    position: relative;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%;
+    background: var(--fucs-azul-profundo); color: #ffffff;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700; line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
-h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; font-size: 1.6rem; font-weight: 800; letter-spacing: 1.5px; }
+.btn-ayuda:hover { background: var(--fucs-azul-oscuro); transform: scale(1.08); }
+/* La etiqueta va DEBAJO: el botón está pegado al borde superior de la página
+   y arriba no habría espacio para mostrarla. */
+.btn-ayuda::after {
+    content: attr(data-tooltip);
+    position: absolute; top: calc(100% + 8px); right: 0;
+    padding: 6px 10px; border-radius: var(--radius-sm);
+    background: var(--fucs-azul-profundo); color: #ffffff;
+    font-size: 0.72rem; font-weight: 500; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    box-shadow: var(--shadow-md); z-index: 1500;
+}
+.btn-ayuda:hover::after, .btn-ayuda:focus-visible::after { opacity: 1; }
+.header-etiqueta { color: var(--fucs-azul-oscuro); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; }
+.header-version {
+    color: var(--fucs-azul-profundo);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+    padding: 4px 10px; border-radius: 999px;
+    background: rgba(9, 39, 85, 0.06);
+    border: 1px solid rgba(9, 39, 85, 0.12);
+}
+
+@media (max-width: 640px) {
+    .header-container { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
 
 /* --- PIE DE PÁGINA --- */
 .fucs-footer { margin-top: auto; width: 100%; max-width: 1100px; padding: 64px 20px 40px 20px; color: var(--fucs-azul-profundo); }
 
-.footer-brand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; margin-bottom: 40px; }
-.footer-logo { height: 100px; width: auto; }
-.footer-project-name { margin: 0; font-size: 1.15rem; font-weight: 500; color: var(--fucs-azul-profundo); letter-spacing: 0.2px; }
-.footer-project-meta { margin: 0; font-size: 0.85rem; font-weight: 300; color: var(--fucs-azul-oscuro); opacity: 0.7; }
+/* Logo a la izquierda y, a su lado, el nombre del proyecto: antes el logo iba
+   centrado sobre el título y dejaba un hueco grande a cada lado. */
+.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 44px; margin-bottom: 36px; }
+.footer-logo { height: 110px; width: auto; flex-shrink: 0; }
+.footer-brand-texto { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.footer-project-kicker { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fucs-azul-oscuro); }
+.footer-project-name { margin: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.15; color: var(--fucs-azul-profundo); }
 
 .footer-divider { border: none; height: 1px; background: rgba(198, 199, 200, 0.5); margin: 0 0 40px 0; }
 
-.footer-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-bottom: 40px; }
+/* La columna de autores es la que más texto lleva, así que se lleva más ancho:
+   con tres columnas iguales quedaba un hueco grande a su izquierda. */
+.footer-columns { display: grid; grid-template-columns: 0.8fr 1.5fr 1fr; gap: 36px; margin-bottom: 40px; }
 .footer-col h4 { margin: 0 0 14px 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--fucs-azul-oscuro); opacity: 0.6; }
 .footer-col p { margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-profundo); }
 .footer-col p:last-child { margin-bottom: 0; }
+.footer-dato-fuerte { font-weight: 600; color: var(--fucs-azul-profundo); }
 
-.footer-legal { text-align: center; font-size: 0.78rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-oscuro); opacity: 0.65; max-width: 60ch; margin: 0 auto; }
+/* --- AUTORES --- */
+/* Cada rol es un rótulo y debajo sus nombres corridos, separados por comas. */
+.footer-autores-rol { font-weight: 600; color: var(--fucs-azul-oscuro); margin-bottom: 2px !important; }
+.footer-col--autores > p:not(.footer-autores-rol) { margin-bottom: 14px; }
+.footer-autores-nota { font-size: 0.8rem; opacity: 0.85; }
+
+@media (max-width: 900px) {
+    .footer-columns { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+@media (max-width: 640px) {
+    .footer-brand { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .footer-columns { grid-template-columns: 1fr; }
+    .footer-project-name { font-size: 1.3rem; }
+}
+/* Enlaces a las guías oficiales (se abren en pestaña nueva). */
+.footer-enlace { color: var(--fucs-azul-oscuro); text-decoration: none; border-bottom: 1px solid rgba(10, 62, 124, 0.25); transition: border-color 0.2s ease, color 0.2s ease; }
+.footer-enlace:hover { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-azul-profundo); }
+
+/* Línea legal a los dos extremos: derechos a la izquierda, uso educativo a la
+   derecha. En pantallas angostas se apila y se centra. */
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 0.78rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--fucs-azul-oscuro);
+    opacity: 0.65;
+}
+.footer-legal p { margin: 0; }
+
+@media (max-width: 640px) {
+    .footer-legal { justify-content: center; text-align: center; }
+}
 
 /* --- SISTEMA DE VISTAS (SPA) --- */
 .view-hidden { display: none !important; }
@@ -48,14 +134,7 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- VISTA HOME: DASHBOARD DE MÓDULOS --- */
-.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 100%; }
-
-/* --- ZONA CORAZÓN 3D (Home) --- */
-.home-layout { display: grid; grid-template-columns: 540px 1fr; gap: 30px; width: 100%; max-width: 1100px; margin: 0 auto; align-items: start; }
-.heart-showcase { display: flex; align-items: center; justify-content: center; min-height: 760px; }
-.heart-showcase model-viewer { width: 100%; height: 640px; --poster-color: transparent; background-color: transparent; }
-.modules-column { min-width: 0; padding-top: 4px; }
+/* La vista home (portada + tarjetas de módulo) vive en css/15-portada.css. */
 
 /* --- VISTA MÓDULO: NAVEGACIÓN Y TEORÍA --- */
 /* Fijo en la parte superior del scroll: el estudiante nunca tiene que subir
