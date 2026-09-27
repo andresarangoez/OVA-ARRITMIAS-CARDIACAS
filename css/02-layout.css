@@ -69,18 +69,50 @@
 /* --- PIE DE PÁGINA --- */
 .fucs-footer { margin-top: auto; width: 100%; max-width: 1100px; padding: 64px 20px 40px 20px; color: var(--fucs-azul-profundo); }
 
-.footer-brand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; margin-bottom: 40px; }
-.footer-logo { height: 100px; width: auto; }
+/* Logo a la izquierda y, a su lado, el nombre del proyecto: antes el logo iba
+   centrado sobre el título y dejaba un hueco grande a cada lado. */
+.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 22px; margin-bottom: 36px; }
+.footer-logo { height: 78px; width: auto; flex-shrink: 0; }
+.footer-brand-texto { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .footer-project-name { margin: 0; font-size: 1.15rem; font-weight: 500; color: var(--fucs-azul-profundo); letter-spacing: 0.2px; }
 .footer-project-meta { margin: 0; font-size: 0.85rem; font-weight: 300; color: var(--fucs-azul-oscuro); opacity: 0.7; }
 
 .footer-divider { border: none; height: 1px; background: rgba(198, 199, 200, 0.5); margin: 0 0 40px 0; }
 
-.footer-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-bottom: 40px; }
+/* La columna de autores es la que más texto lleva, así que se lleva más ancho:
+   con tres columnas iguales quedaba un hueco grande a su izquierda. */
+.footer-columns { display: grid; grid-template-columns: 0.8fr 1.5fr 1fr; gap: 36px; margin-bottom: 40px; }
 .footer-col h4 { margin: 0 0 14px 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--fucs-azul-oscuro); opacity: 0.6; }
 .footer-col p { margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-profundo); }
 .footer-col p:last-child { margin-bottom: 0; }
 .footer-dato-fuerte { font-weight: 600; color: var(--fucs-azul-profundo); }
+
+/* --- AUTORES --- */
+/* Los nombres van en dos columnas para que llenen el ancho disponible en vez
+   de dejar una franja vacía al lado. */
+.footer-autores-rol { font-weight: 600; color: var(--fucs-azul-oscuro); margin-bottom: 4px !important; }
+.footer-autores {
+    list-style: none;
+    margin: 0 0 14px 0;
+    padding: 0;
+    columns: 2;
+    column-gap: 28px;
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--fucs-azul-profundo);
+}
+.footer-autores li { break-inside: avoid; }
+.footer-autores-nota { font-size: 0.8rem; opacity: 0.85; }
+
+@media (max-width: 900px) {
+    .footer-columns { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+@media (max-width: 640px) {
+    .footer-brand { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .footer-columns { grid-template-columns: 1fr; }
+    .footer-autores { columns: 1; }
+}
 /* Enlaces a las guías oficiales (se abren en pestaña nueva). */
 .footer-enlace { color: var(--fucs-azul-oscuro); text-decoration: none; border-bottom: 1px solid rgba(10, 62, 124, 0.25); transition: border-color 0.2s ease, color 0.2s ease; }
 .footer-enlace:hover { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-azul-profundo); }
