@@ -49,6 +49,7 @@
     <link rel="stylesheet" href="css/12-simulador-eje.css">
     <link rel="stylesheet" href="css/13-corazon-estructuras.css">
     <link rel="stylesheet" href="css/14-modelo-conduccion.css">
+    <link rel="stylesheet" href="css/15-portada.css">
 </head>
 <body>
 
@@ -104,72 +105,186 @@
     </aside>
 
     <header class="header-container">
-        <span class="header-eyebrow">Facultad de Enfermería · Universidad FUCS</span>
-        <h1>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</h1>
+        <a class="marca-institucional" href="#" onclick="volverHome(); return false;" aria-label="Volver al inicio del OVA">
+            <img src="assets/images/logo-fucs.png" alt="" class="marca-logo">
+            <span class="marca-texto">
+                <span class="marca-universidad">Universidad FUCS</span>
+                <span class="marca-facultad">Facultad de Enfermería</span>
+            </span>
+        </a>
+        <div class="header-meta">
+            <span class="header-etiqueta">Proyecto de grado · 2026</span>
+            <span class="header-version">OVA</span>
+        </div>
     </header>
 
     <main id="vista-home" class="view-active">
-        <div class="home-layout">
-            <div class="heart-showcase">
-                <model-viewer
-                    src="assets/models/Heart.glb"
-                    alt="Modelo tridimensional del corazón humano"
-                    auto-rotate
-                    rotation-per-second="6deg"
-                    interaction-prompt="none"
-                    shadow-intensity="0.8"
-                    shadow-softness="1"
-                    exposure="1"
-                    disable-zoom
-                    disable-pan
-                    disable-tap
-                ></model-viewer>
-            </div>
-            <div class="modules-column">
-                <div class="dashboard-grid">
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
-                <div class="card-icon" aria-hidden="true">⚡</div>
-                <h3>Módulo 01</h3>
-                <h4>Fundamentos</h4>
-            </div>
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="02" data-modulo-titulo="Valoración" onclick="abrirModulo('02', 'Valoración')">
-                <div class="card-icon" aria-hidden="true">🩺</div>
-                <h3>Módulo 02</h3>
-                <h4>Valoración</h4>
-            </div>
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
-                <div class="card-icon" aria-hidden="true">📈</div>
-                <h3>Módulo 03</h3>
-                <h4>Diagnóstico</h4>
-                <span class="card-badge">Simulador interactivo</span>
-            </div>
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="04" data-modulo-titulo="Planeación" onclick="abrirModulo('04', 'Planeación')">
-                <div class="card-icon" aria-hidden="true">📋</div>
-                <h3>Módulo 04</h3>
-                <h4>Planeación</h4>
-            </div>
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
-                <div class="card-icon" aria-hidden="true">💉</div>
-                <h3>Módulo 05</h3>
-                <h4>Intervención</h4>
-                <span class="card-badge">Simulador interactivo</span>
-            </div>
-            <div class="module-card" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
-                <div class="card-icon" aria-hidden="true">✅</div>
-                <h3>Módulo 06</h3>
-                <h4>Evaluación</h4>
-                <span class="card-badge">Simulador interactivo</span>
-            </div>
+        <section class="portada">
+            <div class="portada-intro">
+                <p class="portada-etiqueta">
+                    <span class="portada-etiqueta-punto" aria-hidden="true"></span>
+                    Objeto virtual de aprendizaje · Cardiología clínica
+                </p>
+                <h1 class="portada-titulo">Manejo de arritmias cardíacas</h1>
+                <p class="portada-descripcion">
+                    Seis módulos que llevan de la electrofisiología del corazón sano al reconocimiento
+                    de la arritmia en el monitor y a la decisión clínica que viene después. Cada paso se
+                    practica dentro del propio recurso, con simuladores y casos resueltos.
+                </p>
+                <div class="portada-acciones">
+                    <button type="button" class="btn-portada" onclick="abrirModulo('01', 'Fundamentos')">
+                        Comenzar por el Módulo 01 <span aria-hidden="true">→</span>
+                    </button>
+                    <a class="btn-portada-secundario" href="#modulos-lista">Ver los seis módulos</a>
                 </div>
+                <dl class="portada-cifras">
+                    <div class="portada-cifra">
+                        <dt>6</dt>
+                        <dd>módulos progresivos</dd>
+                    </div>
+                    <div class="portada-cifra">
+                        <dt>35</dt>
+                        <dd>unidades de contenido</dd>
+                    </div>
+                    <div class="portada-cifra">
+                        <dt>17</dt>
+                        <dd>ritmos en el simulador</dd>
+                    </div>
+                </dl>
             </div>
-        </div>
+
+            <div class="portada-visual">
+                <div class="heart-showcase">
+                    <model-viewer
+                        src="assets/models/Heart.glb"
+                        alt="Modelo tridimensional del corazón humano"
+                        auto-rotate
+                        rotation-per-second="6deg"
+                        interaction-prompt="none"
+                        shadow-intensity="0.8"
+                        shadow-softness="1"
+                        exposure="1"
+                        disable-zoom
+                        disable-pan
+                        disable-tap
+                    ></model-viewer>
+                </div>
+                <!-- Tira de ECG real: la dibuja el mismo motor del simulador
+                     (js/19-portada-ecg.js), no es una imagen decorativa. -->
+                <figure class="portada-monitor">
+                    <canvas id="portada-ecg" width="300" height="56"></canvas>
+                    <figcaption class="portada-monitor-datos">
+                        <span class="portada-monitor-ritmo">Ritmo sinusal</span>
+                        <span class="portada-monitor-fc">75 lpm</span>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="modulos-seccion" id="modulos-lista">
+            <div class="modulos-encabezado">
+                <p class="modulos-eyebrow">Ruta de aprendizaje</p>
+                <h2 class="modulos-titulo">Los seis módulos, en orden</h2>
+                <p class="modulos-descripcion">
+                    Cada módulo responde una pregunta clínica y se apoya en el anterior. Puedes entrar
+                    a cualquiera, pero la secuencia está pensada para recorrerse de principio a fin.
+                </p>
+            </div>
+
+            <div class="dashboard-grid">
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 01</span>
+                    <span class="card-icon" aria-hidden="true">⚡</span>
+                </div>
+                <h3>Fundamentos</h3>
+                <p class="module-card-pregunta">¿Cómo funciona el corazón normalmente?</p>
+                <p class="module-card-texto">Anatomía, electrofisiología y electrocardiograma normal: la base sobre la que se interpreta cualquier arritmia.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">6 unidades · 80 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="02" data-modulo-titulo="Valoración" onclick="abrirModulo('02', 'Valoración')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 02</span>
+                    <span class="card-icon" aria-hidden="true">🩺</span>
+                </div>
+                <h3>Valoración</h3>
+                <p class="module-card-pregunta">¿Cómo reconocer que algo no funciona?</p>
+                <p class="module-card-texto">Abordaje ABCDE, estado hemodinámico, causas reversibles y registro sistemático del ritmo.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">6 unidades · 45 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 03</span>
+                    <span class="card-icon" aria-hidden="true">📈</span>
+                </div>
+                <span class="card-badge">Simulador ECG</span>
+                <h3>Diagnóstico</h3>
+                <p class="module-card-pregunta">¿Qué arritmia estoy viendo?</p>
+                <p class="module-card-texto">Del método de lectura al diagnóstico concreto: taquiarritmias, fibrilación, flutter, taquicardia ventricular y bloqueos AV.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">7 unidades · 60 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="04" data-modulo-titulo="Planeación" onclick="abrirModulo('04', 'Planeación')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 04</span>
+                    <span class="card-icon" aria-hidden="true">📋</span>
+                </div>
+                <h3>Planeación</h3>
+                <p class="module-card-pregunta">¿Por qué ocurrió y qué riesgo representa?</p>
+                <p class="module-card-texto">Mecanismo, clasificación clínica, estratificación del riesgo y el algoritmo AHA/ESC que corresponde a cada familia.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">5 unidades · 45 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 05</span>
+                    <span class="card-icon" aria-hidden="true">💉</span>
+                </div>
+                <span class="card-badge">Simulador ECG</span>
+                <h3>Intervención</h3>
+                <p class="module-card-pregunta">¿Cómo se trata cada arritmia?</p>
+                <p class="module-card-texto">El plan convertido en acción: tratamiento farmacológico, cardioversión, desfibrilación y marcapasos.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">7 unidades · 60 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
+                <div class="module-card-top">
+                    <span class="module-card-numero">Módulo 06</span>
+                    <span class="card-icon" aria-hidden="true">✅</span>
+                </div>
+                <span class="card-badge">Simulador ECG</span>
+                <h3>Evaluación</h3>
+                <p class="module-card-pregunta">Todo junto, sobre un mismo paciente</p>
+                <p class="module-card-texto">Casos clínicos que integran los módulos 01 a 05 en un paciente que evoluciona en el tiempo.</p>
+                <div class="module-card-pie">
+                    <span class="module-card-meta">4 unidades · 50 min</span>
+                    <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
+                </div>
+            </article>
+            </div>
+        </section>
     </main>
 
     <main id="vista-modulo" class="view-hidden">
         
         <div class="module-navbar">
             <button class="btn-back" onclick="volverHome()">← Volver al Menú</button>
-            <h2 id="titulo-modulo-activo" class="module-title-display">Módulo X</h2>
+            <!-- h1 (no h2): con la barra institucional ya sin título, este es el
+                 encabezado principal de la vista de módulo, igual que
+                 .portada-titulo lo es de la vista de inicio. -->
+            <h1 id="titulo-modulo-activo" class="module-title-display">Módulo X</h1>
         </div>
 
         <div class="pedagogy-container">
@@ -365,5 +480,6 @@
     <script src="js/16-corazon-estructuras.js"></script>
     <script src="js/17-modelo-conduccion.js"></script>
     <script src="js/18-visor-3d.js"></script>
+    <script src="js/19-portada-ecg.js"></script>
 </body>
 </html>

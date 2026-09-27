@@ -1,26 +1,43 @@
-/* Título principal */
+/* --- BARRA INSTITUCIONAL ---
+   Acompaña a las dos vistas (home y módulo), así que es identidad, no portada:
+   marca a la izquierda, metadatos a la derecha. El título del recurso vive
+   ahora en la portada (.portada-titulo, css/15-portada.css) y el del módulo en
+   su propia barra (.module-navbar), para no repetirlo en pantalla. */
 .header-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    gap: 16px;
     width: 100%;
     max-width: 1100px;
-    padding: 22px 15px 26px 15px;
+    /* Sin esto el relleno se suma al máximo (el proyecto no fija box-sizing
+       global) y la barra queda más ancha que las vistas, que sí miden 1100. */
+    box-sizing: border-box;
+    padding: 14px 22px;
     margin-bottom: 24px;
     background: #ffffff;
     border-radius: var(--bento-radius-xl);
     box-shadow: var(--bento-shadow-soft);
 }
-.header-eyebrow {
-    color: var(--fucs-azul-oscuro);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
+.marca-institucional { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+.marca-logo { height: 42px; width: auto; display: block; }
+.marca-texto { display: flex; flex-direction: column; line-height: 1.25; }
+.marca-universidad { color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px; }
+.marca-facultad { color: var(--fucs-azul-oscuro); font-size: 0.8rem; font-weight: 400; opacity: 0.8; }
+
+.header-meta { display: flex; align-items: center; gap: 12px; }
+.header-etiqueta { color: var(--fucs-azul-oscuro); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; }
+.header-version {
+    color: var(--fucs-azul-profundo);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+    padding: 4px 10px; border-radius: 999px;
+    background: rgba(9, 39, 85, 0.06);
+    border: 1px solid rgba(9, 39, 85, 0.12);
 }
-h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; font-size: 1.6rem; font-weight: 800; letter-spacing: 1.5px; }
+
+@media (max-width: 640px) {
+    .header-container { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
 
 /* --- PIE DE PÁGINA --- */
 .fucs-footer { margin-top: auto; width: 100%; max-width: 1100px; padding: 64px 20px 40px 20px; color: var(--fucs-azul-profundo); }
@@ -48,14 +65,7 @@ h1 { color: var(--fucs-azul-profundo); margin: 0; text-transform: uppercase; fon
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- VISTA HOME: DASHBOARD DE MÓDULOS --- */
-.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; width: 100%; }
-
-/* --- ZONA CORAZÓN 3D (Home) --- */
-.home-layout { display: grid; grid-template-columns: 540px 1fr; gap: 30px; width: 100%; max-width: 1100px; margin: 0 auto; align-items: start; }
-.heart-showcase { display: flex; align-items: center; justify-content: center; min-height: 760px; }
-.heart-showcase model-viewer { width: 100%; height: 640px; --poster-color: transparent; background-color: transparent; }
-.modules-column { min-width: 0; padding-top: 4px; }
+/* La vista home (portada + tarjetas de módulo) vive en css/15-portada.css. */
 
 /* --- VISTA MÓDULO: NAVEGACIÓN Y TEORÍA --- */
 /* Fijo en la parte superior del scroll: el estudiante nunca tiene que subir
