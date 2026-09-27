@@ -170,19 +170,14 @@
 
 /* --- SECCIÓN DE MÓDULOS --- */
 .modulos-seccion { width: 100%; }
-/* El encabezado ocupa todo el ancho del contenedor: el título a la izquierda y
-   el párrafo a su derecha, en vez de una columna estrecha pegada al margen. */
+/* Encabezado a todo el ancho y en orden de lectura: rótulo, título y debajo
+   el párrafo, sin columna estrecha pegada al margen izquierdo. */
 .modulos-encabezado {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: 16px 48px;
-    align-items: end;
     width: 100%;
     margin-bottom: 28px;
     padding-bottom: 22px;
     border-bottom: 1px solid rgba(198, 199, 200, 0.5);
 }
-.modulos-encabezado-titulo { min-width: 0; }
 .modulos-eyebrow {
     margin: 0 0 8px 0;
     color: var(--fucs-azul-oscuro);
@@ -192,8 +187,8 @@
     text-transform: uppercase;
     opacity: 0.75;
 }
-.modulos-titulo { margin: 0 0 10px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
-.modulos-descripcion { margin: 0; color: var(--text-body); font-size: 0.95rem; line-height: 1.6; }
+.modulos-titulo { margin: 0 0 12px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
+.modulos-descripcion { margin: 0; width: 100%; color: var(--text-body); font-size: 0.98rem; line-height: 1.7; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }
 
@@ -267,7 +262,6 @@
 /* --- ADAPTACIÓN A PANTALLAS MENORES --- */
 @media (max-width: 1000px) {
     .portada { grid-template-columns: 1fr; gap: 32px; }
-    .modulos-encabezado { grid-template-columns: 1fr; gap: 12px; }
     .portada-visual { min-height: 420px; }
     .heart-showcase model-viewer { height: 320px; }
     .dashboard-grid { grid-template-columns: repeat(2, 1fr); }

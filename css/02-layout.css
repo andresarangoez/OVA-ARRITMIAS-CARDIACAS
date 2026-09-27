@@ -80,6 +80,7 @@
 .footer-col h4 { margin: 0 0 14px 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--fucs-azul-oscuro); opacity: 0.6; }
 .footer-col p { margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-profundo); }
 .footer-col p:last-child { margin-bottom: 0; }
+.footer-dato-fuerte { font-weight: 600; color: var(--fucs-azul-profundo); }
 /* Enlaces a las guías oficiales (se abren en pestaña nueva). */
 .footer-enlace { color: var(--fucs-azul-oscuro); text-decoration: none; border-bottom: 1px solid rgba(10, 62, 124, 0.25); transition: border-color 0.2s ease, color 0.2s ease; }
 .footer-enlace:hover { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-azul-profundo); }
