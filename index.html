@@ -109,12 +109,17 @@
             <img src="assets/images/logo-fucs.png" alt="" class="marca-logo">
             <span class="marca-texto">
                 <span class="marca-universidad">Universidad FUCS</span>
+                <span class="marca-separador" aria-hidden="true">·</span>
                 <span class="marca-facultad">Facultad de Enfermería</span>
             </span>
         </a>
         <div class="header-meta">
             <span class="header-etiqueta">Proyecto de grado · 2026</span>
             <span class="header-version">OVA</span>
+            <button type="button" class="btn-ayuda" onclick="abrirModal('modal-guia')"
+                    data-tooltip="Guía de navegación" aria-label="Abrir la guía de navegación">
+                <span aria-hidden="true">?</span>
+            </button>
         </div>
     </header>
 
@@ -123,7 +128,7 @@
             <div class="portada-intro">
                 <p class="portada-etiqueta">
                     <span class="portada-etiqueta-punto" aria-hidden="true"></span>
-                    Objeto virtual de aprendizaje · Cardiología clínica
+                    Objeto virtual de aprendizaje · Proceso de Atención de Enfermería
                 </p>
                 <h1 class="portada-titulo">Manejo de arritmias cardíacas</h1>
                 <p class="portada-descripcion">
@@ -183,13 +188,18 @@
 
         <section class="modulos-seccion" id="modulos-lista">
             <div class="modulos-encabezado">
-                <p class="modulos-eyebrow">Ruta de aprendizaje</p>
-                <h2 class="modulos-titulo">Los seis módulos, en orden</h2>
+                <div class="modulos-encabezado-titulo">
+                    <p class="modulos-eyebrow">Ruta clínica de aprendizaje</p>
+                    <h2 class="modulos-titulo">El mismo orden con el que se atiende a un paciente</h2>
+                </div>
                 <p class="modulos-descripcion">
-                    Cada módulo responde una pregunta clínica y se apoya en el anterior. Puedes entrar
-                    a cualquiera, pero la secuencia está pensada para recorrerse de principio a fin.
+                    Los módulos siguen las cinco fases del Proceso de Atención de Enfermería, sobre una
+                    base de electrofisiología. Primero se valora, luego se identifica el ritmo, se
+                    estratifica el riesgo, se interviene y se evalúa el resultado. Puedes recorrerlos en
+                    orden o entrar directo al que necesites practicar.
                 </p>
             </div>
+
 
             <div class="dashboard-grid">
             <article class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
@@ -197,6 +207,7 @@
                     <span class="module-card-numero">Módulo 01</span>
                     <span class="card-icon" aria-hidden="true">⚡</span>
                 </div>
+                <span class="card-badge">Base teórica</span>
                 <h3>Fundamentos</h3>
                 <p class="module-card-pregunta">¿Cómo funciona el corazón normalmente?</p>
                 <p class="module-card-texto">Anatomía, electrofisiología y electrocardiograma normal: la base sobre la que se interpreta cualquier arritmia.</p>
@@ -210,20 +221,21 @@
                     <span class="module-card-numero">Módulo 02</span>
                     <span class="card-icon" aria-hidden="true">🩺</span>
                 </div>
+                <span class="card-badge">PAE · Valoración</span>
                 <h3>Valoración</h3>
-                <p class="module-card-pregunta">¿Cómo reconocer que algo no funciona?</p>
+                <p class="module-card-pregunta">¿Cómo reconocer una arritmia?</p>
                 <p class="module-card-texto">Abordaje ABCDE, estado hemodinámico, causas reversibles y registro sistemático del ritmo.</p>
                 <div class="module-card-pie">
                     <span class="module-card-meta">6 unidades · 45 min</span>
                     <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
                 </div>
             </article>
-            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="03" data-modulo-titulo="Diagnóstico" onclick="abrirModulo('03', 'Diagnóstico')">
                 <div class="module-card-top">
                     <span class="module-card-numero">Módulo 03</span>
                     <span class="card-icon" aria-hidden="true">📈</span>
                 </div>
-                <span class="card-badge">Simulador ECG</span>
+                <span class="card-badge">PAE · Diagnóstico</span>
                 <h3>Diagnóstico</h3>
                 <p class="module-card-pregunta">¿Qué arritmia estoy viendo?</p>
                 <p class="module-card-texto">Del método de lectura al diagnóstico concreto: taquiarritmias, fibrilación, flutter, taquicardia ventricular y bloqueos AV.</p>
@@ -237,36 +249,37 @@
                     <span class="module-card-numero">Módulo 04</span>
                     <span class="card-icon" aria-hidden="true">📋</span>
                 </div>
+                <span class="card-badge">PAE · Planeación</span>
                 <h3>Planeación</h3>
-                <p class="module-card-pregunta">¿Por qué ocurrió y qué riesgo representa?</p>
+                <p class="module-card-pregunta">¿Por qué ocurrió la arritmia y qué riesgo representa?</p>
                 <p class="module-card-texto">Mecanismo, clasificación clínica, estratificación del riesgo y el algoritmo AHA/ESC que corresponde a cada familia.</p>
                 <div class="module-card-pie">
                     <span class="module-card-meta">5 unidades · 45 min</span>
                     <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
                 </div>
             </article>
-            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="05" data-modulo-titulo="Intervención" onclick="abrirModulo('05', 'Intervención')">
                 <div class="module-card-top">
                     <span class="module-card-numero">Módulo 05</span>
                     <span class="card-icon" aria-hidden="true">💉</span>
                 </div>
-                <span class="card-badge">Simulador ECG</span>
+                <span class="card-badge">PAE · Ejecución</span>
                 <h3>Intervención</h3>
-                <p class="module-card-pregunta">¿Cómo se trata cada arritmia?</p>
+                <p class="module-card-pregunta">¿Cómo se tratan las arritmias?</p>
                 <p class="module-card-texto">El plan convertido en acción: tratamiento farmacológico, cardioversión, desfibrilación y marcapasos.</p>
                 <div class="module-card-pie">
                     <span class="module-card-meta">7 unidades · 60 min</span>
                     <span class="module-card-entrar">Entrar <span aria-hidden="true">→</span></span>
                 </div>
             </article>
-            <article class="module-card module-card--simulador" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
+            <article class="module-card" role="button" tabindex="0" data-modulo-id="06" data-modulo-titulo="Evaluación" onclick="abrirModulo('06', 'Evaluación')">
                 <div class="module-card-top">
                     <span class="module-card-numero">Módulo 06</span>
                     <span class="card-icon" aria-hidden="true">✅</span>
                 </div>
-                <span class="card-badge">Simulador ECG</span>
+                <span class="card-badge">PAE · Evaluación</span>
                 <h3>Evaluación</h3>
-                <p class="module-card-pregunta">Todo junto, sobre un mismo paciente</p>
+                <p class="module-card-pregunta">Integración clínica</p>
                 <p class="module-card-texto">Casos clínicos que integran los módulos 01 a 05 en un paciente que evoluciona en el tiempo.</p>
                 <div class="module-card-pie">
                     <span class="module-card-meta">4 unidades · 50 min</span>
@@ -413,6 +426,74 @@
 
     </main>
 
+    <!-- Guía de navegación: se abre desde el botón "?" de la barra institucional.
+         Va como modal y no como página aparte porque el OVA es una sola página
+         con vistas (home / módulo); una página suelta rompería esa navegación y
+         el estado del módulo abierto. -->
+    <div id="modal-guia" class="modal-overlay" aria-hidden="true">
+        <div class="modal-caja modal-guia">
+            <button class="modal-cerrar" onclick="cerrarModal('modal-guia')" aria-label="Cerrar la guía">×</button>
+            <h2 class="modal-guia-titulo">Guía de navegación</h2>
+            <p class="modal-guia-intro">Cómo moverse por el recurso y qué hace cada control.</p>
+
+            <ul class="guia-lista">
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">📚</span>
+                    <div>
+                        <h3>Entrar a un módulo</h3>
+                        <p>Haz clic en cualquiera de las seis tarjetas del inicio. Cada módulo abre en su pantalla de bienvenida, con los objetivos de aprendizaje, el número de unidades y el tiempo estimado; el botón <strong>Comenzar</strong> abre el contenido.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">☰</span>
+                    <div>
+                        <h3>Índice del módulo</h3>
+                        <p>El botón redondo de la izquierda abre el índice: la lista de unidades, el porcentaje completado y el tiempo que te queda. Al hacer clic en una unidad saltas directo a ella.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">🔍</span>
+                    <div>
+                        <h3>Buscar dentro del módulo</h3>
+                        <p>La lupa del índice busca cualquier palabra en el módulo abierto. Las flechas <strong>‹ ›</strong> recorren las coincidencias una por una.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">↑</span>
+                    <div>
+                        <h3>Volver arriba y volver al menú</h3>
+                        <p>El botón redondo de la derecha sube al inicio del módulo. Para salir, usa <strong>← Volver al menú</strong> en la barra superior.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">📈</span>
+                    <div>
+                        <h3>Simulador de ritmos</h3>
+                        <p>Está en los módulos 03, 05 y 06. Elige un ritmo en el selector y observa el trazado y los signos vitales. En Intervenciones seleccionas una conducta y la aplicas: el registro de acciones te dice si estaba indicada y por qué.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">🫀</span>
+                    <div>
+                        <h3>Modelos en 3D</h3>
+                        <p>Arrastra para girar el modelo. Los botones de la esquina activan la pantalla completa, la ayuda de navegación y el giro automático. Los puntos numerados abren la descripción de cada estructura.</p>
+                    </div>
+                </li>
+                <li class="guia-item">
+                    <span class="guia-icono" aria-hidden="true">✅</span>
+                    <div>
+                        <h3>Actividades y autoevaluación</h3>
+                        <p>Cada unidad trae mini retos y cada módulo cierra con su autoevaluación. Puedes responder las veces que quieras: la retroalimentación explica el porqué de cada respuesta.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="modal-guia-acciones">
+                <button class="btn-comenzar" onclick="cerrarModal('modal-guia'); volverHome();">Volver al inicio</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-finalizacion" class="modal-overlay" aria-hidden="true">
         <div class="modal-caja modal-finalizacion">
             <button class="modal-cerrar" onclick="cerrarModal('modal-finalizacion')" aria-label="Cerrar">×</button>
@@ -451,14 +532,29 @@
             </div>
             <div class="footer-col">
                 <h4>Guías clínicas</h4>
-                <p>American Heart Association (AHA) 2025</p>
-                <p>European Society of Cardiology (ESC) 2024</p>
+                <p>
+                    <a class="footer-enlace" href="https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines"
+                       target="_blank" rel="noopener noreferrer"
+                       aria-label="Guías de la American Heart Association 2025 (se abre en una pestaña nueva)">
+                        American Heart Association (AHA) 2025 <span aria-hidden="true">↗</span>
+                    </a>
+                </p>
+                <p>
+                    <a class="footer-enlace" href="https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines"
+                       target="_blank" rel="noopener noreferrer"
+                       aria-label="Guías de práctica clínica de la European Society of Cardiology (se abre en una pestaña nueva)">
+                        European Society of Cardiology (ESC) 2024 <span aria-hidden="true">↗</span>
+                    </a>
+                </p>
             </div>
         </div>
 
         <hr class="footer-divider">
 
-        <p class="footer-legal">© 2026 Todos los derechos reservados. Desarrollado como recurso educativo para estudiantes de ciencias de la salud.</p>
+        <div class="footer-legal">
+            <p>© 2026 Universidad FUCS. Todos los derechos reservados.</p>
+            <p>Desarrollado como recurso educativo sin fines comerciales.</p>
+        </div>
     </footer>
 
     <script src="js/00-motor-clinico.js"></script>

@@ -21,11 +21,38 @@
 }
 .marca-institucional { display: flex; align-items: center; gap: 14px; text-decoration: none; }
 .marca-logo { height: 42px; width: auto; display: block; }
-.marca-texto { display: flex; flex-direction: column; line-height: 1.25; }
+/* Universidad y facultad en una sola línea (se apilan solo si no caben). */
+.marca-texto { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; line-height: 1.3; }
 .marca-universidad { color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px; }
-.marca-facultad { color: var(--fucs-azul-oscuro); font-size: 0.8rem; font-weight: 400; opacity: 0.8; }
+.marca-separador { color: var(--fucs-gris); font-size: 0.9rem; }
+.marca-facultad { color: var(--fucs-azul-oscuro); font-size: 0.9rem; font-weight: 400; }
 
 .header-meta { display: flex; align-items: center; gap: 12px; }
+
+/* --- BOTÓN DE AYUDA (abre la guía de navegación) --- */
+.btn-ayuda {
+    position: relative;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: 50%;
+    background: var(--fucs-azul-profundo); color: #ffffff;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700; line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.btn-ayuda:hover { background: var(--fucs-azul-oscuro); transform: scale(1.08); }
+/* La etiqueta va DEBAJO: el botón está pegado al borde superior de la página
+   y arriba no habría espacio para mostrarla. */
+.btn-ayuda::after {
+    content: attr(data-tooltip);
+    position: absolute; top: calc(100% + 8px); right: 0;
+    padding: 6px 10px; border-radius: var(--radius-sm);
+    background: var(--fucs-azul-profundo); color: #ffffff;
+    font-size: 0.72rem; font-weight: 500; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    box-shadow: var(--shadow-md); z-index: 1500;
+}
+.btn-ayuda:hover::after, .btn-ayuda:focus-visible::after { opacity: 1; }
 .header-etiqueta { color: var(--fucs-azul-oscuro); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; }
 .header-version {
     color: var(--fucs-azul-profundo);
@@ -53,8 +80,29 @@
 .footer-col h4 { margin: 0 0 14px 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--fucs-azul-oscuro); opacity: 0.6; }
 .footer-col p { margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-profundo); }
 .footer-col p:last-child { margin-bottom: 0; }
+/* Enlaces a las guías oficiales (se abren en pestaña nueva). */
+.footer-enlace { color: var(--fucs-azul-oscuro); text-decoration: none; border-bottom: 1px solid rgba(10, 62, 124, 0.25); transition: border-color 0.2s ease, color 0.2s ease; }
+.footer-enlace:hover { color: var(--fucs-azul-profundo); border-bottom-color: var(--fucs-azul-profundo); }
 
-.footer-legal { text-align: center; font-size: 0.78rem; font-weight: 300; line-height: 1.6; color: var(--fucs-azul-oscuro); opacity: 0.65; max-width: 60ch; margin: 0 auto; }
+/* Línea legal a los dos extremos: derechos a la izquierda, uso educativo a la
+   derecha. En pantallas angostas se apila y se centra. */
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    font-size: 0.78rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--fucs-azul-oscuro);
+    opacity: 0.65;
+}
+.footer-legal p { margin: 0; }
+
+@media (max-width: 640px) {
+    .footer-legal { justify-content: center; text-align: center; }
+}
 
 /* --- SISTEMA DE VISTAS (SPA) --- */
 .view-hidden { display: none !important; }

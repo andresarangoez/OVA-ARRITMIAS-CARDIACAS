@@ -112,6 +112,38 @@
 }
 .modal-cerrar:hover { color: var(--danger); }
 
+/* --- GUÍA DE NAVEGACIÓN (modal del botón "?" de la barra institucional) --- */
+.modal-guia { max-width: 720px; width: 100%; box-sizing: border-box; padding: 28px 30px; }
+.modal-guia-titulo { margin: 0 0 6px 0; color: var(--fucs-azul-profundo); font-size: 1.4rem; font-weight: 800; }
+.modal-guia-intro { margin: 0 0 20px 0; color: var(--text-muted); font-size: 0.9rem; }
+.guia-lista { list-style: none; margin: 0 0 22px 0; padding: 0; display: grid; gap: 12px; }
+.guia-item { display: flex; align-items: flex-start; gap: 14px; padding: 12px 14px; background: var(--fucs-niebla); border-radius: var(--bento-radius-md); }
+.guia-icono {
+    flex-shrink: 0; width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    background: #ffffff; border-radius: 50%; font-size: 1.05rem;
+    box-shadow: var(--shadow-sm);
+}
+.guia-item h3 { margin: 0 0 4px 0; color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; }
+.guia-item p { margin: 0; color: var(--text-body); font-size: 0.85rem; line-height: 1.55; }
+/* Pegada al fondo de la caja: la lista de la guía es larga y, si la acción se
+   fuera con el desplazamiento, el botón de volver dejaría de verse. */
+.modal-guia-acciones {
+    position: sticky;
+    bottom: -28px;
+    margin-bottom: -28px;
+    padding: 14px 0;
+    display: flex;
+    justify-content: flex-end;
+    background: #ffffff;
+    border-top: 1px solid rgba(198, 199, 200, 0.5);
+}
+
+@media (max-width: 640px) {
+    .modal-guia { padding: 24px 18px; }
+    .modal-guia-acciones .btn-comenzar { width: 100%; }
+}
+
 /* --- TOOLTIP --- */
 /* Uso: definiciones rápidas. Solo CSS (hover + foco de teclado) — no
    requiere JS. Marcar el término con: <span class="tooltip" data-tooltip="texto">término</span> */
