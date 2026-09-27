@@ -71,7 +71,7 @@
 
 /* Logo a la izquierda y, a su lado, el nombre del proyecto: antes el logo iba
    centrado sobre el título y dejaba un hueco grande a cada lado. */
-.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 22px; margin-bottom: 36px; }
+.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 44px; margin-bottom: 36px; }
 .footer-logo { height: 110px; width: auto; flex-shrink: 0; }
 .footer-brand-texto { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .footer-project-kicker { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fucs-azul-oscuro); }
