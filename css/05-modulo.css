@@ -3,26 +3,71 @@
    Patrón: Bienvenida (gating) → Desarrollo (Unidades) → Cierre
    ============================================================ */
 
-/* --- PANTALLA DE BIENVENIDA --- */
-.modulo-bienvenida { max-width: 640px; margin: 0 auto; }
+/* --- PANTALLA DE BIENVENIDA (ficha de presentación del módulo) ---
+   Misma familia visual que la portada (css/15-portada.css): tarjetas blancas
+   con borde gris claro, radios bento, rótulos en versalitas azules y el
+   número del módulo encima del título, igual que en las tarjetas del home.
+   La columna izquierda presenta el módulo y la derecha resume sus datos. */
+.modulo-bienvenida { max-width: none; margin: 0; }
 
-.modulo-encabezado { margin-bottom: 32px; text-align: center; }
-.modulo-titulo-bienvenida { color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; margin: 0 0 14px 0; }
-.modulo-meta { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.9rem; }
-.modulo-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fucs-gris); }
+/* Sin línea propia: el h2 del título ya trae la regla dorada de
+   .pedagogy-container h2 (css/02-layout.css), la misma que separa los títulos
+   dentro de los módulos. Dos líneas seguidas sobraban. */
+.bienvenida-encabezado { margin-bottom: 24px; }
+.bienvenida-numero { margin: 0 0 6px 0; color: var(--fucs-azul-oscuro); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.75; }
+.modulo-titulo-bienvenida { color: var(--fucs-azul-profundo); font-size: clamp(1.7rem, 3.2vw, 2.3rem); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; margin: 0; line-height: 1.1; }
 
-.modulo-comenzar-wrap { text-align: center; margin-top: 32px; }
+.bienvenida-cuerpo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.bienvenida-principal { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.bienvenida-lateral { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* Objetivos e introducción: dos tarjetas, no dos bloques de texto seguidos. */
+.modulo-objetivos, .modulo-introduccion, .bienvenida-dato, .bienvenida-contenido {
+    background: #ffffff;
+    border: 1px solid rgba(198, 199, 200, 0.5);
+    border-radius: var(--bento-radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 22px;
+}
+.modulo-objetivos { margin-bottom: 0; }
+.modulo-objetivos h3, .modulo-introduccion h3, .bienvenida-contenido h3 {
+    margin: 0 0 12px 0;
+    font-size: 0.82rem;
+    color: var(--fucs-azul-profundo);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+.modulo-objetivos ul { margin: 0; padding-left: 20px; }
+.modulo-objetivos li { margin-bottom: 8px; color: var(--text-body); text-align: left; line-height: 1.55; }
+.modulo-objetivos li:last-child { margin-bottom: 0; }
+
+.modulo-introduccion { border-left: 4px solid var(--fucs-dorado); }
+.modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: left; margin: 0 0 12px 0; }
+.modulo-introduccion p:last-child { margin-bottom: 0; }
+
+/* Datos rápidos: tiempo estimado y total de unidades. */
+.bienvenida-dato { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; }
+.bienvenida-dato-icono { grid-row: 1 / 3; width: 38px; height: 38px; padding: 9px; box-sizing: border-box; border-radius: var(--radius-lg); background: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+.bienvenida-dato-rotulo { margin: 0; align-self: end; color: var(--fucs-azul-oscuro); font-size: 0.7rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
+.bienvenida-dato-valor { margin: 0; align-self: start; color: var(--fucs-azul-profundo); font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Listado de unidades: lo construye js/20-bienvenida-modulo.js leyendo las
+   unidades reales del módulo, así que nunca se desfasa del contenido. */
+.bienvenida-unidades { list-style: none; margin: 0; padding: 0; }
+.bienvenida-unidad { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(198, 199, 200, 0.45); }
+.bienvenida-unidad:first-child { border-top: none; padding-top: 0; }
+.bienvenida-unidad:last-child { padding-bottom: 0; }
+.bienvenida-unidad-numero { flex-shrink: 0; color: var(--fucs-azul-oscuro); font-size: 0.78rem; font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.bienvenida-unidad-nombre { color: var(--text-body); font-size: 0.88rem; line-height: 1.45; }
+
+.modulo-comenzar-wrap { text-align: center; margin-top: 28px; }
 
 .btn-comenzar { background-color: var(--fucs-azul-profundo); color: white; border: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
 .btn-comenzar:hover { background-color: var(--fucs-dorado); color: var(--fucs-azul-profundo); transform: scale(1.02); }
 
-.modulo-objetivos { background: var(--fucs-niebla); border-radius: var(--bento-radius-md); padding: 20px 24px; margin-bottom: 24px; }
-.modulo-objetivos h3 { margin: 0 0 10px 0; font-size: 0.95rem; color: var(--fucs-azul-profundo); text-transform: uppercase; letter-spacing: 0.5px; }
-.modulo-objetivos ul { margin: 0; padding-left: 20px; }
-.modulo-objetivos li { margin-bottom: 6px; color: var(--text-body); text-align: left; }
-
-.modulo-introduccion h3 { font-size: 0.95rem; color: var(--fucs-azul-profundo); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-.modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: justify; }
+@media (max-width: 900px) {
+    .bienvenida-cuerpo { grid-template-columns: 1fr; gap: 18px; }
+}
 
 /* --- DESARROLLO: UNIDADES --- */
 .modulo-unidad { margin-top: 44px; padding-top: 32px; border-top: 2px dashed var(--fucs-amarillo); }

@@ -54,6 +54,13 @@ function reiniciarEstadoModulo(idModulo) {
     const simulador = document.getElementById('simulador-wrapper');
     if (simulador) simulador.style.display = 'none';
 
+    // Rellena la ficha de bienvenida con lo que se deriva del propio módulo
+    // (número de unidades y listado). Opcional: si el archivo no está cargado,
+    // la bienvenida se ve igual, solo sin esos dos datos.
+    if (OVA.BienvenidaModulo && typeof OVA.BienvenidaModulo.preparar === 'function') {
+        OVA.BienvenidaModulo.preparar(idModulo, contenedor);
+    }
+
     // Inicializa el shell de navegación del curso (sidebar de índice, tiempo
     // restante, etc.) si está cargado — opcional y sin efecto si no existe,
     // para que módulos/páginas sin este shell sigan funcionando igual.

@@ -6,14 +6,13 @@
                         <span class="breadcrumb-item actual">Módulo 03 · Diagnóstico</span>
                     </div>
 
-                    <div class="modulo-encabezado">
+                    <div class="bienvenida-encabezado">
+                        <p class="bienvenida-numero">Módulo 03</p>
                         <h2 class="modulo-titulo-bienvenida">Diagnóstico</h2>
-                        <div class="modulo-meta">
-                            <span>Tiempo estimado: 60 minutos</span>
-                            <span class="dot" aria-hidden="true"></span>
-                            <span>7 unidades</span>
-                        </div>
                     </div>
+
+                    <div class="bienvenida-cuerpo">
+                        <div class="bienvenida-principal">
 
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
@@ -32,6 +31,28 @@
                         <h3>Introducción</h3>
                         <p>En el Módulo 02 aprendiste <em>cómo mirar</em> un trazado: frecuencia, ritmo, onda P, PR, QRS, eje. Este módulo es donde ese método se convierte en un diagnóstico concreto — nombrar exactamente qué arritmia tienes frente a ti.</p>
                         <p>Cada unidad cubre una familia de ritmos, del más benigno al más letal. Al final encontrarás el <strong>simulador ECG interactivo</strong> de esta OVA: úsalo para practicar cada ritmo mencionado en las unidades, con retroalimentación clínica en tiempo real (signos vitales, opciones de tratamiento y desfibrilación cuando corresponda).</p>
+                    </div>
+
+                        </div>
+
+                        <aside class="bienvenida-lateral">
+                            <div class="bienvenida-dato">
+                                <span class="bienvenida-dato-icono" data-icono="reloj" aria-hidden="true"></span>
+                                <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
+                                <!-- La clase modulo-meta la lee js/13-shell-indice.js para
+                                     calcular el tiempo restante del módulo. -->
+                                <p class="bienvenida-dato-valor modulo-meta">60 minutos</p>
+                            </div>
+                            <div class="bienvenida-dato">
+                                <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
+                                <p class="bienvenida-dato-rotulo">Total de unidades</p>
+                                <p class="bienvenida-dato-valor" data-bienvenida-unidades></p>
+                            </div>
+                            <div class="bienvenida-contenido">
+                                <h3>Contenido del módulo</h3>
+                                <ol class="bienvenida-unidades" data-bienvenida-lista></ol>
+                            </div>
+                        </aside>
                     </div>
 
                     <div class="modulo-comenzar-wrap">

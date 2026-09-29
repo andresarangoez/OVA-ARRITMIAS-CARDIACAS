@@ -6,14 +6,13 @@
                         <span class="breadcrumb-item actual">Módulo 02 · Valoración</span>
                     </div>
 
-                    <div class="modulo-encabezado">
+                    <div class="bienvenida-encabezado">
+                        <p class="bienvenida-numero">Módulo 02</p>
                         <h2 class="modulo-titulo-bienvenida">Valoración</h2>
-                        <div class="modulo-meta">
-                            <span>Tiempo estimado: 45 minutos</span>
-                            <span class="dot" aria-hidden="true"></span>
-                            <span>6 unidades</span>
-                        </div>
                     </div>
+
+                    <div class="bienvenida-cuerpo">
+                        <div class="bienvenida-principal">
 
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
@@ -31,6 +30,28 @@
                         <h3>Introducción</h3>
                         <p>El Módulo 01 explicó <em>cómo</em> se genera y se conduce el impulso eléctrico del corazón. Este módulo da el siguiente paso: <em>cómo reconocer</em>, a la cabecera del paciente, que algo en ese sistema no está funcionando bien.</p>
                         <p>Valorar una arritmia no es leer un monitor. Es observar al paciente, medir su estado hemodinámico, buscar causas reversibles y registrar el ritmo de forma sistemática — todo antes de nombrar un diagnóstico específico, que se abordará en el Módulo 03.</p>
+                    </div>
+
+                        </div>
+
+                        <aside class="bienvenida-lateral">
+                            <div class="bienvenida-dato">
+                                <span class="bienvenida-dato-icono" data-icono="reloj" aria-hidden="true"></span>
+                                <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
+                                <!-- La clase modulo-meta la lee js/13-shell-indice.js para
+                                     calcular el tiempo restante del módulo. -->
+                                <p class="bienvenida-dato-valor modulo-meta">45 minutos</p>
+                            </div>
+                            <div class="bienvenida-dato">
+                                <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
+                                <p class="bienvenida-dato-rotulo">Total de unidades</p>
+                                <p class="bienvenida-dato-valor" data-bienvenida-unidades></p>
+                            </div>
+                            <div class="bienvenida-contenido">
+                                <h3>Contenido del módulo</h3>
+                                <ol class="bienvenida-unidades" data-bienvenida-lista></ol>
+                            </div>
+                        </aside>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
