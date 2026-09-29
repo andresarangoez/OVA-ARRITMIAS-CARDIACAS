@@ -56,13 +56,14 @@
 .modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: left; margin: 0 0 12px 0; }
 .modulo-introduccion p:last-child { margin-bottom: 0; }
 
-/* Datos rápidos: tiempo estimado y total de unidades. Van deliberadamente
-   bajos de alto para dejarle el espacio sobrante al listado de unidades, que
-   es el que empareja la altura con la columna de objetivos. */
-.bienvenida-dato { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 1px 12px; align-items: center; padding: 14px 18px; flex-shrink: 0; }
-.bienvenida-dato-icono { grid-row: 1 / 3; width: 34px; height: 34px; padding: 8px; box-sizing: border-box; border-radius: var(--radius-lg); background: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
-.bienvenida-dato-rotulo { margin: 0; align-self: end; color: var(--fucs-azul-oscuro); font-size: 0.7rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
-.bienvenida-dato-valor { margin: 0; align-self: start; color: var(--fucs-azul-profundo); font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Datos rápidos: tiempo estimado y total de unidades. Van en UNA sola línea
+   (rótulo a la izquierda, dato a la derecha) en vez de apilados: cuanto más
+   bajas sean estas dos tarjetas, menos espacio sobra al pie de los objetivos,
+   que se estiran para igualar la altura de esta columna. */
+.bienvenida-dato { display: flex; align-items: center; gap: 12px; padding: 11px 16px; flex-shrink: 0; }
+.bienvenida-dato-icono { flex-shrink: 0; width: 30px; height: 30px; padding: 7px; box-sizing: border-box; border-radius: var(--radius-md); background: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+.bienvenida-dato-rotulo { margin: 0; flex: 1; color: var(--fucs-azul-oscuro); font-size: 0.7rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
+.bienvenida-dato-valor { margin: 0; color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Listado de unidades: lo construye js/20-bienvenida-modulo.js leyendo las
    unidades reales del módulo, así que nunca se desfasa del contenido. */
