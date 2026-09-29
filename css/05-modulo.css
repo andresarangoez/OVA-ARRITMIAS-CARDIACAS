@@ -12,14 +12,16 @@
 
 /* Sin línea propia: el h2 del título ya trae la regla dorada de
    .pedagogy-container h2 (css/02-layout.css), la misma que separa los títulos
-   dentro de los módulos. Dos líneas seguidas sobraban. */
-.bienvenida-encabezado { margin-bottom: 24px; }
-.bienvenida-numero { margin: 0 0 6px 0; color: var(--fucs-azul-oscuro); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.75; }
+   dentro de los módulos. */
+.bienvenida-encabezado { margin-bottom: 24px; text-align: center; }
 .modulo-titulo-bienvenida { color: var(--fucs-azul-profundo); font-size: clamp(1.7rem, 3.2vw, 2.3rem); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; margin: 0; line-height: 1.1; }
 
-.bienvenida-cuerpo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-.bienvenida-principal { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.bienvenida-lateral { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+/* Las dos columnas terminan a la misma altura: el grid las estira por igual
+   (align-items por defecto) y dentro de cada una la tarjeta larga —objetivos a
+   la izquierda, contenido del módulo a la derecha— es la que crece. */
+.bienvenida-cuerpo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; }
+.bienvenida-principal { display: flex; flex-direction: column; min-width: 0; }
+.bienvenida-lateral { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
 /* Objetivos e introducción: dos tarjetas, no dos bloques de texto seguidos. */
 .modulo-objetivos, .modulo-introduccion, .bienvenida-dato, .bienvenida-contenido {
@@ -29,7 +31,7 @@
     box-shadow: var(--shadow-sm);
     padding: 20px 22px;
 }
-.modulo-objetivos { margin-bottom: 0; }
+.modulo-objetivos { margin-bottom: 0; flex: 1; box-sizing: border-box; }
 .modulo-objetivos h3, .modulo-introduccion h3, .bienvenida-contenido h3 {
     margin: 0 0 12px 0;
     font-size: 0.82rem;
@@ -41,18 +43,22 @@
 .modulo-objetivos li { margin-bottom: 8px; color: var(--text-body); text-align: left; line-height: 1.55; }
 .modulo-objetivos li:last-child { margin-bottom: 0; }
 
-.modulo-introduccion { border-left: 4px solid var(--fucs-dorado); }
+/* Ancho completo, debajo de las dos columnas. */
+.modulo-introduccion { border-left: 4px solid var(--fucs-dorado); margin-top: 24px; }
 .modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: left; margin: 0 0 12px 0; }
 .modulo-introduccion p:last-child { margin-bottom: 0; }
 
-/* Datos rápidos: tiempo estimado y total de unidades. */
-.bienvenida-dato { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; }
-.bienvenida-dato-icono { grid-row: 1 / 3; width: 38px; height: 38px; padding: 9px; box-sizing: border-box; border-radius: var(--radius-lg); background: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
+/* Datos rápidos: tiempo estimado y total de unidades. Van deliberadamente
+   bajos de alto para dejarle el espacio sobrante al listado de unidades, que
+   es el que empareja la altura con la columna de objetivos. */
+.bienvenida-dato { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 1px 12px; align-items: center; padding: 14px 18px; flex-shrink: 0; }
+.bienvenida-dato-icono { grid-row: 1 / 3; width: 34px; height: 34px; padding: 8px; box-sizing: border-box; border-radius: var(--radius-lg); background: var(--fucs-dorado); color: var(--fucs-azul-profundo); }
 .bienvenida-dato-rotulo { margin: 0; align-self: end; color: var(--fucs-azul-oscuro); font-size: 0.7rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.8; }
 .bienvenida-dato-valor { margin: 0; align-self: start; color: var(--fucs-azul-profundo); font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 /* Listado de unidades: lo construye js/20-bienvenida-modulo.js leyendo las
    unidades reales del módulo, así que nunca se desfasa del contenido. */
+.bienvenida-contenido { flex: 1; min-height: 0; }
 .bienvenida-unidades { list-style: none; margin: 0; padding: 0; }
 .bienvenida-unidad { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(198, 199, 200, 0.45); }
 .bienvenida-unidad:first-child { border-top: none; padding-top: 0; }

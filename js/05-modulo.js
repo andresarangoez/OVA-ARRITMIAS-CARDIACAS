@@ -23,6 +23,12 @@ function iniciarModulo(idModulo) {
         activarBarraProgreso(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onProgresoUnidad);
     }
 
+    // Los botones flotantes (índice del módulo y volver arriba) se revelan
+    // AQUÍ, no al abrir el módulo: en la pantalla de bienvenida el índice
+    // llevaba directo a una unidad, saltándose la presentación del módulo y el
+    // botón Comenzar. Ver el reverso en reiniciarEstadoModulo().
+    document.body.classList.add('modo-modulo');
+
     // El simulador solo se revela al entrar al desarrollo del módulo, y solo
     // si este módulo es uno de los que lo incluyen (fuente única de verdad:
     // OVA.Navegacion.MODULOS_CON_SIMULADOR, definida en 03-navegacion.js).
@@ -53,6 +59,17 @@ function reiniciarEstadoModulo(idModulo) {
 
     const simulador = document.getElementById('simulador-wrapper');
     if (simulador) simulador.style.display = 'none';
+
+    // Volver a la bienvenida esconde los botones flotantes y cierra el índice
+    // si había quedado abierto: mientras no se pulse Comenzar, la única salida
+    // adelante es ese botón. abrirModulo() (js/03-navegacion.js) activa
+    // .modo-modulo al entrar, y esta función —que corre justo después— lo
+    // retira; iniciarModulo() lo vuelve a poner.
+    document.body.classList.remove('modo-modulo');
+    const sidebarIndice = document.getElementById('indice-sidebar');
+    const toggleIndice = document.getElementById('indice-toggle');
+    if (sidebarIndice) sidebarIndice.classList.remove('open');
+    if (toggleIndice) toggleIndice.setAttribute('aria-expanded', 'false');
 
     // Rellena la ficha de bienvenida con lo que se deriva del propio módulo
     // (número de unidades y listado). Opcional: si el archivo no está cargado,
