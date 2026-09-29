@@ -23,25 +23,15 @@
 .bienvenida-principal { display: flex; flex-direction: column; min-width: 0; }
 .bienvenida-lateral { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
-/* La columna derecha va en tarjetas blancas, como las del home. */
-.bienvenida-dato, .bienvenida-contenido {
+/* Objetivos y columna derecha: tarjetas blancas, como las del home. */
+.modulo-objetivos, .bienvenida-dato, .bienvenida-contenido {
     background: #ffffff;
     border: 1px solid rgba(198, 199, 200, 0.5);
     border-radius: var(--bento-radius-md);
     box-shadow: var(--shadow-sm);
     padding: 20px 22px;
 }
-
-/* Objetivos: recuadro gris plano, como en la versión anterior de la
-   bienvenida. Sin borde ni sombra — el color ya lo separa del fondo. */
-.modulo-objetivos {
-    background: var(--fucs-niebla);
-    border-radius: var(--bento-radius-md);
-    padding: 20px 24px;
-    margin-bottom: 0;
-    flex: 1;
-    box-sizing: border-box;
-}
+.modulo-objetivos { margin-bottom: 0; flex: 1; box-sizing: border-box; }
 .modulo-objetivos h3, .modulo-introduccion h3, .bienvenida-contenido h3 {
     margin: 0 0 12px 0;
     font-size: 0.82rem;
