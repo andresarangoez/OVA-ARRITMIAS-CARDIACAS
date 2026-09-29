@@ -56,7 +56,7 @@
     padding: 22px 24px;
     margin-top: 24px;
 }
-.modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: left; margin: 0 0 12px 0; }
+.modulo-introduccion p { color: var(--text-body); line-height: 1.7; text-align: justify; margin: 0 0 12px 0; }
 .modulo-introduccion p:last-child { margin-bottom: 0; }
 
 /* Datos rápidos: tiempo estimado y total de unidades. Van en UNA sola línea
