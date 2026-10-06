@@ -99,31 +99,68 @@ function dibujarCuadricula(svg, papel) {
 
 // Un complejo PQRST completo, con la onda R centrada en xR. Las alturas están
 // en milímetros de papel, de modo que la R mide ~9 mm (algo menos de 1 mV).
-function complejo(xR, base) {
-    const punto = (x, y) => x.toFixed(2) + ',' + y.toFixed(2);
-    return 'M' + punto(xR - 11, base) +
-        ' L' + punto(xR - 9, base) +
-        ' Q' + punto(xR - 7, base - 2.4) + ' ' + punto(xR - 5, base) +   // onda P
-        ' L' + punto(xR - 2.2, base) +                                   // segmento PR
-        ' L' + punto(xR - 1.2, base + 1) +                               // onda Q
-        ' L' + punto(xR, base - 9) +                                     // onda R
-        ' L' + punto(xR + 1.2, base + 2.6) +                             // onda S
-        ' L' + punto(xR + 2.2, base) +
-        ' L' + punto(xR + 4, base) +
-        ' Q' + punto(xR + 6.5, base - 4.4) + ' ' + punto(xR + 9, base) + // onda T
-        ' L' + punto(xR + 11, base);
+// Vértices del QRS en milímetros respecto a la onda R (dx, altura sobre la
+// línea de base; positivo = hacia abajo). El complejo mantiene su anchura
+// aunque cambie la frecuencia, igual que en un ECG real: lo que se acorta al
+// acelerarse el ritmo es la diástole eléctrica, no el QRS.
+const NODOS_QRS = [[-1.6, 0], [-1.2, 1], [0, -9], [1.2, 2.6], [2, 0]];
+
+// Voltaje del trazado en el punto x. Las ondas P y T se reparten el hueco que
+// queda entre dos QRS, de modo que a R-R cortos se estrechan en vez de
+// solaparse con el complejo vecino.
+function voltaje(x, posiciones, base) {
+    let indice = 0;
+    let menor = Infinity;
+    for (let k = 0; k < posiciones.length; k++) {
+        const d = Math.abs(x - posiciones[k]);
+        if (d < menor) { menor = d; indice = k; }
+    }
+
+    const xR = posiciones[indice];
+    const dx = x - xR;
+
+    if (dx >= NODOS_QRS[0][0] && dx <= NODOS_QRS[NODOS_QRS.length - 1][0]) {
+        for (let n = 0; n < NODOS_QRS.length - 1; n++) {
+            const [x1, y1] = NODOS_QRS[n];
+            const [x2, y2] = NODOS_QRS[n + 1];
+            if (dx >= x1 && dx <= x2) {
+                return base + y1 + (y2 - y1) * ((dx - x1) / (x2 - x1));
+            }
+        }
+    }
+
+    const anterior = indice > 0 ? xR - posiciones[indice - 1] : null;
+    const siguiente = indice < posiciones.length - 1 ? posiciones[indice + 1] - xR : null;
+    const rr = (dx < 0 ? anterior || siguiente : siguiente || anterior) || 25;
+    const hueco = Math.max(rr - 3.6, 2);
+
+    if (dx > 0) {
+        const ancho = Math.min(5, hueco * 0.45);
+        const inicio = 2 + hueco * 0.08;
+        if (dx >= inicio && dx <= inicio + ancho) {
+            return base - 3 * Math.sin(Math.PI * (dx - inicio) / ancho);   // onda T
+        }
+    } else {
+        const ancho = Math.min(4, hueco * 0.32);
+        const fin = -1.6 - hueco * 0.12;
+        if (dx >= fin - ancho && dx <= fin) {
+            return base - 1.5 * Math.sin(Math.PI * (dx - fin + ancho) / ancho); // onda P
+        }
+    }
+
+    return base;
 }
 
 function dibujarTrazado(svg, posicionesR, papel) {
     const base = papel.altoMm - 11;
+    const paso = 0.2;
+    const puntos = [];
+    for (let x = 0; x <= papel.anchoMm; x += paso) {
+        puntos.push(x.toFixed(2) + ',' + voltaje(x, posicionesR, base).toFixed(2));
+    }
+
     const grupo = crear('g', { class: 'simulador-fc-trazo-grupo' });
-    grupo.appendChild(crear('path', {
-        d: 'M0,' + base + ' H' + papel.anchoMm,
-        class: 'simulador-fc-linea-base'
-    }));
-    posicionesR.forEach((x) => {
-        grupo.appendChild(crear('path', { d: complejo(x, base), class: 'simulador-fc-trazo' }));
-    });
+    grupo.appendChild(crear('path', { d: 'M' + puntos.join(' L'), class: 'simulador-fc-trazo' }));
     svg.appendChild(grupo);
     return base;
 }

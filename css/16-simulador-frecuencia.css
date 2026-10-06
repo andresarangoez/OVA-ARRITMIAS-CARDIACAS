@@ -54,6 +54,14 @@
     text-anchor: end; font-family: inherit;
 }
 
+/* El anillo de foco por defecto envuelve TODA la caja del <g>, que incluye la
+   guía vertical hasta el trazado: sale un óvalo enorme. Se suprime y el foco
+   se marca sobre el recuadro de la etiqueta, más abajo. */
+.simulador-fc-etiqueta-regla:focus,
+.simulador-fc-marca:focus,
+.simulador-fc-zona-qrs:focus,
+.simulador-fc-zona-r:focus { outline: none; }
+
 .simulador-fc-etiqueta-regla { cursor: pointer; }
 .simulador-fc-etiqueta-fondo { fill: #ffffff; stroke: #b8c4d4; stroke-width: .2; }
 .simulador-fc-etiqueta-texto {
