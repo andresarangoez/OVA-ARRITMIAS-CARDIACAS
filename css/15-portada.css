@@ -38,26 +38,6 @@
 }
 .portada-etiqueta-punto { width: 7px; height: 7px; border-radius: 50%; background: var(--fucs-dorado); }
 
-/* El título y la marca del OVA van en una misma fila: el logo queda a la
-   derecha del titular y centrado sobre él, sin empujar lo que viene debajo. */
-.portada-encabezado {
-    display: flex;
-    align-items: center;
-    gap: 26px;
-    margin: 0 0 18px 0;
-}
-
-/* max-content respeta los saltos marcados en el HTML, así que la caja mide
-   lo que su línea más larga: sin ese ajuste el titular ocupaba toda la
-   columna y dejaba un hueco entre el texto y el logo. */
-.portada-encabezado .portada-titulo { margin: 0; width: max-content; max-width: 100%; }
-
-.portada-logo {
-    width: clamp(84px, 9vw, 124px);
-    height: auto;
-    flex-shrink: 0;
-}
-
 .portada-titulo {
     color: var(--fucs-azul-profundo);
     margin: 0 0 18px 0;
