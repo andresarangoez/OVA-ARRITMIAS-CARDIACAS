@@ -2,11 +2,16 @@
 
 .comparador { margin: 0; }
 
+/* El marco entero abre la comparación, igual que el resto de figuras del
+   módulo: el botón de la esquina es solo el aviso de que se puede ampliar.
+   Las flechas detienen la propagación para que cambiar de versión no abra
+   además la vista ampliada. */
 .comparador-marco {
     position: relative;
     border-radius: var(--radius-sm);
     overflow: hidden;
     line-height: 0;
+    cursor: zoom-in;
 }
 
 /* Las dos versiones ocupan el mismo hueco: solo una está visible, de modo que

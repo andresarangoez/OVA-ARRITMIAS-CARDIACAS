@@ -620,7 +620,7 @@
                             </div>
                             <div class="figura">
                                 <div class="comparador" data-actual="0">
-                                    <div class="comparador-marco">
+                                    <div class="comparador-marco" onclick="OVA.ComparadorFigura.ampliar(this)">
                                         <img class="comparador-img activa" data-capa="encima" data-rotulo="Con prenda"
                                              src="assets/images/figura-4-2-posicion-de-electrodos-precordiales-ropa.png"
                                              alt="Vista frontal del tórax con prenda deportiva y los seis electrodos precordiales colocados de V1 a V6">
@@ -628,15 +628,15 @@
                                              src="assets/images/figura-4-2-posicion-de-electrodos-precordiales.png"
                                              alt="Vista frontal del tórax sin prenda y los seis electrodos precordiales colocados de V1 a V6 sobre sus referencias anatómicas">
                                         <button type="button" class="comparador-flecha comparador-flecha--izq"
-                                                onclick="OVA.ComparadorFigura.mover(this,-1)" aria-label="Ver la otra versión de la figura">
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.mover(this,-1)" aria-label="Ver la otra versión de la figura">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
                                         </button>
                                         <button type="button" class="comparador-flecha comparador-flecha--der"
-                                                onclick="OVA.ComparadorFigura.mover(this,1)" aria-label="Ver la otra versión de la figura">
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.mover(this,1)" aria-label="Ver la otra versión de la figura">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
                                         </button>
                                         <button type="button" class="comparador-ampliar"
-                                                onclick="OVA.ComparadorFigura.ampliar(this)" aria-label="Comparar las dos versiones superpuestas">
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.ampliar(this)" aria-label="Comparar las dos versiones superpuestas">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
                                         </button>
                                     </div>
