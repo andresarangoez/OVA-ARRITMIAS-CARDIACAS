@@ -22,7 +22,7 @@
 
 .simulador-fc-etiqueta {
     font-weight: 700;
-    color: var(--fucs-azul);
+    color: var(--fucs-azul-profundo);
     margin: 0 0 10px;
 }
 
@@ -59,13 +59,13 @@
 .simulador-fc[data-eje="y"] .simulador-fc-pata { cursor: ns-resize; }
 
 .simulador-fc-pata-linea {
-    stroke: var(--fucs-azul, #005aaa);
+    stroke: var(--fucs-azul-oscuro);
     stroke-width: .35;
     stroke-dasharray: 1.2 .8;
 }
 
 .simulador-fc-pata-asa {
-    fill: var(--fucs-azul, #005aaa);
+    fill: var(--fucs-azul-oscuro);
     stroke: #fff;
     stroke-width: .4;
 }
@@ -76,9 +76,16 @@
 .simulador-fc-pata:focus-visible .simulador-fc-pata-linea { stroke-width: .5; stroke-dasharray: none; }
 
 .simulador-fc-calibrador-barra {
-    stroke: var(--fucs-azul, #005aaa);
+    stroke: var(--fucs-azul-oscuro);
     stroke-width: .5;
     stroke-linecap: round;
+}
+
+/* Área medida cuando se miden tiempo y voltaje a la vez. */
+.simulador-fc-calibrador-area {
+    fill: var(--fucs-azul-oscuro);
+    opacity: .08;
+    pointer-events: none;
 }
 
 /* --- La ventana de 6 segundos --- */
@@ -98,40 +105,45 @@
 }
 
 /* --- Cotas de la Figura 4.3 --- */
-.simulador-fc-cotas { transition: opacity .2s; }
-.simulador-fc-cotas.atenuadas { opacity: .28; }
+/* Un solo color, el azul institucional, con el dorado como acento de la línea
+   de base. La diferencia entre cotas la da su longitud sobre la cuadrícula,
+   que es justamente lo que la figura tiene que enseñar. */
 
-.simulador-fc-cota-base { stroke: #94a3b8; stroke-width: .2; fill: none; stroke-dasharray: 1 1; }
-.simulador-fc-cota-barra { fill: none; stroke-width: .55; stroke-linecap: butt; }
-.simulador-fc-cota-caja { fill: #ffffff; stroke-width: .3; }
-.simulador-fc-cota-rotulo-texto { font-size: 2.8px; font-weight: 600; font-family: inherit; }
+.simulador-fc-cota-base {
+    stroke: var(--fucs-dorado);
+    stroke-width: .35;
+    fill: none;
+}
+
+.simulador-fc-cota-barra {
+    fill: none;
+    stroke: var(--fucs-azul-profundo);
+    stroke-width: .5;
+    stroke-linecap: butt;
+}
+
+.simulador-fc-cota-caja {
+    fill: #ffffff;
+    stroke: var(--fucs-gris);
+    stroke-width: .25;
+}
+
+.simulador-fc-cota-rotulo-texto {
+    font-size: 2.1px;
+    font-weight: 600;
+    font-family: inherit;
+    fill: var(--fucs-azul-profundo);
+}
 
 .simulador-fc-cota-titulo {
-    font-size: 3.2px; font-weight: 700; fill: #1f3864;
+    font-size: 2.6px; font-weight: 700; fill: var(--fucs-azul-profundo);
     text-anchor: middle; font-family: inherit; letter-spacing: .4px;
 }
 
 .simulador-fc-cota-pie {
-    font-size: 2.6px; font-weight: 600; fill: #475569;
+    font-size: 2.2px; font-weight: 600; fill: var(--text-muted);
     text-anchor: middle; font-family: inherit;
 }
-
-/* Un color por cota, para que cada medida se siga de un vistazo. */
-.simulador-fc-med--ambar.simulador-fc-cota-barra { stroke: #c2680a; }
-.simulador-fc-med--ambar .simulador-fc-cota-caja { stroke: #c2680a; }
-.simulador-fc-med--ambar .simulador-fc-cota-rotulo-texto { fill: #96500a; }
-
-.simulador-fc-med--verde.simulador-fc-cota-barra { stroke: #15803d; }
-.simulador-fc-med--verde .simulador-fc-cota-caja { stroke: #15803d; }
-.simulador-fc-med--verde .simulador-fc-cota-rotulo-texto { fill: #11602f; }
-
-.simulador-fc-med--azul.simulador-fc-cota-barra { stroke: #1d4ed8; }
-.simulador-fc-med--azul .simulador-fc-cota-caja { stroke: #1d4ed8; }
-.simulador-fc-med--azul .simulador-fc-cota-rotulo-texto { fill: #1a3fae; }
-
-.simulador-fc-med--violeta.simulador-fc-cota-barra { stroke: #7e22ce; }
-.simulador-fc-med--violeta .simulador-fc-cota-caja { stroke: #7e22ce; }
-.simulador-fc-med--violeta .simulador-fc-cota-rotulo-texto { fill: #661ba6; }
 
 /* --- Selectores de modo y de eje --- */
 .simulador-fc-modos,
@@ -156,12 +168,12 @@
 }
 
 .simulador-fc-modos button:hover,
-.simulador-fc-ejes button:hover { border-color: var(--fucs-azul); color: var(--fucs-azul); }
+.simulador-fc-ejes button:hover { border-color: var(--fucs-azul-profundo); color: var(--fucs-azul-profundo); }
 
 .simulador-fc-modos button.activo,
 .simulador-fc-ejes button.activo {
-    background: var(--fucs-azul);
-    border-color: var(--fucs-azul);
+    background: var(--fucs-azul-profundo);
+    border-color: var(--fucs-azul-profundo);
     color: #fff;
     font-weight: 600;
 }
@@ -176,7 +188,7 @@
 }
 
 .simulador-fc-lectura-rotulo { color: var(--text-muted); }
-.simulador-fc-lectura-valor { font-weight: 700; color: var(--fucs-azul); }
+.simulador-fc-lectura-valor { font-weight: 700; color: var(--fucs-azul-profundo); }
 
 /* --- Respuesta escrita --- */
 .simulador-fc-respuesta {

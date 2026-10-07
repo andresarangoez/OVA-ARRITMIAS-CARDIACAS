@@ -50,21 +50,25 @@ const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4 };
 // Cotas de referencia de la Figura 4.3, de menor a mayor. Las verticales
 // crecen desde una misma línea de base y las horizontales desde un mismo
 // margen, de modo que la progresión se ve como una escalera.
+// Todas las posiciones son múltiplos de 5 mm, es decir, líneas gruesas de la
+// cuadrícula: así se ve a simple vista que una cota de 5 mm ocupa exactamente
+// un cuadro grande y la de 25 mm, cinco. Si las barras cayeran entre líneas,
+// la equivalencia no se podría comprobar sobre el propio papel.
 const COTAS_VOLTAJE = [
-    { x: 16, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' },
-    { x: 31, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
-    { x: 46, mm: 10, texto: '10 mm = 1 mV', color: 'azul' }
+    { x: 15, mm: 1, texto: '1 mm = 0,1 mV' },
+    { x: 30, mm: 5, texto: '5 mm = 0,5 mV' },
+    { x: 45, mm: 10, texto: '10 mm = 1 mV' }
 ];
 
 const COTAS_TIEMPO = [
-    { y: 16, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' },
-    { y: 26, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
-    { y: 36, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
-    { y: 46, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' }
+    { y: 15, mm: 1, texto: '1 mm = 0,04 segundos' },
+    { y: 25, mm: 5, texto: '5 mm = 0,20 segundos' },
+    { y: 35, mm: 10, texto: '10 mm = 0,40 segundos' },
+    { y: 45, mm: 25, texto: '25 mm = 1 segundo' }
 ];
 
-const COTA_BASE_Y = 46;   // línea de base de las cotas verticales
-const COTA_BASE_X = 66;   // margen izquierdo de las cotas horizontales
+const COTA_BASE_Y = 45;   // línea de base de las cotas verticales
+const COTA_BASE_X = 70;   // margen izquierdo de las cotas horizontales
 
 let contadorIds = 0;
 let arrastre = null; // { raiz, svg, tipo: 'pata'|'ventana', pata, agarreMm }
@@ -175,46 +179,65 @@ function dibujarTrazado(svg, posicionesR, papel) {
 // cuadrícula de milímetro en milímetro, que es la precisión real con la que
 // se puede leer un cuadro pequeño a ojo.
 
-function dibujarCalibrador(svg, raiz, papel) {
-    const grupo = crear('g', { class: 'simulador-fc-calibrador' });
-    const vertical = raiz.dataset.eje === 'y';
+// El eje activo: 'x' mide tiempo, 'y' mide voltaje y 'xy' las dos cosas a la
+// vez. La figura arranca en 'ref', que solo muestra las cotas.
+function ejeDe(raiz) {
+    return raiz.dataset.eje || (raiz.dataset.ejercicio === 'papel' ? 'ref' : 'x');
+}
 
-    ['a', 'b'].forEach((pata) => {
-        const g = crear('g', { class: 'simulador-fc-pata', tabindex: '0', role: 'slider' });
-        g.dataset.pata = pata;
-        g.appendChild(crear('line', { class: 'simulador-fc-pata-linea' }));
-        g.appendChild(crear('circle', { class: 'simulador-fc-pata-asa', r: vertical ? 1.8 : 1.6 }));
-        g.addEventListener('pointerdown', (ev) => iniciarArrastre(ev, raiz, 'pata', pata));
-        g.addEventListener('keydown', (ev) => moverConTeclado(ev, raiz, pata));
-        grupo.appendChild(g);
+function dibujarCalibrador(svg, raiz, papel) {
+    const eje = ejeDe(raiz);
+    const grupo = crear('g', { class: 'simulador-fc-calibrador' });
+
+    if (eje.indexOf('x') !== -1 && eje.indexOf('y') !== -1) {
+        grupo.appendChild(crear('rect', { class: 'simulador-fc-calibrador-area' }));
+    }
+
+    ['x', 'y'].forEach((cual) => {
+        if (eje.indexOf(cual) === -1) return;
+        ['a', 'b'].forEach((pata) => {
+            const g = crear('g', { class: 'simulador-fc-pata', tabindex: '0', role: 'slider' });
+            g.dataset.pata = pata;
+            g.dataset.eje = cual;
+            g.appendChild(crear('line', { class: 'simulador-fc-pata-linea' }));
+            g.appendChild(crear('circle', { class: 'simulador-fc-pata-asa', r: 1.6 }));
+            g.addEventListener('pointerdown', (ev) => iniciarArrastre(ev, raiz, 'pata', pata, cual));
+            g.addEventListener('keydown', (ev) => moverConTeclado(ev, raiz, pata, cual));
+            grupo.appendChild(g);
+        });
+        grupo.appendChild(crear('line', { class: 'simulador-fc-calibrador-barra', 'data-eje': cual }));
     });
 
-    grupo.appendChild(crear('line', { class: 'simulador-fc-calibrador-barra' }));
     svg.appendChild(grupo);
 
     // Posición inicial: separadas lo justo para que se vean las dos patas.
-    const largo = vertical ? papel.altoMm : papel.anchoMm;
-    raiz.dataset.calA = Math.round(largo * 0.25);
-    raiz.dataset.calB = Math.round(largo * 0.45);
+    raiz.dataset.calA = Math.round(papel.anchoMm * 0.25);
+    raiz.dataset.calB = Math.round(papel.anchoMm * 0.45);
+    raiz.dataset.calAy = Math.round(papel.altoMm * 0.3);
+    raiz.dataset.calBy = Math.round(papel.altoMm * 0.65);
     actualizarCalibrador(raiz);
 }
 
+function valoresEje(raiz, cual) {
+    return cual === 'y'
+        ? [parseFloat(raiz.dataset.calAy), parseFloat(raiz.dataset.calBy)]
+        : [parseFloat(raiz.dataset.calA), parseFloat(raiz.dataset.calB)];
+}
+
 function actualizarCalibrador(raiz) {
-    const svg = raiz.querySelector('.simulador-fc-svg');
-    const barra = raiz.querySelector('.simulador-fc-calibrador-barra');
-    if (!svg || !barra) return;   // la figura en modo referencia no lleva calibrador
+    const calibrador = raiz.querySelector('.simulador-fc-calibrador');
+    if (!calibrador) return;   // la figura en modo referencia no lleva calibrador
     const papel = papelDe(raiz);
-    const vertical = raiz.dataset.eje === 'y';
-    const a = parseFloat(raiz.dataset.calA);
-    const b = parseFloat(raiz.dataset.calB);
 
     raiz.querySelectorAll('.simulador-fc-pata').forEach((g) => {
+        const cual = g.dataset.eje;
+        const [a, b] = valoresEje(raiz, cual);
         const valor = g.dataset.pata === 'a' ? a : b;
         const linea = g.querySelector('.simulador-fc-pata-linea');
         const asa = g.querySelector('.simulador-fc-pata-asa');
-        if (vertical) {
-            linea.setAttribute('x1', 0); linea.setAttribute('y1', valor);
-            linea.setAttribute('x2', papel.anchoMm); linea.setAttribute('y2', valor);
+        if (cual === 'y') {
+            linea.setAttribute('x1', 1.5); linea.setAttribute('y1', valor);
+            linea.setAttribute('x2', papel.anchoMm - 1.5); linea.setAttribute('y2', valor);
             asa.setAttribute('cx', papel.anchoMm - 4); asa.setAttribute('cy', valor);
         } else {
             linea.setAttribute('x1', valor); linea.setAttribute('y1', 1.5);
@@ -223,38 +246,59 @@ function actualizarCalibrador(raiz) {
         }
     });
 
-    if (vertical) {
-        barra.setAttribute('x1', papel.anchoMm - 4); barra.setAttribute('y1', a);
-        barra.setAttribute('x2', papel.anchoMm - 4); barra.setAttribute('y2', b);
-    } else {
-        barra.setAttribute('x1', a); barra.setAttribute('y1', 4);
-        barra.setAttribute('x2', b); barra.setAttribute('y2', 4);
+    raiz.querySelectorAll('.simulador-fc-calibrador-barra').forEach((barra) => {
+        const cual = barra.getAttribute('data-eje');
+        const [a, b] = valoresEje(raiz, cual);
+        if (cual === 'y') {
+            barra.setAttribute('x1', papel.anchoMm - 4); barra.setAttribute('y1', a);
+            barra.setAttribute('x2', papel.anchoMm - 4); barra.setAttribute('y2', b);
+        } else {
+            barra.setAttribute('x1', a); barra.setAttribute('y1', 4);
+            barra.setAttribute('x2', b); barra.setAttribute('y2', 4);
+        }
+    });
+
+    const area = raiz.querySelector('.simulador-fc-calibrador-area');
+    if (area) {
+        const [ax, bx] = valoresEje(raiz, 'x');
+        const [ay, by] = valoresEje(raiz, 'y');
+        area.setAttribute('x', Math.min(ax, bx));
+        area.setAttribute('y', Math.min(ay, by));
+        area.setAttribute('width', Math.abs(bx - ax));
+        area.setAttribute('height', Math.abs(by - ay));
     }
 
     escribirLectura(raiz);
 }
 
-function medidaMm(raiz) {
-    return Math.abs(parseFloat(raiz.dataset.calB) - parseFloat(raiz.dataset.calA));
+function medidaMm(raiz, cual) {
+    const [a, b] = valoresEje(raiz, cual || 'x');
+    return Math.abs(b - a);
+}
+
+function textoTiempo(mm) {
+    const grandes = Math.floor(mm / 5);
+    const resto = Math.round(mm % 5);
+    const cuadros = grandes + ' cuadro' + (grandes === 1 ? '' : 's') + ' grande' + (grandes === 1 ? '' : 's') +
+        (resto ? ' y ' + resto + ' pequeño' + (resto === 1 ? '' : 's') : '');
+    return cuadros + '  ·  ' + mm + ' cuadros pequeños  ·  ' + (mm / MM_POR_SEGUNDO).toFixed(2).replace('.', ',') + ' s';
+}
+
+function textoVoltaje(mm) {
+    return mm + ' mm  ·  ' + (mm / MM_POR_MILIVOLTIO).toFixed(2).replace('.', ',') + ' mV';
 }
 
 function escribirLectura(raiz) {
     const salida = raiz.querySelector('.simulador-fc-lectura-valor');
     if (!salida) return;
+    const eje = ejeDe(raiz);
+    if (eje === 'ref') return;
 
-    const mm = medidaMm(raiz);
-    const grandes = Math.floor(mm / 5);
-    const resto = Math.round(mm % 5);
-
-    if (raiz.dataset.eje === 'y') {
-        salida.textContent = mm + ' mm  ·  ' + (mm / MM_POR_MILIVOLTIO).toFixed(2).replace('.', ',') + ' mV';
-        return;
-    }
-
-    const segundos = (mm / MM_POR_SEGUNDO).toFixed(2).replace('.', ',');
-    const partes = grandes + ' cuadro' + (grandes === 1 ? '' : 's') + ' grande' + (grandes === 1 ? '' : 's');
-    const cola = resto ? ' y ' + resto + ' pequeño' + (resto === 1 ? '' : 's') : '';
-    salida.textContent = partes + cola + '  ·  ' + mm + ' cuadros pequeños  ·  ' + segundos + ' s';
+    const ambos = eje === 'xy';
+    const partes = [];
+    if (eje.indexOf('x') !== -1) partes.push((ambos ? 'Tiempo — ' : '') + textoTiempo(medidaMm(raiz, 'x')));
+    if (eje.indexOf('y') !== -1) partes.push((ambos ? 'Voltaje — ' : '') + textoVoltaje(medidaMm(raiz, 'y')));
+    salida.textContent = partes.join('     ');
 }
 
 // --- ARRASTRE ---
@@ -267,14 +311,14 @@ function clienteAMm(svg, cliente, vertical) {
         : vb.x + (cliente - r.left) / r.width * vb.width;
 }
 
-function iniciarArrastre(ev, raiz, tipo, pata) {
+function iniciarArrastre(ev, raiz, tipo, pata, cual) {
     ev.preventDefault();
     const svg = raiz.querySelector('.simulador-fc-svg');
-    const vertical = raiz.dataset.eje === 'y';
-    arrastre = { raiz, svg, tipo, pata, vertical };
+    const vertical = cual === 'y';
+    arrastre = { raiz, svg, tipo, pata, cual: cual || 'x', vertical };
 
     if (tipo === 'ventana') {
-        const mm = clienteAMm(svg, vertical ? ev.clientY : ev.clientX, vertical);
+        const mm = clienteAMm(svg, ev.clientX, false);
         arrastre.agarreMm = mm - parseFloat(raiz.dataset.ventanaInicio);
     }
 
@@ -286,18 +330,19 @@ function iniciarArrastre(ev, raiz, tipo, pata) {
 function moverArrastre(ev) {
     if (!arrastre) return;
     ev.preventDefault();
-    const { raiz, svg, tipo, pata, vertical } = arrastre;
+    const { raiz, svg, tipo, pata, cual, vertical } = arrastre;
     const papel = papelDe(raiz);
-    const limite = vertical ? papel.altoMm : papel.anchoMm;
-    const mm = clienteAMm(svg, vertical ? ev.clientY : ev.clientX, vertical);
 
     if (tipo === 'pata') {
+        const limite = vertical ? papel.altoMm : papel.anchoMm;
+        const mm = clienteAMm(svg, vertical ? ev.clientY : ev.clientX, vertical);
         const valor = Math.min(Math.max(Math.round(mm), 0), Math.round(limite));
-        raiz.dataset[pata === 'a' ? 'calA' : 'calB'] = valor;
+        const clave = (pata === 'a' ? 'calA' : 'calB') + (cual === 'y' ? 'y' : '');
+        raiz.dataset[clave] = valor;
         actualizarCalibrador(raiz);
     } else {
-        const inicio = ajustarVentana(mm - arrastre.agarreMm, papel);
-        raiz.dataset.ventanaInicio = inicio;
+        const mm = clienteAMm(svg, ev.clientX, false);
+        raiz.dataset.ventanaInicio = ajustarVentana(mm - arrastre.agarreMm, papel);
         actualizarVentana(raiz);
     }
 }
@@ -309,14 +354,14 @@ function terminarArrastre() {
     document.removeEventListener('pointercancel', terminarArrastre);
 }
 
-function moverConTeclado(ev, raiz, pata) {
+function moverConTeclado(ev, raiz, pata, cual) {
     const paso = ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' ? -1
         : ev.key === 'ArrowRight' || ev.key === 'ArrowDown' ? 1 : 0;
     if (!paso) return;
     ev.preventDefault();
     const papel = papelDe(raiz);
-    const limite = raiz.dataset.eje === 'y' ? papel.altoMm : papel.anchoMm;
-    const clave = pata === 'a' ? 'calA' : 'calB';
+    const limite = cual === 'y' ? papel.altoMm : papel.anchoMm;
+    const clave = (pata === 'a' ? 'calA' : 'calB') + (cual === 'y' ? 'y' : '');
     raiz.dataset[clave] = Math.min(Math.max(parseFloat(raiz.dataset[clave]) + paso, 0), Math.round(limite));
     actualizarCalibrador(raiz);
 }
@@ -327,12 +372,12 @@ function moverConTeclado(ev, raiz, pata) {
 // el texto se lea sobre la cuadrícula rosa. El ancho se estima a partir del
 // número de caracteres porque el SVG aún no está en el documento y no se
 // puede medir el texto.
-function rotuloCota(grupo, x, y, texto, color, rotado) {
-    const ancho = texto.length * 1.45 + 2.6;
-    const g = crear('g', { class: 'simulador-fc-cota-rotulo simulador-fc-med--' + color });
+function rotuloCota(grupo, x, y, texto, rotado) {
+    const ancho = texto.length * 1.12 + 1.8;
+    const g = crear('g', { class: 'simulador-fc-cota-rotulo' });
     g.setAttribute('transform', 'translate(' + x + ',' + y + ')' + (rotado ? ' rotate(-90)' : ''));
-    g.appendChild(crear('rect', { x: 0, y: -2.2, width: ancho, height: 4.4, rx: 1, class: 'simulador-fc-cota-caja' }));
-    g.appendChild(crear('text', { x: 1.3, y: 1, class: 'simulador-fc-cota-rotulo-texto' }, texto));
+    g.appendChild(crear('rect', { x: 0, y: -1.7, width: ancho, height: 3.4, rx: .7, class: 'simulador-fc-cota-caja' }));
+    g.appendChild(crear('text', { x: .9, y: .8, class: 'simulador-fc-cota-rotulo-texto' }, texto));
     grupo.appendChild(g);
 }
 
@@ -340,45 +385,47 @@ function montarPapel(raiz) {
     const papel = PAPEL_FIGURA;
     const lienzo = raiz.querySelector('.simulador-fc-lienzo');
     if (!lienzo) return;
-    const eje = raiz.dataset.eje || 'ref';
+    const eje = ejeDe(raiz);
     lienzo.textContent = '';
 
     const svg = nuevoSvg(papel);
     dibujarCuadricula(svg, papel);
 
-    // Las cotas de referencia: el «así se ve y así se mide» del papel. Se
-    // atenúan cuando el estudiante pasa a medir por su cuenta, para que no
-    // compitan con el calibrador.
-    const cotas = crear('g', { class: 'simulador-fc-cotas' + (eje === 'ref' ? '' : ' atenuadas') });
+    // Las cotas solo se dibujan en el modo de referencia: cuando el estudiante
+    // pasa a medir, el papel se queda limpio para que lo que lea sea su propia
+    // medición y no el rótulo que tiene al lado.
+    if (eje === 'ref') {
+        const cotas = crear('g', { class: 'simulador-fc-cotas' });
 
-    cotas.appendChild(crear('text', { x: 31, y: 9, class: 'simulador-fc-cota-titulo' }, 'VOLTAJE'));
-    cotas.appendChild(crear('text', { x: 93, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
-    cotas.appendChild(crear('path', { d: 'M12,' + COTA_BASE_Y + ' H52', class: 'simulador-fc-cota-base' }));
+        cotas.appendChild(crear('text', { x: 30, y: 9, class: 'simulador-fc-cota-titulo' }, 'VOLTAJE'));
+        cotas.appendChild(crear('text', { x: 95, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
+        cotas.appendChild(crear('path', { d: 'M10,' + COTA_BASE_Y + ' H52', class: 'simulador-fc-cota-base' }));
 
-    COTAS_VOLTAJE.forEach((cota) => {
-        const arriba = COTA_BASE_Y - cota.mm;
-        cotas.appendChild(crear('path', {
-            d: 'M' + cota.x + ',' + arriba + ' V' + COTA_BASE_Y +
-               ' M' + (cota.x - 1.2) + ',' + arriba + ' H' + (cota.x + 1.2) +
-               ' M' + (cota.x - 1.2) + ',' + COTA_BASE_Y + ' H' + (cota.x + 1.2),
-            class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
-        }));
-        rotuloCota(cotas, cota.x + 2.6, COTA_BASE_Y, cota.texto, cota.color, true);
-    });
+        COTAS_VOLTAJE.forEach((cota) => {
+            const arriba = COTA_BASE_Y - cota.mm;
+            cotas.appendChild(crear('path', {
+                d: 'M' + cota.x + ',' + arriba + ' V' + COTA_BASE_Y +
+                   ' M' + (cota.x - 1) + ',' + arriba + ' H' + (cota.x + 1) +
+                   ' M' + (cota.x - 1) + ',' + COTA_BASE_Y + ' H' + (cota.x + 1),
+                class: 'simulador-fc-cota-barra'
+            }));
+            rotuloCota(cotas, cota.x + 2, COTA_BASE_Y, cota.texto, true);
+        });
 
-    COTAS_TIEMPO.forEach((cota) => {
-        const derecha = COTA_BASE_X + cota.mm;
-        cotas.appendChild(crear('path', {
-            d: 'M' + COTA_BASE_X + ',' + cota.y + ' H' + derecha +
-               ' M' + COTA_BASE_X + ',' + (cota.y - 1.2) + ' V' + (cota.y + 1.2) +
-               ' M' + derecha + ',' + (cota.y - 1.2) + ' V' + (cota.y + 1.2),
-            class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
-        }));
-        rotuloCota(cotas, derecha + 2.6, cota.y, cota.texto, cota.color, false);
-    });
+        COTAS_TIEMPO.forEach((cota) => {
+            const derecha = COTA_BASE_X + cota.mm;
+            cotas.appendChild(crear('path', {
+                d: 'M' + COTA_BASE_X + ',' + cota.y + ' H' + derecha +
+                   ' M' + COTA_BASE_X + ',' + (cota.y - 1) + ' V' + (cota.y + 1) +
+                   ' M' + derecha + ',' + (cota.y - 1) + ' V' + (cota.y + 1),
+                class: 'simulador-fc-cota-barra'
+            }));
+            rotuloCota(cotas, derecha + 2, cota.y, cota.texto, false);
+        });
 
-    cotas.appendChild(crear('text', { x: 93, y: 53, class: 'simulador-fc-cota-pie' }, 'Velocidad del papel = 25 mm/s'));
-    svg.appendChild(cotas);
+        cotas.appendChild(crear('text', { x: 95, y: 52, class: 'simulador-fc-cota-pie' }, 'Velocidad del papel = 25 mm/s'));
+        svg.appendChild(cotas);
+    }
 
     if (eje !== 'ref') dibujarCalibrador(svg, raiz, papel);
     lienzo.appendChild(svg);
@@ -394,7 +441,7 @@ function cambiarEje(boton, eje) {
     const lectura = raiz.querySelector('.simulador-fc-lectura');
     if (lectura) lectura.hidden = eje === 'ref';
     const rotulo = raiz.querySelector('.simulador-fc-lectura-rotulo');
-    if (rotulo) rotulo.textContent = eje === 'y' ? 'Voltaje medido:' : 'Tiempo medido:';
+    if (rotulo) rotulo.textContent = eje === 'xy' ? 'Medida:' : (eje === 'y' ? 'Voltaje medido:' : 'Tiempo medido:');
     const pista = raiz.querySelector('.simulador-fc-pista');
     if (pista) pista.hidden = eje === 'ref';
 
