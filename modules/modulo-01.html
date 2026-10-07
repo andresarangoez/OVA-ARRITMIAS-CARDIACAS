@@ -398,36 +398,61 @@
                         <p>El valor del potencial de reposo no es un dato aislado: determina qué tan fácil o difícil es excitar la célula. Cuanto más negativo sea el reposo, más estímulo se necesita para generar un potencial de acción; cuanto menos negativo, más cerca está de activarse.</p>
 
                         <h4>Potencial de acción cardíaco</h4>
-                        <p>A partir del potencial de reposo, un estímulo suficiente dispara un cambio brusco y momentáneo del voltaje de la membrana: el <strong>potencial de acción</strong>. En el miocito de trabajo ese cambio no es simétrico ni instantáneo — pasa por cinco fases sucesivas, numeradas de 0 a 4, cada una caracterizada por la apertura o el cierre de un tipo distinto de canal iónico (4).</p>
+                        <p>A partir del potencial de reposo, un estímulo suficiente dispara un cambio brusco y momentáneo del voltaje de la membrana: el <strong>potencial de acción</strong>. En el miocito de trabajo este cambio no es simétrico ni instantáneo ya que pasa por cinco fases sucesivas (numeradas de 0 a 4), cada una caracterizada por la apertura o el cierre de un tipo distinto de canal iónico (4).</p>
 
-                        <p>Haz clic en cada fase para ver qué ocurre a nivel iónico.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'fase0')">Fase 0</button>
-                                <button onclick="activarPasoStepper(this,'fase1')">Fase 1</button>
-                                <button onclick="activarPasoStepper(this,'fase2')">Fase 2</button>
-                                <button onclick="activarPasoStepper(this,'fase3')">Fase 3</button>
-                                <button onclick="activarPasoStepper(this,'fase4')">Fase 4</button>
+                        <div class="pa-fila">
+                            <div class="pa-texto">
+                                <p>Haz clic en cada fase para ver qué ocurre a nivel iónico.</p>
+                                <div class="stepper-fases">
+                                    <div class="stepper-nav">
+                                        <button class="activo" data-fase="0" onclick="activarPasoStepper(this,'fase0'); OVA.SimuladorPotencial.sincronizar(this,'0')">Fase 0</button>
+                                        <button data-fase="1" onclick="activarPasoStepper(this,'fase1'); OVA.SimuladorPotencial.sincronizar(this,'1')">Fase 1</button>
+                                        <button data-fase="2" onclick="activarPasoStepper(this,'fase2'); OVA.SimuladorPotencial.sincronizar(this,'2')">Fase 2</button>
+                                        <button data-fase="3" onclick="activarPasoStepper(this,'fase3'); OVA.SimuladorPotencial.sincronizar(this,'3')">Fase 3</button>
+                                        <button data-fase="4" onclick="activarPasoStepper(this,'fase4'); OVA.SimuladorPotencial.sincronizar(this,'4')">Fase 4</button>
+                                    </div>
+                                    <div class="stepper-panel activo" data-paso="fase0">
+                                        <h5>Fase 0 — Despolarización rápida</h5>
+                                        <p>La fase 0 es la subida brusca que da inicio al potencial de acción. Cuando un estímulo lleva el potencial de membrana hasta el nivel umbral, se abren los <strong>canales rápidos de sodio</strong> activados por voltaje (4). Como el sodio está mucho más concentrado fuera de la célula que dentro, y el interior es negativo, existe un fuerte gradiente eléctrico y químico empujándolo hacia adentro; al abrirse los canales, entra en gran cantidad y en muy poco tiempo. El potencial de membrana pasa así de <strong>−80/−90 mV a un valor positivo, alrededor de +20 mV</strong>, en una fracción de milisegundo (4).</p>
+                                        <p>Esta entrada masiva y rápida de sodio es lo que permite que la despolarización se propague con velocidad de una célula a la siguiente. Si estos canales no se abren en número o velocidad suficientes, la despolarización se hace más lenta y el impulso se conduce con más dificultad.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase1">
+                                        <h5>Fase 1 — Repolarización inicial</h5>
+                                        <p>Apenas unas fracciones de milisegundo después de abrirse, los canales rápidos de sodio <strong>se inactivan por sí solos</strong>: no es que el estímulo desaparezca, sino que el propio canal se cierra automáticamente una vez que ha estado abierto un instante, sin importar que el potencial de membrana siga positivo (4). La entrada de sodio se detiene casi tan rápido como había empezado. Al mismo tiempo, algunos canales de potasio comienzan a abrirse y dejan salir potasio de la célula (4).</p>
+                                        <p>El resultado es una repolarización breve y parcial: el potencial baja un poco desde el pico de la fase 0, antes de estabilizarse en la meseta que sigue en la fase 2. En la curva del potencial de acción esto se ve como una pequeña muesca entre la subida y la meseta.</p>
+                                        <p>Que el canal de sodio se inactive por sí mismo tiene una consecuencia: no puede volver a abrirse hasta que la célula se repolarice lo suficiente, sin importar qué tan fuerte sea un nuevo estímulo. Esa es la base de por qué el miocito no puede volver a excitarse inmediatamente después de un potencial de acción.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase2">
+                                        <h5>Fase 2 — Meseta</h5>
+                                        <p>Después de la breve repolarización inicial de la fase 1, el potencial de membrana no sigue bajando de inmediato: se mantiene cerca de su valor máximo durante un tramo largo, <strong>entre 0,2 y 0,3 segundos</strong>, antes de empezar a descender. Esta meseta es la diferencia más marcada entre el potencial de acción del músculo cardíaco y el de una fibra nerviosa o del músculo esquelético, donde la repolarización ocurre de inmediato (4).</p>
+                                        <p>La meseta se sostiene por dos cambios simultáneos en la membrana. Por un lado, se abren <strong>canales de calcio de tipo L</strong>, también llamados canales lentos, porque tardan más en abrirse que los canales rápidos de sodio de la fase 0 y permanecen abiertos durante varias décimas de segundo, permitiendo la entrada continua de calcio a la célula. Por otro lado, la salida de potasio se reduce notablemente justo cuando debería estar repolarizando la célula. Esta combinación de entrada sostenida de calcio y salida frenada de potasio es lo que mantiene el potencial estabilizado en ese tramo (4). La meseta no es solo un fenómeno eléctrico: el calcio que entra durante esta fase es el mismo que activa la contracción del miocito (4).</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase3">
+                                        <h5>Fase 3 — Repolarización rápida</h5>
+                                        <p>La meseta no se sostiene indefinidamente. Los canales de calcio tipo L se cierran, deteniendo la entrada de calcio, y al mismo tiempo se abren de manera más amplia los canales de potasio que habían quedado frenados durante la fase 2 (4). Sin la entrada de calcio compensando la salida de potasio, el balance se invierte por completo: el potasio sale de la célula con rapidez y arrastra consigo las cargas positivas que mantenían el potencial en valores altos.</p>
+                                        <p>El potencial de membrana cae entonces con la misma velocidad con la que había subido en la fase 0, hasta devolver la célula a su valor de reposo, <strong>entre −80 y −90 mV</strong> (4). Con esta caída termina el potencial de acción: la célula queda lista para volver a acumular estímulo hacia un nuevo ciclo.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase4">
+                                        <h5>Fase 4 — Reposo o despolarización diastólica</h5>
+                                        <p>En el miocito de trabajo, la fase 4 es simplemente el potencial de reposo ya descrito al inicio de esta unidad: un valor estable, <strong>entre −80 y −90 mV</strong>, que la célula mantiene sin cambios hasta que llega un nuevo estímulo (4).</p>
+                                        <p>En las células del nódulo sinusal y otras células con capacidad de generar impulsos por sí mismas, la fase 4 no es estable. El potencial de membrana parte de un valor menos negativo, <strong>entre −55 y −60 mV</strong>, y en lugar de quedarse ahí se desplaza de forma continua y lenta hacia valores menos negativos hasta alcanzar el umbral y disparar un nuevo potencial de acción por sí sola, sin que ninguna otra célula la estimule (4). Esto ocurre porque, a diferencia de la célula de trabajo, la membrana de estas células nunca cierra del todo el paso a sodio y calcio, así que una pequeña corriente de entrada continua va empujando el voltaje hacia arriba entre un latido y el siguiente.</p>
+                                        <p>Esta diferencia en la fase 4 es la explicación completa de por qué el corazón se autoexcita: no hay un canal exclusivo del automatismo, sino una fase 4 que en unas células es un reposo verdadero y en otras es un potencial continuo hacia el disparo.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="stepper-panel activo" data-paso="fase0">
-                                <h5>Fase 0 — Despolarización rápida</h5>
-                                <p>Al alcanzarse el umbral se abren los <strong>canales rápidos de sodio</strong>. El sodio entra en masa y el potencial salta de −85 a cerca de +20 mV en una fracción de milisegundo. Es el ascenso más pronunciado de toda la curva, y su velocidad marca la rapidez con que el impulso pasa de una célula a la siguiente.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase1">
-                                <h5>Fase 1 — Repolarización inicial</h5>
-                                <p>Los canales de sodio <strong>se inactivan solos</strong>, sin que el estímulo desaparezca, y a la vez empieza a salir potasio. El potencial baja un poco: la muesca que se ve entre el pico y la meseta. Esa autoinactivación es la razón de que la célula no pueda reexcitarse enseguida.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase2">
-                                <h5>Fase 2 — Meseta</h5>
-                                <p>Entra <strong>calcio por canales lentos tipo L</strong> mientras la salida de potasio se frena. El potencial se sostiene alto entre 0,2 y 0,3 segundos — el rasgo que distingue al miocardio de una neurona o del músculo esquelético. Ese calcio es el mismo que dispara la contracción.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase3">
-                                <h5>Fase 3 — Repolarización rápida</h5>
-                                <p>Se cierran los canales de calcio y <strong>el potasio sale con rapidez</strong>, ya sin nada que lo compense. El potencial cae tan deprisa como había subido, hasta devolver la célula a −85 mV. Aquí termina el potencial de acción.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase4">
-                                <h5>Fase 4 — Reposo (o despolarización diastólica)</h5>
-                                <p>En el miocito de trabajo es un <strong>reposo estable</strong> que se mantiene hasta el siguiente estímulo. En las células marcapasos no: la membrana nunca cierra del todo el paso a sodio y calcio, así que el potencial sube solo, poco a poco, hasta disparar por sí mismo una nueva fase 0. Ahí está el automatismo.</p>
+                            <div class="pa-simulador">
+                                <div class="sim-pa" data-fase="0">
+                                    <div class="sim-pa-cabecera">
+                                        <p class="sim-pa-etiqueta">Curva del potencial de acción</p>
+                                        <div class="sim-pa-play-wrap"></div>
+                                    </div>
+                                    <div class="sim-pa-lienzo"></div>
+                                    <div class="sim-pa-tabs"></div>
+                                    <div class="sim-pa-lectura">
+                                        <p class="sim-pa-mv"></p>
+                                        <div class="sim-pa-corrientes"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -489,14 +514,6 @@
                             </div>
                             <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
                             <p class="mini-reto-feedback"></p>
-                        </div>
-
-                        <div class="figura">
-                            <div class="espacio-reservado">
-                                <span class="icono" aria-hidden="true">🖼️</span>
-                                Espacio reservado: curva del potencial de acción con las 5 fases rotuladas (0-4), alineada visualmente con el stepper de arriba.
-                            </div>
-                            <p class="figura-caption"><strong>Figura 2.1.</strong> Fases del potencial de acción cardíaco. Fuente: por definir.</p>
                         </div>
                     </div>
 
@@ -602,11 +619,29 @@
                                 </table>
                             </div>
                             <div class="figura">
-                                <div class="espacio-reservado">
-                                    <span class="icono" aria-hidden="true">🖼️</span>
-                                    Espacio reservado: vista frontal del tórax con los seis puntos de colocación (V1-V6) marcados sobre sus referencias anatómicas — espacios intercostales y líneas medioclavicular, axilar anterior y axilar media.
+                                <div class="comparador" data-actual="0">
+                                    <div class="comparador-marco" onclick="OVA.ComparadorFigura.ampliar(this)">
+                                        <img class="comparador-img activa" data-capa="encima" data-rotulo="Con prenda"
+                                             src="assets/images/figura-4-2-posicion-de-electrodos-precordiales-ropa.png"
+                                             alt="Vista frontal del tórax con prenda deportiva y los seis electrodos precordiales colocados de V1 a V6">
+                                        <img class="comparador-img" data-capa="base" data-rotulo="Sin prenda"
+                                             src="assets/images/figura-4-2-posicion-de-electrodos-precordiales.png"
+                                             alt="Vista frontal del tórax sin prenda y los seis electrodos precordiales colocados de V1 a V6 sobre sus referencias anatómicas">
+                                        <button type="button" class="comparador-flecha comparador-flecha--izq"
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.mover(this,-1)" aria-label="Ver la otra versión de la figura">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                        </button>
+                                        <button type="button" class="comparador-flecha comparador-flecha--der"
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.mover(this,1)" aria-label="Ver la otra versión de la figura">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </button>
+                                        <button type="button" class="comparador-ampliar"
+                                                onclick="event.stopPropagation(); OVA.ComparadorFigura.ampliar(this)" aria-label="Comparar las dos versiones superpuestas">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <p class="figura-caption"><strong>Figura 4.2.</strong> Posición de los electrodos precordiales. Vista frontal del tórax con los seis puntos de colocación (V1-V6). Elaboración propia. <em>(Imagen pendiente.)</em></p>
+                                <p class="figura-caption"><strong>Figura 4.2.</strong> Posición de los electrodos precordiales. Vista frontal del tórax con los seis puntos de colocación (V1-V6).</p>
                             </div>
                         </div>
 
@@ -644,17 +679,16 @@
                                 <p>Como un segundo equivale a 5 cuadros grandes, en un minuto completo hay 5 × 60 = 300 cuadros grandes. Basta con contar cuántos cuadros grandes separan dos ondas R consecutivas y dividir 300 entre ese número: un cuadro de separación equivale a 300 lpm; dos cuadros, a 150; tres, a 100; y así sucesivamente, hasta unos 50 lpm con seis cuadros de separación (8).</p>
 
                                 <p>El mismo cálculo puede hacerse con mayor precisión usando los cuadros pequeños: si en un minuto hay 300 cuadros grandes, y cada uno contiene 5 pequeños, en un minuto hay 300 × 5 = 1500 cuadros pequeños. La frecuencia se obtiene dividiendo 1500 entre el número de cuadros pequeños que separan dos ondas R (8).</p>
+
+                                <p>Cuando el ritmo es irregular, la distancia entre ondas R no es constante, y la regla del 300 daría un resultado distinto según el latido medido. En ese caso se cuenta el número de complejos QRS en un tramo de 6 segundos del papel —identificable porque los equipos suelen marcar el registro cada 1 o 3 segundos— y se multiplica por 10, para obtener la frecuencia promedio en ese minuto (8).</p>
                             </div>
                             <div class="figura">
-                                <div class="espacio-reservado">
-                                    <span class="icono" aria-hidden="true">🖼️</span>
-                                    Espacio reservado: dos tiras de ECG con las ondas R marcadas — una con el conteo de cuadros grandes entre dos R (3 cuadros = 100 lpm) y otra con el conteo de cuadros pequeños para el mismo resultado (15 cuadros pequeños = 100 lpm).
+                                <div class="zoom-imagen" onclick="hacerZoom(this)">
+                                    <img src="assets/images/figura-4-4-reglas-300-1500.png" alt="Dos tiras de electrocardiograma con el mismo ritmo: en la de arriba se cuentan tres cuadros grandes entre dos ondas R y en la de abajo los quince cuadros pequeños del mismo intervalo; las dos dan 100 latidos por minuto">
                                 </div>
-                                <p class="figura-caption"><strong>Figura 4.4.</strong> Regla de los 300 y de los 1500. Elaboración propia. <em>(Imagen pendiente.)</em></p>
+                                <p class="figura-caption"><strong>Figura 4.4.</strong> Regla de los 300 y de los 1500. El mismo intervalo entre dos ondas R, contado de dos maneras: tres cuadros grandes o quince pequeños. Elaboración propia.</p>
                             </div>
                         </div>
-
-                        <p>Cuando el ritmo es irregular, la distancia entre ondas R no es constante, y la regla del 300 daría un resultado distinto según el latido medido. En ese caso se cuenta el número de complejos QRS en un tramo de 6 segundos del papel —identificable porque los equipos suelen marcar el registro cada 1 o 3 segundos— y se multiplica por 10, para obtener la frecuencia promedio en ese minuto (8).</p>
 
                         <div class="simulador-fc" data-ejercicio="frecuencia" data-modo="regular" data-aciertos="0" data-intentos="0">
                             <p class="simulador-fc-etiqueta">📏 Recurso interactivo — Calcular la frecuencia cardíaca</p>

@@ -35,6 +35,19 @@
         });
     </script>
     <title>Objeto Virtual de Aprendizaje: manejo de arritmias cardíacas</title>
+
+    <!-- Icono del OVA, en dos formas distintas a propósito:
+         · Favicon (pestaña): el disco llena el lienzo y las esquinas quedan
+           transparentes, así se ve como una chapa redonda y no como un cuadro
+           azul. SVG para los navegadores que lo admiten y PNG de respaldo.
+         · apple-touch-icon: cuadrado y opaco, porque iOS redondea las esquinas
+           por su cuenta y rellena de negro cualquier transparencia. -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="assets/images/icono-ova.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icono-ova-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/icono-ova-192.png">
+    <meta name="theme-color" content="#082956">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -51,6 +64,8 @@
     <link rel="stylesheet" href="css/14-modelo-conduccion.css">
     <link rel="stylesheet" href="css/15-portada.css">
     <link rel="stylesheet" href="css/16-simulador-frecuencia.css">
+    <link rel="stylesheet" href="css/17-comparador-figura.css">
+    <link rel="stylesheet" href="css/18-simulador-potencial.css">
 </head>
 <body>
 
@@ -131,17 +146,21 @@
                     <span class="portada-etiqueta-punto" aria-hidden="true"></span>
                     Objeto virtual de aprendizaje · Proceso de Atención de Enfermería
                 </p>
-                <h1 class="portada-titulo">Manejo de arritmias cardíacas</h1>
+                <!-- Los saltos van marcados para conservar el titular en tres
+                     líneas independientemente del ancho de la columna. -->
+                <h1 class="portada-titulo">Manejo de<br>arritmias<br>cardíacas</h1>
                 <p class="portada-descripcion">
                     Seis módulos que llevan de la electrofisiología del corazón sano al reconocimiento
                     de la arritmia en el monitor y a la decisión clínica que viene después. Cada paso se
                     practica dentro del propio recurso, con simuladores y casos resueltos.
                 </p>
                 <div class="portada-acciones">
-                    <button type="button" class="btn-portada" onclick="abrirModulo('01', 'Fundamentos')">
-                        Comenzar por el Módulo 01 <span aria-hidden="true">→</span>
+                    <a class="btn-portada" href="#modulos-lista">
+                        Ver los seis módulos <span aria-hidden="true">→</span>
+                    </a>
+                    <button type="button" class="btn-portada-secundario" onclick="abrirModal('modal-guia')">
+                        Aprende a navegar
                     </button>
-                    <a class="btn-portada-secundario" href="#modulos-lista">Ver los seis módulos</a>
                 </div>
                 <dl class="portada-cifras">
                     <div class="portada-cifra">
@@ -487,6 +506,31 @@
         </div>
     </div>
 
+    <!-- Comparador de las dos versiones de una misma figura (Figura 4.2 del
+         Módulo 01). Las imágenes se rellenan al abrirlo, desde el comparador
+         en línea que lo invoca. -->
+    <div id="modal-comparador" class="modal-overlay" aria-hidden="true">
+        <div class="modal-caja modal-comparador">
+            <button class="modal-cerrar" onclick="cerrarModal('modal-comparador')" aria-label="Cerrar la comparación">×</button>
+            <h2 class="modal-comparador-titulo">Posición de los electrodos precordiales</h2>
+            <p class="modal-comparador-ayuda">Arrastra el divisor para pasar de una versión a la otra, o usa las flechas para ver solo una. Los electrodos no se mueven: caen en el mismo punto anatómico en las dos.</p>
+            <div class="comparador-zoom" onpointerdown="OVA.ComparadorFigura.iniciarArrastre(event)" onkeydown="OVA.ComparadorFigura.conTeclado(event)" tabindex="0">
+                <img class="comparador-zoom-base" src="" alt="">
+                <img class="comparador-zoom-encima" src="" alt="">
+                <div class="comparador-zoom-divisor" role="slider" aria-label="Proporción visible de cada versión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                    <span class="comparador-zoom-asa" aria-hidden="true">↔</span>
+                </div>
+                <button type="button" class="comparador-flecha comparador-flecha--izq" onclick="OVA.ComparadorFigura.fijar(100)" aria-label="Ver solo la primera versión">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="comparador-flecha comparador-flecha--der" onclick="OVA.ComparadorFigura.fijar(0)" aria-label="Ver solo la segunda versión">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+            <p class="comparador-zoom-pie"><span></span><span></span></p>
+        </div>
+    </div>
+
     <div id="modal-finalizacion" class="modal-overlay" aria-hidden="true">
         <div class="modal-caja modal-finalizacion">
             <button class="modal-cerrar" onclick="cerrarModal('modal-finalizacion')" aria-label="Cerrar">×</button>
@@ -504,6 +548,8 @@
     <footer class="fucs-footer">
         <div class="footer-brand">
             <img src="assets/images/logo-fucs.png" alt="Logo Universidad FUCS" class="footer-logo">
+            <span class="footer-brand-separador" aria-hidden="true"></span>
+            <img src="assets/images/icono-ova.svg" alt="" class="footer-logo-ova">
             <div class="footer-brand-texto">
                 <p class="footer-project-kicker">Objeto Virtual de Aprendizaje</p>
                 <p class="footer-project-name">Manejo de Arritmias Cardíacas</p>
@@ -585,5 +631,7 @@
     <script src="js/19-portada-ecg.js"></script>
     <script src="js/20-bienvenida-modulo.js"></script>
     <script src="js/21-simulador-frecuencia.js"></script>
+    <script src="js/22-comparador-figura.js"></script>
+    <script src="js/23-simulador-potencial.js"></script>
 </body>
 </html>
