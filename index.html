@@ -145,7 +145,10 @@
                     Objeto virtual de aprendizaje · Proceso de Atención de Enfermería
                 </p>
                 <div class="portada-encabezado">
-                    <h1 class="portada-titulo">Manejo de arritmias cardíacas</h1>
+                    <!-- Los saltos van marcados para que la caja del titular se
+                         ajuste al ancho de su línea más larga (width: max-content)
+                         y el logo quede pegado al texto, no al borde de la columna. -->
+                    <h1 class="portada-titulo">Manejo de<br>arritmias<br>cardíacas</h1>
                     <img src="assets/images/icono-ova.svg" alt="" class="portada-logo">
                 </div>
                 <p class="portada-descripcion">
@@ -154,10 +157,12 @@
                     practica dentro del propio recurso, con simuladores y casos resueltos.
                 </p>
                 <div class="portada-acciones">
-                    <button type="button" class="btn-portada" onclick="abrirModulo('01', 'Fundamentos')">
-                        Comenzar por el Módulo 01 <span aria-hidden="true">→</span>
+                    <a class="btn-portada" href="#modulos-lista">
+                        Ver los seis módulos <span aria-hidden="true">→</span>
+                    </a>
+                    <button type="button" class="btn-portada-secundario" onclick="abrirModal('modal-guia')">
+                        Aprende a navegar
                     </button>
-                    <a class="btn-portada-secundario" href="#modulos-lista">Ver los seis módulos</a>
                 </div>
                 <dl class="portada-cifras">
                     <div class="portada-cifra">

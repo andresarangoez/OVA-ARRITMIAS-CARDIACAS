@@ -47,7 +47,10 @@
     margin: 0 0 18px 0;
 }
 
-.portada-encabezado .portada-titulo { margin: 0; }
+/* max-content respeta los saltos marcados en el HTML, así que la caja mide
+   lo que su línea más larga: sin ese ajuste el titular ocupaba toda la
+   columna y dejaba un hueco entre el texto y el logo. */
+.portada-encabezado .portada-titulo { margin: 0; width: max-content; max-width: 100%; }
 
 .portada-logo {
     width: clamp(84px, 9vw, 124px);
@@ -71,6 +74,7 @@
     color: var(--text-body);
     font-size: 1.02rem;
     line-height: 1.65;
+    text-align: justify;
 }
 
 .portada-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 32px; }
@@ -78,7 +82,15 @@
 /* Mismo lenguaje que .btn-comenzar (css/05-modulo.css): azul institucional en
    reposo, dorado al pasar el cursor. No se reutiliza esa clase porque aquí el
    botón es de mayor jerarquía y no comparte su tipografía. */
+/* Los dos botones de la portada intercambian elemento según adónde lleven
+   (enlace a la lista de módulos, botón que abre la guía), así que ambos
+   declaran lo que cada etiqueta no hereda: display y subrayado para <a>,
+   tipografía y cursor para <button>. */
 .btn-portada {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
     background-color: var(--fucs-azul-profundo);
     color: #ffffff;
     border: none;
@@ -100,14 +112,18 @@
 }
 
 .btn-portada-secundario {
+    display: inline-flex;
+    align-items: center;
     padding: 15px 22px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--fucs-gris);
     background: #ffffff;
     color: var(--fucs-azul-profundo);
+    font-family: inherit;
     font-size: 0.92rem;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 .btn-portada-secundario:hover { border-color: var(--fucs-azul-profundo); background: var(--fucs-niebla); }
