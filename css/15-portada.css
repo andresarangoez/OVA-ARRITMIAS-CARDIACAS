@@ -200,82 +200,8 @@
     text-transform: uppercase;
     opacity: 0.75;
 }
-.modulos-titulo { margin: 0 0 12px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
-
-/* --- RUTA DEL PAE ---
-   Seis pasos en una sola fila, con el 01 separado del resto porque no es una
-   fase del proceso sino la base sobre la que se apoyan las otras cinco.
-   Cada paso es un botón: la ruta explica la estructura y, a la vez, es la
-   forma más rápida de entrar al módulo. */
-.pae-ruta {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    margin: 18px 0 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: none;
-}
-
-.pae-paso { display: flex; min-width: 0; }
-
-.pae-paso button {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    width: 100%;
-    padding: 12px 14px;
-    font: inherit;
-    text-align: left;
-    background: #ffffff;
-    border: 1px solid rgba(198, 199, 200, 0.7);
-    border-radius: var(--bento-radius-md);
-    cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.pae-paso button:hover,
-.pae-paso button:focus-visible {
-    border-color: var(--fucs-azul-oscuro);
-    box-shadow: var(--bento-shadow-soft);
-    transform: translateY(-2px);
-}
-
-.pae-paso-num {
-    color: var(--fucs-azul-oscuro);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    opacity: 0.7;
-}
-.pae-paso-nombre { color: var(--fucs-azul-profundo); font-size: 0.97rem; font-weight: 700; line-height: 1.25; }
-.pae-paso-rol { color: var(--text-muted); font-size: 0.74rem; line-height: 1.3; }
-
-/* El 01 es la base: fondo tenue y un filete a la derecha que lo separa de las
-   cinco fases, en vez de una flecha más, que lo haría parecer una de ellas. */
-.pae-paso--base button { background: rgba(9, 39, 85, 0.04); }
-.pae-paso--base { position: relative; margin-right: 11px; }
-.pae-paso--base::after {
-    content: "";
-    position: absolute;
-    top: 6px; bottom: 6px; right: -11px;
-    width: 1px;
-    background: rgba(198, 199, 200, 0.9);
-}
-
-.modulos-pie { margin: 14px 0 0; color: var(--text-muted); font-size: 0.9rem; }
-
-/* Tres columnas y luego dos: el 01 conserva su filete solo mientras la fila
-   es una, que es cuando separa algo. */
-@media (max-width: 1000px) {
-    .pae-ruta { grid-template-columns: repeat(3, 1fr); }
-    .pae-paso--base { margin-right: 0; }
-    .pae-paso--base::after { display: none; }
-}
-@media (max-width: 620px) {
-    .pae-ruta { grid-template-columns: repeat(2, 1fr); }
-}
+.modulos-titulo { margin: 0 0 10px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
+.modulos-descripcion { margin: 0; width: 100%; color: var(--text-body); font-size: 0.98rem; line-height: 1.7; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }
 
