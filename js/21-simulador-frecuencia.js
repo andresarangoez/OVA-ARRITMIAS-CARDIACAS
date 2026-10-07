@@ -64,11 +64,13 @@ const COTAS_VOLTAJE = [
     { y: 35, mm: 10, texto: '10 mm = 1 mV', color: 'azul' }
 ];
 
+// En pirámide: la cota más corta arriba y la más larga en la base, igual que
+// la columna de voltaje, para que las dos listas crezcan en el mismo sentido.
 const COTAS_TIEMPO = [
-    { y: 15, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' },
-    { y: 25, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
-    { y: 35, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
-    { y: 45, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' }
+    { y: 15, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' },
+    { y: 25, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
+    { y: 35, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
+    { y: 45, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' }
 ];
 
 const COTA_VOLTAJE_X = 20;   // columna donde se alinean las barras de voltaje
