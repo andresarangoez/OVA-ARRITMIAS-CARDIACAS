@@ -622,16 +622,17 @@
                         <p>Por eso el papel no es solo el fondo donde se dibuja el trazado, es la herramienta con la que se mide cada onda, segmento e intervalo. La distancia horizontal entre dos puntos dice cuánto duró ese tramo; la distancia vertical dice qué tan intensa fue la señal. Ese mismo conteo es el que se usa para medir la duración de cada onda en la unidad siguiente, y es también la base del cálculo de la frecuencia cardíaca que viene en el próximo apartado.</p>
 
                         <div class="figura">
-                            <div class="simulador-fc simulador-fc--figura" data-ejercicio="papel" data-eje="x">
+                            <div class="simulador-fc simulador-fc--figura" data-ejercicio="papel" data-eje="ref">
                                 <div class="simulador-fc-ejes">
-                                    <button type="button" class="activo" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'x')">Medir tiempo</button>
+                                    <button type="button" class="activo" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'ref')">Referencia</button>
+                                    <button type="button" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'x')">Medir tiempo</button>
                                     <button type="button" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'y')">Medir voltaje</button>
                                 </div>
                                 <div class="simulador-fc-lienzo-wrap">
                                     <div class="simulador-fc-lienzo"></div>
                                 </div>
-                                <p class="simulador-fc-lectura"><span class="simulador-fc-lectura-rotulo">Tiempo medido:</span> <span class="simulador-fc-lectura-valor"></span></p>
-                                <p class="simulador-fc-pista">Arrastra las dos patas del calibrador sobre el papel para medir. Se enganchan de milímetro en milímetro, que es lo fino que se puede leer un cuadro pequeño a ojo.</p>
+                                <p class="simulador-fc-lectura" hidden><span class="simulador-fc-lectura-rotulo">Tiempo medido:</span> <span class="simulador-fc-lectura-valor"></span></p>
+                                <p class="simulador-fc-pista" hidden>Arrastra las dos patas del calibrador sobre el papel para medir. Se enganchan de milímetro en milímetro, que es lo fino que se puede leer un cuadro pequeño a ojo.</p>
                             </div>
                             <p class="figura-caption"><strong>Figura 4.3.</strong> Papel de registro del electrocardiograma: cuadros pequeños de 1 mm y cuadros grandes de 5 mm; a la velocidad estándar de 25 mm/s equivalen a 0,04 y 0,2 segundos. La marca de calibración de la izquierda mide 10 mm, es decir, 1 mV. Elaboración propia.</p>
                         </div>

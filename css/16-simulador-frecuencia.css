@@ -43,6 +43,11 @@
 .simulador-fc-lienzo { display: inline-block; min-width: 100%; }
 .simulador-fc-svg { display: block; }
 
+/* La figura ocupa el ancho de la columna de texto en vez de quedarse pequeña
+   con espacio sobrante a los lados. */
+.simulador-fc-svg--fluido { width: 100%; height: auto; }
+.simulador-fc--figura .simulador-fc-lienzo-wrap { overflow-x: visible; }
+
 /* --- Papel --- */
 .simulador-fc-fondo { fill: #fff6f4; }
 .simulador-fc-rejilla-fina { fill: none; stroke: #f0c3bd; stroke-width: .12; }
@@ -92,11 +97,41 @@
     text-anchor: middle; font-family: inherit;
 }
 
-/* --- Cotas de la figura --- */
-.simulador-fc-cota { stroke: #2b3b52; stroke-width: .25; fill: none; }
-.simulador-fc-calibracion { stroke: #16181d; stroke-width: .4; fill: none; }
-.simulador-fc-cota-texto { font-size: 2.4px; fill: #2b3b52; text-anchor: middle; font-family: inherit; }
-.simulador-fc-cota-titulo { font-size: 2.4px; font-weight: 700; fill: #1f4f86; text-anchor: middle; font-family: inherit; }
+/* --- Cotas de la Figura 4.3 --- */
+.simulador-fc-cotas { transition: opacity .2s; }
+.simulador-fc-cotas.atenuadas { opacity: .28; }
+
+.simulador-fc-cota-base { stroke: #94a3b8; stroke-width: .2; fill: none; stroke-dasharray: 1 1; }
+.simulador-fc-cota-barra { fill: none; stroke-width: .55; stroke-linecap: butt; }
+.simulador-fc-cota-caja { fill: #ffffff; stroke-width: .3; }
+.simulador-fc-cota-rotulo-texto { font-size: 2.8px; font-weight: 600; font-family: inherit; }
+
+.simulador-fc-cota-titulo {
+    font-size: 3.2px; font-weight: 700; fill: #1f3864;
+    text-anchor: middle; font-family: inherit; letter-spacing: .4px;
+}
+
+.simulador-fc-cota-pie {
+    font-size: 2.6px; font-weight: 600; fill: #475569;
+    text-anchor: middle; font-family: inherit;
+}
+
+/* Un color por cota, para que cada medida se siga de un vistazo. */
+.simulador-fc-med--ambar.simulador-fc-cota-barra { stroke: #c2680a; }
+.simulador-fc-med--ambar .simulador-fc-cota-caja { stroke: #c2680a; }
+.simulador-fc-med--ambar .simulador-fc-cota-rotulo-texto { fill: #96500a; }
+
+.simulador-fc-med--verde.simulador-fc-cota-barra { stroke: #15803d; }
+.simulador-fc-med--verde .simulador-fc-cota-caja { stroke: #15803d; }
+.simulador-fc-med--verde .simulador-fc-cota-rotulo-texto { fill: #11602f; }
+
+.simulador-fc-med--azul.simulador-fc-cota-barra { stroke: #1d4ed8; }
+.simulador-fc-med--azul .simulador-fc-cota-caja { stroke: #1d4ed8; }
+.simulador-fc-med--azul .simulador-fc-cota-rotulo-texto { fill: #1a3fae; }
+
+.simulador-fc-med--violeta.simulador-fc-cota-barra { stroke: #7e22ce; }
+.simulador-fc-med--violeta .simulador-fc-cota-caja { stroke: #7e22ce; }
+.simulador-fc-med--violeta .simulador-fc-cota-rotulo-texto { fill: #661ba6; }
 
 /* --- Selectores de modo y de eje --- */
 .simulador-fc-modos,

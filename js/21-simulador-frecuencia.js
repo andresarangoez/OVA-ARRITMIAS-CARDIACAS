@@ -40,9 +40,31 @@ const RR_EXACTOS = [15, 20, 25, 30];
 // hace falta la de los 1500. Son el motivo de que exista la segunda regla.
 const RR_INEXACTOS = [13, 17, 22, 27];
 
-const PAPEL_FIGURA = { anchoMm: 100, altoMm: 36, pxPorMm: 6 };
+// La figura es fluida: ocupa el ancho de la columna de texto. Como el
+// calibrador mide en unidades del viewBox, la medida sigue siendo correcta
+// aunque la figura se muestre más grande o más pequeña.
+const PAPEL_FIGURA = { anchoMm: 130, altoMm: 55, pxPorMm: 6.2, fluido: true };
 const PAPEL_REGULAR = { anchoMm: 150, altoMm: 34, pxPorMm: 5 };
 const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4 };
+
+// Cotas de referencia de la Figura 4.3, de menor a mayor. Las verticales
+// crecen desde una misma línea de base y las horizontales desde un mismo
+// margen, de modo que la progresión se ve como una escalera.
+const COTAS_VOLTAJE = [
+    { x: 16, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' },
+    { x: 31, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
+    { x: 46, mm: 10, texto: '10 mm = 1 mV', color: 'azul' }
+];
+
+const COTAS_TIEMPO = [
+    { y: 16, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' },
+    { y: 26, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
+    { y: 36, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
+    { y: 46, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' }
+];
+
+const COTA_BASE_Y = 46;   // línea de base de las cotas verticales
+const COTA_BASE_X = 66;   // margen izquierdo de las cotas horizontales
 
 let contadorIds = 0;
 let arrastre = null; // { raiz, svg, tipo: 'pata'|'ventana', pata, agarreMm }
@@ -62,12 +84,15 @@ function papelDe(raiz) {
 }
 
 function nuevoSvg(papel) {
-    return crear('svg', {
+    const atributos = {
         viewBox: '0 0 ' + papel.anchoMm + ' ' + papel.altoMm,
-        width: Math.round(papel.anchoMm * papel.pxPorMm),
-        height: Math.round(papel.altoMm * papel.pxPorMm),
-        class: 'simulador-fc-svg'
-    });
+        class: 'simulador-fc-svg' + (papel.fluido ? ' simulador-fc-svg--fluido' : '')
+    };
+    if (!papel.fluido) {
+        atributos.width = Math.round(papel.anchoMm * papel.pxPorMm);
+        atributos.height = Math.round(papel.altoMm * papel.pxPorMm);
+    }
+    return crear('svg', atributos);
 }
 
 // Cuadrícula de papel de ECG: líneas finas cada 1 mm y gruesas cada 5 mm.
@@ -176,7 +201,8 @@ function dibujarCalibrador(svg, raiz, papel) {
 
 function actualizarCalibrador(raiz) {
     const svg = raiz.querySelector('.simulador-fc-svg');
-    if (!svg) return;
+    const barra = raiz.querySelector('.simulador-fc-calibrador-barra');
+    if (!svg || !barra) return;   // la figura en modo referencia no lleva calibrador
     const papel = papelDe(raiz);
     const vertical = raiz.dataset.eje === 'y';
     const a = parseFloat(raiz.dataset.calA);
@@ -197,7 +223,6 @@ function actualizarCalibrador(raiz) {
         }
     });
 
-    const barra = raiz.querySelector('.simulador-fc-calibrador-barra');
     if (vertical) {
         barra.setAttribute('x1', papel.anchoMm - 4); barra.setAttribute('y1', a);
         barra.setAttribute('x2', papel.anchoMm - 4); barra.setAttribute('y2', b);
@@ -298,30 +323,66 @@ function moverConTeclado(ev, raiz, pata) {
 
 // --- FIGURA 4.3: EL PAPEL, MEDIBLE ---
 
+// Rótulo de una cota: caja blanca con borde del color de la cota, para que
+// el texto se lea sobre la cuadrícula rosa. El ancho se estima a partir del
+// número de caracteres porque el SVG aún no está en el documento y no se
+// puede medir el texto.
+function rotuloCota(grupo, x, y, texto, color, rotado) {
+    const ancho = texto.length * 1.45 + 2.6;
+    const g = crear('g', { class: 'simulador-fc-cota-rotulo simulador-fc-med--' + color });
+    g.setAttribute('transform', 'translate(' + x + ',' + y + ')' + (rotado ? ' rotate(-90)' : ''));
+    g.appendChild(crear('rect', { x: 0, y: -2.2, width: ancho, height: 4.4, rx: 1, class: 'simulador-fc-cota-caja' }));
+    g.appendChild(crear('text', { x: 1.3, y: 1, class: 'simulador-fc-cota-rotulo-texto' }, texto));
+    grupo.appendChild(g);
+}
+
 function montarPapel(raiz) {
     const papel = PAPEL_FIGURA;
     const lienzo = raiz.querySelector('.simulador-fc-lienzo');
     if (!lienzo) return;
+    const eje = raiz.dataset.eje || 'ref';
     lienzo.textContent = '';
 
     const svg = nuevoSvg(papel);
     dibujarCuadricula(svg, papel);
 
-    // Las cotas de referencia se quedan: son el «así se ve normalmente».
-    const cotas = crear('g', { class: 'simulador-fc-cotas' });
-    cotas.appendChild(crear('path', { d: 'M10,31 H15 M10,29.8 V32.2 M15,29.8 V32.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', { x: 12.5, y: 35, class: 'simulador-fc-cota-texto' }, '5 mm = 0,20 s'));
-    cotas.appendChild(crear('path', { d: 'M24,31 H25 M24,29.8 V32.2 M25,29.8 V32.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', { x: 28, y: 35, class: 'simulador-fc-cota-texto' }, '1 mm = 0,04 s'));
-    cotas.appendChild(crear('path', { d: 'M4,14 V24 M2.8,14 H5.2 M2.8,24 H5.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', { x: 0, y: 0, class: 'simulador-fc-cota-texto', transform: 'translate(1.6,19) rotate(-90)' }, '10 mm = 1 mV'));
-    cotas.appendChild(crear('path', { d: 'M8,24 H11 L11,14 H16 L16,24 H19', class: 'simulador-fc-calibracion' }));
-    cotas.appendChild(crear('text', { x: 62, y: 3.6, class: 'simulador-fc-cota-titulo' }, 'Velocidad del papel = 25 mm/s'));
+    // Las cotas de referencia: el «así se ve y así se mide» del papel. Se
+    // atenúan cuando el estudiante pasa a medir por su cuenta, para que no
+    // compitan con el calibrador.
+    const cotas = crear('g', { class: 'simulador-fc-cotas' + (eje === 'ref' ? '' : ' atenuadas') });
+
+    cotas.appendChild(crear('text', { x: 31, y: 9, class: 'simulador-fc-cota-titulo' }, 'VOLTAJE'));
+    cotas.appendChild(crear('text', { x: 93, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
+    cotas.appendChild(crear('path', { d: 'M12,' + COTA_BASE_Y + ' H52', class: 'simulador-fc-cota-base' }));
+
+    COTAS_VOLTAJE.forEach((cota) => {
+        const arriba = COTA_BASE_Y - cota.mm;
+        cotas.appendChild(crear('path', {
+            d: 'M' + cota.x + ',' + arriba + ' V' + COTA_BASE_Y +
+               ' M' + (cota.x - 1.2) + ',' + arriba + ' H' + (cota.x + 1.2) +
+               ' M' + (cota.x - 1.2) + ',' + COTA_BASE_Y + ' H' + (cota.x + 1.2),
+            class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
+        }));
+        rotuloCota(cotas, cota.x + 2.6, COTA_BASE_Y, cota.texto, cota.color, true);
+    });
+
+    COTAS_TIEMPO.forEach((cota) => {
+        const derecha = COTA_BASE_X + cota.mm;
+        cotas.appendChild(crear('path', {
+            d: 'M' + COTA_BASE_X + ',' + cota.y + ' H' + derecha +
+               ' M' + COTA_BASE_X + ',' + (cota.y - 1.2) + ' V' + (cota.y + 1.2) +
+               ' M' + derecha + ',' + (cota.y - 1.2) + ' V' + (cota.y + 1.2),
+            class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
+        }));
+        rotuloCota(cotas, derecha + 2.6, cota.y, cota.texto, cota.color, false);
+    });
+
+    cotas.appendChild(crear('text', { x: 93, y: 53, class: 'simulador-fc-cota-pie' }, 'Velocidad del papel = 25 mm/s'));
     svg.appendChild(cotas);
 
-    dibujarCalibrador(svg, raiz, papel);
+    if (eje !== 'ref') dibujarCalibrador(svg, raiz, papel);
     lienzo.appendChild(svg);
-    actualizarCalibrador(raiz);
+    if (eje !== 'ref') actualizarCalibrador(raiz);
 }
 
 function cambiarEje(boton, eje) {
@@ -329,8 +390,14 @@ function cambiarEje(boton, eje) {
     if (!raiz) return;
     raiz.dataset.eje = eje;
     raiz.querySelectorAll('.simulador-fc-ejes button').forEach((b) => b.classList.toggle('activo', b === boton));
+
+    const lectura = raiz.querySelector('.simulador-fc-lectura');
+    if (lectura) lectura.hidden = eje === 'ref';
     const rotulo = raiz.querySelector('.simulador-fc-lectura-rotulo');
     if (rotulo) rotulo.textContent = eje === 'y' ? 'Voltaje medido:' : 'Tiempo medido:';
+    const pista = raiz.querySelector('.simulador-fc-pista');
+    if (pista) pista.hidden = eje === 'ref';
+
     montarPapel(raiz);
 }
 
