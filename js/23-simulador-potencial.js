@@ -40,34 +40,37 @@ const ROTULOS = [
     { fase: '3', x: 580, y: 205 }, { fase: '4', x: 680, y: 305 }
 ];
 
+// Cada corriente se nombra por lo que hace, no por la subunidad del canal:
+// la nomenclatura molecular (Nav1.5, Kv7.1 y demás) queda por encima del
+// nivel del módulo y no aporta nada al reconocimiento del trazado.
 const FASES = {
     '0': {
         mv: 'De −80/−90 mV hasta cerca de +20 mV, en una fracción de milisegundo.',
-        corrientes: [['Na⁺', 'entra', 'I<sub>Na</sub> (rápida) · Nav1.5']]
+        corrientes: [['Na⁺', 'entra', 'corriente rápida de sodio']]
     },
     '1': {
         mv: 'Una pequeña muesca justo después del pico.',
-        corrientes: [['K⁺ (y Cl⁻)', 'sale', 'I<sub>to</sub> (salida transitoria) · Kv4.3']]
+        corrientes: [['K⁺ (y Cl⁻)', 'sale', 'salida transitoria']]
     },
     '2': {
         mv: 'Potencial sostenido cerca del máximo durante 0,2 a 0,3 segundos.',
         corrientes: [
-            ['Ca²⁺', 'entra', 'I<sub>Ca-L</sub> · Cav1.2'],
-            ['K⁺', 'sale, frenada', 'I<sub>Kur</sub> · Kv1.5'],
-            ['K⁺', 'sale, lenta', 'I<sub>Ks</sub> · Kv7.1']
+            ['Ca²⁺', 'entra', 'canales lentos de calcio tipo L'],
+            ['K⁺', 'sale, frenada', 'rectificador ultrarrápido'],
+            ['K⁺', 'sale, lenta', 'rectificador tardío lento']
         ]
     },
     '3': {
         mv: 'Cae hasta devolver la célula a −80/−90 mV.',
         corrientes: [
-            ['K⁺', 'sale', 'I<sub>Kr</sub> (rectificador tardío rápido) · Kv11.1'],
-            ['K⁺', 'sale', 'I<sub>Ks</sub> (rectificador tardío lento) · Kv7.1'],
-            ['K⁺', 'sale y entra', 'I<sub>K1</sub> (rectificador de entrada) · Kir2.x']
+            ['K⁺', 'sale', 'rectificador tardío rápido'],
+            ['K⁺', 'sale', 'rectificador tardío lento'],
+            ['K⁺', 'sale y entra', 'rectificador de entrada']
         ]
     },
     '4': {
         mv: '−80 a −90 mV, estable hasta el próximo estímulo.',
-        corrientes: [['K⁺', 'sale y entra', 'I<sub>K1</sub> (rectificador de entrada) · Kir2.x']]
+        corrientes: [['K⁺', 'sale y entra', 'rectificador de entrada']]
     }
 };
 
@@ -148,12 +151,17 @@ function construirPestanas(raiz) {
         barra.appendChild(b);
     });
 
+    // El botón de reproducir vive en la cabecera, no entre las pestañas: no
+    // selecciona una fase, recorre todas.
+    const hueco = raiz.querySelector('.sim-pa-play-wrap');
+    if (!hueco) return;
+    hueco.textContent = '';
     const play = document.createElement('button');
     play.type = 'button';
     play.className = 'sim-pa-play';
     play.textContent = '▶ Reproducir';
     play.addEventListener('click', () => alternarReproduccion(raiz));
-    barra.appendChild(play);
+    hueco.appendChild(play);
 }
 
 // --- SELECCIÓN ---

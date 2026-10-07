@@ -28,8 +28,19 @@
     box-shadow: var(--bento-shadow-sm, 0 1px 3px rgba(0, 0, 0, .06));
 }
 
+/* Cabecera: el título a la izquierda y el botón de reproducir a la derecha.
+   No va entre las pestañas porque no selecciona una fase, las recorre todas. */
+.sim-pa-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
 .sim-pa-etiqueta {
-    margin: 0 0 10px;
+    margin: 0;
     font-weight: 700;
     font-size: .92rem;
     color: var(--fucs-azul-profundo);
@@ -93,7 +104,7 @@
 .sim-pa-tab:hover { border-color: var(--pa-color); color: var(--pa-color); }
 .sim-pa-tab.activo { background: var(--pa-color); border-color: var(--pa-color); color: #ffffff; }
 
-.sim-pa-play { margin-left: auto; color: var(--fucs-azul-profundo); }
+.sim-pa-play { color: var(--fucs-azul-profundo); }
 .sim-pa-play:hover { border-color: var(--fucs-azul-profundo); }
 .sim-pa-play.reproduciendo { background: var(--fucs-azul-profundo); border-color: var(--fucs-azul-profundo); color: #ffffff; }
 
