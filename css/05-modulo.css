@@ -100,14 +100,14 @@
    centrados verticalmente entre sí (align-items: center), en vez de
    que la imagen quede pegada arriba dejando un hueco en blanco cuando
    el texto es más alto que ella. En pantallas angostas se apila. */
-.figura-fila { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: center; margin: 20px 0; }
+.figura-fila { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: center; margin: 20px 0; }
 .figura-fila-texto > *:first-child { margin-top: 0; }
 .figura-fila-texto > *:last-child { margin-bottom: 0; }
 .figura-fila-texto li { text-align: justify; }
 /* Variante con la imagen a la izquierda. La columna ancha cambia de lado y en
    el HTML el bloque .figura va primero; al apilarse en móvil, la imagen queda
    arriba, que es el orden de lectura que corresponde. */
-.figura-fila.imagen-izquierda { grid-template-columns: 320px 1fr; }
+.figura-fila.imagen-izquierda { grid-template-columns: 1fr 1.1fr; }
 
 /* --- FIGURA / IMAGEN ---
    Misma tarjeta visual que .corazon-estructuras (fondo, radio y sombra

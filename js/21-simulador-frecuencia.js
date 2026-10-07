@@ -44,8 +44,8 @@ const RR_INEXACTOS = [13, 17, 22, 27];
 // calibrador mide en unidades del viewBox, la medida sigue siendo correcta
 // aunque la figura se muestre más grande o más pequeña.
 const PAPEL_FIGURA = { anchoMm: 130, altoMm: 55, pxPorMm: 6.2, fluido: true };
-const PAPEL_REGULAR = { anchoMm: 150, altoMm: 34, pxPorMm: 5 };
-const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4 };
+const PAPEL_REGULAR = { anchoMm: 150, altoMm: 34, pxPorMm: 5, fluido: true };
+const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4, fluido: true };
 
 // Cotas de referencia de la Figura 4.3, de menor a mayor. Las verticales
 // crecen desde una misma línea de base y las horizontales desde un mismo
@@ -55,16 +55,16 @@ const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4 };
 // un cuadro grande y la de 25 mm, cinco. Si las barras cayeran entre líneas,
 // la equivalencia no se podría comprobar sobre el propio papel.
 const COTAS_VOLTAJE = [
-    { x: 15, mm: 1, texto: '1 mm = 0,1 mV' },
-    { x: 30, mm: 5, texto: '5 mm = 0,5 mV' },
-    { x: 45, mm: 10, texto: '10 mm = 1 mV' }
+    { x: 15, mm: 10, texto: '10 mm = 1 mV', color: 'azul' },
+    { x: 30, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
+    { x: 45, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' }
 ];
 
 const COTAS_TIEMPO = [
-    { y: 15, mm: 1, texto: '1 mm = 0,04 segundos' },
-    { y: 25, mm: 5, texto: '5 mm = 0,20 segundos' },
-    { y: 35, mm: 10, texto: '10 mm = 0,40 segundos' },
-    { y: 45, mm: 25, texto: '25 mm = 1 segundo' }
+    { y: 15, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' },
+    { y: 25, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
+    { y: 35, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
+    { y: 45, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' }
 ];
 
 const COTA_BASE_Y = 45;   // línea de base de las cotas verticales
@@ -372,12 +372,26 @@ function moverConTeclado(ev, raiz, pata, cual) {
 // el texto se lea sobre la cuadrícula rosa. El ancho se estima a partir del
 // número de caracteres porque el SVG aún no está en el documento y no se
 // puede medir el texto.
+// Ancho real de un texto, medido con un canvas fuera de pantalla. No se usa
+// getBBox() porque el módulo se monta con el desarrollo todavía oculto
+// (display:none hasta pulsar «Comenzar») y ahí getBBox devuelve cero, lo que
+// dejaba las cajas más estrechas que su texto.
+const TIPO_ROTULO = 1.9;
+let medidor = null;
+
+function anchoTexto(texto, tamano) {
+    if (!medidor) medidor = document.createElement('canvas').getContext('2d');
+    const familia = getComputedStyle(document.body).fontFamily || 'sans-serif';
+    medidor.font = '600 100px ' + familia;
+    return medidor.measureText(texto).width / 100 * tamano;
+}
+
 function rotuloCota(grupo, x, y, texto, rotado) {
-    const ancho = texto.length * 1.12 + 1.8;
     const g = crear('g', { class: 'simulador-fc-cota-rotulo' });
     g.setAttribute('transform', 'translate(' + x + ',' + y + ')' + (rotado ? ' rotate(-90)' : ''));
-    g.appendChild(crear('rect', { x: 0, y: -1.7, width: ancho, height: 3.4, rx: .7, class: 'simulador-fc-cota-caja' }));
-    g.appendChild(crear('text', { x: .9, y: .8, class: 'simulador-fc-cota-rotulo-texto' }, texto));
+    const ancho = anchoTexto(texto, TIPO_ROTULO) + 2.8;
+    g.appendChild(crear('rect', { x: 0, y: -1.6, width: ancho.toFixed(2), height: 3.2, rx: .7, class: 'simulador-fc-cota-caja' }));
+    g.appendChild(crear('text', { x: 1.4, y: .7, class: 'simulador-fc-cota-rotulo-texto' }, texto));
     grupo.appendChild(g);
 }
 
@@ -399,7 +413,6 @@ function montarPapel(raiz) {
 
         cotas.appendChild(crear('text', { x: 30, y: 9, class: 'simulador-fc-cota-titulo' }, 'VOLTAJE'));
         cotas.appendChild(crear('text', { x: 95, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
-        cotas.appendChild(crear('path', { d: 'M10,' + COTA_BASE_Y + ' H52', class: 'simulador-fc-cota-base' }));
 
         COTAS_VOLTAJE.forEach((cota) => {
             const arriba = COTA_BASE_Y - cota.mm;
@@ -407,9 +420,9 @@ function montarPapel(raiz) {
                 d: 'M' + cota.x + ',' + arriba + ' V' + COTA_BASE_Y +
                    ' M' + (cota.x - 1) + ',' + arriba + ' H' + (cota.x + 1) +
                    ' M' + (cota.x - 1) + ',' + COTA_BASE_Y + ' H' + (cota.x + 1),
-                class: 'simulador-fc-cota-barra'
+                class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
             }));
-            rotuloCota(cotas, cota.x + 2, COTA_BASE_Y, cota.texto, true);
+            rotuloCota(cotas, cota.x + 4, COTA_BASE_Y, cota.texto, true);
         });
 
         COTAS_TIEMPO.forEach((cota) => {
@@ -418,9 +431,9 @@ function montarPapel(raiz) {
                 d: 'M' + COTA_BASE_X + ',' + cota.y + ' H' + derecha +
                    ' M' + COTA_BASE_X + ',' + (cota.y - 1) + ' V' + (cota.y + 1) +
                    ' M' + derecha + ',' + (cota.y - 1) + ' V' + (cota.y + 1),
-                class: 'simulador-fc-cota-barra'
+                class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
             }));
-            rotuloCota(cotas, derecha + 2, cota.y, cota.texto, false);
+            rotuloCota(cotas, derecha + 3.5, cota.y, cota.texto, false);
         });
 
         cotas.appendChild(crear('text', { x: 95, y: 52, class: 'simulador-fc-cota-pie' }, 'Velocidad del papel = 25 mm/s'));

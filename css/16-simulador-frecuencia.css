@@ -109,18 +109,18 @@
    de base. La diferencia entre cotas la da su longitud sobre la cuadrícula,
    que es justamente lo que la figura tiene que enseñar. */
 
-.simulador-fc-cota-base {
-    stroke: var(--fucs-dorado);
-    stroke-width: .35;
-    fill: none;
-}
-
+/* El color va solo en las barras: distingue cada cota de un vistazo sin que
+   el texto pierda la identidad institucional. */
 .simulador-fc-cota-barra {
     fill: none;
-    stroke: var(--fucs-azul-profundo);
     stroke-width: .5;
     stroke-linecap: butt;
 }
+
+.simulador-fc-med--ambar { stroke: #c2680a; }
+.simulador-fc-med--verde { stroke: #15803d; }
+.simulador-fc-med--azul { stroke: #1d4ed8; }
+.simulador-fc-med--violeta { stroke: #7e22ce; }
 
 .simulador-fc-cota-caja {
     fill: #ffffff;
@@ -129,7 +129,7 @@
 }
 
 .simulador-fc-cota-rotulo-texto {
-    font-size: 2.1px;
+    font-size: 1.9px;
     font-weight: 600;
     font-family: inherit;
     fill: var(--fucs-azul-profundo);
