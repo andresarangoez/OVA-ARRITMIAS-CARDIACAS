@@ -200,7 +200,7 @@
     text-transform: uppercase;
     opacity: 0.75;
 }
-.modulos-titulo { margin: 0 0 12px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
+.modulos-titulo { margin: 0 0 10px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
 .modulos-descripcion { margin: 0; width: 100%; color: var(--text-body); font-size: 0.98rem; line-height: 1.7; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }

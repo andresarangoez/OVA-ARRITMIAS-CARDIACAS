@@ -1,7 +1,7 @@
-/* --- BARRA INSTITUCIONAL ---
+/* --- BARRA SUPERIOR ---
    Acompaña a las dos vistas (home y módulo), así que es identidad, no portada:
-   marca a la izquierda, metadatos a la derecha. El título del recurso vive
-   ahora en la portada (.portada-titulo, css/15-portada.css) y el del módulo en
+   la marca del recurso a la izquierda y, a la derecha, los metadatos del
+   proyecto junto a la identidad institucional. El título del módulo vive en
    su propia barra (.module-navbar), para no repetirlo en pantalla. */
 .header-container {
     display: flex;
@@ -21,13 +21,21 @@
 }
 .marca-institucional { display: flex; align-items: center; gap: 14px; text-decoration: none; }
 .marca-logo { height: 42px; width: auto; display: block; }
-/* Universidad y facultad en una sola línea (se apilan solo si no caben). */
-.marca-texto { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; line-height: 1.3; }
+/* Universidad arriba y facultad debajo, junto al escudo: dos líneas de la
+   misma marca, no dos datos sueltos en fila. */
+.marca-texto { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.25; }
 .marca-universidad { color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px; }
-.marca-separador { color: var(--fucs-gris); font-size: 0.9rem; }
 .marca-facultad { color: var(--fucs-azul-oscuro); font-size: 0.9rem; font-weight: 400; }
 
-.header-meta { display: flex; align-items: center; gap: 12px; }
+/* --- MARCA DEL RECURSO (izquierda) ---
+   El logo del OVA hace de enlace a la portada. El distintivo 'OVA' reutiliza
+   .header-version, el mismo que llevaba antes en la zona derecha. */
+.marca-ova { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.marca-logo-ova { height: 38px; width: auto; display: block; }
+.marca-ova-texto { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; line-height: 1.3; }
+.marca-recurso { color: var(--fucs-azul-profundo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px; }
+
+.header-meta { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; }
 
 /* --- BOTÓN DE AYUDA (abre la guía de navegación) --- */
 .btn-ayuda {
@@ -53,7 +61,6 @@
     box-shadow: var(--shadow-md); z-index: 1500;
 }
 .btn-ayuda:hover::after, .btn-ayuda:focus-visible::after { opacity: 1; }
-.header-etiqueta { color: var(--fucs-azul-oscuro); font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.75; }
 .header-version {
     color: var(--fucs-azul-profundo);
     font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
@@ -96,6 +103,10 @@
 .footer-autores-rol { font-weight: 600; color: var(--fucs-azul-oscuro); margin-bottom: 2px !important; }
 .footer-col--autores > p:not(.footer-autores-rol) { margin-bottom: 14px; }
 .footer-autores-nota { font-size: 0.8rem; opacity: 0.85; }
+/* Separada de los dos enlaces: es una nota sobre el recurso, no un tercer
+   destino de la columna. Se cualifica con .footer-col porque el margen de
+   `.footer-col p` es una abreviatura y, a menor peso, ganaría su margin-top. */
+.footer-col .footer-nota-proyecto { margin-top: 14px; font-size: 0.8rem; opacity: 0.85; }
 
 @media (max-width: 900px) {
     .footer-columns { grid-template-columns: 1fr 1fr; gap: 28px; }
