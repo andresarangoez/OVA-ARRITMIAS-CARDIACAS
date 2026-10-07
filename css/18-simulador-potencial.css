@@ -1,0 +1,123 @@
+/* --- CURVA DEL POTENCIAL DE ACCIÓN (Módulo 01, Unidad 2) --- */
+
+/* Dos columnas: a la izquierda el recorrido de texto de las fases, a la
+   derecha la curva. Al estrecharse la pantalla se apilan, con la curva
+   primero porque es la que da el contexto de lo que se lee debajo. */
+.pa-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+    margin: 20px 0;
+}
+
+.pa-fila > * { min-width: 0; }
+.pa-texto > *:first-child { margin-top: 0; }
+.pa-texto .stepper-fases { margin-top: 12px; }
+
+@media (max-width: 900px) {
+    .pa-fila { grid-template-columns: 1fr; }
+    .pa-simulador { order: -1; }
+}
+
+.sim-pa {
+    background: var(--bg-shell);
+    border: 1px solid var(--border-soft, rgba(0, 0, 0, .08));
+    border-radius: var(--bento-radius-md);
+    padding: 16px;
+    box-shadow: var(--bento-shadow-sm, 0 1px 3px rgba(0, 0, 0, .06));
+}
+
+.sim-pa-etiqueta {
+    margin: 0 0 10px;
+    font-weight: 700;
+    font-size: .92rem;
+    color: var(--fucs-azul-profundo);
+}
+
+.sim-pa-lienzo { background: #ffffff; border-radius: var(--radius-sm); padding: 6px; }
+.sim-pa-svg { width: 100%; height: auto; display: block; }
+
+/* Un color por fase. Son cinco tramos de una misma curva y el color es lo
+   único que los separa de un vistazo, así que aquí la paleta sí se amplía. */
+.sim-pa-fase--0 { --pa-color: #b32d1f; }
+.sim-pa-fase--1 { --pa-color: #c2680a; }
+.sim-pa-fase--2 { --pa-color: #15803d; }
+.sim-pa-fase--3 { --pa-color: #1d4ed8; }
+.sim-pa-fase--4 { --pa-color: #7e22ce; }
+
+.sim-pa-guias line { stroke: var(--fucs-gris); stroke-width: 1; stroke-dasharray: 5 5; }
+.sim-pa-eje { fill: var(--text-muted); font-size: 12px; font-family: inherit; }
+
+.sim-pa-tramo {
+    fill: none;
+    stroke: var(--pa-color);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .5;
+    transition: stroke-width .15s ease, opacity .15s ease;
+}
+
+.sim-pa-tramo.activo { stroke-width: 8; opacity: 1; }
+
+.sim-pa-zona { fill: none; stroke: transparent; stroke-width: 28; cursor: pointer; pointer-events: stroke; }
+
+.sim-pa-rotulo {
+    fill: var(--pa-color);
+    font-weight: 700;
+    font-size: 20px;
+    font-family: inherit;
+    pointer-events: none;
+}
+
+.sim-pa-punto { fill: var(--fucs-azul-profundo); }
+
+/* --- Pestañas --- */
+.sim-pa-tabs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 14px 0 0; }
+
+.sim-pa-tab,
+.sim-pa-play {
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 600;
+    border: 1.5px solid var(--fucs-gris);
+    background: #ffffff;
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+
+.sim-pa-tab:hover { border-color: var(--pa-color); color: var(--pa-color); }
+.sim-pa-tab.activo { background: var(--pa-color); border-color: var(--pa-color); color: #ffffff; }
+
+.sim-pa-play { margin-left: auto; color: var(--fucs-azul-profundo); }
+.sim-pa-play:hover { border-color: var(--fucs-azul-profundo); }
+.sim-pa-play.reproduciendo { background: var(--fucs-azul-profundo); border-color: var(--fucs-azul-profundo); color: #ffffff; }
+
+/* --- Lectura de la fase --- */
+.sim-pa-lectura { margin-top: 14px; }
+
+.sim-pa-mv {
+    margin: 0 0 10px;
+    font-size: .88rem;
+    color: var(--text-body);
+    font-weight: 600;
+}
+
+.sim-pa-corrientes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.sim-pa-corriente {
+    border: 1px solid var(--fucs-gris);
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: .8rem;
+    background: #ffffff;
+}
+
+.sim-pa-corriente b { display: block; font-weight: 700; color: var(--fucs-azul-profundo); }
+.sim-pa-corriente small { color: var(--text-muted); }
+.sim-pa-corriente .entra { color: #b32d1f; }
+.sim-pa-corriente .sale { color: #1d4ed8; }

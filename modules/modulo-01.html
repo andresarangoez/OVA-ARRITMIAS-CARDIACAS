@@ -400,41 +400,56 @@
                         <h4>Potencial de acción cardíaco</h4>
                         <p>A partir del potencial de reposo, un estímulo suficiente dispara un cambio brusco y momentáneo del voltaje de la membrana: el <strong>potencial de acción</strong>. En el miocito de trabajo ese cambio no es simétrico ni instantáneo — pasa por cinco fases sucesivas, numeradas de 0 a 4, cada una caracterizada por la apertura o el cierre de un tipo distinto de canal iónico (4).</p>
 
-                        <p>Haz clic en cada fase para ver qué ocurre a nivel iónico.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'fase0')">Fase 0</button>
-                                <button onclick="activarPasoStepper(this,'fase1')">Fase 1</button>
-                                <button onclick="activarPasoStepper(this,'fase2')">Fase 2</button>
-                                <button onclick="activarPasoStepper(this,'fase3')">Fase 3</button>
-                                <button onclick="activarPasoStepper(this,'fase4')">Fase 4</button>
+                        <div class="pa-fila">
+                            <div class="pa-texto">
+                                <p>Haz clic en cada fase para ver qué ocurre a nivel iónico.</p>
+                                <div class="stepper-fases">
+                                    <div class="stepper-nav">
+                                        <button class="activo" data-fase="0" onclick="activarPasoStepper(this,'fase0'); OVA.SimuladorPotencial.sincronizar(this,'0')">Fase 0</button>
+                                        <button data-fase="1" onclick="activarPasoStepper(this,'fase1'); OVA.SimuladorPotencial.sincronizar(this,'1')">Fase 1</button>
+                                        <button data-fase="2" onclick="activarPasoStepper(this,'fase2'); OVA.SimuladorPotencial.sincronizar(this,'2')">Fase 2</button>
+                                        <button data-fase="3" onclick="activarPasoStepper(this,'fase3'); OVA.SimuladorPotencial.sincronizar(this,'3')">Fase 3</button>
+                                        <button data-fase="4" onclick="activarPasoStepper(this,'fase4'); OVA.SimuladorPotencial.sincronizar(this,'4')">Fase 4</button>
+                                    </div>
+                                    <div class="stepper-panel activo" data-paso="fase0">
+                                        <h5>Fase 0 — Despolarización rápida</h5>
+                                        <p>La fase 0 es la subida brusca que da inicio al potencial de acción. Cuando un estímulo lleva el potencial de membrana hasta el nivel umbral, se abren los <strong>canales rápidos de sodio</strong> activados por voltaje (4). Como el sodio está mucho más concentrado fuera de la célula que dentro, y el interior es negativo, existe un fuerte gradiente eléctrico y químico empujándolo hacia adentro; al abrirse los canales, entra en gran cantidad y en muy poco tiempo. El potencial de membrana pasa así de <strong>−80/−90 mV a un valor positivo, alrededor de +20 mV</strong>, en una fracción de milisegundo (4).</p>
+                                        <p>Esta entrada masiva y rápida de sodio es lo que permite que la despolarización se propague con velocidad de una célula a la siguiente. Si estos canales no se abren en número o velocidad suficientes, la despolarización se hace más lenta y el impulso se conduce con más dificultad.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase1">
+                                        <h5>Fase 1 — Repolarización inicial</h5>
+                                        <p>Apenas unas fracciones de milisegundo después de abrirse, los canales rápidos de sodio <strong>se inactivan por sí solos</strong>: no es que el estímulo desaparezca, sino que el propio canal se cierra automáticamente una vez que ha estado abierto un instante, sin importar que el potencial de membrana siga positivo (4). La entrada de sodio se detiene casi tan rápido como había empezado. Al mismo tiempo, algunos canales de potasio comienzan a abrirse y dejan salir potasio de la célula (4).</p>
+                                        <p>El resultado es una repolarización breve y parcial: el potencial baja un poco desde el pico de la fase 0, antes de estabilizarse en la meseta que sigue en la fase 2. En la curva del potencial de acción esto se ve como una pequeña muesca entre la subida y la meseta.</p>
+                                        <p>Que el canal de sodio se inactive por sí mismo tiene una consecuencia: no puede volver a abrirse hasta que la célula se repolarice lo suficiente, sin importar qué tan fuerte sea un nuevo estímulo. Esa es la base de por qué el miocito no puede volver a excitarse inmediatamente después de un potencial de acción.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase2">
+                                        <h5>Fase 2 — Meseta</h5>
+                                        <p>Después de la breve repolarización inicial de la fase 1, el potencial de membrana no sigue bajando de inmediato: se mantiene cerca de su valor máximo durante un tramo largo, <strong>entre 0,2 y 0,3 segundos</strong>, antes de empezar a descender. Esta meseta es la diferencia más marcada entre el potencial de acción del músculo cardíaco y el de una fibra nerviosa o del músculo esquelético, donde la repolarización ocurre de inmediato (4).</p>
+                                        <p>La meseta se sostiene por dos cambios simultáneos en la membrana. Por un lado, se abren <strong>canales de calcio de tipo L</strong>, también llamados canales lentos, porque tardan más en abrirse que los canales rápidos de sodio de la fase 0 y permanecen abiertos durante varias décimas de segundo, permitiendo la entrada continua de calcio a la célula. Por otro lado, la salida de potasio se reduce notablemente justo cuando debería estar repolarizando la célula. Esta combinación de entrada sostenida de calcio y salida frenada de potasio es lo que mantiene el potencial estabilizado en ese tramo (4). La meseta no es solo un fenómeno eléctrico: el calcio que entra durante esta fase es el mismo que activa la contracción del miocito (4).</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase3">
+                                        <h5>Fase 3 — Repolarización rápida</h5>
+                                        <p>La meseta no se sostiene indefinidamente. Los canales de calcio tipo L se cierran, deteniendo la entrada de calcio, y al mismo tiempo se abren de manera más amplia los canales de potasio que habían quedado frenados durante la fase 2 (4). Sin la entrada de calcio compensando la salida de potasio, el balance se invierte por completo: el potasio sale de la célula con rapidez y arrastra consigo las cargas positivas que mantenían el potencial en valores altos.</p>
+                                        <p>El potencial de membrana cae entonces con la misma velocidad con la que había subido en la fase 0, hasta devolver la célula a su valor de reposo, <strong>entre −80 y −90 mV</strong> (4). Con esta caída termina el potencial de acción: la célula queda lista para volver a acumular estímulo hacia un nuevo ciclo.</p>
+                                    </div>
+                                    <div class="stepper-panel" data-paso="fase4">
+                                        <h5>Fase 4 — Reposo o despolarización diastólica</h5>
+                                        <p>En el miocito de trabajo, la fase 4 es simplemente el potencial de reposo ya descrito al inicio de esta unidad: un valor estable, <strong>entre −80 y −90 mV</strong>, que la célula mantiene sin cambios hasta que llega un nuevo estímulo (4).</p>
+                                        <p>En las células del nódulo sinusal y otras células con capacidad de generar impulsos por sí mismas, la fase 4 no es estable. El potencial de membrana parte de un valor menos negativo, <strong>entre −55 y −60 mV</strong>, y en lugar de quedarse ahí se desplaza de forma continua y lenta hacia valores menos negativos hasta alcanzar el umbral y disparar un nuevo potencial de acción por sí sola, sin que ninguna otra célula la estimule (4). Esto ocurre porque, a diferencia de la célula de trabajo, la membrana de estas células nunca cierra del todo el paso a sodio y calcio, así que una pequeña corriente de entrada continua va empujando el voltaje hacia arriba entre un latido y el siguiente.</p>
+                                        <p>Esta diferencia en la fase 4 es la explicación completa de por qué el corazón se autoexcita: no hay un canal exclusivo del automatismo, sino una fase 4 que en unas células es un reposo verdadero y en otras es un potencial continuo hacia el disparo.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="stepper-panel activo" data-paso="fase0">
-                                <h5>Fase 0 — Despolarización rápida</h5>
-                                <p>La fase 0 es la subida brusca que da inicio al potencial de acción. Cuando un estímulo lleva el potencial de membrana hasta el nivel umbral, se abren los <strong>canales rápidos de sodio</strong> activados por voltaje (4). Como el sodio está mucho más concentrado fuera de la célula que dentro, y el interior es negativo, existe un fuerte gradiente eléctrico y químico empujándolo hacia adentro; al abrirse los canales, entra en gran cantidad y en muy poco tiempo. El potencial de membrana pasa así de <strong>−80/−90 mV a un valor positivo, alrededor de +20 mV</strong>, en una fracción de milisegundo (4).</p>
-                                <p>Esta entrada masiva y rápida de sodio es lo que permite que la despolarización se propague con velocidad de una célula a la siguiente. Si estos canales no se abren en número o velocidad suficientes, la despolarización se hace más lenta y el impulso se conduce con más dificultad.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase1">
-                                <h5>Fase 1 — Repolarización inicial</h5>
-                                <p>Apenas unas fracciones de milisegundo después de abrirse, los canales rápidos de sodio <strong>se inactivan por sí solos</strong>: no es que el estímulo desaparezca, sino que el propio canal se cierra automáticamente una vez que ha estado abierto un instante, sin importar que el potencial de membrana siga positivo (4). La entrada de sodio se detiene casi tan rápido como había empezado. Al mismo tiempo, algunos canales de potasio comienzan a abrirse y dejan salir potasio de la célula (4).</p>
-                                <p>El resultado es una repolarización breve y parcial: el potencial baja un poco desde el pico de la fase 0, antes de estabilizarse en la meseta que sigue en la fase 2. En la curva del potencial de acción esto se ve como una pequeña muesca entre la subida y la meseta.</p>
-                                <p>Que el canal de sodio se inactive por sí mismo tiene una consecuencia: no puede volver a abrirse hasta que la célula se repolarice lo suficiente, sin importar qué tan fuerte sea un nuevo estímulo. Esa es la base de por qué el miocito no puede volver a excitarse inmediatamente después de un potencial de acción.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase2">
-                                <h5>Fase 2 — Meseta</h5>
-                                <p>Después de la breve repolarización inicial de la fase 1, el potencial de membrana no sigue bajando de inmediato: se mantiene cerca de su valor máximo durante un tramo largo, <strong>entre 0,2 y 0,3 segundos</strong>, antes de empezar a descender. Esta meseta es la diferencia más marcada entre el potencial de acción del músculo cardíaco y el de una fibra nerviosa o del músculo esquelético, donde la repolarización ocurre de inmediato (4).</p>
-                                <p>La meseta se sostiene por dos cambios simultáneos en la membrana. Por un lado, se abren <strong>canales de calcio de tipo L</strong>, también llamados canales lentos, porque tardan más en abrirse que los canales rápidos de sodio de la fase 0 y permanecen abiertos durante varias décimas de segundo, permitiendo la entrada continua de calcio a la célula. Por otro lado, la salida de potasio se reduce notablemente justo cuando debería estar repolarizando la célula. Esta combinación de entrada sostenida de calcio y salida frenada de potasio es lo que mantiene el potencial estabilizado en ese tramo (4). La meseta no es solo un fenómeno eléctrico: el calcio que entra durante esta fase es el mismo que activa la contracción del miocito (4).</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase3">
-                                <h5>Fase 3 — Repolarización rápida</h5>
-                                <p>La meseta no se sostiene indefinidamente. Los canales de calcio tipo L se cierran, deteniendo la entrada de calcio, y al mismo tiempo se abren de manera más amplia los canales de potasio que habían quedado frenados durante la fase 2 (4). Sin la entrada de calcio compensando la salida de potasio, el balance se invierte por completo: el potasio sale de la célula con rapidez y arrastra consigo las cargas positivas que mantenían el potencial en valores altos.</p>
-                                <p>El potencial de membrana cae entonces con la misma velocidad con la que había subido en la fase 0, hasta devolver la célula a su valor de reposo, <strong>entre −80 y −90 mV</strong> (4). Con esta caída termina el potencial de acción: la célula queda lista para volver a acumular estímulo hacia un nuevo ciclo.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="fase4">
-                                <h5>Fase 4 — Reposo o despolarización diastólica</h5>
-                                <p>En el miocito de trabajo, la fase 4 es simplemente el potencial de reposo ya descrito al inicio de esta unidad: un valor estable, <strong>entre −80 y −90 mV</strong>, que la célula mantiene sin cambios hasta que llega un nuevo estímulo (4).</p>
-                                <p>En las células del nódulo sinusal y otras células con capacidad de generar impulsos por sí mismas, la fase 4 no es estable. El potencial de membrana parte de un valor menos negativo, <strong>entre −55 y −60 mV</strong>, y en lugar de quedarse ahí se desplaza de forma continua y lenta hacia valores menos negativos hasta alcanzar el umbral y disparar un nuevo potencial de acción por sí sola, sin que ninguna otra célula la estimule (4). Esto ocurre porque, a diferencia de la célula de trabajo, la membrana de estas células nunca cierra del todo el paso a sodio y calcio, así que una pequeña corriente de entrada continua va empujando el voltaje hacia arriba entre un latido y el siguiente.</p>
-                                <p>Esta diferencia en la fase 4 es la explicación completa de por qué el corazón se autoexcita: no hay un canal exclusivo del automatismo, sino una fase 4 que en unas células es un reposo verdadero y en otras es un potencial continuo hacia el disparo.</p>
+                            <div class="pa-simulador">
+                                <div class="sim-pa" data-fase="0">
+                                    <p class="sim-pa-etiqueta">📈 Curva del potencial de acción</p>
+                                    <div class="sim-pa-lienzo"></div>
+                                    <div class="sim-pa-tabs"></div>
+                                    <div class="sim-pa-lectura">
+                                        <p class="sim-pa-mv"></p>
+                                        <div class="sim-pa-corrientes"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -630,9 +645,8 @@
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
                                         </button>
                                     </div>
-                                    <p class="comparador-rotulo">Con prenda</p>
                                 </div>
-                                <p class="figura-caption"><strong>Figura 4.2.</strong> Posición de los electrodos precordiales. Vista frontal del tórax con los seis puntos de colocación (V1-V6). Las flechas cambian entre la versión con prenda y sin prenda; el botón de la esquina las superpone para comprobar que los electrodos caen en el mismo punto anatómico. Elaboración propia.</p>
+                                <p class="figura-caption"><strong>Figura 4.2.</strong> Posición de los electrodos precordiales. Vista frontal del tórax con los seis puntos de colocación (V1-V6).</p>
                             </div>
                         </div>
 
