@@ -1,0 +1,151 @@
+/* --- COMPARADOR DE DOS VERSIONES DE UNA FIGURA (Módulo 01, Figura 4.2) --- */
+
+.comparador { margin: 0; }
+
+.comparador-marco {
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    line-height: 0;
+}
+
+/* Las dos versiones ocupan el mismo hueco: solo una está visible, de modo que
+   la figura no cambia de alto al pasar de una a otra. Se cualifica con
+   .comparador-marco porque `.figura img` ya declara display:block y, a
+   igualdad de peso, ganaría por ir después en la hoja. */
+.comparador-marco .comparador-img { display: none; width: 100%; height: auto; }
+.comparador-marco .comparador-img.activa { display: block; }
+
+/* Flechas: mismo lenguaje que el botón flotante de «volver arriba», pero
+   circulares y más pequeñas por ir sobre la propia imagen. */
+.comparador-flecha {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--fucs-azul-profundo);
+    color: #ffffff;
+    opacity: .78;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: opacity .2s ease, background-color .2s ease;
+}
+
+.comparador-flecha:hover,
+.comparador-flecha:focus-visible { opacity: 1; background-color: var(--fucs-azul-oscuro); }
+.comparador-flecha svg { width: 18px; height: 18px; }
+.comparador-flecha--izq { left: 10px; }
+.comparador-flecha--der { right: 10px; }
+
+.comparador-ampliar {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--fucs-azul-profundo);
+    color: #ffffff;
+    opacity: .78;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: opacity .2s ease;
+}
+
+.comparador-ampliar:hover,
+.comparador-ampliar:focus-visible { opacity: 1; }
+.comparador-ampliar svg { width: 17px; height: 17px; }
+
+.comparador-rotulo {
+    margin: 8px 0 0;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--fucs-azul-oscuro);
+    text-align: center;
+}
+
+/* --- Vista ampliada: las dos capas superpuestas --- */
+
+.modal-comparador { max-width: 980px; width: 100%; }
+.modal-comparador-titulo { margin: 0 0 4px; font-size: 1.15rem; color: var(--fucs-azul-profundo); }
+.modal-comparador-ayuda { margin: 0 0 14px; font-size: .88rem; color: var(--text-muted); }
+
+.comparador-zoom {
+    --pos: 50%;
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    touch-action: none;
+    cursor: ew-resize;
+    line-height: 0;
+    user-select: none;
+}
+
+.comparador-zoom img { display: block; width: 100%; height: auto; }
+
+/* clip-path sobre la capa de encima: las dos imágenes conservan el mismo
+   tamaño y posición, así que no hay desplazamiento al mover el divisor. */
+.comparador-zoom-encima {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+.comparador-zoom-divisor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 2px;
+    margin-left: -1px;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(9, 39, 85, .35);
+    pointer-events: none;
+}
+
+.comparador-zoom-asa {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(9, 39, 85, .35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fucs-azul-profundo);
+    font-size: .8rem;
+    line-height: 1;
+}
+
+.comparador-zoom .comparador-flecha { z-index: 2; }
+
+.comparador-zoom-pie {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 2px 0;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--fucs-azul-oscuro);
+}
+
+@media (max-width: 640px) {
+    .comparador-flecha, .comparador-ampliar { width: 32px; height: 32px; }
+    .comparador-flecha--izq { left: 6px; }
+    .comparador-flecha--der { right: 6px; }
+}

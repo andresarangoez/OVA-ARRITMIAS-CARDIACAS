@@ -64,6 +64,7 @@
     <link rel="stylesheet" href="css/14-modelo-conduccion.css">
     <link rel="stylesheet" href="css/15-portada.css">
     <link rel="stylesheet" href="css/16-simulador-frecuencia.css">
+    <link rel="stylesheet" href="css/17-comparador-figura.css">
 </head>
 <body>
 
@@ -504,6 +505,31 @@
         </div>
     </div>
 
+    <!-- Comparador de las dos versiones de una misma figura (Figura 4.2 del
+         Módulo 01). Las imágenes se rellenan al abrirlo, desde el comparador
+         en línea que lo invoca. -->
+    <div id="modal-comparador" class="modal-overlay" aria-hidden="true">
+        <div class="modal-caja modal-comparador">
+            <button class="modal-cerrar" onclick="cerrarModal('modal-comparador')" aria-label="Cerrar la comparación">×</button>
+            <h2 class="modal-comparador-titulo">Posición de los electrodos precordiales</h2>
+            <p class="modal-comparador-ayuda">Arrastra el divisor para pasar de una versión a la otra, o usa las flechas para ver solo una. Los electrodos no se mueven: caen en el mismo punto anatómico en las dos.</p>
+            <div class="comparador-zoom" onpointerdown="OVA.ComparadorFigura.iniciarArrastre(event)" onkeydown="OVA.ComparadorFigura.conTeclado(event)" tabindex="0">
+                <img class="comparador-zoom-base" src="" alt="">
+                <img class="comparador-zoom-encima" src="" alt="">
+                <div class="comparador-zoom-divisor" role="slider" aria-label="Proporción visible de cada versión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                    <span class="comparador-zoom-asa" aria-hidden="true">↔</span>
+                </div>
+                <button type="button" class="comparador-flecha comparador-flecha--izq" onclick="OVA.ComparadorFigura.fijar(100)" aria-label="Ver solo la primera versión">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button type="button" class="comparador-flecha comparador-flecha--der" onclick="OVA.ComparadorFigura.fijar(0)" aria-label="Ver solo la segunda versión">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+            <p class="comparador-zoom-pie"><span></span><span></span></p>
+        </div>
+    </div>
+
     <div id="modal-finalizacion" class="modal-overlay" aria-hidden="true">
         <div class="modal-caja modal-finalizacion">
             <button class="modal-cerrar" onclick="cerrarModal('modal-finalizacion')" aria-label="Cerrar">×</button>
@@ -604,5 +630,6 @@
     <script src="js/19-portada-ecg.js"></script>
     <script src="js/20-bienvenida-modulo.js"></script>
     <script src="js/21-simulador-frecuencia.js"></script>
+    <script src="js/22-comparador-figura.js"></script>
 </body>
 </html>
