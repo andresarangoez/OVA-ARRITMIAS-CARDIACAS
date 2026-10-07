@@ -1,19 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="OVA · Objeto Virtual de Aprendizaje: arritmias cardíacas">
   <title>OVA · Arritmias cardíacas</title>
-  <!-- Fondo a sangre: iOS redondea las esquinas del apple-touch-icon por su
-       cuenta y rellena de negro cualquier zona transparente, así que el icono
-       se entrega como cuadrado opaco. -->
-  <rect width="1000" height="1000" fill="#082956"/>
-  <g transform="translate(500 500) scale(0.86) translate(-500 -500)">
-    <g transform="translate(500 500) scale(1.1136) translate(-537 -469)">
-      <circle cx="537" cy="469" r="449" fill="#082956"/>
-      <circle cx="537" cy="469" r="416.5" fill="none" stroke="#EDBE7B" stroke-width="19"/>
-      <g fill="#EDBE7B">
-        <path fill-rule="evenodd" d="M195 415.5a122.5 132.5 0 1 0 245 0a122.5 132.5 0 1 0 -245 0ZM247 415.5a70.5 80.5 0 1 0 141 0a70.5 80.5 0 1 0 -141 0Z"/>
-        <path d="M425.3 283H482.3L553.5 465.1L624.7 283H681.7L588.9 520.3A38 38 0 0 1 518.1 520.3Z"/>
-        <path d="M619.6 542L708.9 314.4A43.1 43.1 0 0 1 789.1 314.4L878.4 542H824.9L749 336.9L673.1 542Z"/>
-      </g>
-      <path d="M213 627H298C316 627 322 592 343 592C364 592 370 627 388 627H404Q428 690 436 640L473 497L513.5 715Q519 760 527.4 715L545 652Q553 627 566 627H573C591 627 597 592 618 592C639 592 645 627 663 627H679Q703 690 711 640L748 466L784.6 700Q790.5 745 796.5 700L815 647Q822 627 836 627H861" fill="none" stroke="#EDBE7B" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Favicon: el disco llena el lienzo y las esquinas quedan transparentes,
+       de modo que en la pestaña se ve como una chapa redonda y no como un
+       cuadro azul. Para el apple-touch-icon hace falta lo contrario —cuadrado
+       y opaco—, y por eso vive aparte en icono-ova-cuadrado.svg. -->
+  <g transform="translate(500 500) scale(1.1136) translate(-537 -469)">
+    <circle cx="537" cy="469" r="449" fill="#082956"/>
+    <circle cx="537" cy="469" r="416.5" fill="none" stroke="#EDBE7B" stroke-width="19"/>
+    <g fill="#EDBE7B">
+      <path fill-rule="evenodd" d="M195 415.5a122.5 132.5 0 1 0 245 0a122.5 132.5 0 1 0 -245 0ZM247 415.5a70.5 80.5 0 1 0 141 0a70.5 80.5 0 1 0 -141 0Z"/>
+      <path d="M425.3 283H482.3L553.5 465.1L624.7 283H681.7L588.9 520.3A38 38 0 0 1 518.1 520.3Z"/>
+      <path d="M619.6 542L708.9 314.4A43.1 43.1 0 0 1 789.1 314.4L878.4 542H824.9L749 336.9L673.1 542Z"/>
     </g>
+    <path d="M213 627H298C316 627 322 592 343 592C364 592 370 627 388 627H404Q428 690 436 640L473 497L513.5 715Q519 760 527.4 715L545 652Q553 627 566 627H573C591 627 597 592 618 592C639 592 645 627 663 627H679Q703 690 711 640L748 466L784.6 700Q790.5 745 796.5 700L815 647Q822 627 836 627H861" fill="none" stroke="#EDBE7B" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>
