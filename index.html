@@ -121,17 +121,28 @@
     </aside>
 
     <header class="header-container">
-        <a class="marca-institucional" href="#" onclick="volverHome(); return false;" aria-label="Volver al inicio del OVA">
-            <img src="assets/images/logo-fucs.png" alt="" class="marca-logo">
-            <span class="marca-texto">
-                <span class="marca-universidad">Universidad FUCS</span>
-                <span class="marca-separador" aria-hidden="true">·</span>
-                <span class="marca-facultad">Facultad de Enfermería</span>
+        <!-- A la izquierda, la marca del propio recurso: el logo del OVA es el
+             enlace de vuelta al inicio. La identidad institucional pasa a la
+             derecha, junto a los metadatos del proyecto. -->
+        <a class="marca-ova" href="#" onclick="volverHome(); return false;" aria-label="Volver al inicio del OVA">
+            <img src="assets/images/icono-ova.svg" alt="" class="marca-logo-ova">
+            <span class="marca-ova-texto">
+                <span class="header-version">OVA</span>
+                <span class="marca-recurso">Manejo de arritmias cardíacas</span>
             </span>
         </a>
         <div class="header-meta">
             <span class="header-etiqueta">Proyecto de grado · 2026</span>
-            <span class="header-version">OVA</span>
+            <!-- Ya no es enlace: el de volver al inicio lo lleva la marca del
+                 OVA y dos enlaces al mismo destino en la misma barra sobran. -->
+            <div class="marca-institucional">
+                <img src="assets/images/logo-fucs.png" alt="" class="marca-logo">
+                <span class="marca-texto">
+                    <span class="marca-universidad">Universidad FUCS</span>
+                    <span class="marca-separador" aria-hidden="true">·</span>
+                    <span class="marca-facultad">Facultad de Enfermería</span>
+                </span>
+            </div>
             <button type="button" class="btn-ayuda" onclick="abrirModal('modal-guia')"
                     data-tooltip="Guía de navegación" aria-label="Abrir la guía de navegación">
                 <span aria-hidden="true">?</span>
@@ -209,15 +220,62 @@
         <section class="modulos-seccion" id="modulos-lista">
             <div class="modulos-encabezado">
                 <p class="modulos-eyebrow">Ruta clínica de aprendizaje</p>
-                <h2 class="modulos-titulo">El mismo orden con el que se atiende a un paciente</h2>
-                <p class="modulos-descripcion">
-                    Los módulos siguen las cinco fases del Proceso de Atención de Enfermería, sobre una
-                    base de electrofisiología. Primero se valora, luego se identifica el ritmo, se
-                    estratifica el riesgo, se interviene y se evalúa el resultado. Puedes recorrerlos en
-                    orden o entrar directo al que necesites practicar.
+                <h2 class="modulos-titulo">Módulos basados en el Proceso de Atención de Enfermería</h2>
+
+                <!-- La correspondencia entre cada fase del PAE y su módulo es
+                     la estructura del recurso, y las tarjetas de abajo no la
+                     muestran. Aquí se ve de un vistazo y, además, cada paso
+                     entra directamente a su módulo: el párrafo que había antes
+                     describía esta ruta en lugar de dejarla recorrer. -->
+                <ol class="pae-ruta">
+                    <li class="pae-paso pae-paso--base">
+                        <button type="button" onclick="abrirModulo('01', 'Fundamentos')">
+                            <span class="pae-paso-num">01</span>
+                            <span class="pae-paso-nombre">Fundamentos</span>
+                            <span class="pae-paso-rol">Base · electrofisiología</span>
+                        </button>
+                    </li>
+                    <li class="pae-paso">
+                        <button type="button" onclick="abrirModulo('02', 'Valoración')">
+                            <span class="pae-paso-num">02</span>
+                            <span class="pae-paso-nombre">Valoración</span>
+                            <span class="pae-paso-rol">Fase 1 del PAE</span>
+                        </button>
+                    </li>
+                    <li class="pae-paso">
+                        <button type="button" onclick="abrirModulo('03', 'Diagnóstico')">
+                            <span class="pae-paso-num">03</span>
+                            <span class="pae-paso-nombre">Diagnóstico</span>
+                            <span class="pae-paso-rol">Fase 2 del PAE</span>
+                        </button>
+                    </li>
+                    <li class="pae-paso">
+                        <button type="button" onclick="abrirModulo('04', 'Planeación')">
+                            <span class="pae-paso-num">04</span>
+                            <span class="pae-paso-nombre">Planeación</span>
+                            <span class="pae-paso-rol">Fase 3 del PAE</span>
+                        </button>
+                    </li>
+                    <li class="pae-paso">
+                        <button type="button" onclick="abrirModulo('05', 'Intervención')">
+                            <span class="pae-paso-num">05</span>
+                            <span class="pae-paso-nombre">Intervención</span>
+                            <span class="pae-paso-rol">Fase 4 · ejecución</span>
+                        </button>
+                    </li>
+                    <li class="pae-paso">
+                        <button type="button" onclick="abrirModulo('06', 'Evaluación')">
+                            <span class="pae-paso-num">06</span>
+                            <span class="pae-paso-nombre">Evaluación</span>
+                            <span class="pae-paso-rol">Fase 5 del PAE</span>
+                        </button>
+                    </li>
+                </ol>
+
+                <p class="modulos-pie">
+                    Recórrelos en orden o entra directo al que necesites practicar.
                 </p>
             </div>
-
 
             <div class="dashboard-grid">
             <article class="module-card" role="button" tabindex="0" data-modulo-id="01" data-modulo-titulo="Fundamentos" onclick="abrirModulo('01', 'Fundamentos')">
@@ -568,6 +626,9 @@
                 <p>
                     <a class="footer-enlace" href="https://www.fucsalud.edu.co/Facultad-de-Enfermeria" target="_blank" rel="noopener noreferrer"
                        aria-label="Sitio web de la Facultad de Enfermería de la Universidad FUCS (se abre en una pestaña nueva)">Facultad de Enfermería</a>
+                </p>
+                <p class="footer-nota-proyecto">
+                    Este recurso ha sido creado como proyecto de grado en el año 2026.
                 </p>
             </div>
             <div class="footer-col footer-col--autores">
