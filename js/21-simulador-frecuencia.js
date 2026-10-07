@@ -54,10 +54,14 @@ const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4, fluido: true }
 // cuadrícula: así se ve a simple vista que una cota de 5 mm ocupa exactamente
 // un cuadro grande y la de 25 mm, cinco. Si las barras cayeran entre líneas,
 // la equivalencia no se podría comprobar sobre el propio papel.
+// El voltaje también va en lista, una cota por fila: la barra conserva su
+// altura real en milímetros y el rótulo va al lado, horizontal. Cada barra
+// empieza en una línea gruesa, así que la de 5 mm ocupa justo un cuadro
+// grande y la de 10 mm, dos.
 const COTAS_VOLTAJE = [
-    { x: 15, mm: 10, texto: '10 mm = 1 mV', color: 'azul' },
-    { x: 30, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
-    { x: 45, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' }
+    { y: 15, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' },
+    { y: 25, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
+    { y: 35, mm: 10, texto: '10 mm = 1 mV', color: 'azul' }
 ];
 
 const COTAS_TIEMPO = [
@@ -67,8 +71,8 @@ const COTAS_TIEMPO = [
     { y: 45, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' }
 ];
 
-const COTA_BASE_Y = 45;   // línea de base de las cotas verticales
-const COTA_BASE_X = 70;   // margen izquierdo de las cotas horizontales
+const COTA_VOLTAJE_X = 20;   // columna donde se alinean las barras de voltaje
+const COTA_BASE_X = 70;      // margen izquierdo de las cotas horizontales
 
 let contadorIds = 0;
 let arrastre = null; // { raiz, svg, tipo: 'pata'|'ventana', pata, agarreMm }
@@ -415,14 +419,14 @@ function montarPapel(raiz) {
         cotas.appendChild(crear('text', { x: 95, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
 
         COTAS_VOLTAJE.forEach((cota) => {
-            const arriba = COTA_BASE_Y - cota.mm;
+            const abajo = cota.y + cota.mm;
             cotas.appendChild(crear('path', {
-                d: 'M' + cota.x + ',' + arriba + ' V' + COTA_BASE_Y +
-                   ' M' + (cota.x - 1) + ',' + arriba + ' H' + (cota.x + 1) +
-                   ' M' + (cota.x - 1) + ',' + COTA_BASE_Y + ' H' + (cota.x + 1),
+                d: 'M' + COTA_VOLTAJE_X + ',' + cota.y + ' V' + abajo +
+                   ' M' + (COTA_VOLTAJE_X - 1) + ',' + cota.y + ' H' + (COTA_VOLTAJE_X + 1) +
+                   ' M' + (COTA_VOLTAJE_X - 1) + ',' + abajo + ' H' + (COTA_VOLTAJE_X + 1),
                 class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
             }));
-            rotuloCota(cotas, cota.x + 4, COTA_BASE_Y, cota.texto, true);
+            rotuloCota(cotas, COTA_VOLTAJE_X + 3.5, cota.y + cota.mm / 2, cota.texto, false);
         });
 
         COTAS_TIEMPO.forEach((cota) => {
