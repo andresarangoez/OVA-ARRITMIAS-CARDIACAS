@@ -1,48 +1,83 @@
 (function (OVA) {
     OVA.SimuladorFrecuencia = OVA.SimuladorFrecuencia || {};
 
-// --- CÁLCULO DE LA FRECUENCIA CARDÍACA SOBRE PAPEL DE ECG (Módulo 01, Unidad 4) ---
+// --- MEDIR SOBRE EL PAPEL DE ECG (Módulo 01, Unidad 4) ---
 //
-// Tres piezas que comparten el mismo papel milimetrado dibujado en SVG:
+// Dos piezas que comparten un mismo instrumento, el calibrador:
 //
-//   data-ejercicio="papel"          Figura 4.3 — papel acotado, sin interacción.
-//   data-ejercicio="regla300"       Recurso interactivo — regla rápida de frecuencia.
-//   data-ejercicio="seis-segundos"  Recurso interactivo — conteo en 6 segundos.
+//   data-ejercicio="papel"       Figura 4.3 — el papel, medible en tiempo y voltaje.
+//   data-ejercicio="frecuencia"  Recurso interactivo con dos modos:
+//                                 · ritmo regular   → reglas de 300 y de 1500
+//                                 · ritmo irregular → conteo en 6 segundos
 //
 // El sistema de coordenadas del SVG está en MILÍMETROS REALES de papel: el
 // viewBox mide lo que mediría la tira impresa, de modo que un cuadro pequeño
-// es 1 unidad y uno grande 5. Así las cuentas del ejercicio (300 / cuadros
-// grandes, 1500 / cuadros pequeños) se hacen sobre las mismas magnitudes que
-// el estudiante ve, sin factores de conversión intermedios. A la velocidad
-// estándar de 25 mm/s, 1 mm = 0,04 s y 1 cuadro grande = 0,2 s.
+// es 1 unidad y uno grande 5. Las cuentas del ejercicio se hacen sobre las
+// mismas magnitudes que ve el estudiante. A 25 mm/s, 1 mm = 0,04 s.
+//
+// Principio de diseño: el sistema NO calcula por el estudiante. El calibrador
+// solo informa de cuánto mide el tramo —eso es leer la regla, no calcular—;
+// la frecuencia la escribe el estudiante y después se comprueba.
 //
 // El trazado PQRST es sintético y se dibuja de forma analítica a partir de la
-// posición de cada onda R. No usa el motor del simulador clínico
-// (OVA.MotorECG) a propósito: aquí hace falta que la R caiga EXACTAMENTE sobre
-// una línea de cuadro grande para que el conteo del ejercicio sea verificable,
-// y el motor trabaja en tiempo real con jitter fisiológico.
+// posición de cada onda R, porque el ejercicio exige que la R caiga en una
+// posición exacta y verificable. El motor del simulador clínico
+// (OVA.MotorECG) trabaja en tiempo real con jitter fisiológico y aquí no sirve.
 //
 // Montaje: los módulos se inyectan con innerHTML, así que el <script> no se
 // ejecuta al cargarlos. Se usa el mismo MutationObserver sobre #vista-modulo
-// que el simulador de eje; el resto de la interacción cuelga de los onclick
-// declarados en el HTML del módulo.
+// que el simulador de eje.
 
 const NS = 'http://www.w3.org/2000/svg';
+const MM_POR_SEGUNDO = 25;          // velocidad estándar de registro
+const MM_POR_MILIVOLTIO = 10;       // calibración estándar
+const VENTANA_MM = 6 * MM_POR_SEGUNDO;  // los 6 segundos del conteo
 
-// Valor de la regla para 1, 2, 3... cuadros grandes de separación (300 / n).
-const SECUENCIA_REGLA = [300, 150, 100, 75, 60, 50, 43, 38];
+// R-R que caen justo sobre una línea de cuadro grande: la regla de los 300 da
+// un entero y basta con ella.
+const RR_EXACTOS = [15, 20, 25, 30];
+// R-R que NO son múltiplos de 5 mm: la regla de los 300 solo da un intervalo y
+// hace falta la de los 1500. Son el motivo de que exista la segunda regla.
+const RR_INEXACTOS = [13, 17, 22, 27];
 
-// Separaciones posibles entre R y R, en cuadros grandes, para los casos del
-// ejercicio. Se excluye 1 (300 lpm) por inverosímil y 7 por poco didáctico.
-const SEPARACIONES = [2, 3, 4, 5, 6, 8];
+// La figura es fluida: ocupa el ancho de la columna de texto. Como el
+// calibrador mide en unidades del viewBox, la medida sigue siendo correcta
+// aunque la figura se muestre más grande o más pequeña.
+const PAPEL_FIGURA = { anchoMm: 130, altoMm: 55, pxPorMm: 6.2, fluido: true };
+const PAPEL_REGULAR = { anchoMm: 150, altoMm: 34, pxPorMm: 5, fluido: true };
+const PAPEL_IRREGULAR = { anchoMm: 225, altoMm: 38, pxPorMm: 3.4, fluido: true };
 
-const PAPEL_REGLA = { anchoMm: 150, altoMm: 32, pxPorMm: 5 };
-const PAPEL_SEIS = { anchoMm: 250, altoMm: 36, pxPorMm: 4 };
-const PAPEL_FIGURA = { anchoMm: 60, altoMm: 32, pxPorMm: 6 };
+// Cotas de referencia de la Figura 4.3, de menor a mayor. Las verticales
+// crecen desde una misma línea de base y las horizontales desde un mismo
+// margen, de modo que la progresión se ve como una escalera.
+// Todas las posiciones son múltiplos de 5 mm, es decir, líneas gruesas de la
+// cuadrícula: así se ve a simple vista que una cota de 5 mm ocupa exactamente
+// un cuadro grande y la de 25 mm, cinco. Si las barras cayeran entre líneas,
+// la equivalencia no se podría comprobar sobre el propio papel.
+// El voltaje también va en lista, una cota por fila: la barra conserva su
+// altura real en milímetros y el rótulo va al lado, horizontal. Cada barra
+// empieza en una línea gruesa, así que la de 5 mm ocupa justo un cuadro
+// grande y la de 10 mm, dos.
+const COTAS_VOLTAJE = [
+    { y: 15, mm: 1, texto: '1 mm = 0,1 mV', color: 'ambar' },
+    { y: 25, mm: 5, texto: '5 mm = 0,5 mV', color: 'verde' },
+    { y: 35, mm: 10, texto: '10 mm = 1 mV', color: 'azul' }
+];
 
-const MM_POR_SEGUNDO = 25; // velocidad estándar de registro
+// En pirámide: la cota más corta arriba y la más larga en la base, igual que
+// la columna de voltaje, para que las dos listas crezcan en el mismo sentido.
+const COTAS_TIEMPO = [
+    { y: 15, mm: 1, texto: '1 mm = 0,04 segundos', color: 'ambar' },
+    { y: 25, mm: 5, texto: '5 mm = 0,20 segundos', color: 'verde' },
+    { y: 35, mm: 10, texto: '10 mm = 0,40 segundos', color: 'azul' },
+    { y: 45, mm: 25, texto: '25 mm = 1 segundo', color: 'violeta' }
+];
+
+const COTA_VOLTAJE_X = 20;   // columna donde se alinean las barras de voltaje
+const COTA_BASE_X = 70;      // margen izquierdo de las cotas horizontales
 
 let contadorIds = 0;
+let arrastre = null; // { raiz, svg, tipo: 'pata'|'ventana', pata, agarreMm }
 
 // --- UTILIDADES DE DIBUJO ---
 
@@ -53,61 +88,49 @@ function crear(nombre, atributos, texto) {
     return nodo;
 }
 
+function papelDe(raiz) {
+    if (raiz.dataset.ejercicio === 'papel') return PAPEL_FIGURA;
+    return raiz.dataset.modo === 'irregular' ? PAPEL_IRREGULAR : PAPEL_REGULAR;
+}
+
 function nuevoSvg(papel) {
-    const svg = crear('svg', {
+    const atributos = {
         viewBox: '0 0 ' + papel.anchoMm + ' ' + papel.altoMm,
-        width: papel.anchoMm * papel.pxPorMm,
-        height: papel.altoMm * papel.pxPorMm,
-        class: 'simulador-fc-svg'
-    });
-    svg.dataset.anchoMm = papel.anchoMm;
-    return svg;
+        class: 'simulador-fc-svg' + (papel.fluido ? ' simulador-fc-svg--fluido' : '')
+    };
+    if (!papel.fluido) {
+        atributos.width = Math.round(papel.anchoMm * papel.pxPorMm);
+        atributos.height = Math.round(papel.altoMm * papel.pxPorMm);
+    }
+    return crear('svg', atributos);
 }
 
 // Cuadrícula de papel de ECG: líneas finas cada 1 mm y gruesas cada 5 mm.
-// Se dibuja con dos <pattern> para no generar cientos de nodos por tira.
+// Dos <pattern> en vez de cientos de nodos por tira.
 function dibujarCuadricula(svg, papel) {
     const id = 'fc-papel-' + (++contadorIds);
     const defs = crear('defs');
 
-    const finas = crear('pattern', {
-        id: id + '-finas', width: 1, height: 1, patternUnits: 'userSpaceOnUse'
-    });
+    const finas = crear('pattern', { id: id + '-finas', width: 1, height: 1, patternUnits: 'userSpaceOnUse' });
     finas.appendChild(crear('path', { d: 'M1,0 V1 M0,1 H1', class: 'simulador-fc-rejilla-fina' }));
 
-    const gruesas = crear('pattern', {
-        id: id + '-gruesas', width: 5, height: 5, patternUnits: 'userSpaceOnUse'
-    });
-    gruesas.appendChild(crear('rect', {
-        width: 5, height: 5, fill: 'url(#' + id + '-finas)'
-    }));
+    const gruesas = crear('pattern', { id: id + '-gruesas', width: 5, height: 5, patternUnits: 'userSpaceOnUse' });
+    gruesas.appendChild(crear('rect', { width: 5, height: 5, fill: 'url(#' + id + '-finas)' }));
     gruesas.appendChild(crear('path', { d: 'M5,0 V5 M0,5 H5', class: 'simulador-fc-rejilla-gruesa' }));
 
     defs.appendChild(finas);
     defs.appendChild(gruesas);
     svg.appendChild(defs);
 
-    svg.appendChild(crear('rect', {
-        x: 0, y: 0, width: papel.anchoMm, height: papel.altoMm,
-        class: 'simulador-fc-fondo'
-    }));
-    svg.appendChild(crear('rect', {
-        x: 0, y: 0, width: papel.anchoMm, height: papel.altoMm,
-        fill: 'url(#' + id + '-gruesas)'
-    }));
+    svg.appendChild(crear('rect', { x: 0, y: 0, width: papel.anchoMm, height: papel.altoMm, class: 'simulador-fc-fondo' }));
+    svg.appendChild(crear('rect', { x: 0, y: 0, width: papel.anchoMm, height: papel.altoMm, fill: 'url(#' + id + '-gruesas)' }));
 }
 
-// Un complejo PQRST completo, con la onda R centrada en xR. Las alturas están
-// en milímetros de papel, de modo que la R mide ~9 mm (algo menos de 1 mV).
-// Vértices del QRS en milímetros respecto a la onda R (dx, altura sobre la
-// línea de base; positivo = hacia abajo). El complejo mantiene su anchura
-// aunque cambie la frecuencia, igual que en un ECG real: lo que se acorta al
-// acelerarse el ritmo es la diástole eléctrica, no el QRS.
+// Vértices del QRS respecto a la onda R. El complejo conserva su anchura
+// aunque cambie la frecuencia: lo que se acorta al acelerarse el ritmo es la
+// diástole eléctrica, no el QRS.
 const NODOS_QRS = [[-1.6, 0], [-1.2, 1], [0, -9], [1.2, 2.6], [2, 0]];
 
-// Voltaje del trazado en el punto x. Las ondas P y T se reparten el hueco que
-// queda entre dos QRS, de modo que a R-R cortos se estrechan en vez de
-// solaparse con el complejo vecino.
 function voltaje(x, posiciones, base) {
     let indice = 0;
     let menor = Infinity;
@@ -123,9 +146,7 @@ function voltaje(x, posiciones, base) {
         for (let n = 0; n < NODOS_QRS.length - 1; n++) {
             const [x1, y1] = NODOS_QRS[n];
             const [x2, y2] = NODOS_QRS[n + 1];
-            if (dx >= x1 && dx <= x2) {
-                return base + y1 + (y2 - y1) * ((dx - x1) / (x2 - x1));
-            }
+            if (dx >= x1 && dx <= x2) return base + y1 + (y2 - y1) * ((dx - x1) / (x2 - x1));
         }
     }
 
@@ -137,15 +158,11 @@ function voltaje(x, posiciones, base) {
     if (dx > 0) {
         const ancho = Math.min(5, hueco * 0.45);
         const inicio = 2 + hueco * 0.08;
-        if (dx >= inicio && dx <= inicio + ancho) {
-            return base - 3 * Math.sin(Math.PI * (dx - inicio) / ancho);   // onda T
-        }
+        if (dx >= inicio && dx <= inicio + ancho) return base - 3 * Math.sin(Math.PI * (dx - inicio) / ancho);
     } else {
         const ancho = Math.min(4, hueco * 0.32);
         const fin = -1.6 - hueco * 0.12;
-        if (dx >= fin - ancho && dx <= fin) {
-            return base - 1.5 * Math.sin(Math.PI * (dx - fin + ancho) / ancho); // onda P
-        }
+        if (dx >= fin - ancho && dx <= fin) return base - 1.5 * Math.sin(Math.PI * (dx - fin + ancho) / ancho);
     }
 
     return base;
@@ -153,21 +170,561 @@ function voltaje(x, posiciones, base) {
 
 function dibujarTrazado(svg, posicionesR, papel) {
     const base = papel.altoMm - 11;
-    const paso = 0.2;
     const puntos = [];
-    for (let x = 0; x <= papel.anchoMm; x += paso) {
+    for (let x = 0; x <= papel.anchoMm; x += 0.2) {
         puntos.push(x.toFixed(2) + ',' + voltaje(x, posicionesR, base).toFixed(2));
     }
-
-    const grupo = crear('g', { class: 'simulador-fc-trazo-grupo' });
-    grupo.appendChild(crear('path', { d: 'M' + puntos.join(' L'), class: 'simulador-fc-trazo' }));
-    svg.appendChild(grupo);
+    svg.appendChild(crear('path', { d: 'M' + puntos.join(' L'), class: 'simulador-fc-trazo' }));
     return base;
 }
 
-function raizDe(nodo) {
-    return nodo.closest('.simulador-fc');
+// --- EL CALIBRADOR ---
+//
+// Dos patas arrastrables unidas por una barra. Es el único instrumento de
+// medida del módulo y se usa igual en las tres situaciones. Se engancha a la
+// cuadrícula de milímetro en milímetro, que es la precisión real con la que
+// se puede leer un cuadro pequeño a ojo.
+
+// El eje activo: 'x' mide tiempo, 'y' mide voltaje y 'xy' las dos cosas a la
+// vez. La figura arranca en 'ref', que solo muestra las cotas.
+function ejeDe(raiz) {
+    return raiz.dataset.eje || (raiz.dataset.ejercicio === 'papel' ? 'ref' : 'x');
 }
+
+function dibujarCalibrador(svg, raiz, papel) {
+    const eje = ejeDe(raiz);
+    const grupo = crear('g', { class: 'simulador-fc-calibrador' });
+
+    if (eje.indexOf('x') !== -1 && eje.indexOf('y') !== -1) {
+        grupo.appendChild(crear('rect', { class: 'simulador-fc-calibrador-area' }));
+    }
+
+    ['x', 'y'].forEach((cual) => {
+        if (eje.indexOf(cual) === -1) return;
+        ['a', 'b'].forEach((pata) => {
+            const g = crear('g', { class: 'simulador-fc-pata', tabindex: '0', role: 'slider' });
+            g.dataset.pata = pata;
+            g.dataset.eje = cual;
+            g.appendChild(crear('line', { class: 'simulador-fc-pata-linea' }));
+            g.appendChild(crear('circle', { class: 'simulador-fc-pata-asa', r: 1.6 }));
+            g.addEventListener('pointerdown', (ev) => iniciarArrastre(ev, raiz, 'pata', pata, cual));
+            g.addEventListener('keydown', (ev) => moverConTeclado(ev, raiz, pata, cual));
+            grupo.appendChild(g);
+        });
+        grupo.appendChild(crear('line', { class: 'simulador-fc-calibrador-barra', 'data-eje': cual }));
+    });
+
+    svg.appendChild(grupo);
+
+    // Posición inicial: separadas lo justo para que se vean las dos patas.
+    raiz.dataset.calA = Math.round(papel.anchoMm * 0.25);
+    raiz.dataset.calB = Math.round(papel.anchoMm * 0.45);
+    raiz.dataset.calAy = Math.round(papel.altoMm * 0.3);
+    raiz.dataset.calBy = Math.round(papel.altoMm * 0.65);
+    actualizarCalibrador(raiz);
+}
+
+function valoresEje(raiz, cual) {
+    return cual === 'y'
+        ? [parseFloat(raiz.dataset.calAy), parseFloat(raiz.dataset.calBy)]
+        : [parseFloat(raiz.dataset.calA), parseFloat(raiz.dataset.calB)];
+}
+
+function actualizarCalibrador(raiz) {
+    const calibrador = raiz.querySelector('.simulador-fc-calibrador');
+    if (!calibrador) return;   // la figura en modo referencia no lleva calibrador
+    const papel = papelDe(raiz);
+
+    raiz.querySelectorAll('.simulador-fc-pata').forEach((g) => {
+        const cual = g.dataset.eje;
+        const [a, b] = valoresEje(raiz, cual);
+        const valor = g.dataset.pata === 'a' ? a : b;
+        const linea = g.querySelector('.simulador-fc-pata-linea');
+        const asa = g.querySelector('.simulador-fc-pata-asa');
+        if (cual === 'y') {
+            linea.setAttribute('x1', 1.5); linea.setAttribute('y1', valor);
+            linea.setAttribute('x2', papel.anchoMm - 1.5); linea.setAttribute('y2', valor);
+            asa.setAttribute('cx', papel.anchoMm - 4); asa.setAttribute('cy', valor);
+        } else {
+            linea.setAttribute('x1', valor); linea.setAttribute('y1', 1.5);
+            linea.setAttribute('x2', valor); linea.setAttribute('y2', papel.altoMm - 1.5);
+            asa.setAttribute('cx', valor); asa.setAttribute('cy', 4);
+        }
+    });
+
+    raiz.querySelectorAll('.simulador-fc-calibrador-barra').forEach((barra) => {
+        const cual = barra.getAttribute('data-eje');
+        const [a, b] = valoresEje(raiz, cual);
+        if (cual === 'y') {
+            barra.setAttribute('x1', papel.anchoMm - 4); barra.setAttribute('y1', a);
+            barra.setAttribute('x2', papel.anchoMm - 4); barra.setAttribute('y2', b);
+        } else {
+            barra.setAttribute('x1', a); barra.setAttribute('y1', 4);
+            barra.setAttribute('x2', b); barra.setAttribute('y2', 4);
+        }
+    });
+
+    const area = raiz.querySelector('.simulador-fc-calibrador-area');
+    if (area) {
+        const [ax, bx] = valoresEje(raiz, 'x');
+        const [ay, by] = valoresEje(raiz, 'y');
+        area.setAttribute('x', Math.min(ax, bx));
+        area.setAttribute('y', Math.min(ay, by));
+        area.setAttribute('width', Math.abs(bx - ax));
+        area.setAttribute('height', Math.abs(by - ay));
+    }
+
+    escribirLectura(raiz);
+}
+
+function medidaMm(raiz, cual) {
+    const [a, b] = valoresEje(raiz, cual || 'x');
+    return Math.abs(b - a);
+}
+
+function textoTiempo(mm) {
+    const grandes = Math.floor(mm / 5);
+    const resto = Math.round(mm % 5);
+    const cuadros = grandes + ' cuadro' + (grandes === 1 ? '' : 's') + ' grande' + (grandes === 1 ? '' : 's') +
+        (resto ? ' y ' + resto + ' pequeño' + (resto === 1 ? '' : 's') : '');
+    return cuadros + '  ·  ' + mm + ' cuadros pequeños  ·  ' + (mm / MM_POR_SEGUNDO).toFixed(2).replace('.', ',') + ' s';
+}
+
+function textoVoltaje(mm) {
+    return mm + ' mm  ·  ' + (mm / MM_POR_MILIVOLTIO).toFixed(2).replace('.', ',') + ' mV';
+}
+
+function escribirLectura(raiz) {
+    const salida = raiz.querySelector('.simulador-fc-lectura-valor');
+    if (!salida) return;
+    const eje = ejeDe(raiz);
+    if (eje === 'ref') return;
+
+    const ambos = eje === 'xy';
+    const partes = [];
+    if (eje.indexOf('x') !== -1) partes.push((ambos ? 'Tiempo — ' : '') + textoTiempo(medidaMm(raiz, 'x')));
+    if (eje.indexOf('y') !== -1) partes.push((ambos ? 'Voltaje — ' : '') + textoVoltaje(medidaMm(raiz, 'y')));
+    salida.textContent = partes.join('     ');
+}
+
+// --- ARRASTRE ---
+
+function clienteAMm(svg, cliente, vertical) {
+    const r = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    return vertical
+        ? vb.y + (cliente - r.top) / r.height * vb.height
+        : vb.x + (cliente - r.left) / r.width * vb.width;
+}
+
+function iniciarArrastre(ev, raiz, tipo, pata, cual) {
+    ev.preventDefault();
+    const svg = raiz.querySelector('.simulador-fc-svg');
+    const vertical = cual === 'y';
+    arrastre = { raiz, svg, tipo, pata, cual: cual || 'x', vertical };
+
+    if (tipo === 'ventana') {
+        const mm = clienteAMm(svg, ev.clientX, false);
+        arrastre.agarreMm = mm - parseFloat(raiz.dataset.ventanaInicio);
+    }
+
+    document.addEventListener('pointermove', moverArrastre);
+    document.addEventListener('pointerup', terminarArrastre);
+    document.addEventListener('pointercancel', terminarArrastre);
+}
+
+function moverArrastre(ev) {
+    if (!arrastre) return;
+    ev.preventDefault();
+    const { raiz, svg, tipo, pata, cual, vertical } = arrastre;
+    const papel = papelDe(raiz);
+
+    if (tipo === 'pata') {
+        const limite = vertical ? papel.altoMm : papel.anchoMm;
+        const mm = clienteAMm(svg, vertical ? ev.clientY : ev.clientX, vertical);
+        const valor = Math.min(Math.max(Math.round(mm), 0), Math.round(limite));
+        const clave = (pata === 'a' ? 'calA' : 'calB') + (cual === 'y' ? 'y' : '');
+        raiz.dataset[clave] = valor;
+        actualizarCalibrador(raiz);
+    } else {
+        const mm = clienteAMm(svg, ev.clientX, false);
+        raiz.dataset.ventanaInicio = ajustarVentana(mm - arrastre.agarreMm, papel);
+        actualizarVentana(raiz);
+    }
+}
+
+function terminarArrastre() {
+    arrastre = null;
+    document.removeEventListener('pointermove', moverArrastre);
+    document.removeEventListener('pointerup', terminarArrastre);
+    document.removeEventListener('pointercancel', terminarArrastre);
+}
+
+function moverConTeclado(ev, raiz, pata, cual) {
+    const paso = ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' ? -1
+        : ev.key === 'ArrowRight' || ev.key === 'ArrowDown' ? 1 : 0;
+    if (!paso) return;
+    ev.preventDefault();
+    const papel = papelDe(raiz);
+    const limite = cual === 'y' ? papel.altoMm : papel.anchoMm;
+    const clave = (pata === 'a' ? 'calA' : 'calB') + (cual === 'y' ? 'y' : '');
+    raiz.dataset[clave] = Math.min(Math.max(parseFloat(raiz.dataset[clave]) + paso, 0), Math.round(limite));
+    actualizarCalibrador(raiz);
+}
+
+// --- FIGURA 4.3: EL PAPEL, MEDIBLE ---
+
+// Rótulo de una cota: caja blanca con borde del color de la cota, para que
+// el texto se lea sobre la cuadrícula rosa. El ancho se estima a partir del
+// número de caracteres porque el SVG aún no está en el documento y no se
+// puede medir el texto.
+// Ancho real de un texto, medido con un canvas fuera de pantalla. No se usa
+// getBBox() porque el módulo se monta con el desarrollo todavía oculto
+// (display:none hasta pulsar «Comenzar») y ahí getBBox devuelve cero, lo que
+// dejaba las cajas más estrechas que su texto.
+const TIPO_ROTULO = 1.9;
+let medidor = null;
+
+function anchoTexto(texto, tamano) {
+    if (!medidor) medidor = document.createElement('canvas').getContext('2d');
+    const familia = getComputedStyle(document.body).fontFamily || 'sans-serif';
+    medidor.font = '600 100px ' + familia;
+    return medidor.measureText(texto).width / 100 * tamano;
+}
+
+function rotuloCota(grupo, x, y, texto, rotado) {
+    const g = crear('g', { class: 'simulador-fc-cota-rotulo' });
+    g.setAttribute('transform', 'translate(' + x + ',' + y + ')' + (rotado ? ' rotate(-90)' : ''));
+    const ancho = anchoTexto(texto, TIPO_ROTULO) + 2.8;
+    g.appendChild(crear('rect', { x: 0, y: -1.6, width: ancho.toFixed(2), height: 3.2, rx: .7, class: 'simulador-fc-cota-caja' }));
+    g.appendChild(crear('text', { x: 1.4, y: .7, class: 'simulador-fc-cota-rotulo-texto' }, texto));
+    grupo.appendChild(g);
+}
+
+function montarPapel(raiz) {
+    const papel = PAPEL_FIGURA;
+    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
+    if (!lienzo) return;
+    const eje = ejeDe(raiz);
+    lienzo.textContent = '';
+
+    const svg = nuevoSvg(papel);
+    dibujarCuadricula(svg, papel);
+
+    // Las cotas solo se dibujan en el modo de referencia: cuando el estudiante
+    // pasa a medir, el papel se queda limpio para que lo que lea sea su propia
+    // medición y no el rótulo que tiene al lado.
+    if (eje === 'ref') {
+        const cotas = crear('g', { class: 'simulador-fc-cotas' });
+
+        cotas.appendChild(crear('text', { x: 30, y: 9, class: 'simulador-fc-cota-titulo' }, 'VOLTAJE'));
+        cotas.appendChild(crear('text', { x: 95, y: 9, class: 'simulador-fc-cota-titulo' }, 'TIEMPO'));
+
+        COTAS_VOLTAJE.forEach((cota) => {
+            const abajo = cota.y + cota.mm;
+            cotas.appendChild(crear('path', {
+                d: 'M' + COTA_VOLTAJE_X + ',' + cota.y + ' V' + abajo +
+                   ' M' + (COTA_VOLTAJE_X - 1) + ',' + cota.y + ' H' + (COTA_VOLTAJE_X + 1) +
+                   ' M' + (COTA_VOLTAJE_X - 1) + ',' + abajo + ' H' + (COTA_VOLTAJE_X + 1),
+                class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
+            }));
+            rotuloCota(cotas, COTA_VOLTAJE_X + 3.5, cota.y + cota.mm / 2, cota.texto, false);
+        });
+
+        COTAS_TIEMPO.forEach((cota) => {
+            const derecha = COTA_BASE_X + cota.mm;
+            cotas.appendChild(crear('path', {
+                d: 'M' + COTA_BASE_X + ',' + cota.y + ' H' + derecha +
+                   ' M' + COTA_BASE_X + ',' + (cota.y - 1) + ' V' + (cota.y + 1) +
+                   ' M' + derecha + ',' + (cota.y - 1) + ' V' + (cota.y + 1),
+                class: 'simulador-fc-cota-barra simulador-fc-med--' + cota.color
+            }));
+            rotuloCota(cotas, derecha + 3.5, cota.y, cota.texto, false);
+        });
+
+        cotas.appendChild(crear('text', { x: 95, y: 52, class: 'simulador-fc-cota-pie' }, 'Velocidad del papel = 25 mm/s'));
+        svg.appendChild(cotas);
+    }
+
+    if (eje !== 'ref') dibujarCalibrador(svg, raiz, papel);
+    lienzo.appendChild(svg);
+    if (eje !== 'ref') actualizarCalibrador(raiz);
+}
+
+function cambiarEje(boton, eje) {
+    const raiz = boton.closest('.simulador-fc');
+    if (!raiz) return;
+    raiz.dataset.eje = eje;
+    raiz.querySelectorAll('.simulador-fc-ejes button').forEach((b) => b.classList.toggle('activo', b === boton));
+
+    const lectura = raiz.querySelector('.simulador-fc-lectura');
+    if (lectura) lectura.hidden = eje === 'ref';
+    const rotulo = raiz.querySelector('.simulador-fc-lectura-rotulo');
+    if (rotulo) rotulo.textContent = eje === 'xy' ? 'Medida:' : (eje === 'y' ? 'Voltaje medido:' : 'Tiempo medido:');
+    const pista = raiz.querySelector('.simulador-fc-pista');
+    if (pista) pista.hidden = eje === 'ref';
+
+    montarPapel(raiz);
+}
+
+// --- RECURSO INTERACTIVO: CALCULAR LA FRECUENCIA ---
+
+function montarRegular(raiz) {
+    const papel = PAPEL_REGULAR;
+    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
+    if (!lienzo) return;
+
+    // Se alterna entre un R-R exacto y uno inexacto para que el estudiante se
+    // encuentre con los dos escenarios y descubra para qué sirve cada regla.
+    const tocaExacto = raiz.dataset.ultimoExacto !== 'true';
+    const banco = tocaExacto ? RR_EXACTOS : RR_INEXACTOS;
+    const rr = banco[Math.floor(Math.random() * banco.length)];
+    raiz.dataset.ultimoExacto = tocaExacto ? 'true' : 'false';
+
+    const posiciones = [];
+    for (let x = 13; x <= papel.anchoMm - 12; x += rr) posiciones.push(x);
+
+    lienzo.textContent = '';
+    const svg = nuevoSvg(papel);
+    dibujarCuadricula(svg, papel);
+    dibujarTrazado(svg, posiciones, papel);
+    dibujarCalibrador(svg, raiz, papel);
+    lienzo.appendChild(svg);
+
+    raiz.dataset.rr = rr;
+    raiz.dataset.posiciones = posiciones.join(',');
+    raiz.dataset.fase = 'medir';
+    actualizarCalibrador(raiz);
+
+    prepararRespuesta(raiz, 'Frecuencia cardíaca', 'lpm');
+    escribirPaso(raiz, 'Arrastra las dos patas del calibrador hasta dos ondas R seguidas. Después escribe la frecuencia que calcules.');
+    escribirFeedback(raiz, '');
+}
+
+function montarIrregular(raiz) {
+    const papel = PAPEL_IRREGULAR;
+    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
+    if (!lienzo) return;
+
+    // Las ondas R van en milímetros enteros no múltiplos de 5, y el borde de
+    // la ventana se engancha a medios cuadros grandes (2,5 mm): así ninguna R
+    // puede caer justo sobre el borde y el conteo nunca es ambiguo.
+    const posiciones = [];
+    let x = 10;
+    while (x < papel.anchoMm - 10) {
+        let xr = Math.round(x);
+        if (xr % 5 === 0) xr += 1;
+        if (xr < papel.anchoMm - 10) posiciones.push(xr);
+        x = xr + 11 + Math.random() * 15;
+    }
+
+    lienzo.textContent = '';
+    const svg = nuevoSvg(papel);
+    dibujarCuadricula(svg, papel);
+    dibujarTrazado(svg, posiciones, papel);
+
+    // Marcas de 1 segundo, como en un registro real.
+    const marcas = crear('g', { class: 'simulador-fc-marcas' });
+    for (let s = 0; s * MM_POR_SEGUNDO <= papel.anchoMm; s++) {
+        const xm = s * MM_POR_SEGUNDO;
+        marcas.appendChild(crear('path', { d: 'M' + xm + ',0 V4', class: 'simulador-fc-marca-linea' }));
+        marcas.appendChild(crear('text', { x: xm, y: 7.5, class: 'simulador-fc-marca-numero' }, s));
+    }
+    svg.appendChild(marcas);
+    svg.appendChild(crear('g', { class: 'simulador-fc-ventana' }));
+    svg.appendChild(crear('g', { class: 'simulador-fc-numeros' }));
+    dibujarCalibrador(svg, raiz, papel);
+    lienzo.appendChild(svg);
+
+    raiz.dataset.posiciones = posiciones.join(',');
+    raiz.dataset.fase = 'comparar';
+    raiz.dataset.medidas = '';
+    raiz.dataset.ventanaInicio = ajustarVentana(papel.anchoMm * 0.1, papel);
+    actualizarCalibrador(raiz);
+
+    mostrarVentana(raiz, false);
+    prepararRespuesta(raiz, 'Complejos dentro de la ventana', 'complejos', true);
+    const anotar = raiz.querySelector('.simulador-fc-anotar');
+    if (anotar) { anotar.hidden = false; anotar.textContent = 'Anotar esta medida'; }
+
+    escribirPaso(raiz, 'Paso 1 · Mide con el calibrador la distancia entre dos ondas R y pulsa «Anotar esta medida». Repítelo en otro punto del trazado.');
+    escribirFeedback(raiz, '');
+}
+
+function ajustarVentana(mm, papel) {
+    const maximo = papel.anchoMm - VENTANA_MM;
+    const ajustado = Math.round(mm / 2.5) * 2.5;
+    return Math.min(Math.max(ajustado, 0), Math.round(maximo / 2.5) * 2.5);
+}
+
+function mostrarVentana(raiz, visible) {
+    const grupo = raiz.querySelector('.simulador-fc-ventana');
+    const calibrador = raiz.querySelector('.simulador-fc-calibrador');
+    if (grupo) grupo.style.display = visible ? '' : 'none';
+    if (calibrador) calibrador.style.display = visible ? 'none' : '';
+    if (visible) actualizarVentana(raiz);
+}
+
+function actualizarVentana(raiz) {
+    const grupo = raiz.querySelector('.simulador-fc-ventana');
+    if (!grupo) return;
+    const papel = PAPEL_IRREGULAR;
+    const x1 = parseFloat(raiz.dataset.ventanaInicio);
+    const x2 = x1 + VENTANA_MM;
+    grupo.textContent = '';
+
+    const area = crear('rect', { x: x1, y: 4, width: VENTANA_MM, height: papel.altoMm - 4, class: 'simulador-fc-ventana-area' });
+    area.addEventListener('pointerdown', (ev) => iniciarArrastre(ev, raiz, 'ventana'));
+    grupo.appendChild(area);
+    grupo.appendChild(crear('path', { d: 'M' + x1 + ',4 V' + papel.altoMm + ' M' + x2 + ',4 V' + papel.altoMm, class: 'simulador-fc-ventana-borde' }));
+    grupo.appendChild(crear('path', { d: 'M' + x1 + ',' + (papel.altoMm - 1.6) + ' H' + x2, class: 'simulador-fc-ventana-borde' }));
+    grupo.appendChild(crear('text', { x: (x1 + x2) / 2, y: papel.altoMm - 2.8, class: 'simulador-fc-ventana-texto' }, '6 segundos — arrastra para moverla'));
+}
+
+function anotarMedida(boton) {
+    const raiz = boton.closest('.simulador-fc');
+    if (!raiz || raiz.dataset.fase !== 'comparar') return;
+
+    const mm = medidaMm(raiz);
+    if (mm < 5) {
+        escribirFeedback(raiz, 'Separa un poco más las patas: mide de una onda R a la siguiente.', 'incorrecto');
+        return;
+    }
+
+    const medidas = (raiz.dataset.medidas || '').split(',').filter((v) => v !== '');
+    medidas.push(String(mm));
+    raiz.dataset.medidas = medidas.join(',');
+
+    if (medidas.length < 2) {
+        escribirFeedback(raiz, 'Primera medida anotada: ' + mm + ' mm, que serían ' + Math.round(1500 / mm) +
+            ' lpm. Ahora mide otro par de ondas R, en otro punto del trazado.', '');
+        return;
+    }
+
+    const [m1, m2] = medidas.map(Number);
+    const f1 = Math.round(1500 / m1);
+    const f2 = Math.round(1500 / m2);
+
+    if (Math.abs(f1 - f2) < 8) {
+        raiz.dataset.medidas = String(m2);
+        escribirFeedback(raiz, 'Las dos medidas dan casi lo mismo (' + f1 + ' y ' + f2 +
+            ' lpm). Busca dos pares de ondas R que se vean claramente más juntas y más separadas.', '');
+        return;
+    }
+
+    raiz.dataset.fase = 'contar';
+    mostrarVentana(raiz, true);
+    const anotar = raiz.querySelector('.simulador-fc-anotar');
+    if (anotar) anotar.hidden = true;
+    habilitarRespuesta(raiz, true);
+
+    escribirFeedback(raiz, 'Ahí está el problema: midiendo un par de ondas R salen ' + f1 +
+        ' lpm y midiendo otro salen ' + f2 + ' lpm. En un ritmo irregular la regla de los 300 da un resultado ' +
+        'distinto según dónde midas, así que no sirve. Por eso se cuenta en 6 segundos.', 'correcto');
+    escribirPaso(raiz, 'Paso 2 · Arrastra la ventana de 6 segundos donde quieras y escribe cuántos complejos QRS caen dentro.');
+}
+
+// --- RESPUESTA ESCRITA ---
+
+function prepararRespuesta(raiz, rotulo, unidad, bloqueada) {
+    const campo = raiz.querySelector('.simulador-fc-campo');
+    const etiqueta = raiz.querySelector('.simulador-fc-campo-rotulo');
+    const sufijo = raiz.querySelector('.simulador-fc-campo-unidad');
+    if (etiqueta) etiqueta.textContent = rotulo + ':';
+    if (sufijo) sufijo.textContent = unidad;
+    if (campo) campo.value = '';
+    habilitarRespuesta(raiz, !bloqueada);
+}
+
+function habilitarRespuesta(raiz, activa) {
+    const caja = raiz.querySelector('.simulador-fc-respuesta');
+    const campo = raiz.querySelector('.simulador-fc-campo');
+    const boton = raiz.querySelector('.simulador-fc-comprobar');
+    if (caja) caja.classList.toggle('bloqueada', !activa);
+    if (campo) campo.disabled = !activa;
+    if (boton) boton.disabled = !activa;
+}
+
+function comprobar(boton) {
+    const raiz = boton.closest('.simulador-fc');
+    if (!raiz) return;
+    const campo = raiz.querySelector('.simulador-fc-campo');
+    const valor = parseFloat((campo.value || '').replace(',', '.'));
+
+    if (!valor || valor <= 0) {
+        escribirFeedback(raiz, 'Escribe un número antes de comprobar.', 'incorrecto');
+        return;
+    }
+
+    if (raiz.dataset.modo === 'irregular') comprobarConteo(raiz, valor);
+    else comprobarRegular(raiz, valor);
+}
+
+function comprobarRegular(raiz, valor) {
+    if (raiz.dataset.fase === 'resuelto') return;
+
+    const mm = medidaMm(raiz);
+    const rr = parseInt(raiz.dataset.rr, 10);
+
+    if (Math.abs(mm - rr) > 0.5) {
+        escribirFeedback(raiz, 'Antes de calcular, comprueba la medida: el calibrador marca ' + mm +
+            ' mm y la distancia entre dos ondas R seguidas no es esa. Coloca cada pata justo sobre el pico de una R.', 'incorrecto');
+        return;
+    }
+
+    const exacta = rr % 5 === 0;
+    const correcta = 1500 / rr;
+    const acierto = Math.abs(valor - correcta) <= (exacta ? 2 : 4);
+
+    raiz.dataset.fase = 'resuelto';
+    anotarMarcador(raiz, acierto);
+
+    const grandes = rr / 5;
+    let detalle;
+    if (exacta) {
+        detalle = 'Las dos ondas R están separadas ' + grandes + ' cuadros grandes exactos, así que basta la regla de los 300: ' +
+            '300 ÷ ' + grandes + ' = ' + Math.round(correcta) + ' lpm. Con la de los 1500 sale lo mismo: 1500 ÷ ' + rr + ' = ' + Math.round(correcta) + ' lpm.';
+    } else {
+        const bajo = Math.floor(grandes);
+        const alto = Math.ceil(grandes);
+        detalle = 'Aquí la segunda onda R no cae sobre una línea de cuadro grande: queda entre ' + bajo + ' y ' + alto +
+            ', así que la regla de los 300 solo dice que la frecuencia está entre ' + Math.round(300 / alto) + ' y ' + Math.round(300 / bajo) +
+            ' lpm. La regla de los 1500 sí da el valor: 1500 ÷ ' + rr + ' cuadros pequeños = ' + Math.round(correcta) + ' lpm.';
+    }
+
+    escribirFeedback(raiz, (acierto ? 'Correcto. ' : 'No. ') + detalle, acierto ? 'correcto' : 'incorrecto');
+    escribirPaso(raiz, 'Pulsa «Otro trazado» para practicar con otra separación.');
+}
+
+function comprobarConteo(raiz, valor) {
+    if (raiz.dataset.fase !== 'contar') return;
+
+    const desde = parseFloat(raiz.dataset.ventanaInicio);
+    const hasta = desde + VENTANA_MM;
+    const posiciones = raiz.dataset.posiciones.split(',').map(Number);
+    const dentro = posiciones.filter((x) => x > desde && x < hasta);
+    const acierto = Math.round(valor) === dentro.length;
+
+    // Se numeran los complejos del tramo para que el estudiante compruebe
+    // dónde se desvió su conteo, en vez de solo saber que falló.
+    const grupo = raiz.querySelector('.simulador-fc-numeros');
+    const base = PAPEL_IRREGULAR.altoMm - 11;
+    grupo.textContent = '';
+    dentro.forEach((x, i) => {
+        grupo.appendChild(crear('text', { x: x, y: base - 11, class: 'simulador-fc-numero' }, i + 1));
+    });
+
+    raiz.dataset.fase = 'resuelto';
+    anotarMarcador(raiz, acierto);
+
+    const texto = (acierto ? 'Correcto. ' : 'Contaste ' + Math.round(valor) + '. ') +
+        'Dentro de la ventana hay ' + dentro.length + ' complejos: ' + dentro.length + ' × 10 = ' +
+        (dentro.length * 10) + ' lpm. Se multiplica por 10 porque 6 segundos caben diez veces en un minuto.';
+    escribirFeedback(raiz, texto, acierto ? 'correcto' : 'incorrecto');
+    escribirPaso(raiz, 'Pulsa «Otro trazado» para practicar con otro ritmo.');
+}
+
+// --- CHROME DEL WIDGET ---
 
 function escribirFeedback(raiz, texto, estado) {
     const p = raiz.querySelector('.simulador-fc-feedback');
@@ -192,428 +749,28 @@ function anotarMarcador(raiz, acierto) {
     if (envoltura) envoltura.hidden = false;
 }
 
-// --- FIGURA 4.3: PAPEL ACOTADO ---
-
-function montarPapel(raiz) {
-    const papel = PAPEL_FIGURA;
-    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
-    if (!lienzo) return;
-    lienzo.textContent = '';
-
-    const svg = nuevoSvg(papel);
-    dibujarCuadricula(svg, papel);
-
-    const cotas = crear('g', { class: 'simulador-fc-cotas' });
-
-    // Cota horizontal de un cuadro grande (5 mm = 0,2 s).
-    cotas.appendChild(crear('path', { d: 'M20,27 H25', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('path', { d: 'M20,25.8 V28.2 M25,25.8 V28.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', { x: 22.5, y: 31, class: 'simulador-fc-cota-texto' }, '5 mm = 0,20 s'));
-
-    // Cota horizontal de un cuadro pequeño (1 mm = 0,04 s).
-    cotas.appendChild(crear('path', { d: 'M34,27 H35', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('path', { d: 'M34,25.8 V28.2 M35,25.8 V28.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', { x: 38, y: 31, class: 'simulador-fc-cota-texto' }, '1 mm = 0,04 s'));
-
-    // Cota vertical de calibración (10 mm = 1 mV).
-    cotas.appendChild(crear('path', { d: 'M8,5 V15', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('path', { d: 'M6.8,5 H9.2 M6.8,15 H9.2', class: 'simulador-fc-cota' }));
-    cotas.appendChild(crear('text', {
-        x: 0, y: 0, class: 'simulador-fc-cota-texto',
-        transform: 'translate(5.4,10) rotate(-90)'
-    }, '10 mm = 1 mV'));
-
-    // Marca de calibración, tal como la imprime el equipo al inicio de la tira.
-    cotas.appendChild(crear('path', {
-        d: 'M12,20 H15 L15,10 H20 L20,20 H24',
-        class: 'simulador-fc-calibracion'
-    }));
-
-    cotas.appendChild(crear('text', { x: 30, y: 4.5, class: 'simulador-fc-cota-titulo' }, 'Velocidad del papel = 25 mm/s'));
-
-    svg.appendChild(cotas);
-    lienzo.appendChild(svg);
-}
-
-// --- RECURSO INTERACTIVO 1: REGLA RÁPIDA DE FRECUENCIA ---
-
-function montarRegla(raiz, separacionCuadros) {
-    const papel = PAPEL_REGLA;
-    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
-    if (!lienzo) return;
-
-    const separacion = separacionCuadros || SEPARACIONES[Math.floor(Math.random() * SEPARACIONES.length)];
-    const pasoMm = separacion * 5;
-    const primeraR = 14;
-
-    const posiciones = [];
-    for (let x = primeraR; x <= papel.anchoMm - 12; x += pasoMm) posiciones.push(x);
-
-    lienzo.textContent = '';
-    const svg = nuevoSvg(papel);
-    dibujarCuadricula(svg, papel);
-    const base = dibujarTrazado(svg, posiciones, papel);
-
-    // Zonas sensibles sobre cada onda R: es donde el estudiante hace clic en
-    // el paso 1. Son transparentes y más anchas que la R para que el acierto
-    // no dependa de la puntería.
-    const zonas = crear('g', { class: 'simulador-fc-zonas' });
-    posiciones.forEach((x, indice) => {
-        const zona = crear('rect', {
-            x: x - 2.5, y: 2, width: 5, height: papel.altoMm - 4,
-            class: 'simulador-fc-zona-r'
-        });
-        zona.addEventListener('click', () => marcarPrimeraR(raiz, indice));
-        zonas.appendChild(zona);
-    });
-    svg.appendChild(zonas);
-    svg.appendChild(crear('g', { class: 'simulador-fc-regla' }));
-
-    lienzo.appendChild(svg);
-
-    raiz.dataset.separacion = separacion;
-    raiz.dataset.pasoMm = pasoMm;
-    raiz.dataset.base = base;
-    raiz.dataset.posiciones = posiciones.join(',');
-    raiz.dataset.fase = 'marcar';
-
-    escribirPaso(raiz, 'Paso 1 · Haz clic sobre una onda R del trazado para empezar a contar desde ahí.');
-    escribirFeedback(raiz, '');
-}
-
-function marcarPrimeraR(raiz, indice) {
-    if (raiz.dataset.fase !== 'marcar') return;
-
-    const posiciones = raiz.dataset.posiciones.split(',').map(Number);
-    // Hace falta que quede al menos una R más a la derecha para poder contar.
-    if (indice >= posiciones.length - 1) {
-        escribirFeedback(raiz, 'Elige una onda R que tenga otra a su derecha: el conteo va de una R a la siguiente.', 'incorrecto');
-        return;
-    }
-
-    const svg = raiz.querySelector('.simulador-fc-svg');
-    const papel = PAPEL_REGLA;
-    const base = parseFloat(raiz.dataset.base);
-    const xR = posiciones[indice];
-    const grupoRegla = svg.querySelector('.simulador-fc-regla');
-    grupoRegla.textContent = '';
-
-    grupoRegla.appendChild(crear('circle', {
-        cx: xR, cy: base - 9, r: 1.6, class: 'simulador-fc-marca-r'
-    }));
-    grupoRegla.appendChild(crear('path', {
-        d: 'M' + xR + ',7 V' + (base - 9), class: 'simulador-fc-marca-inicio'
-    }));
-    grupoRegla.appendChild(crear('text', {
-        x: xR - 1.5, y: 10.4, class: 'simulador-fc-marca-texto'
-    }, 'Comenzar'));
-
-    // La secuencia 300, 150, 100... se ancla a cada línea de cuadro grande
-    // que sigue a la R marcada, exactamente como la regla impresa.
-    SECUENCIA_REGLA.forEach((valor, i) => {
-        const x = xR + (i + 1) * 5;
-        if (x > papel.anchoMm - 2) return;
-
-        const etiqueta = crear('g', { class: 'simulador-fc-etiqueta-regla', tabindex: '0', role: 'button' });
-        etiqueta.dataset.valor = valor;
-        etiqueta.dataset.cuadros = i + 1;
-        etiqueta.appendChild(crear('rect', {
-            x: x - 2.3, y: 1.5, width: 4.6, height: 5, rx: .8,
-            class: 'simulador-fc-etiqueta-fondo'
-        }));
-        etiqueta.appendChild(crear('text', { x: x, y: 5.2, class: 'simulador-fc-etiqueta-texto' }, valor));
-        etiqueta.appendChild(crear('path', {
-            d: 'M' + x + ',6.5 V' + (base - 10), class: 'simulador-fc-etiqueta-guia'
-        }));
-        etiqueta.addEventListener('click', () => responderRegla(raiz, etiqueta));
-        etiqueta.addEventListener('keydown', (ev) => {
-            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); responderRegla(raiz, etiqueta); }
-        });
-        grupoRegla.appendChild(etiqueta);
-    });
-
-    raiz.dataset.fase = 'elegir';
-    raiz.dataset.xInicio = xR;
-    escribirPaso(raiz, 'Paso 2 · Mira dónde cae la siguiente onda R y pulsa el número que le corresponde.');
-    escribirFeedback(raiz, '');
-}
-
-function responderRegla(raiz, etiqueta) {
-    if (raiz.dataset.fase !== 'elegir') return;
-
-    const cuadros = parseInt(etiqueta.dataset.cuadros, 10);
-    const correctos = parseInt(raiz.dataset.separacion, 10);
-    const acierto = cuadros === correctos;
-    const valorCorrecto = SECUENCIA_REGLA[correctos - 1];
-
-    raiz.querySelectorAll('.simulador-fc-etiqueta-regla').forEach((g) => {
-        g.classList.remove('acertada', 'fallada');
-        if (parseInt(g.dataset.cuadros, 10) === correctos) g.classList.add('acertada');
-    });
-    if (!acierto) etiqueta.classList.add('fallada');
-
-    raiz.dataset.fase = 'resuelto';
-    anotarMarcador(raiz, acierto);
-
-    const cuadrosPequenos = correctos * 5;
-    const detalle = 'Hay ' + correctos + ' cuadros grandes entre las dos ondas R: 300 ÷ ' + correctos +
-        ' = ' + valorCorrecto + ' lpm. Con cuadros pequeños, 1500 ÷ ' + cuadrosPequenos + ' = ' +
-        Math.round(1500 / cuadrosPequenos) + ' lpm.';
-
-    escribirFeedback(raiz, (acierto ? 'Correcto. ' : 'No era ese. ') + detalle, acierto ? 'correcto' : 'incorrecto');
-    escribirPaso(raiz, 'Pulsa «Otro trazado» para practicar con una separación distinta.');
-}
-
-// --- RECURSO INTERACTIVO 2: CONTEO EN 6 SEGUNDOS ---
-
-function montarSeisSegundos(raiz) {
-    const papel = PAPEL_SEIS;
-    const lienzo = raiz.querySelector('.simulador-fc-lienzo');
-    if (!lienzo) return;
-
-    // Ritmo irregular: R-R variable entre 11 y 26 mm (de 0,44 a 1,04 s). Se
-    // evita que una R caiga a menos de 2,5 mm de una marca de segundo para que
-    // nunca haya duda de si el complejo entra o no en el tramo elegido.
-    const posiciones = [];
-    let x = 12;
-    while (x < papel.anchoMm - 12) {
-        let xr = x;
-        const resto = xr % MM_POR_SEGUNDO;
-        if (resto < 3) xr += 3 - resto;
-        else if (resto > MM_POR_SEGUNDO - 3) xr += MM_POR_SEGUNDO + 3 - resto;
-        if (xr < papel.anchoMm - 12) posiciones.push(Math.round(xr * 100) / 100);
-        x = xr + 11 + Math.random() * 15;
-    }
-
-    lienzo.textContent = '';
-    const svg = nuevoSvg(papel);
-    dibujarCuadricula(svg, papel);
-    const base = dibujarTrazado(svg, posiciones, papel);
-
-    // Marcas de 1 segundo en el borde superior, como en un registro real.
-    const marcas = crear('g', { class: 'simulador-fc-marcas' });
-    const totalSegundos = Math.floor(papel.anchoMm / MM_POR_SEGUNDO);
-    for (let s = 0; s <= totalSegundos; s++) {
-        const xm = s * MM_POR_SEGUNDO;
-        const marca = crear('g', { class: 'simulador-fc-marca', tabindex: '0', role: 'button' });
-        marca.dataset.segundo = s;
-        marca.appendChild(crear('rect', {
-            x: xm - 2, y: 0, width: 4, height: 8, class: 'simulador-fc-marca-zona'
-        }));
-        marca.appendChild(crear('path', { d: 'M' + xm + ',0 V5', class: 'simulador-fc-marca-linea' }));
-        marca.appendChild(crear('text', { x: xm, y: 8, class: 'simulador-fc-marca-numero' }, s));
-        marca.addEventListener('click', () => elegirMarca(raiz, s));
-        marca.addEventListener('keydown', (ev) => {
-            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); elegirMarca(raiz, s); }
-        });
-        marcas.appendChild(marca);
-    }
-    svg.appendChild(marcas);
-    svg.appendChild(crear('g', { class: 'simulador-fc-tramo' }));
-
-    // Zonas sensibles sobre cada QRS para el conteo del paso 2.
-    const zonas = crear('g', { class: 'simulador-fc-zonas' });
-    posiciones.forEach((xr, indice) => {
-        const zona = crear('g', { class: 'simulador-fc-zona-qrs' });
-        zona.dataset.indice = indice;
-        zona.dataset.x = xr;
-        zona.appendChild(crear('rect', {
-            x: xr - 3, y: 9, width: 6, height: papel.altoMm - 11, class: 'simulador-fc-zona-qrs-area'
-        }));
-        zona.appendChild(crear('text', { x: xr, y: 13, class: 'simulador-fc-zona-qrs-numero' }, ''));
-        zona.addEventListener('click', () => contarQrs(raiz, indice));
-        zonas.appendChild(zona);
-    });
-    svg.appendChild(zonas);
-
-    lienzo.appendChild(svg);
-
-    raiz.dataset.base = base;
-    raiz.dataset.posiciones = posiciones.join(',');
-    raiz.dataset.fase = 'inicio';
-    raiz.dataset.contados = '';
-    delete raiz.dataset.segInicio;
-
-    const confirmar = raiz.querySelector('.simulador-fc-confirmar');
-    if (confirmar) confirmar.hidden = true;
-    actualizarContador(raiz);
-
-    escribirPaso(raiz, 'Paso 1 · Pulsa la marca de segundo donde quieras empezar y después la marca 6 segundos más allá.');
-    escribirFeedback(raiz, '');
-}
-
-function elegirMarca(raiz, segundo) {
-    const fase = raiz.dataset.fase;
-    if (fase !== 'inicio' && fase !== 'fin') return;
-
-    if (fase === 'inicio') {
-        raiz.dataset.segInicio = segundo;
-        raiz.dataset.fase = 'fin';
-        pintarTramo(raiz, segundo, segundo);
-        escribirPaso(raiz, 'Paso 1 · Ahora pulsa la marca que cierra un tramo de 6 segundos.');
-        escribirFeedback(raiz, '');
-        return;
-    }
-
-    const inicio = parseInt(raiz.dataset.segInicio, 10);
-    const duracion = Math.abs(segundo - inicio);
-
-    if (duracion === 0) {
-        raiz.dataset.fase = 'inicio';
-        pintarTramo(raiz, null, null);
-        escribirPaso(raiz, 'Paso 1 · Pulsa la marca de segundo donde quieras empezar y después la marca 6 segundos más allá.');
-        return;
-    }
-
-    if (duracion !== 6) {
-        escribirFeedback(raiz, 'Ese tramo mide ' + duracion + ' segundos. El conteo necesita exactamente 6: cuenta seis marcas desde la de inicio.', 'incorrecto');
-        return;
-    }
-
-    const desde = Math.min(inicio, segundo);
-    raiz.dataset.segInicio = desde;
-    raiz.dataset.fase = 'contar';
-    pintarTramo(raiz, desde, desde + 6);
-
-    const confirmar = raiz.querySelector('.simulador-fc-confirmar');
-    if (confirmar) confirmar.hidden = false;
-
-    escribirPaso(raiz, 'Paso 2 · Haz clic sobre cada complejo QRS que quede dentro del tramo. Vuelve a pulsarlo si te equivocas.');
-    escribirFeedback(raiz, '');
-}
-
-function pintarTramo(raiz, desde, hasta) {
-    const svg = raiz.querySelector('.simulador-fc-svg');
-    const grupo = svg.querySelector('.simulador-fc-tramo');
-    const papel = PAPEL_SEIS;
-    grupo.textContent = '';
-    if (desde === null) return;
-
-    const x1 = desde * MM_POR_SEGUNDO;
-    const x2 = hasta * MM_POR_SEGUNDO;
-
-    grupo.appendChild(crear('rect', {
-        x: x1, y: 5, width: Math.max(x2 - x1, 0), height: papel.altoMm - 5,
-        class: 'simulador-fc-tramo-area'
-    }));
-    grupo.appendChild(crear('path', {
-        d: 'M' + x1 + ',5 V' + papel.altoMm, class: 'simulador-fc-tramo-borde'
-    }));
-    if (x2 > x1) {
-        grupo.appendChild(crear('path', {
-            d: 'M' + x2 + ',5 V' + papel.altoMm, class: 'simulador-fc-tramo-borde'
-        }));
-        grupo.appendChild(crear('path', {
-            d: 'M' + x1 + ',' + (papel.altoMm - 1.5) + ' H' + x2,
-            class: 'simulador-fc-tramo-borde'
-        }));
-        grupo.appendChild(crear('text', {
-            x: (x1 + x2) / 2, y: papel.altoMm - 2.6, class: 'simulador-fc-tramo-texto'
-        }, (hasta - desde) + ' segundos'));
-    }
-}
-
-function contarQrs(raiz, indice) {
-    if (raiz.dataset.fase !== 'contar') return;
-
-    const contados = (raiz.dataset.contados || '').split(',').filter((v) => v !== '');
-    const clave = String(indice);
-    const posicion = contados.indexOf(clave);
-    if (posicion === -1) contados.push(clave); else contados.splice(posicion, 1);
-    raiz.dataset.contados = contados.join(',');
-
-    // Se renumeran de izquierda a derecha para que el conteo visible siga el
-    // orden del trazado y no el orden en que el estudiante fue pulsando.
-    const ordenados = contados.map(Number).sort((a, b) => a - b);
-    raiz.querySelectorAll('.simulador-fc-zona-qrs').forEach((zona) => {
-        const i = parseInt(zona.dataset.indice, 10);
-        const n = ordenados.indexOf(i);
-        zona.classList.toggle('contado', n !== -1);
-        zona.querySelector('.simulador-fc-zona-qrs-numero').textContent = n === -1 ? '' : (n + 1);
-    });
-
-    actualizarContador(raiz);
-}
-
-function actualizarContador(raiz) {
-    const contados = (raiz.dataset.contados || '').split(',').filter((v) => v !== '');
-    const salida = raiz.querySelector('.simulador-fc-contador');
-    if (salida) salida.textContent = contados.length;
-}
-
-function confirmarConteo(boton) {
-    const raiz = raizDe(boton);
-    if (!raiz || raiz.dataset.fase !== 'contar') return;
-
-    const desde = parseInt(raiz.dataset.segInicio, 10) * MM_POR_SEGUNDO;
-    const hasta = desde + 6 * MM_POR_SEGUNDO;
-    const posiciones = raiz.dataset.posiciones.split(',').map(Number);
-    const reales = posiciones.filter((x) => x >= desde && x <= hasta).length;
-    const contados = (raiz.dataset.contados || '').split(',').filter((v) => v !== '').length;
-    const acierto = contados === reales;
-
-    raiz.dataset.fase = 'resuelto';
-    anotarMarcador(raiz, acierto);
-
-    const texto = acierto
-        ? 'Correcto: ' + reales + ' complejos en 6 segundos × 10 = ' + (reales * 10) + ' latidos por minuto.'
-        : 'Contaste ' + contados + '. Dentro del tramo hay ' + reales + ' complejos: ' + reales +
-          ' × 10 = ' + (reales * 10) + ' latidos por minuto.';
-    escribirFeedback(raiz, texto, acierto ? 'correcto' : 'incorrecto');
-    escribirPaso(raiz, 'Pulsa «Otro trazado» para practicar con otro ritmo.');
-
-    const confirmar = raiz.querySelector('.simulador-fc-confirmar');
-    if (confirmar) confirmar.hidden = true;
-}
-
-// --- MODO SIN TRAZADO (calculadora de la fórmula) ---
-
-function alternarCalculadora(boton) {
-    const raiz = raizDe(boton);
+function cambiarModo(boton, modo) {
+    const raiz = boton.closest('.simulador-fc');
     if (!raiz) return;
-    const caja = raiz.querySelector('.simulador-fc-calculadora');
-    if (!caja) return;
-    caja.hidden = !caja.hidden;
-    boton.textContent = caja.hidden ? 'Modo sin trazado' : 'Ocultar modo sin trazado';
-    if (!caja.hidden) {
-        const campo = caja.querySelector('.simulador-fc-campo');
-        if (campo) campo.focus();
-    }
+    raiz.dataset.modo = modo;
+    raiz.querySelectorAll('.simulador-fc-modos button').forEach((b) => b.classList.toggle('activo', b === boton));
+    montar(raiz, true);
 }
-
-function calcular(campo) {
-    const raiz = raizDe(campo);
-    if (!raiz) return;
-    const salida = raiz.querySelector('.simulador-fc-resultado');
-    if (!salida) return;
-
-    const cuadros = parseFloat(campo.value);
-    if (!cuadros || cuadros <= 0) { salida.textContent = ''; return; }
-
-    const fc = Math.round(300 / cuadros);
-    salida.textContent = '300 ÷ ' + cuadros + ' = ' + fc + ' lpm  ·  equivale a 1500 ÷ ' +
-        (cuadros * 5) + ' cuadros pequeños.';
-}
-
-// --- API Y MONTAJE ---
 
 function nuevoCaso(boton) {
-    const raiz = raizDe(boton);
-    if (!raiz) return;
-    montar(raiz, true);
+    const raiz = boton.closest('.simulador-fc');
+    if (raiz) montar(raiz, true);
 }
 
 function montar(raiz, forzar) {
     if (!forzar && raiz.dataset.listo === 'true') return;
     raiz.dataset.listo = 'true';
 
-    if (raiz.dataset.ejercicio === 'papel') montarPapel(raiz);
-    else if (raiz.dataset.ejercicio === 'seis-segundos') montarSeisSegundos(raiz);
-    else montarRegla(raiz);
+    if (raiz.dataset.ejercicio === 'papel') { montarPapel(raiz); return; }
+    if (raiz.dataset.modo === 'irregular') montarIrregular(raiz);
+    else montarRegular(raiz);
 }
 
-// Los módulos se insertan con innerHTML: el observador detecta el montaje del
-// widget sin depender de un hook de carga. Mismo patrón que el simulador de eje.
 const observadorFrecuencia = new MutationObserver((mutaciones) => {
     mutaciones.forEach((mutacion) => {
         mutacion.addedNodes.forEach((nodo) => {
@@ -630,10 +787,11 @@ const vistaModuloFc = document.getElementById('vista-modulo');
 if (vistaModuloFc) observadorFrecuencia.observe(vistaModuloFc, { childList: true, subtree: true });
 
     // --- API PÚBLICA DEL NAMESPACE ---
+    OVA.SimuladorFrecuencia.cambiarModo = cambiarModo;
+    OVA.SimuladorFrecuencia.cambiarEje = cambiarEje;
     OVA.SimuladorFrecuencia.nuevoCaso = nuevoCaso;
-    OVA.SimuladorFrecuencia.alternarCalculadora = alternarCalculadora;
-    OVA.SimuladorFrecuencia.calcular = calcular;
-    OVA.SimuladorFrecuencia.confirmarConteo = confirmarConteo;
+    OVA.SimuladorFrecuencia.anotarMedida = anotarMedida;
+    OVA.SimuladorFrecuencia.comprobar = comprobar;
     OVA.SimuladorFrecuencia.montar = montar;
 
 })(window.OVA = window.OVA || {});

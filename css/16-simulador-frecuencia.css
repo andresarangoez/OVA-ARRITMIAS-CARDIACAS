@@ -1,4 +1,4 @@
-/* --- CÁLCULO DE FRECUENCIA SOBRE PAPEL DE ECG (Módulo 01, Unidad 4) --- */
+/* --- MEDIR SOBRE EL PAPEL DE ECG (Módulo 01, Unidad 4) --- */
 /* Las medidas dentro del SVG están en milímetros de papel: los font-size y
    stroke-width de este archivo van en esas mismas unidades, no en píxeles. */
 
@@ -11,16 +11,26 @@
     box-shadow: var(--bento-shadow-sm, 0 1px 3px rgba(0, 0, 0, .06));
 }
 
+/* Variante sin marco, para cuando el papel se usa como figura. */
+.simulador-fc--figura {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
 .simulador-fc-etiqueta {
     font-weight: 700;
-    color: var(--fucs-azul);
-    margin: 0 0 4px;
+    color: var(--fucs-azul-profundo);
+    margin: 0 0 10px;
 }
 
 .simulador-fc-paso {
     margin: 0 0 12px;
     font-size: .92rem;
     color: var(--text-muted);
+    min-height: 1.2em;
 }
 
 .simulador-fc-lienzo-wrap {
@@ -31,144 +41,202 @@
 }
 
 .simulador-fc-lienzo { display: inline-block; min-width: 100%; }
-.simulador-fc-svg { display: block; touch-action: pan-x; }
+.simulador-fc-svg { display: block; }
+
+/* La figura ocupa el ancho de la columna de texto en vez de quedarse pequeña
+   con espacio sobrante a los lados. */
+.simulador-fc-svg--fluido { width: 100%; height: auto; }
+.simulador-fc--figura .simulador-fc-lienzo-wrap { overflow-x: visible; }
 
 /* --- Papel --- */
 .simulador-fc-fondo { fill: #fff6f4; }
 .simulador-fc-rejilla-fina { fill: none; stroke: #f0c3bd; stroke-width: .12; }
 .simulador-fc-rejilla-gruesa { fill: none; stroke: #dd8b82; stroke-width: .3; }
-
-/* --- Trazado --- */
 .simulador-fc-trazo { fill: none; stroke: #16181d; stroke-width: .38; stroke-linejoin: round; }
-.simulador-fc-linea-base { fill: none; stroke: #16181d; stroke-width: .25; opacity: .5; }
 
-/* --- Zonas sensibles --- */
-.simulador-fc-zona-r { fill: transparent; cursor: pointer; }
-.simulador-fc-zona-r:hover { fill: rgba(0, 90, 170, .12); }
+/* --- El calibrador --- */
+.simulador-fc-pata { cursor: ew-resize; touch-action: none; outline: none; }
+.simulador-fc[data-eje="y"] .simulador-fc-pata { cursor: ns-resize; }
 
-/* --- Regla de los 300 --- */
-.simulador-fc-marca-r { fill: var(--fucs-azul, #005aaa); stroke: #fff; stroke-width: .3; }
-.simulador-fc-marca-inicio { stroke: var(--fucs-azul, #005aaa); stroke-width: .35; stroke-dasharray: 1 .8; }
-.simulador-fc-marca-texto {
-    font-size: 2.4px; font-weight: 700; fill: var(--fucs-azul, #005aaa);
-    text-anchor: end; font-family: inherit;
+.simulador-fc-pata-linea {
+    stroke: var(--fucs-azul-oscuro);
+    stroke-width: .35;
+    stroke-dasharray: 1.2 .8;
 }
 
-/* El anillo de foco por defecto envuelve TODA la caja del <g>, que incluye la
-   guía vertical hasta el trazado: sale un óvalo enorme. Se suprime y el foco
-   se marca sobre el recuadro de la etiqueta, más abajo. */
-.simulador-fc-etiqueta-regla:focus,
-.simulador-fc-marca:focus,
-.simulador-fc-zona-qrs:focus,
-.simulador-fc-zona-r:focus { outline: none; }
+.simulador-fc-pata-asa {
+    fill: var(--fucs-azul-oscuro);
+    stroke: #fff;
+    stroke-width: .4;
+}
 
-.simulador-fc-etiqueta-regla { cursor: pointer; }
-.simulador-fc-etiqueta-fondo { fill: #ffffff; stroke: #b8c4d4; stroke-width: .2; }
-.simulador-fc-etiqueta-texto {
-    font-size: 2.4px; font-weight: 700; fill: #2b3b52;
+.simulador-fc-pata:hover .simulador-fc-pata-asa,
+.simulador-fc-pata:focus-visible .simulador-fc-pata-asa { fill: #0b78d8; r: 2.1; }
+.simulador-fc-pata:hover .simulador-fc-pata-linea,
+.simulador-fc-pata:focus-visible .simulador-fc-pata-linea { stroke-width: .5; stroke-dasharray: none; }
+
+.simulador-fc-calibrador-barra {
+    stroke: var(--fucs-azul-oscuro);
+    stroke-width: .5;
+    stroke-linecap: round;
+}
+
+/* Área medida cuando se miden tiempo y voltaje a la vez. */
+.simulador-fc-calibrador-area {
+    fill: var(--fucs-azul-oscuro);
+    opacity: .08;
+    pointer-events: none;
+}
+
+/* --- La ventana de 6 segundos --- */
+.simulador-fc-ventana-area { fill: rgba(200, 30, 30, .09); cursor: grab; touch-action: none; }
+.simulador-fc-ventana-area:active { cursor: grabbing; }
+.simulador-fc-ventana-borde { stroke: #c81e1e; stroke-width: .4; fill: none; }
+.simulador-fc-ventana-texto {
+    font-size: 2.6px; font-weight: 700; fill: #c81e1e;
     text-anchor: middle; font-family: inherit; pointer-events: none;
 }
-.simulador-fc-etiqueta-guia { stroke: #8fa3bb; stroke-width: .18; stroke-dasharray: .8 .8; }
 
-.simulador-fc-etiqueta-regla:hover .simulador-fc-etiqueta-fondo,
-.simulador-fc-etiqueta-regla:focus-visible .simulador-fc-etiqueta-fondo {
-    fill: #e8f1fb; stroke: var(--fucs-azul, #005aaa); stroke-width: .35;
-}
-.simulador-fc-etiqueta-regla.acertada .simulador-fc-etiqueta-fondo { fill: #d8f3e2; stroke: #1f8a52; stroke-width: .4; }
-.simulador-fc-etiqueta-regla.acertada .simulador-fc-etiqueta-texto { fill: #14673b; }
-.simulador-fc-etiqueta-regla.acertada .simulador-fc-etiqueta-guia { stroke: #1f8a52; stroke-dasharray: none; stroke-width: .3; }
-.simulador-fc-etiqueta-regla.fallada .simulador-fc-etiqueta-fondo { fill: #fbdcdc; stroke: #b3261e; stroke-width: .4; }
-.simulador-fc-etiqueta-regla.fallada .simulador-fc-etiqueta-texto { fill: #8c1d18; }
-
-/* --- Conteo en 6 segundos --- */
-.simulador-fc-marca { cursor: pointer; }
-.simulador-fc-marca-zona { fill: transparent; }
 .simulador-fc-marca-linea { stroke: #16181d; stroke-width: .35; }
-.simulador-fc-marca-numero {
-    font-size: 2.6px; fill: #4a5566; text-anchor: middle; font-family: inherit; pointer-events: none;
-}
-.simulador-fc-marca:hover .simulador-fc-marca-linea,
-.simulador-fc-marca:focus-visible .simulador-fc-marca-linea { stroke: var(--fucs-azul, #005aaa); stroke-width: .7; }
-
-.simulador-fc-tramo-area { fill: rgba(200, 30, 30, .07); }
-.simulador-fc-tramo-borde { stroke: #c81e1e; stroke-width: .4; fill: none; }
-.simulador-fc-tramo-texto {
-    font-size: 2.8px; font-weight: 700; fill: #c81e1e; text-anchor: middle; font-family: inherit;
+.simulador-fc-marca-numero { font-size: 2.6px; fill: #4a5566; text-anchor: middle; font-family: inherit; }
+.simulador-fc-numero {
+    font-size: 3.2px; font-weight: 700; fill: #14673b;
+    text-anchor: middle; font-family: inherit;
 }
 
-.simulador-fc-zona-qrs { cursor: pointer; }
-.simulador-fc-zona-qrs-area { fill: transparent; }
-.simulador-fc-zona-qrs:hover .simulador-fc-zona-qrs-area { fill: rgba(0, 90, 170, .12); }
-.simulador-fc-zona-qrs.contado .simulador-fc-zona-qrs-area { fill: rgba(31, 138, 82, .16); }
-.simulador-fc-zona-qrs-numero {
-    font-size: 3px; font-weight: 700; fill: #14673b; text-anchor: middle;
-    font-family: inherit; pointer-events: none;
+/* --- Cotas de la Figura 4.3 --- */
+/* Un solo color, el azul institucional, con el dorado como acento de la línea
+   de base. La diferencia entre cotas la da su longitud sobre la cuadrícula,
+   que es justamente lo que la figura tiene que enseñar. */
+
+/* El color va solo en las barras: distingue cada cota de un vistazo sin que
+   el texto pierda la identidad institucional. */
+.simulador-fc-cota-barra {
+    fill: none;
+    stroke-width: .3;
+    stroke-linecap: butt;
 }
 
-/* --- Figura 4.3: papel acotado --- */
-.simulador-fc-cota { stroke: #2b3b52; stroke-width: .25; fill: none; }
-.simulador-fc-calibracion { stroke: #16181d; stroke-width: .4; fill: none; }
-.simulador-fc-cota-texto { font-size: 2.4px; fill: #2b3b52; text-anchor: middle; font-family: inherit; }
-.simulador-fc-cota-titulo { font-size: 2.4px; font-weight: 700; fill: #1f4f86; text-anchor: middle; font-family: inherit; }
+.simulador-fc-med--ambar { stroke: #c2680a; }
+.simulador-fc-med--verde { stroke: #15803d; }
+.simulador-fc-med--azul { stroke: #1d4ed8; }
+.simulador-fc-med--violeta { stroke: #7e22ce; }
 
-/* --- Controles --- */
-.simulador-fc-controles {
+.simulador-fc-cota-caja {
+    fill: #ffffff;
+    stroke: var(--fucs-gris);
+    stroke-width: .25;
+}
+
+.simulador-fc-cota-rotulo-texto {
+    font-size: 1.9px;
+    font-weight: 600;
+    font-family: inherit;
+    fill: var(--fucs-azul-profundo);
+}
+
+.simulador-fc-cota-titulo {
+    font-size: 2.6px; font-weight: 700; fill: var(--fucs-azul-profundo);
+    text-anchor: middle; font-family: inherit; letter-spacing: .4px;
+}
+
+.simulador-fc-cota-pie {
+    font-size: 2.2px; font-weight: 600; fill: var(--text-muted);
+    text-anchor: middle; font-family: inherit;
+}
+
+/* --- Selectores de modo y de eje --- */
+.simulador-fc-modos,
+.simulador-fc-ejes {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.simulador-fc-modos button,
+.simulador-fc-ejes button {
+    border: 1px solid var(--fucs-gris);
+    background: #fff;
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font: inherit;
+    font-size: .86rem;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+.simulador-fc-modos button:hover,
+.simulador-fc-ejes button:hover { border-color: var(--fucs-azul-profundo); color: var(--fucs-azul-profundo); }
+
+.simulador-fc-modos button.activo,
+.simulador-fc-ejes button.activo {
+    background: var(--fucs-azul-profundo);
+    border-color: var(--fucs-azul-profundo);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* --- Lectura del calibrador --- */
+.simulador-fc-lectura {
+    margin: 10px 0 0;
+    padding: 8px 12px;
+    background: var(--fucs-niebla);
+    border-radius: var(--bento-radius-sm, 8px);
+    font-size: .9rem;
+}
+
+.simulador-fc-lectura-rotulo { color: var(--text-muted); }
+.simulador-fc-lectura-valor { font-weight: 700; color: var(--fucs-azul-profundo); }
+
+/* --- Respuesta escrita --- */
+.simulador-fc-respuesta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    margin-top: 14px;
-}
-
-.simulador-fc-contador-wrap,
-.simulador-fc-marcador-wrap {
-    font-size: .88rem;
-    color: var(--text-muted);
-}
-
-.simulador-fc-contador { font-weight: 700; color: var(--fucs-azul); }
-
-.simulador-fc-calculadora {
     margin-top: 12px;
-    padding: 12px 14px;
-    background: var(--fucs-niebla);
-    border-radius: var(--bento-radius-sm, 8px);
+}
+
+.simulador-fc-respuesta label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: .92rem;
 }
 
-.simulador-fc-calculadora label { display: block; }
+.simulador-fc-respuesta.bloqueada { opacity: .5; }
 
 .simulador-fc-campo {
-    width: 80px;
-    margin-left: 8px;
-    padding: 5px 8px;
+    width: 90px;
+    padding: 6px 9px;
     border: 1px solid var(--fucs-gris);
     border-radius: 6px;
     font: inherit;
 }
 
-.simulador-fc-resultado { margin: 8px 0 0; font-weight: 600; color: var(--fucs-azul); }
+.simulador-fc-campo:disabled { background: #eceff3; }
+.simulador-fc-campo-unidad { color: var(--text-muted); font-size: .88rem; }
+
+/* --- Controles y mensajes --- */
+.simulador-fc-controles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.simulador-fc-marcador-wrap { font-size: .88rem; color: var(--text-muted); }
 
 .simulador-fc-feedback { margin: 12px 0 0; font-size: .92rem; min-height: 1.2em; }
 .simulador-fc-feedback.correcto { color: #14673b; font-weight: 600; }
 .simulador-fc-feedback.incorrecto { color: #8c1d18; font-weight: 600; }
 
-.simulador-fc-pista {
-    margin: 6px 0 0;
-    font-size: .8rem;
-    color: var(--text-muted);
-}
+.simulador-fc-pista { margin: 6px 0 0; font-size: .8rem; color: var(--text-muted); }
 
 @media (max-width: 640px) {
     .simulador-fc { padding: 14px; }
-    .simulador-fc-controles { gap: 8px; }
-}
-
-/* Variante sin marco, para cuando el papel se usa como figura ilustrativa. */
-.simulador-fc--figura {
-    background: none;
-    border: 0;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
+    .simulador-fc-respuesta label { width: 100%; }
 }
