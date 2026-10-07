@@ -71,8 +71,12 @@
 
 /* Logo a la izquierda y, a su lado, el nombre del proyecto: antes el logo iba
    centrado sobre el título y dejaba un hueco grande a cada lado. */
-.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 44px; margin-bottom: 36px; }
+.footer-brand { display: flex; flex-direction: row; align-items: center; gap: 28px; margin-bottom: 36px; }
 .footer-logo { height: 110px; width: auto; flex-shrink: 0; }
+/* Filete entre el escudo de la universidad y la marca del OVA: son dos
+   identidades distintas y conviene que no se lean como una sola. */
+.footer-brand-separador { width: 1px; align-self: stretch; background: rgba(198, 199, 200, 0.8); flex-shrink: 0; }
+.footer-logo-ova { height: 84px; width: auto; flex-shrink: 0; }
 .footer-brand-texto { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .footer-project-kicker { margin: 0; font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--fucs-azul-oscuro); }
 .footer-project-name { margin: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.15; color: var(--fucs-azul-profundo); }
@@ -97,7 +101,10 @@
     .footer-columns { grid-template-columns: 1fr 1fr; gap: 28px; }
 }
 @media (max-width: 640px) {
+    /* Apilado, el filete vertical no separa nada: lo hace ya el salto de línea. */
     .footer-brand { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .footer-brand-separador { display: none; }
+    .footer-logo-ova { height: 64px; }
     .footer-columns { grid-template-columns: 1fr; }
     .footer-project-name { font-size: 1.3rem; }
 }
