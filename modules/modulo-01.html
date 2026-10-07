@@ -622,10 +622,16 @@
                         <p>Por eso el papel no es solo el fondo donde se dibuja el trazado, es la herramienta con la que se mide cada onda, segmento e intervalo. La distancia horizontal entre dos puntos dice cuánto duró ese tramo; la distancia vertical dice qué tan intensa fue la señal. Ese mismo conteo es el que se usa para medir la duración de cada onda en la unidad siguiente, y es también la base del cálculo de la frecuencia cardíaca que viene en el próximo apartado.</p>
 
                         <div class="figura">
-                            <div class="simulador-fc simulador-fc--figura" data-ejercicio="papel">
+                            <div class="simulador-fc simulador-fc--figura" data-ejercicio="papel" data-eje="x">
+                                <div class="simulador-fc-ejes">
+                                    <button type="button" class="activo" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'x')">Medir tiempo</button>
+                                    <button type="button" onclick="OVA.SimuladorFrecuencia.cambiarEje(this,'y')">Medir voltaje</button>
+                                </div>
                                 <div class="simulador-fc-lienzo-wrap">
                                     <div class="simulador-fc-lienzo"></div>
                                 </div>
+                                <p class="simulador-fc-lectura"><span class="simulador-fc-lectura-rotulo">Tiempo medido:</span> <span class="simulador-fc-lectura-valor"></span></p>
+                                <p class="simulador-fc-pista">Arrastra las dos patas del calibrador sobre el papel para medir. Se enganchan de milímetro en milímetro, que es lo fino que se puede leer un cuadro pequeño a ojo.</p>
                             </div>
                             <p class="figura-caption"><strong>Figura 4.3.</strong> Papel de registro del electrocardiograma: cuadros pequeños de 1 mm y cuadros grandes de 5 mm; a la velocidad estándar de 25 mm/s equivalen a 0,04 y 0,2 segundos. La marca de calibración de la izquierda mide 10 mm, es decir, 1 mV. Elaboración propia.</p>
                         </div>
@@ -650,38 +656,28 @@
 
                         <p>Cuando el ritmo es irregular, la distancia entre ondas R no es constante, y la regla del 300 daría un resultado distinto según el latido medido. En ese caso se cuenta el número de complejos QRS en un tramo de 6 segundos del papel —identificable porque los equipos suelen marcar el registro cada 1 o 3 segundos— y se multiplica por 10, para obtener la frecuencia promedio en ese minuto (8).</p>
 
-                        <div class="simulador-fc" data-ejercicio="regla300" data-aciertos="0" data-intentos="0">
-                            <p class="simulador-fc-etiqueta">🧮 Recurso interactivo — Regla rápida de frecuencia</p>
-                            <p class="simulador-fc-paso">Paso 1 · Haz clic sobre una onda R del trazado para empezar a contar desde ahí.</p>
+                        <div class="simulador-fc" data-ejercicio="frecuencia" data-modo="regular" data-aciertos="0" data-intentos="0">
+                            <p class="simulador-fc-etiqueta">📏 Recurso interactivo — Calcular la frecuencia cardíaca</p>
+                            <div class="simulador-fc-modos">
+                                <button type="button" class="activo" onclick="OVA.SimuladorFrecuencia.cambiarModo(this,'regular')">Ritmo regular</button>
+                                <button type="button" onclick="OVA.SimuladorFrecuencia.cambiarModo(this,'irregular')">Ritmo irregular</button>
+                            </div>
+                            <p class="simulador-fc-paso"></p>
                             <div class="simulador-fc-lienzo-wrap">
                                 <div class="simulador-fc-lienzo"></div>
                             </div>
-                            <p class="simulador-fc-pista">La tira mide 6 segundos de papel. Si no cabe en la pantalla, deslízala en horizontal.</p>
-                            <div class="simulador-fc-controles">
-                                <button type="button" class="btn-accion" onclick="OVA.SimuladorFrecuencia.nuevoCaso(this)">Otro trazado</button>
-                                <button type="button" class="btn-accion" onclick="OVA.SimuladorFrecuencia.alternarCalculadora(this)">Modo sin trazado</button>
-                                <span class="simulador-fc-marcador-wrap" hidden>Aciertos: <span class="simulador-fc-marcador">0/0</span></span>
-                            </div>
-                            <div class="simulador-fc-calculadora" hidden>
-                                <label>Cuadros grandes entre dos ondas R:
-                                    <input type="number" min="1" max="12" step="1" class="simulador-fc-campo" oninput="OVA.SimuladorFrecuencia.calcular(this)">
+                            <p class="simulador-fc-lectura"><span class="simulador-fc-lectura-rotulo">Tiempo medido:</span> <span class="simulador-fc-lectura-valor"></span></p>
+                            <div class="simulador-fc-respuesta">
+                                <label>
+                                    <span class="simulador-fc-campo-rotulo">Frecuencia cardíaca:</span>
+                                    <input type="number" min="1" max="400" step="1" class="simulador-fc-campo" inputmode="numeric">
+                                    <span class="simulador-fc-campo-unidad">lpm</span>
                                 </label>
-                                <p class="simulador-fc-resultado"></p>
+                                <button type="button" class="btn-accion simulador-fc-comprobar" onclick="OVA.SimuladorFrecuencia.comprobar(this)">Comprobar</button>
                             </div>
-                            <p class="simulador-fc-feedback"></p>
-                        </div>
-
-                        <div class="simulador-fc" data-ejercicio="seis-segundos" data-aciertos="0" data-intentos="0">
-                            <p class="simulador-fc-etiqueta">⏱️ Recurso interactivo — Conteo en 6 segundos</p>
-                            <p class="simulador-fc-paso">Paso 1 · Pulsa la marca de segundo donde quieras empezar y después la marca 6 segundos más allá.</p>
-                            <div class="simulador-fc-lienzo-wrap">
-                                <div class="simulador-fc-lienzo"></div>
-                            </div>
-                            <p class="simulador-fc-pista">La tira mide 10 segundos: el tramo de 6 puede empezar donde tú decidas. Deslízala en horizontal si no cabe.</p>
                             <div class="simulador-fc-controles">
-                                <button type="button" class="btn-accion simulador-fc-confirmar" hidden onclick="OVA.SimuladorFrecuencia.confirmarConteo(this)">Confirmar conteo</button>
+                                <button type="button" class="btn-accion simulador-fc-anotar" hidden onclick="OVA.SimuladorFrecuencia.anotarMedida(this)">Anotar esta medida</button>
                                 <button type="button" class="btn-accion" onclick="OVA.SimuladorFrecuencia.nuevoCaso(this)">Otro trazado</button>
-                                <span class="simulador-fc-contador-wrap">Complejos marcados: <span class="simulador-fc-contador">0</span></span>
                                 <span class="simulador-fc-marcador-wrap" hidden>Aciertos: <span class="simulador-fc-marcador">0/0</span></span>
                             </div>
                             <p class="simulador-fc-feedback"></p>
