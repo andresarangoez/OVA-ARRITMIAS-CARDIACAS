@@ -51,7 +51,7 @@
                     <div class="modulo-introduccion">
                     <h3>Introducción</h3>
                     <p>Antes de interpretar cualquier arritmia es necesario comprender cómo está construido el corazón, cómo genera y conduce su impulso eléctrico, y cómo se traduce todo eso en el papel del electrocardiograma. Este módulo construye esa base, siguiendo la estructura curricular oficial del curso: de la anatomía a la electrofisiología, de la electrofisiología al ECG, y del ECG a las generalidades de las arritmias.</p>
-                    <p>El contenido está organizado en 6 unidades progresivas, con recursos interactivos propios de este módulo (identificación de estructuras cardíacas, exploración 3D del corazón, recorrido del sistema de conducción, construcción del potencial de acción, simulador de eje eléctrico y actividad de emparejar). Al finalizar encontrarás un caso clínico, una actividad práctica y una autoevaluación para consolidar lo aprendido.</p>
+                    <p>El contenido está organizado en 6 unidades progresivas y se trabaja sobre recursos interactivos propios del módulo: un modelo tridimensional del sistema de conducción, la identificación de las estructuras cardíacas, la curva del potencial de acción fase por fase, la comparación superpuesta de la colocación de los electrodos precordiales, el papel del electrocardiograma con un calibrador que mide sobre la propia cuadrícula, el cálculo de la frecuencia cardíaca en ritmos regulares e irregulares y un simulador del eje eléctrico. Al finalizar encontrarás un caso clínico y una autoevaluación para consolidar lo aprendido.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -843,14 +843,6 @@
                             <p class="figura-caption simulador-eje-creditos"><strong>Simulador 3.</strong> Eje cardíaco, adaptado e integrado a partir del proyecto <a href="https://github.com/david-shrk/ecgaxistrainer" target="_blank" rel="noopener">ECG Axis Trainer</a>, desarrollado por David Schaack, utilizado conforme a su licencia MIT.</p>
                         </div>
 
-                        <h5>Interpretación clínica</h5>
-                        <p>Con el eje ya identificado, la lectura es directa: un eje <strong>normal</strong> confirma que el vector medio de despolarización va de arriba-derecha hacia abajo-izquierda, como se espera en un corazón sin sobrecarga estructural relevante. Una <strong>desviación izquierda</strong> o <strong>derecha</strong> no diagnostica una causa por sí sola — es una pista que se combina con el resto del trazado (Unidad 5) y con la clínica del paciente. Un eje <strong>indeterminado</strong> (también llamado "desviación extrema") es el hallazgo menos frecuente y el que más debe llamar la atención, porque casi siempre acompaña patología significativa.</p>
-
-                        <div class="error-frecuente">
-                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Confundir el eje eléctrico con la frecuencia o el ritmo. El eje no dice nada sobre qué tan rápido late el corazón ni si el ritmo es regular — describe únicamente la dirección espacial del impulso ventricular. Tampoco es, por sí solo, una arritmia: es un dato adicional de la lectura sistemática que orienta hacia otras alteraciones (hipertrofia ventricular, hemibloqueos, EPOC, entre otras). El diagnóstico diferencial completo de cada desviación se retoma en el Módulo 03: Diagnóstico.
-                        </div>
-
                     </div>
 
                     <!-- UNIDAD 5 -->
@@ -869,39 +861,14 @@
                             <li><strong>Onda U:</strong> onda pequeña, ocasionalmente visible después de la T; su mecanismo no está completamente establecido, y se asocia con frecuencia a hipopotasemia.</li>
                         </ul>
 
-                        <h4>Actividad: empareja cada componente con su definición</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 5 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Onda P</button>
-                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Complejo QRS</button>
-                                <button class="reto-emparejar-item" data-par="st" onclick="manejarClicEmparejar(this)">Segmento ST</button>
-                                <button class="reto-emparejar-item" data-par="qt" onclick="manejarClicEmparejar(this)">Intervalo QT</button>
-                                <button class="reto-emparejar-item" data-par="u" onclick="manejarClicEmparejar(this)">Onda U</button>
-                            </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="qt" onclick="manejarClicEmparejar(this)">Despolarización y repolarización ventricular completas</button>
-                                <button class="reto-emparejar-item" data-par="u" onclick="manejarClicEmparejar(this)">Asociada frecuentemente a hipopotasemia</button>
-                                <button class="reto-emparejar-item" data-par="p" onclick="manejarClicEmparejar(this)">Despolarización auricular</button>
-                                <button class="reto-emparejar-item" data-par="st" onclick="manejarClicEmparejar(this)">Signo clásico de isquemia si se eleva o desciende</button>
-                                <button class="reto-emparejar-item" data-par="qrs" onclick="manejarClicEmparejar(this)">Despolarización ventricular</button>
-                            </div>
-                        </div>
-
-                        <div class="error-frecuente">
-                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Asumir que una onda P ausente siempre significa "no hay actividad auricular". En la fibrilación auricular sí hay actividad auricular — pero es caótica y desorganizada, por lo que no se ve como una onda P discreta sino como una línea de base fibrilatoria (Módulo 03).
-                        </div>
-
                         <div class="key-box">
                             <strong>💡 Concepto clave</strong> QRS Estrecho = Origen Supraventricular. QRS Ancho = Origen Ventricular (hasta demostrar lo contrario).
                         </div>
 
-                        <h4>Galería: Ondas del ECG</h4>
-                        <div class="galeria-imagenes">
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Onda P (recorte de ECG real, provisto por el docente)</div>
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Complejo QRS (recorte de ECG real)</div>
-                            <div class="espacio-reservado"><span class="icono" aria-hidden="true">📈</span>Segmento ST y onda T (recorte de ECG real)</div>
+                        <h4>Ondas del ECG</h4>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el simulador de ondas, segmentos e intervalos del trazado.
                         </div>
                     </div>
 
@@ -948,7 +915,7 @@
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo incluye sus propios recursos interactivos (exploración 3D del corazón, construcción del potencial de acción, recorrido del sistema de conducción, actividad de emparejar de ondas del ECG) — el simulador ECG completo, con ritmos clínicos reales y acciones de tratamiento, se encuentra en el Módulo 03: Diagnóstico.</p>
+                        <p class="placeholder-nota">Los recursos interactivos de este módulo están repartidos por las unidades, junto al contenido que explican: el modelo 3D del sistema de conducción y la identificación de estructuras en la Unidad 1, la curva del potencial de acción en la Unidad 2, y el comparador de electrodos precordiales, el papel del ECG con calibrador, el cálculo de la frecuencia cardíaca y el eje eléctrico en la Unidad 4. El simulador ECG completo, con ritmos clínicos reales y acciones de tratamiento, se encuentra en el Módulo 03: Diagnóstico.</p>
                     </div>
 
                     <!-- CASO CLÍNICO -->
@@ -985,29 +952,10 @@
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
-                        <p class="actividad-enunciado">¿Cuál de las siguientes opciones corresponde al marcapasos principal (fisiológico) del corazón?</p>
-                        <div class="actividad-opciones">
-                            <label class="actividad-opcion"><input type="radio" name="act-01" value="A"> Opción A — Nodo Auriculoventricular (AV)</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-01" value="B"> Opción B — Nodo Sinusal (SA)</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-01" value="C"> Opción C — Haz de His</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-01" value="D"> Opción D — Fibras de Purkinje</label>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">📝</span>
+                            Espacio reservado para las preguntas de la actividad de aprendizaje.
                         </div>
-                        <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
-                    </div>
-
-                    <!-- RESUMEN -->
-                    <div class="modulo-resumen">
-                        <h3>Resumen</h3>
-                        <ul>
-                            <li>La anatomía del corazón (cavidades, válvulas, irrigación coronaria) explica por qué ciertos infartos comprometen directamente el sistema de conducción.</li>
-                            <li>Automatismo, excitabilidad, conductividad y refractariedad son las cuatro propiedades eléctricas que hacen posible el potencial de acción cardíaco.</li>
-                            <li>El nodo SA es el marcapasos principal; su jerarquía con el AV, el Haz de His y Purkinje determina quién controla el ritmo si el nivel superior falla.</li>
-                            <li>La despolarización (eléctrica) siempre precede a la contracción (mecánica) — QRS marca el inicio de la sístole, el final de la T marca el inicio de la diástole.</li>
-                            <li>El papel milimetrado permite calcular la frecuencia cardíaca con métodos simples y reproducibles.</li>
-                            <li>P, PR, QRS, ST, T, QT y U son los componentes normales de todo trazado — la base para diagnosticar cualquier arritmia.</li>
-                            <li>El eje eléctrico (cuadrantes con las derivaciones I y aVF) es otro paso de la lectura sistemática del ECG, independiente de la frecuencia y el ritmo.</li>
-                            <li>Una arritmia es cualquier alteración de la frecuencia, regularidad u origen del ritmo cardíaco normal.</li>
-                        </ul>
                     </div>
 
                     <!-- AUTOEVALUACIÓN -->
