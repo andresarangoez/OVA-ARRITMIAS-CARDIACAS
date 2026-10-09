@@ -499,20 +499,72 @@
 
                         <p>Esa pausa obligada funciona como protección: al durar casi lo mismo que la contracción que provoca, impide que el corazón reciba un segundo estímulo antes de relajarse — evita que se <strong class="tooltip" tabindex="0" data-tooltip="Contracción sostenida por estímulos muy seguidos, propia del músculo esquelético; en el corazón sería incompatible con el bombeo.">tetanice</strong> como lo haría un músculo esquelético.</p>
 
-                        <div class="error-frecuente">
-                            <span class="error-frecuente-titulo">⚠️ Error frecuente</span>
-                            Confundir "despolarización" con "contracción". La despolarización es un evento <em>eléctrico</em> (cambio de voltaje); la contracción mecánica ocurre milisegundos después, acoplada por el calcio de la Fase 2 (Unidad 3). Un ECG puede mostrar actividad eléctrica organizada mientras el corazón no bombea sangre de forma eficaz — de eso trata la <strong>actividad eléctrica sin pulso</strong> (Módulo 03).
-                        </div>
-
-                        <div class="mini-reto">
+                        <!-- Un banco de preguntas, una por fase: la respuesta sigue
+                             viviendo en el HTML (data-correcta) y el boton solo rota
+                             de pregunta, sin generar nada. -->
+                        <div class="mini-reto" data-pregunta="0">
                             <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">¿En qué fase del potencial de acción ocurre la entrada de calcio que sostiene la meseta?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 0</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-1" data-correcta="true"> Fase 2</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 3</label>
+                            <p class="mini-reto-contador"></p>
+
+                            <div class="mini-reto-pregunta activa">
+                                <p class="mini-reto-enunciado">¿En qué fase la entrada rápida de sodio lleva el potencial desde −80/−90 mV hasta cerca de +20 mV?</p>
+                                <div class="actividad-opciones">
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-0" data-correcta="true"> Fase 0</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-0"> Fase 1</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-0"> Fase 2</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-0"> Fase 3</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-0"> Fase 4</label>
+                                </div>
                             </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+
+                            <div class="mini-reto-pregunta">
+                                <p class="mini-reto-enunciado">¿Qué fase es la pequeña muesca que sigue al pico, producida por una salida transitoria de potasio?</p>
+                                <div class="actividad-opciones">
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 0</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-1" data-correcta="true"> Fase 1</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 2</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 3</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-1"> Fase 4</label>
+                                </div>
+                            </div>
+
+                            <div class="mini-reto-pregunta">
+                                <p class="mini-reto-enunciado">¿En qué fase la entrada de calcio por los canales lentos sostiene la meseta?</p>
+                                <div class="actividad-opciones">
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-2"> Fase 0</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-2"> Fase 1</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-2" data-correcta="true"> Fase 2</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-2"> Fase 3</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-2"> Fase 4</label>
+                                </div>
+                            </div>
+
+                            <div class="mini-reto-pregunta">
+                                <p class="mini-reto-enunciado">¿En qué fase la salida de potasio devuelve la célula a −80/−90 mV?</p>
+                                <div class="actividad-opciones">
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Fase 0</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Fase 1</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Fase 2</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-3" data-correcta="true"> Fase 3</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-3"> Fase 4</label>
+                                </div>
+                            </div>
+
+                            <div class="mini-reto-pregunta">
+                                <p class="mini-reto-enunciado">¿Qué fase es el reposo, en la que las células automáticas se despolarizan solas hasta alcanzar el umbral?</p>
+                                <div class="actividad-opciones">
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Fase 0</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Fase 1</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Fase 2</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-4"> Fase 3</label>
+                                    <label class="actividad-opcion"><input type="radio" name="mr-01-4" data-correcta="true"> Fase 4</label>
+                                </div>
+                            </div>
+
+                            <div class="mini-reto-acciones">
+                                <button type="button" class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
+                                <button type="button" class="btn-accion mini-reto-otra" onclick="cambiarMiniReto(this)">Otra pregunta</button>
+                            </div>
                             <p class="mini-reto-feedback"></p>
                         </div>
                     </div>
@@ -560,8 +612,6 @@
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Fundamentos del Electrocardiograma (ECG)</h3>
-                        <p>El ECG es el registro gráfico, desde la superficie corporal, de la actividad eléctrica que ya describimos a nivel celular (Unidad 2) y de conducción (Unidad 1).</p>
-
                         <h4>¿Qué es y qué registra un ECG?</h4>
                         <p>El electrocardiograma (ECG, también llamado EKG) es el registro gráfico de la actividad eléctrica del corazón, obtenido desde la superficie del cuerpo. Es una técnica antigua: se usa desde que Einthoven construyó el primer galvanómetro capaz de captarla, en 1901, y sigue siendo hoy la prueba más utilizada para valorar esa actividad (7).</p>
 
@@ -848,8 +898,6 @@
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Ondas, Segmentos e Intervalos</h3>
-                        <p>Con el papel milimetrado ya entendido (Unidad 4), toca reconocer cada componente del trazado normal — la base indispensable para diagnosticar cualquier arritmia (Módulo 03).</p>
-
                         <h4>Puntos clave</h4>
                         <ul>
                             <li><strong>Onda P:</strong> despolarización auricular. Redondeada, simétrica, precede a cada QRS.</li>
@@ -861,10 +909,6 @@
                             <li><strong>Onda U:</strong> onda pequeña, ocasionalmente visible después de la T; su mecanismo no está completamente establecido, y se asocia con frecuencia a hipopotasemia.</li>
                         </ul>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto clave</strong> QRS Estrecho = Origen Supraventricular. QRS Ancho = Origen Ventricular (hasta demostrar lo contrario).
-                        </div>
-
                         <h4>Ondas del ECG</h4>
                         <div class="espacio-reservado">
                             <span class="icono" aria-hidden="true">🧩</span>
@@ -875,8 +919,6 @@
                     <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 6 · Generalidades de las Arritmias</h3>
-                        <p>Esta unidad cierra el Módulo 01 como puente directo hacia el Módulo 02: ya sabes cómo es un corazón que funciona bien (Unidades 1-5) — ahora toca introducir, en términos generales, qué es y cómo se clasifica una arritmia.</p>
-
                         <h4>Definición</h4>
                         <p>Una arritmia es cualquier alteración del ritmo cardíaco normal en su frecuencia, su regularidad o el sitio donde se origina el impulso.</p>
 
@@ -918,37 +960,6 @@
                         <p class="placeholder-nota">Los recursos interactivos de este módulo están repartidos por las unidades, junto al contenido que explican: el modelo 3D del sistema de conducción y la identificación de estructuras en la Unidad 1, la curva del potencial de acción en la Unidad 2, y el comparador de electrodos precordiales, el papel del ECG con calibrador, el cálculo de la frecuencia cardíaca y el eje eléctrico en la Unidad 4. El simulador ECG completo, con ritmos clínicos reales y acciones de tratamiento, se encuentra en el Módulo 03: Diagnóstico.</p>
                     </div>
 
-                    <!-- CASO CLÍNICO -->
-                    <div class="modulo-caso-clinico">
-                        <h3>Caso clínico</h3>
-                        <div class="caso-clinico-grid">
-                            <div class="caso-clinico-campo">
-                                <h5>Motivo de consulta</h5>
-                                <p>Paciente de 45 años, previamente sano, es llevado a monitorización tras un episodio de palpitaciones que cedió espontáneamente.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Antecedentes</h5>
-                                <p>Sin antecedentes cardíacos conocidos. Refiere consumo elevado de cafeína en las últimas 24 horas.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Signos vitales</h5>
-                                <p>FC 88 lpm · TA 118/76 mmHg · SpO2 98%</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Trazado ECG</h5>
-                                <p>Ritmo regular, onda P presente antes de cada QRS, intervalo PR de 0.16 segundos, QRS estrecho. Entre dos ondas R hay aproximadamente 3.5 cuadros grandes.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Valoración inicial</h5>
-                                <p>Alerta, orientado, sin dolor torácico ni disnea. Llenado capilar normal.</p>
-                            </div>
-                        </div>
-                        <div class="caso-clinico-preguntas">
-                            <h4>Preguntas del caso</h4>
-                            <p>Usando el método de la Unidad 4, ¿cuál es la frecuencia cardíaca aproximada de este paciente? Con base en los criterios de la Unidad 5: ¿este trazado corresponde a un ritmo sinusal normal? ¿Qué parte del sistema de conducción (Unidad 1) es responsable de que la onda P siempre preceda al QRS con un intervalo PR constante? Según la clasificación de la Unidad 6, ¿este episodio de palpitaciones encajaría como taquiarritmia? ¿Por qué sí o por qué no?</p>
-                        </div>
-                    </div>
-
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
@@ -956,77 +967,6 @@
                             <span class="icono" aria-hidden="true">📝</span>
                             Espacio reservado para las preguntas de la actividad de aprendizaje.
                         </div>
-                    </div>
-
-                    <!-- AUTOEVALUACIÓN -->
-                    <div class="modulo-autoevaluacion">
-                        <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">7 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>1. ¿Qué arteria coronaria irriga con mayor frecuencia el nodo SA y el nodo AV?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1" data-correcta="true"> Arteria coronaria derecha</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Arteria descendente anterior</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-1"> Arteria circunfleja</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>2. ¿Cuál es la fase del potencial de acción en la que ocurre la despolarización rápida por entrada de sodio?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2" data-correcta="true"> Fase 0</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> Fase 2</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-2"> Fase 3</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>3. ¿Qué frecuencia intrínseca caracteriza al nodo AV como marcapasos de respaldo?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> 60-100 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3" data-correcta="true"> 40-60 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-3"> 20-40 lpm</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>4. El cierre de las válvulas auriculoventriculares (primer ruido cardíaco) marca el inicio de:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4" data-correcta="true"> La sístole ventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> La diástole ventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-4"> La despolarización auricular</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>5. Si entre dos ondas R hay 3 cuadros grandes, ¿cuál es la frecuencia cardíaca aproximada?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> 60 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5" data-correcta="true"> 100 lpm</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-5"> 150 lpm</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>6. ¿Qué componente del ECG representa la despolarización y repolarización ventricular completas?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-6"> El intervalo PR</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-6" data-correcta="true"> El intervalo QT</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-6"> El segmento ST</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>7. Según la clasificación general de arritmias, una frecuencia cardíaca sostenida de 130 lpm se clasifica como:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-7"> Bradiarritmia</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-7" data-correcta="true"> Taquiarritmia</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-01-7"> Ritmo sinusal normal</label>
-                            </div>
-                        </div>
-
-                        <button class="btn-enviar-eval" onclick="verificarAutoevaluacion(this)">Enviar respuestas</button>
                     </div>
 
                     <!-- BIBLIOGRAFÍA -->
