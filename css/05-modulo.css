@@ -101,6 +101,11 @@
    que la imagen quede pegada arriba dejando un hueco en blanco cuando
    el texto es más alto que ella. En pantallas angostas se apila. */
 .figura-fila { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; align-items: center; margin: 20px 0; }
+/* El tamaño mínimo automático de un elemento de rejilla es el de su
+   contenido. Si dentro hay una tabla con min-width, la columna crece hasta
+   ella y arrastra toda la página; con min-width: 0 la columna puede
+   encogerse y es la tabla la que se desplaza dentro de su envoltorio. */
+.figura-fila > * { min-width: 0; }
 .figura-fila-texto > *:first-child { margin-top: 0; }
 .figura-fila-texto > *:last-child { margin-bottom: 0; }
 .figura-fila-texto li { text-align: justify; }
@@ -144,11 +149,31 @@
 .tarjeta-informativa p { margin: 4px 0; font-size: 0.88rem; color: var(--text-body); }
 .tarjeta-informativa .etiqueta { font-weight: 700; color: var(--fucs-azul-oscuro); }
 
-/* --- TABLA COMPARATIVA --- */
+/* --- TABLA COMPARATIVA ---
+   Toda tabla va envuelta en .tabla-scroll. En el móvil una tabla de tres o
+   cuatro columnas no cabe en 375 px, y como el <body> lleva overflow-x:
+   hidden (01-variables.css) lo que sobresale no se podía alcanzar: la tabla
+   se veía cortada. El envoltorio le da su propio desplazamiento horizontal,
+   de modo que el recorte se queda dentro de la tabla y la página no se mueve
+   de lado. */
+/* min-width: 0 porque, dentro de una rejilla o un flex, el tamaño mínimo
+   automático de un hijo es el de su contenido: sin esto, el min-width de la
+   tabla ensancharía la columna y volvería a desbordar la página entera. */
+.tabla-scroll { margin: 20px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; min-width: 0; max-width: 100%; }
 .tabla-comparativa { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+.tabla-scroll > .tabla-comparativa { margin: 0; }
 .tabla-comparativa th, .tabla-comparativa td { border: 1px solid var(--fucs-gris); padding: 10px 14px; text-align: left; }
 .tabla-comparativa th { background: var(--fucs-azul-profundo); color: white; font-weight: 600; }
 .tabla-comparativa tr:nth-child(even) td { background: var(--fucs-niebla); }
+
+@media (max-width: 780px) {
+    /* Primero se intenta que quepa: letra y relleno menores. El ancho mínimo
+       evita que, al no caber, las columnas se estrujen hasta partir cada
+       palabra en varias líneas; a partir de ahí entra el desplazamiento. */
+    .tabla-comparativa { font-size: 0.82rem; }
+    .tabla-comparativa th, .tabla-comparativa td { padding: 8px 10px; }
+    .tabla-scroll > .tabla-comparativa { min-width: 480px; }
+}
 
 /* --- LÍNEA DE TIEMPO --- */
 .linea-tiempo { position: relative; margin: 24px 0; padding-left: 28px; border-left: 2px solid var(--fucs-dorado); }
