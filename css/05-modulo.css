@@ -106,6 +106,10 @@
    ella y arrastra toda la página; con min-width: 0 la columna puede
    encogerse y es la tabla la que se desplaza dentro de su envoltorio. */
 .figura-fila > * { min-width: 0; }
+/* Variante para la tabla de criterios junto a su texto, en el Módulo 03:
+   centrarlas verticalmente dejaría la tabla flotando en medio de un texto
+   mucho más alto, así que ambas columnas arrancan arriba. */
+.figura-fila.alinear-arriba { align-items: start; }
 .figura-fila-texto > *:first-child { margin-top: 0; }
 .figura-fila-texto > *:last-child { margin-bottom: 0; }
 .figura-fila-texto li { text-align: justify; }

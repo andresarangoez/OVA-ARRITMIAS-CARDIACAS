@@ -16,13 +16,13 @@
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Reconocer el ritmo sinusal normal como punto de referencia para cualquier diagnóstico.</li>
-                            <li>Diferenciar los tipos de bradicardias: sinusal y bloqueos auriculoventriculares.</li>
-                            <li>Identificar extrasístoles auriculares y ventriculares en el trazado.</li>
-                            <li>Diagnosticar taquicardias supraventriculares: sinusal, fibrilación auricular y flutter.</li>
-                            <li>Diagnosticar taquicardias ventriculares: monomórfica, polimórfica y torsades de pointes.</li>
-                            <li>Reconocer los ritmos letales de paro cardíaco y su manejo según la AHA.</li>
-                            <li>Aplicar el algoritmo diagnóstico completo usando el simulador ECG interactivo.</li>
+                            <li>Identificar los criterios electrocardiográficos del ritmo sinusal y utilizarlos como patrón de comparación. <strong>→ Unidad 1</strong></li>
+                            <li>Reconocer las bradicardias y los bloqueos auriculoventriculares a partir de la relación entre la onda P y el complejo QRS. <strong>→ Unidad 2</strong></li>
+                            <li>Diferenciar las extrasístoles auriculares de las ventriculares según el origen del impulso y la morfología del complejo. <strong>→ Unidad 3</strong></li>
+                            <li>Analizar las taquicardias supraventriculares y distinguir la taquicardia sinusal, la supraventricular paroxística, la fibrilación auricular y el flutter auricular. <strong>→ Unidad 4</strong></li>
+                            <li>Diferenciar la taquicardia ventricular monomórfica de la polimórfica y reconocer la torsión de puntas. <strong>→ Unidad 5</strong></li>
+                            <li>Reconocer los ritmos letales —fibrilación ventricular, actividad eléctrica sin pulso y asistolia— y su implicación inmediata. <strong>→ Unidad 6</strong></li>
+                            <li>Aplicar un algoritmo diagnóstico que ordene la clasificación de las arritmias según la frecuencia cardíaca y la anchura del complejo QRS. <strong>→ Unidad 7</strong></li>
                         </ul>
                     </div>
 
@@ -35,7 +35,7 @@
                                 <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
                                 <!-- La clase modulo-meta la lee js/13-shell-indice.js para
                                      calcular el tiempo restante del módulo. -->
-                                <p class="bienvenida-dato-valor modulo-meta">60 minutos</p>
+                                <p class="bienvenida-dato-valor modulo-meta">80 minutos</p>
                             </div>
                             <div class="bienvenida-dato">
                                 <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
@@ -50,9 +50,9 @@
                     </div>
 
                     <div class="modulo-introduccion">
-                    <h3>Introducción</h3>
-                    <p>En el Módulo 02 aprendiste <em>cómo mirar</em> un trazado: frecuencia, ritmo, onda P, PR, QRS, eje. Este módulo es donde ese método se convierte en un diagnóstico concreto — nombrar exactamente qué arritmia tienes frente a ti.</p>
-                    <p>Cada unidad cubre una familia de ritmos, del más benigno al más letal. Al final encontrarás el <strong>simulador ECG interactivo</strong> de esta OVA: úsalo para practicar cada ritmo mencionado en las unidades, con retroalimentación clínica en tiempo real (signos vitales, opciones de tratamiento y desfibrilación cuando corresponda).</p>
+                    <h3>Competencia del módulo</h3>
+                    <p>Al finalizar este módulo, el estudiante analizará las principales arritmias cardíacas mediante la interpretación sistemática de trazados electrocardiográficos, diferenciando con criterio profesional los hallazgos que corresponden a una alteración en la formación del impulso de aquellos que corresponden a una alteración en su conducción, para orientar la toma de decisiones clínicas.</p>
+                    <p>El módulo parte del ritmo sinusal como patrón de referencia y avanza hacia las bradicardias, las extrasístoles, las taquicardias supraventriculares y ventriculares y los ritmos letales. Su propósito es que el estudiante pueda nombrar el ritmo que está viendo y justificar ese nombre con criterios electrocardiográficos verificables; la elección del tratamiento no se le exige todavía, porque corresponde a los módulos de planeación e intervención.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -73,384 +73,1017 @@
 
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 1 · Ritmo Sinusal Normal</h3>
-                        <p>El ritmo sinusal normal es la referencia obligada: todo diagnóstico de arritmia se hace por comparación contra este patrón. Si alguno de los cinco criterios siguientes falla, ya no es ritmo sinusal normal — y ese criterio específico que falla es la primera pista de qué familia de arritmia estás viendo.</p>
+                        <h3 class="unidad-titulo">Unidad 1 · Ritmo Sinusal</h3>
 
-                        <h4>Recorre los 5 criterios diagnósticos</h4>
-                        <p>Haz clic en cada criterio para ver su valor normal y hacia dónde apunta si falla.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'frecuencia')">Frecuencia</button>
-                                <button onclick="activarPasoStepper(this,'ritmo')">Ritmo</button>
-                                <button onclick="activarPasoStepper(this,'p')">Onda P</button>
-                                <button onclick="activarPasoStepper(this,'pr')">PR</button>
-                                <button onclick="activarPasoStepper(this,'qrs')">QRS</button>
-                            </div>
-                            <div class="stepper-panel activo" data-paso="frecuencia">
-                                <h5>Frecuencia</h5>
-                                <p><strong>Valor normal:</strong> 60-100 lpm.</p>
-                                <p><strong>Si falla:</strong> por debajo de 60, entras en la familia de bradicardias (Unidad 2); por encima de 100, en la de taquicardias (Unidades 4-5).</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="ritmo">
-                                <h5>Ritmo</h5>
-                                <p><strong>Valor normal:</strong> regular.</p>
-                                <p><strong>Si falla:</strong> una irregularidad es la primera pista hacia fibrilación auricular, extrasístoles o ciertos bloqueos AV.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="p">
-                                <h5>Onda P</h5>
-                                <p><strong>Valor normal:</strong> presente, redondeada y positiva en derivación II; precede a cada QRS.</p>
-                                <p><strong>Si falla:</strong> confirma que el impulso nace en el nodo SA (Módulo 01, Unidad 3); su ausencia o cambio de forma apunta a extrasístoles o fibrilación/flutter auricular.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="pr">
-                                <h5>Intervalo PR</h5>
-                                <p><strong>Valor normal:</strong> constante, entre 0.12 y 0.20 seg.</p>
-                                <p><strong>Si falla:</strong> un PR alterado —prolongado, progresivo o ausente de relación— apunta directamente a los bloqueos AV de la Unidad 2.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="qrs">
-                                <h5>Complejo QRS</h5>
-                                <p><strong>Valor normal:</strong> estrecho, menor a 0.12 seg.</p>
-                                <p><strong>Si falla:</strong> un QRS ancho traslada la sospecha hacia origen ventricular (Unidad 5) — la gran división que organiza el resto del módulo.</p>
-                            </div>
+                        <h4>1.1. Criterios del ritmo sinusal</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del ritmo sinusal.
                         </div>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Un solo criterio alterado (por ejemplo, solo la frecuencia) ya redirige el diagnóstico hacia una familia distinta de ritmos.
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>60-100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>0,08 segundos</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>0,12-0,20 segundos</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>0,08-0,10 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>0,35 segundos</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>0,32-0,46 segundos</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>0,10-0,25 segundos</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El ritmo sinusal se identifica con base en que tiene presencia de onda P de 0,08 segundos, seguida de un intervalo PR de 0,12 a 0,20 s, QRS de 0,08 a 0,10 s, segmento ST de 0,35 s e intervalo QT de 0,32 a 0,46 s, y posteriormente una onda T que puede ser positiva en todas las derivaciones y negativa en DIII y V1 sin ser patológica, como se mencionó en el Módulo 01 (6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> es la frecuencia normal, dentro del rango de 60-100 latidos por minuto (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> regular; se identifica por la presencia de ondas R regulares en cada trazado (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> siempre prevalece antes de un QRS, siendo positiva (ascendente) en la derivación DII, lo que indica que procede del nodo sinusal y evidencia una despolarización auricular adecuada (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> representa el tiempo que tarda el impulso en pasar desde el nodo SA, por el haz de His, hasta llegar a los ventrículos (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> indica la despolarización ventricular (6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> indica la repolarización ventricular (6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> es el tiempo que tardan los ventrículos en realizar la despolarización y la repolarización (6).</p>
+                                <p><span class="etiqueta">Onda T:</span> representa el final de la repolarización ventricular (6).</p>
+                            </div>
                         </div>
-
-                        <p class="placeholder-nota">Practica: selecciona "Ritmo Sinusal" en el simulador (Unidad 7) y confirma cada uno de los cinco criterios en el trazado.</p>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Bradicardias</h3>
-                        <p>Las bradicardias comparten una frecuencia menor a 60 lpm, pero su origen y su riesgo cambian radicalmente según dónde falle la conducción.</p>
 
-                        <ul>
-                            <li><strong>Bradicardia sinusal:</strong> el nodo SA simplemente descarga más lento. Onda P y PR normales, QRS estrecho — solo cambia la frecuencia.</li>
-                            <li><strong>Bloqueo AV de 1er grado:</strong> conducción 1:1 preservada (ningún latido se bloquea), pero el PR está fijo y prolongado (&gt; 200 ms).</li>
-                            <li><strong>Bloqueo AV de 2do grado, Mobitz I (Wenckebach):</strong> el PR se alarga progresivamente, latido a latido, hasta que uno se bloquea por completo — con acortamiento del R-R antes de la pausa.</li>
-                            <li><strong>Bloqueo AV de 2do grado, Mobitz II:</strong> PR fijo (nunca se alarga), pero un latido se bloquea de forma súbita y sin aviso; suele acompañarse de QRS ancho.</li>
-                            <li><strong>Bloqueo AV de 3er grado (completo):</strong> disociación AV total — las ondas P y los QRS laten cada uno a su propio ritmo, sin relación entre sí.</li>
-                        </ul>
+                        <h4>2.1. Bradicardia sinusal</h4>
 
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la bradicardia sinusal.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>Menor de 60 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ascendente (redonda)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La bradicardia sinusal se caracteriza por presentar latidos cardíacos disminuidos, con una frecuencia cardíaca menor a 60 latidos por minuto, que sigue siendo generada por el nodo SA (sinoauricular) (6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> disminuida, evidenciada por &lt; 60 lpm (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> regular; se identifica por la presencia de ondas R regulares en cada trazado (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> siempre prevalece antes de un QRS, siendo positiva (ascendente) en la derivación DII, lo que indica que procede del nodo sinusal y evidencia una despolarización auricular adecuada (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> representa el tiempo que tarda el impulso en pasar desde el nodo SA, por el haz de His, hasta llegar a los ventrículos (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> indica la despolarización ventricular (6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
                         <div class="tabla-scroll">
                             <table class="tabla-comparativa">
-                                <thead>
-                                    <tr><th>Tipo</th><th>Intervalo PR</th><th>¿Se bloquean latidos?</th></tr>
-                                </thead>
+                                <thead><tr><th>Causa</th></tr></thead>
                                 <tbody>
-                                    <tr><td>Sinusal</td><td>Normal</td><td>No</td></tr>
-                                    <tr><td>1er grado</td><td>Fijo y prolongado</td><td>No</td></tr>
-                                    <tr><td>Mobitz I</td><td>Progresivamente prolongado</td><td>Sí, con patrón</td></tr>
-                                    <tr><td>Mobitz II</td><td>Fijo</td><td>Sí, sin aviso</td></tr>
-                                    <tr><td>Completo (3er grado)</td><td>Sin relación P-QRS</td><td>Disociación total</td></tr>
+                                    <tr><td>Presencia de niveles bajos de potasio sérico (hipokalemia).</td></tr>
+                                    <tr><td>Sobreestimulación del sistema parasimpático en el nodo SA, por estimulación del seno carotídeo, vómitos, maniobras de Valsalva o episodio sincopal.</td></tr>
+                                    <tr><td>Uso continuo de betabloqueadores como propranolol, atenolol o metoprolol.</td></tr>
+                                    <tr><td>Efectos adversos medicamentosos (antagonistas del calcio, digoxina).</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Mobitz I suele ser benigno y transitorio; Mobitz II y el bloqueo completo son de alto riesgo de progresar a bloqueo total o asistolia, y frecuentemente requieren marcapasos — nunca esperar a que el paciente se deteriore para actuar.
+                        <h4>2.2. Bloqueos auriculoventriculares</h4>
+
+                        <h5>2.2.1. Conducción auriculoventricular</h5>
+                        <p>Es el proceso mediante el cual hay impulsos eléctricos desde las aurículas hasta los ventrículos. Cuando se presentan alteraciones de este impulso se puede evidenciar alargamiento del intervalo PR o presencia de ondas P que no conducen un QRS, distinguiéndose en tres tipos de alteraciones (5).</p>
+
+                        <h5>2.2.2. Bloqueo auriculoventricular de primer grado</h5>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del bloqueo AV de primer grado.
                         </div>
 
-                        <h4>¿Mobitz I o Mobitz II?</h4>
-                        <p>Es la distinción de mayor peso clínico de esta unidad — ponla a prueba.</p>
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">Un trazado muestra un PR que se alarga progresivamente, latido a latido, hasta que un QRS se bloquea por completo, con acortamiento del R-R justo antes de la pausa. ¿Qué bloqueo es?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-2"> Bloqueo AV de 1er grado</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-2" data-correcta="true"> Mobitz I (Wenckebach)</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-2"> Mobitz II</label>
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>60-100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ascendente (redonda)</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>&gt; 0,20 segundos</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Normal, a menos que haya alteraciones o retrasos de la conducción</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
+                            <div class="figura-fila-texto">
+                                <p>El bloqueo AV de primer grado se caracteriza por el enlentecimiento del impulso eléctrico desde las aurículas hacia los ventrículos, prolongando el intervalo PR por encima de 0,20 s (5,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> ritmo subyacente en el que las aurículas y los ventrículos presentan la misma frecuencia (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> regular; se origina desde el impulso sinoauricular (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> unidireccional y positiva en la derivación II; siempre prevalece antes de un QRS, siendo positiva (ascendente) (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> prolongación del intervalo PR por encima de 0,20 segundos, con duración constante (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> normal; sin embargo, puede llegar a ser anormal por impulsos anómalos que generen alteración, como los bloqueos de rama (6).</p>
+                            </div>
                         </div>
 
-                        <p class="placeholder-nota">Practica los cinco patrones de esta unidad en el simulador (grupo "Bradiarritmias").</p>
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Si bien el bloqueo AV de primer grado no presenta sintomatología, se debe identificar la causa de la alteración.</td></tr>
+                                    <tr><td>Infarto agudo de miocardio de la pared inferior o infarto del nodo SA.</td></tr>
+                                    <tr><td>Uso continuo de betabloqueadores (propranolol, atenolol, metoprolol), antagonistas del calcio (verapamilo, diltiazem, nifedipino) y amiodarona.</td></tr>
+                                    <tr><td>Hiperkalemia o alteraciones hidroelectrolíticas.</td></tr>
+                                    <tr><td>Fiebre de origen reumático.</td></tr>
+                                    <tr><td>Cardiopatía isquémica o miocarditis.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h5>2.2.3. Bloqueo auriculoventricular de segundo grado, Mobitz I</h5>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del bloqueo AV de segundo grado, Mobitz I.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>60-100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ascendente (redonda)</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>Progresivamente alargado hasta no llegar a la conducción de QRS</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Normal, a menos que haya alteraciones o retrasos de la conducción</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El bloqueo AV de segundo grado de tipo Mobitz I se caracteriza por la prolongación continua del intervalo PR hasta una P que no conduce un QRS. Este ritmo se produce por un retraso de la conducción del nodo AV hasta que llega a un bloqueo, con el consiguiente alargamiento del PR (5,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la frecuencia sinusal o auricular es subyacente; la frecuencia ventricular es anormal por retraso de la conducción, hasta la ausencia o desaparición del QRS (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> irregular, con patrón de latidos agrupados, ya que el impulso del nodo SA se ralentiza gradualmente en cada complejo hasta que el nodo AV queda totalmente bloqueado (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> unidireccional y positiva en la derivación II; siempre prevalece antes de un QRS (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> prolongación del intervalo PR que gradualmente se alarga más hasta llegar a la no conducción del QRS (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> normal; sin embargo, puede llegar a ser anormal por impulsos anómalos, como los bloqueos de rama (6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Infarto agudo del miocardio de la pared inferior.</td></tr>
+                                    <tr><td>Intoxicación digitálica (digoxina o plantas de especie <em>Digitalis</em>).</td></tr>
+                                    <tr><td>Uso continuo de betabloqueadores (propranolol, atenolol, metoprolol), antagonistas del calcio (verapamilo, diltiazem, nifedipino) y amiodarona.</td></tr>
+                                    <tr><td>Hiperkalemia o alteraciones hidroelectrolíticas.</td></tr>
+                                    <tr><td>Fiebre de origen reumático.</td></tr>
+                                    <tr><td>Cardiopatía isquémica o miocarditis.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h5>2.2.4. Bloqueo auriculoventricular de segundo grado, Mobitz II</h5>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del bloqueo AV de segundo grado, Mobitz II.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>40-60 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ascendente (redonda)</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>Fisiológicamente normal</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Normal, a menos que haya alteraciones o retrasos de la conducción; por lo general &gt; 0,12 s</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El bloqueo AV de segundo grado de tipo Mobitz II se caracteriza por un trastorno de la conducción eléctrica en el que la onda P no conduce un QRS de manera súbita, debido a un bloqueo intermitente por debajo del nodo AV. A diferencia del Mobitz I, el intervalo PR permanece constante antes de que se produzca la pérdida del QRS, y los latidos aparecen de forma irregular sin agrupación, con riesgo de progresar a un bloqueo auriculoventricular completo, lo que indica la importancia de un marcapasos (5,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> frecuencia regular subyacente; frecuencia ventricular anormal por retraso de la conducción, hasta la ausencia o desaparición del QRS (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> irregular, con ondas P conducidas y ondas P no conducidas que no llegan a un complejo QRS (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> unidireccional y positiva en la derivación II; siempre prevalece antes de un QRS (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> conducción eléctrica con fisiología normal hasta que se produce el bloqueo infranodal (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> el bloqueo puede situarse en el haz de His y observarse con duración normal. Sin embargo, cuando existe bloqueo de alguna de las ramas junto al bloqueo intermitente, se produce una anormalidad que generalmente lo alarga por encima de 0,12 segundos (6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Bradicardia sinusal sintomática.</td></tr>
+                                    <tr><td>Infarto agudo del miocardio de la pared inferior con daño extenso de las ramas del haz de His.</td></tr>
+                                    <tr><td>Uso continuo de betabloqueadores (propranolol, atenolol, metoprolol), antagonistas del calcio (verapamilo, diltiazem, nifedipino) y amiodarona.</td></tr>
+                                    <tr><td>Enfermedades infiltrativas o granulocíticas (sarcoidosis, amiloidosis, hemocromatosis).</td></tr>
+                                    <tr><td>Esclerosis o fibrosis idiopática.</td></tr>
+                                    <tr><td>Cardiopatía isquémica; endocarditis infecciosa con abscesos.</td></tr>
+                                    <tr><td>Ablación septal.</td></tr>
+                                    <tr><td>Síndrome de Kearns-Sayre.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h5>2.2.5. Bloqueo auriculoventricular de tercer grado</h5>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del bloqueo AV de tercer grado.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>30-50 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>En forma de aleteo, o FA con QRS ancho</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>Variable</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Por lo general &gt; 0,12 s</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El bloqueo AV de grado III es la ausencia total de los impulsos eléctricos desde las aurículas hasta los ventrículos, debido a un bloqueo completo del nodo AV, el haz de His y sus ramas, que hace que las ondas P y los complejos QRS trabajen de manera independiente (disociación auriculoventricular). Los ventrículos mantienen su trabajo de manera idioventricular, ya que sin ello se produciría asistolia y posteriormente la muerte. El gasto cardíaco se ve bastante disminuido, por lo que esto generalmente ocasiona mareo y episodios de Adams-Stokes por falta de perfusión adecuada en el cerebro (5,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la frecuencia auricular es subyacente en ritmo sinusal; sin embargo, la frecuencia ventricular puede ser de 30 a 50 latidos por minuto, dado que es menor que la auricular (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> el ritmo auricular puede ser normal o irregular y el ritmo ventricular suele ser regular, dado que ambos funcionan de forma independiente: al no haber relación fija entre las ondas P y el complejo QRS se produce el efecto disociativo. En la FA con BAV de III grado el ritmo ventricular es regular (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> puede aparecer en forma de aleteo o de FA, de manera independiente respecto al complejo QRS; en casos de FA se identifican ondas F acompañadas de QRS ancho (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> variable, por el efecto disociativo (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> generalmente superior a 0,12 segundos, de morfología variada según dónde se genere el ritmo de escape, pudiendo ser normal si se genera desde la unión AV o del haz de His (6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Infarto agudo de miocardio (IAM) de la pared inferior o del ventrículo derecho, por isquemia o aumento del tono vagal.</td></tr>
+                                    <tr><td>Cardiopatía isquémica y daño del sistema de conducción cardíaco.</td></tr>
+                                    <tr><td>Aumento excesivo del tono vagal (parasimpático).</td></tr>
+                                    <tr><td>Intoxicación digitálica.</td></tr>
+                                    <tr><td>Uso de medicamentos: amiodarona, β-bloqueadores (atenolol, metoprolol, propranolol) y antagonistas del calcio (diltiazem, verapamilo, nifedipino).</td></tr>
+                                    <tr><td>Cardiopatía isquémica o miocarditis.</td></tr>
+                                    <tr><td>Alteraciones electrolíticas, especialmente hiperpotasemia.</td></tr>
+                                    <tr><td>Fiebre reumática aguda o miocarditis, con compromiso del sistema de conducción.</td></tr>
+                                    <tr><td>IAM de la pared anterior, asociado principalmente al bloqueo AV completo permanente.</td></tr>
+                                    <tr><td>Cambios degenerativos y fibrosis del sistema de conducción, especialmente en adultos mayores.</td></tr>
+                                    <tr><td>En el bloqueo AV de tercer grado, las causas pueden producir un bloqueo transitorio y reversible o permanente, según el sitio y la extensión del daño en el sistema de conducción.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Extrasístoles</h3>
-                        <p>Las extrasístoles son latidos que aparecen antes de lo esperado (prematuros), interrumpiendo el ritmo de base. Su origen —auricular o ventricular— cambia por completo su morfología y su significado clínico. Extrasístoles aisladas y ocasionales suelen ser benignas; su importancia aumenta cuando son frecuentes, multifocales o se agrupan (parejas, tripletas), ya que pueden anticipar arritmias más complejas.</p>
 
-                        <ul>
-                            <li><strong>Extrasístole auricular:</strong> onda P prematura, de morfología distinta a la sinusal, seguida de un QRS estrecho normal.</li>
-                            <li><strong>Extrasístole ventricular:</strong> QRS prematuro, ancho y de morfología bizarra, sin onda P que lo preceda, generalmente seguido de una pausa compensatoria.</li>
-                        </ul>
+                        <h4>3.1. Extrasístoles auriculares</h4>
 
-                        <div class="tarjeta-informativa">
-                            <h4>Pausa compensatoria</h4>
-                            <p><span class="etiqueta">Definición:</span> Intervalo prolongado después de una extrasístole ventricular, que "compensa" el latido adelantado sin alterar el ritmo de base.</p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Ayuda a diferenciar el origen ventricular del auricular, cuyo reinicio del nodo sinusal no suele producir esta pausa completa.</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de las extrasístoles auriculares.
                         </div>
 
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">Aparece un QRS antes de lo esperado, ancho y de morfología bizarra, sin onda P que lo preceda, seguido de una pausa compensatoria completa. ¿De qué tipo de extrasístole se trata?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-3"> Extrasístole auricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-3" data-correcta="true"> Extrasístole ventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-03-3"> Bloqueo AV de 2do grado</label>
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>60-100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Hay presencia de onda P, pero es muy variable</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>Normal desde 0,12 s, o muy corto &lt; 0,12 s</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Normal, o complejo ancho con retraso de conducción</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
+                            <div class="figura-fila-texto">
+                                <p>Las extrasístoles auriculares se caracterizan por latidos cardíacos prematuros provenientes de las aurículas, que aparecen antes de un latido esperado del ritmo y que generalmente se presentan como un complejo P-QRS-T seguido de pausas no compensatorias (6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> el ritmo es latente (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> irregular, evidenciada por un latido prematuro (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> aparición de una onda P prematura originada en focos ectópicos auriculares; su forma y dirección varían según el punto de origen del foco (6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> puede ser normal, aunque varía según el foco de aparición. Puede ser de 0,12 segundos si el foco se inicia desde el nodo SA, o menor si el foco de aparición es del nodo AV, siendo entonces inferior a 0,12 segundos (6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> mantiene una apariencia similar a la de un ritmo sinusal; sin embargo, como el foco es temprano, las ramas no han completado la repolarización, produciendo un QRS ancho de morfología anormal (6).</p>
+                            </div>
                         </div>
 
-                        <p class="placeholder-nota">Practica: compara "Extrasístole Auricular" y "Extrasístole Ventricular" en el simulador y observa la diferencia de morfología del QRS.</p>
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Aumento del tono simpático (aumento de la actividad eléctrica auricular).</td></tr>
+                                    <tr><td>Dilatación o hipertrofia auricular.</td></tr>
+                                    <tr><td>Intoxicación digitálica.</td></tr>
+                                    <tr><td>Fármacos simpaticomiméticos: epinefrina, salbutamol y norepinefrina pueden favorecer las extrasístoles auriculares.</td></tr>
+                                    <tr><td>Síndrome coronario agudo e insuficiencia cardíaca.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>3.2. Extrasístoles ventriculares</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de las extrasístoles ventriculares.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>60-100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular; se vuelve irregular cuando se produce la EV</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Rítmica, ascendente y positiva en la derivación DII</td></tr>
+                                        <tr><td><strong>Intervalo R-R</strong></td><td>Anormal por morfología acortada; pausa compensadora</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Ancho, &gt; 0,12 s</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La extrasístole ventricular es un latido cardíaco prematuro originado en un foco ectópico ventricular, principalmente en ramas fasciculares, fibras de Purkinje o fibras miocárdicas propias, que se da antes del siguiente latido fisiológico, generalmente con aspecto mellado similar al de un bloqueo de rama. Se caracteriza por un QRS ancho (&gt; 0,12 segundos) de morfología anormal, habitualmente no precedido de una onda P, debido a un impulso que se origina fuera del sistema de conducción normal, seguido de una pausa compensatoria (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> una EV aislada no modifica de forma significativa el ritmo basal, por lo que continúa en ritmo subyacente (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo regular; al producirse una EV se evidencia irregularidad en el trazado (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> principalmente no hay onda P previa a una EV, ya que el impulso se genera en el foco ventricular. La onda P que llegue a estar presente corresponde al ritmo sinusal y puede quedar opacada por las ondas T o el QRS de la EV; en algunos casos puede existir una onda P retrógrada durante o después del QRS (1,6).</p>
+                                <p><span class="etiqueta">Intervalo R-R:</span> entre el QRS normal y la EV es más corto que el R-R basal y puede corresponder a un intervalo de acoplamiento que genera una pausa compensatoria. Si la EV no despolariza el nodo SA, se produce la pausa compensadora completa (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> ancho, superior a 0,12 segundos, prematuro y morfológicamente anormal, con aspecto de bloqueo de rama, principalmente por una activación ventricular anormal que se acompaña de alteraciones secundarias de la repolarización, con ondas T negativas y cambios del segmento ST (1,6).</p>
+                                <p><span class="etiqueta">Pausa compensatoria:</span> se produce porque la EV no despolariza el nodo SA, lo que favorece que el siguiente impulso aparezca prematuramente. Si la EV activa el nodo SA, la pausa es incompleta y el latido posterior es prematuro (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>El aumento de la actividad simpática favorece el automatismo ventricular (estrés físico o emocional).</td></tr>
+                                    <tr><td>Estimulantes como cafeína, tabaco, alcohol, anfetaminas y cocaína pueden aumentar la excitabilidad cardíaca.</td></tr>
+                                    <tr><td>Isquemia o infarto de miocardio; insuficiencia cardíaca.</td></tr>
+                                    <tr><td>Intoxicación digitálica.</td></tr>
+                                    <tr><td>Fármacos simpaticomiméticos (epinefrina, isoproterenol o norepinefrina).</td></tr>
+                                    <tr><td>Las alteraciones del equilibrio ácido-base pueden favorecer la irritabilidad ventricular.</td></tr>
+                                    <tr><td>Alteraciones hidroelectrolíticas (hipopotasemia, hipomagnesemia).</td></tr>
+                                    <tr><td>EV aislada idiopática, sin indicación de enfermedad cardíaca.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Taquicardias Supraventriculares</h3>
-                        <p>Estas taquicardias se originan por encima del haz de His, por lo que conservan un QRS estrecho — la diferencia entre ellas está en la onda P y la regularidad del ritmo. La taquicardia sinusal casi siempre tiene una causa subyacente identificable (fiebre, dolor, hipovolemia, ansiedad): busca activamente esa causa en vez de tratarla como arritmia primaria. La FA y el flutter, en cambio, requieren evaluar riesgo de formación de trombos y control de frecuencia o ritmo — confirma la irregularidad "irregularmente irregular" de la FA palpando el pulso, no solo mirando el monitor.</p>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> QRS estrecho + ritmo irregular sin ondas P organizadas = fibrilación auricular, hasta demostrar lo contrario.
+                        <h4>4.1. Taquicardia sinusal</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la taquicardia sinusal.
                         </div>
 
-                        <h4>Actividad: empareja cada ritmo con su hallazgo distintivo</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="sinusal" onclick="manejarClicEmparejar(this)">Taquicardia sinusal</button>
-                                <button class="reto-emparejar-item" data-par="fa" onclick="manejarClicEmparejar(this)">Fibrilación auricular</button>
-                                <button class="reto-emparejar-item" data-par="flutter" onclick="manejarClicEmparejar(this)">Flutter auricular</button>
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>&gt; 100 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>0,08 segundos</td></tr>
+                                        <tr><td><strong>Intervalo PR</strong></td><td>0,12-0,20 segundos</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>0,08-0,10 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>0,35 segundos</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>0,32-0,46 segundos</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>0,10-0,25 segundos</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="flutter" onclick="manejarClicEmparejar(this)">Ondas en patrón regular de "dientes de sierra", conducción frecuentemente 2:1 o 3:1</button>
-                                <button class="reto-emparejar-item" data-par="sinusal" onclick="manejarClicEmparejar(this)">Onda P y PR conservan su morfología habitual, solo aumenta la frecuencia</button>
-                                <button class="reto-emparejar-item" data-par="fa" onclick="manejarClicEmparejar(this)">Ausencia total de ondas P organizadas, QRS irregularmente irregular</button>
+                            <div class="figura-fila-texto">
+                                <p>La taquicardia sinusal es un ritmo de origen sinusal con frecuencia cardíaca mayor a 100 latidos por minuto, que representa una respuesta fisiológica al aumento de la demanda cardiovascular, con inicio y terminación graduales y conservación de la conducción normal (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> &gt; 100 lpm, pudiendo alcanzar aproximadamente 180-200 lpm durante el ejercicio intenso. El aumento y el descenso de la frecuencia son graduales (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> regular, con intervalos P-P y R-R constantes (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> sinusal y positiva en DII. Cada P precede a un QRS. A frecuencias muy elevadas puede quedar oculta en la onda T precedente, formando una onda T/P (1,6).</p>
+                                <p><span class="etiqueta">Intervalo PR:</span> normal y constante, aunque puede acortarse progresivamente cuando aumenta la frecuencia cardíaca (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> generalmente normal y estrecho, salvo que exista un trastorno previo de la conducción intraventricular. La conducción AV es 1:1 (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> generalmente sin alteraciones específicas; puede presentar cambios relacionados con la causa desencadenante o con frecuencias muy elevadas (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> es el tiempo que tardan los ventrículos en realizar la despolarización y la repolarización (6).</p>
+                                <p><span class="etiqueta">Onda T:</span> generalmente normal. A frecuencias altas puede fusionarse parcialmente con la onda P siguiente, dificultando su identificación (1,6).</p>
                             </div>
                         </div>
 
-                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Taquiarritmias de Complejo Angosto").</p>
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Ejercicio o esfuerzo.</td></tr>
+                                    <tr><td>Ansiedad, excitación o estrés (aumento de la actividad del sistema nervioso simpático).</td></tr>
+                                    <tr><td>Dolor (estimula la respuesta simpática y aumenta la frecuencia cardíaca).</td></tr>
+                                    <tr><td>Estimulantes: café, té y otras sustancias como cocaína y anfetaminas pueden incrementar la frecuencia.</td></tr>
+                                    <tr><td>Síndrome coronario agudo e insuficiencia cardíaca.</td></tr>
+                                    <tr><td>Hipovolemia.</td></tr>
+                                    <tr><td>Anemia o hipoxia.</td></tr>
+                                    <tr><td>Hipertiroidismo.</td></tr>
+                                    <tr><td>Fármacos simpaticomiméticos: salbutamol, teofilina y otros medicamentos pueden estimular el nodo SA.</td></tr>
+                                    <tr><td>Hipotensión o insuficiencia cardíaca.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>4.2. Taquicardia supraventricular paroxística</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la taquicardia supraventricular paroxística.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>150-200 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>No llega a ser visible</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Estrecho, &lt; 0,12 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>Sin alteraciones específicas</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Acortado por aumento de la frecuencia</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La taquicardia supraventricular paroxística (TSVP) es una taquiarritmia de inicio y terminación bruscos, producida por un mecanismo de reentrada en la unión del nodo AV, que corresponde a una taquicardia de reentrada nodal o de vía accesoria. Se caracteriza por una frecuencia elevada y regular, con episodios que pueden variar en duración, desde horas hasta días (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> principalmente puede llegar a ser de 150 latidos por minuto, pudiendo superar los 240. En personas mayores o con tratamiento puede ser menor, aunque es raro que baje de 140 lpm (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo regular, con intervalos R-R iguales (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> generalmente no visible; la P retrógrada puede quedar oculta en el QRS o aparecer después de él, habitualmente negativa en DII, DIII y aVF (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> generalmente estrecho, inferior a 0,12 segundos, con conducción AV constante; puede llegar a ser ancho solo si existe un bloqueo de rama previo (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> puede presentar cambios solo si la frecuencia supera los 180 latidos por minuto (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> puede verse acortado por el aumento de la frecuencia cardíaca; debe hacerse una valoración completa con el QT corregido (QTc) (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> se da principalmente por reentrada nodal o por participación del nodo AV y una vía accesoria; con menor frecuencia puede originarse por reentrada del nodo SA (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Aumento del tono simpático: el incremento de catecolaminas facilita la aparición del circuito de reentrada.</td></tr>
+                                    <tr><td>Ejercicio intenso: puede aumentar la actividad simpática y precipitar el episodio.</td></tr>
+                                    <tr><td>Estrés emocional: favorece la descarga simpática y puede desencadenar la TSVP.</td></tr>
+                                    <tr><td>Estimulantes: café, alcohol y tabaco pueden favorecer la aparición de episodios; las anfetaminas y la cocaína incrementan significativamente la actividad simpática.</td></tr>
+                                    <tr><td>Alteraciones electrolíticas: los cambios en los electrolitos pueden favorecer la aparición de arritmias.</td></tr>
+                                    <tr><td>Alteraciones ácido-básicas: pueden modificar la excitabilidad y la conducción cardíaca.</td></tr>
+                                    <tr><td>Extrasístole auricular: puede iniciar el circuito de reentrada y desencadenar súbitamente la taquicardia.</td></tr>
+                                    <tr><td>Sin causa aparente: puede presentarse en personas sanas sin una cardiopatía estructural identificable.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>4.3. Fibrilación auricular</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la fibrilación auricular.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>350-600 lpm en las aurículas y 50-200 lpm en los ventrículos</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente; presencia de ondas F</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Estrecho, &lt; 0,12 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>No presenta una alteración específica propia de la fibrilación</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Presenta variabilidad secundaria a la irregularidad del ciclo R-R</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La fibrilación auricular es una taquiarritmia supraventricular caracterizada por una actividad eléctrica auricular rápida, caótica y desorganizada, originada por múltiples focos ectópicos y múltiples circuitos de reentrada que suprimen el ritmo del nodo sinoauricular, generando ondas F en lugar de ondas P normales. La conducción de los impulsos hacia los ventrículos ocurre aleatoriamente a través del nodo auriculoventricular, generando una respuesta ventricular irregular (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la frecuencia auricular puede variar desde 350 hasta 600 latidos por minuto, llegando incluso a 700, mientras que la frecuencia ventricular se aproxima a entre 50 y 200. Una frecuencia mayor a 100 lpm corresponde a una respuesta ventricular rápida; menor a 100, a una respuesta ventricular controlada; y menor a 60, a una respuesta ventricular lenta (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo totalmente irregular, en el que los intervalos R-R presentan diferencias variables debido a la conducción auriculoventricular aleatoria (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> ausente; en su lugar se observan ondas F producidas por la despolarización auricular caótica, que pueden ser más evidentes en las derivaciones V1 y V2, donde la morfología, la amplitud y la dirección son variables (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> generalmente inferior a 0,12 segundos, siempre y cuando no exista un trastorno previo de la conducción intraventricular. Puede superarlo si existe bloqueo de rama, aberrancia o preexcitación (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> sin alteración específica propia de la fibrilación auricular; puede verse afectado por la superposición de las ondas F, por la respuesta ventricular rápida o por la enfermedad cardíaca subyacente (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> presenta variabilidad secundaria a la irregularidad de los ciclos R-R (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> se generan múltiples zonas ectópicas en las aurículas, diferentes del nodo sinoauricular, que mediante múltiples circuitos de reentrada producen una actividad auricular caótica (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Valvulopatía mitral, especialmente la estenosis mitral, que favorece la dilatación auricular y la aparición de FA.</td></tr>
+                                    <tr><td>Cardiopatía isquémica, miocardiopatías, miocarditis y pericarditis aguda, que alteran la estructura, la función o la conducción eléctrica auricular.</td></tr>
+                                    <tr><td>Hipertensión arterial: el aumento crónico de la presión favorece el remodelado y la dilatación auricular.</td></tr>
+                                    <tr><td>Cardiopatía reumática, particularmente cuando existe compromiso de la válvula mitral.</td></tr>
+                                    <tr><td>Insuficiencia cardíaca congestiva y cardiopatías congénitas, como la comunicación interauricular, que producen sobrecarga auricular.</td></tr>
+                                    <tr><td>Hipertiroidismo o tirotoxicosis: el exceso de hormonas tiroideas aumenta la actividad y la excitabilidad cardíaca.</td></tr>
+                                    <tr><td>Traumatismo torácico: puede desencadenar alteraciones transitorias de la actividad auricular.</td></tr>
+                                    <tr><td>Intoxicación digitálica: puede producir alteraciones de la conducción y diferentes arritmias.</td></tr>
+                                    <tr><td>Alcohol: el consumo excesivo puede desencadenar FA, incluso en personas sin cardiopatía conocida.</td></tr>
+                                    <tr><td>Cafeína: el consumo excesivo puede favorecer la aparición de episodios en personas susceptibles.</td></tr>
+                                    <tr><td>Idiopática: puede presentarse sin una causa estructural o desencadenante identificable, especialmente en personas aparentemente sanas.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>4.4. Flutter auricular</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado del flutter auricular.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>Auricular entre 240 y 360 lpm; ventricular, según la conducción AV</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular cuando la conducción AV es constante</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>No hay ondas P normales; son reemplazadas por ondas F</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Generalmente normal y estrecho, &lt; 0,12 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>Las ondas F pueden superponerse al segmento ST, dificultando su valoración</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Puede resultar complejo cuando las ondas F se superponen a la onda T</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El aleteo o flutter auricular es una taquiarritmia supraventricular originada por una actividad auricular rápida y organizada, generalmente producida por un circuito de reentrada auricular. Se caracteriza por ondas F regulares con morfología típica «en dientes de sierra», que reemplazan a la onda P normal. La conducción de los impulsos hacia los ventrículos suele estar mediada en una relación fija, principalmente 2:1, aunque también puede ser 3:1 o 4:1, o variable, determinando una respuesta ventricular regular o irregular (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la frecuencia auricular varía entre 240 y 360 latidos por minuto, típicamente alrededor de 300. La frecuencia ventricular depende de la conducción AV: con una conducción 2:1 suele ser cercana a 150 lpm; con 3:1, aproximadamente 100; y con 4:1, alrededor de 75 (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo regular cuando la conducción AV es constante; puede ser irregular cuando la conducción es variable (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> no hay onda P normal; es reemplazada por una onda F regular y continua, con patrón característico de dientes de sierra, especialmente visible en DII, DIII y aVF (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> generalmente normal y estrecho, inferior a 0,12 segundos. Puede superarlo cuando existe bloqueo de rama, conducción aberrante o preexcitación ventricular (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> las ondas F pueden superponerse al segmento ST, dificultando su valoración; no hay una alteración específica del ST en el aleteo (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> generalmente resulta difícil de valorar cuando la onda F se superpone a la onda T (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> principalmente en las aurículas, en zonas diferentes del nodo sinoauricular, habitualmente en regiones inferiores cercanas al nodo auriculoventricular, por un circuito de reentrada auricular que produce una activación rápida y organizada (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>4.4.1. Proporción de conducción AV</h5>
+                        <ul>
+                            <li><strong>2:1</strong> — una onda F conduce por cada dos ondas auriculares → frecuencia ventricular ≈ 150 lpm.</li>
+                            <li><strong>3:1</strong> — ≈ 100 lpm.</li>
+                            <li><strong>4:1</strong> — ≈ 75 lpm.</li>
+                            <li><strong>Variable</strong> — cambia la frecuencia ventricular y produce un ritmo irregular.</li>
+                        </ul>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Cardiopatía coronaria, miocardiopatía e insuficiencia cardíaca congestiva: la isquemia, el remodelado y la sobrecarga auricular favorecen los circuitos de reentrada.</td></tr>
+                                    <tr><td>Estenosis mitral y estenosis tricuspídea: producen sobrecarga y dilatación auricular.</td></tr>
+                                    <tr><td>Hipertensión arterial y dilatación auricular: favorecen el remodelado y aumentan la posibilidad de desarrollar circuitos de reentrada.</td></tr>
+                                    <tr><td>Hipertiroidismo: aumenta la excitabilidad cardíaca y favorece las taquiarritmias auriculares.</td></tr>
+                                    <tr><td>Hipoxemia y cor pulmonale agudo o crónico: la disminución de la oxigenación y la sobrecarga de las cavidades derechas favorecen el flutter.</td></tr>
+                                    <tr><td>Miocarditis y pericarditis: la inflamación altera la conducción eléctrica auricular.</td></tr>
+                                    <tr><td>Intoxicación digitálica, betabloqueadores y antagonistas del calcio: pueden alterar la conducción AV y modificar la respuesta ventricular.</td></tr>
+                                    <tr><td>Alcoholismo: el consumo excesivo puede desencadenar taquiarritmias auriculares.</td></tr>
+                                    <tr><td>Flutter auricular paroxístico: puede aparecer sin una cardiopatía estructural identificable, aunque frecuentemente existe una enfermedad cardíaca subyacente.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Taquicardias Ventriculares</h3>
-                        <p>Estas taquicardias se originan en el miocardio ventricular o el sistema His-Purkinje distal, por lo que producen un QRS ancho — y representan un riesgo hemodinámico considerablemente mayor que las supraventriculares. Toda taquicardia de QRS ancho debe tratarse como de origen ventricular hasta demostrar lo contrario: es la postura más segura para el paciente.</p>
 
-                        <ul>
-                            <li><strong>TV monomórfica:</strong> QRS ancho, rápido y de morfología uniforme, latido a latido.</li>
-                            <li><strong>TV polimórfica:</strong> QRS ancho, rápido, con morfología que cambia de forma caótica e irregular, sin patrón repetitivo.</li>
-                            <li><strong>Torsades de Pointes:</strong> variante de TV polimórfica con un patrón característico en "huso" (la amplitud del QRS crece y decrece de forma cíclica); típicamente asociada a QT prolongado.</li>
-                        </ul>
+                        <h4>5.1. Taquicardia ventricular monomórfica</h4>
 
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            Torsades obliga a buscar y corregir la causa del QT prolongado (electrolitos, medicamentos) además del tratamiento inmediato.
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la taquicardia ventricular monomórfica.
                         </div>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> El sulfato de magnesio es el tratamiento de elección en Torsades de Pointes, incluso con magnesemia normal.
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>130 a 200 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Regular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente o difícil de identificar</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>&gt; 0,12 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>No hay proporción ni medida específica</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Prolongación del QT &gt; 0,5 segundos, aunque no es específico</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Grande y discordante</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La taquicardia ventricular monomórfica es una taquiarritmia originada por debajo del haz de His, principalmente en las ramas fasciculares, las redes de Purkinje o el miocardio ventricular. Se caracteriza por la presencia de tres o más complejos QRS anchos consecutivos con frecuencia ventricular entre 130 y 250 latidos por minuto, monomórfica —es decir, con un QRS de morfología, tamaño y dirección iguales o muy similares—. Este ritmo es regular y existe disociación auriculoventricular, aunque pueden aparecer latidos de captura o de fusión (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> generalmente entre 100 y 250 latidos por minuto (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo regular; ocasionalmente puede presentar ligeras variaciones en la frecuencia (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> generalmente ausente. Cuando está presente, tiende a aparecer disociada de los QRS (disociación AV); también puede aparecer una P retrógrada después del QRS (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> ancho, atípico y generalmente de morfología uniforme durante toda la taquicardia. Pueden presentarse latidos de captura o de fusión. Principalmente &gt; 0,12 segundos, o más de tres cuadritos (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> no hay una proporción ni una medida específica, ya que al tener un QRS ancho no se puede medir con claridad (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> para la taquicardia ventricular monomórfica no hay claridad sobre la medida (1,6).</p>
+                                <p><span class="etiqueta">Onda T:</span> grande y discordante respecto al QRS, como consecuencia de la alteración de la repolarización ventricular (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> a nivel ventricular, en las ramas fasciculares, las redes de Purkinje o el miocardio ventricular, por automatismo aumentado, actividad desencadenada o mecanismos de reentrada (1,6).</p>
+                            </div>
                         </div>
 
-                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Taquiarritmias de Complejo Ancho").</p>
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Enfermedad arterial coronaria e infarto agudo de miocardio: es la causa más frecuente; el tejido ventricular isquémico puede generar focos ectópicos y circuitos de reentrada.</td></tr>
+                                    <tr><td>Miocardiopatía, cardiopatía congénita y prolapso de la válvula mitral: las alteraciones estructurales favorecen la formación de circuitos de reentrada.</td></tr>
+                                    <tr><td>Hipertrofia ventricular izquierda, valvulopatía e insuficiencia cardíaca congestiva: el remodelado ventricular aumenta la susceptibilidad a arritmias ventriculares.</td></tr>
+                                    <tr><td>Intoxicación digitálica: altera el automatismo y la conducción cardíaca.</td></tr>
+                                    <tr><td>Hipopotasemia e hipomagnesemia: alteran la repolarización y aumentan la predisposición a arritmias ventriculares.</td></tr>
+                                    <tr><td>Hipoxia y acidosis: favorecen la inestabilidad eléctrica ventricular.</td></tr>
+                                    <tr><td>Fármacos que prolongan el QT: procainamida, disopiramida, sotalol, fenotiazinas y antidepresivos tricíclicos.</td></tr>
+                                    <tr><td>Síndrome de QT prolongado de origen genético: aumenta el riesgo de taquicardia ventricular, especialmente de torsades de pointes.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>5.2. Taquicardia ventricular polimórfica</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la taquicardia ventricular polimórfica.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>150 a 300 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente o difícil de identificar</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>&gt; 0,14 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>No hay proporción ni medida específica</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Prolongado, &gt; 0,5 segundos</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Grande y discordante</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La taquicardia ventricular polimórfica es una taquiarritmia de origen ventricular que se caracteriza por la presencia de complejos QRS anchos que cambian de tamaño, forma y dirección entre latidos. Presenta una frecuencia ventricular elevada y puede aparecer en salvas; cuando es sostenida, puede evolucionar a una fibrilación ventricular, con manifestación clínica de episodio sincopal o muerte súbita (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> varía entre 150 y 300 latidos por minuto, frente a la taquicardia ventricular en general, que se presenta de 100 a 250 (1,3,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> la irregularidad se identifica comparando los intervalos R-R; puede llegar a ser solo levemente irregular (1,3,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> generalmente ausente o difícil de identificar. Cuando está presente puede encontrarse disociada de los complejos QRS por la disociación auriculoventricular (1,3,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> complejos muy anchos que presentan variaciones de tamaño, forma y dirección entre los latidos, principalmente &gt; 0,14 segundos (1,3,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> no hay características específicas propias del segmento ST para la taquicardia ventricular polimórfica (1,3,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> se describe como una alteración de la repolarización, con un QT prolongado generalmente superior a 0,5 segundos (1,3,6).</p>
+                                <p><span class="etiqueta">Onda T:</span> grande y discordante respecto al complejo QRS (1,3,6).</p>
+                                <p><span class="etiqueta">Origen:</span> a nivel ventricular, como un marcapasos ectópico localizado en las ramas del haz de His, la red de Purkinje o el miocardio ventricular (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Cardiopatía isquémica: la isquemia miocárdica aguda puede desencadenarla, especialmente cuando el intervalo QT es normal.</td></tr>
+                                    <tr><td>Miocardiopatía hipertrófica: favorece su aparición por alteraciones del miocardio ventricular.</td></tr>
+                                    <tr><td>Síndrome de Brugada: puede asociarse en pacientes sin cardiopatía estructural, con QT normal y alteraciones electrocardiográficas características.</td></tr>
+                                    <tr><td>Alteraciones electrolíticas: hipopotasemia, hipomagnesemia e hipocalcemia alteran la repolarización.</td></tr>
+                                    <tr><td>Bradicardia severa: puede prolongar el intervalo QT y favorecer su aparición.</td></tr>
+                                    <tr><td>Síndrome de QT largo congénito: alteraciones congénitas de la repolarización que predisponen a la TVP.</td></tr>
+                                    <tr><td>Fármacos antiarrítmicos: amiodarona, bretilio, sotalol, quinidina, procainamida y disopiramida.</td></tr>
+                                    <tr><td>Fármacos psicotrópicos: fenotiazinas, haloperidol, risperidona y antidepresivos tricíclicos.</td></tr>
+                                    <tr><td>Antimicrobianos: eritromicina, trimetoprim-sulfametoxazol, ketoconazol y pentamidina.</td></tr>
+                                    <tr><td>Otros medicamentos: terfenadina, astemizol, amantadina, nifedipina, nimodipino, nicardipino, indinavir, ritonavir, saquinavir, probucol e indapamida.</td></tr>
+                                    <tr><td>Alteraciones gastrointestinales y nutricionales: anorexia, dietas líquidas proteicas y cisaprida.</td></tr>
+                                    <tr><td>Procesos intracerebrales: asociados con alteraciones adquiridas de la repolarización.</td></tr>
+                                    <tr><td>Síndromes congénitos: Romano-Ward y Jervell-Lange-Nielsen.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>5.3. Torsión de puntas</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la torsión de puntas.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>150 a 300 latidos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente o difícil de identificar</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>&gt; 0,12 o 0,14 segundos</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>No hay proporción ni medida específica</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Prolongado, &gt; 0,5 segundos</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Grande y discordante</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La torsión de puntas es una forma de taquicardia ventricular polimórfica que se caracteriza por un QRS ancho que cambia progresivamente de tamaño, forma y dirección, generando una apariencia helicoidal alrededor de la línea isoeléctrica. Aparece típicamente en el contexto de una prolongación del intervalo QT secundaria a una alteración de la repolarización miocárdica, y puede llegar a generar fibrilación ventricular y paro cardíaco (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> corresponde a una taquicardia ventricular polimórfica de frecuencia muy rápida (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> irregular, dado que la amplitud y la morfología de los complejos cambian continuamente, dando la apariencia de que el ritmo gira sobre la línea isoeléctrica (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> ausente o difícil de encontrar, debido a la alta frecuencia ventricular y a la superposición de ondas (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> complejos anchos de morfología variable, dado que su tamaño, forma y dirección cambian progresivamente (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> difícil de identificar y sin una característica específica, debido a la variación de los complejos ventriculares (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> prolongado en el ritmo subyacente; la fuente señala un QTc superior a 500 ms como un riesgo importante (1,6).</p>
+                                <p><span class="etiqueta">Onda T:</span> alterada y difícil de encontrar, dado que los cambios de morfología y polaridad pueden fusionarla o superponerla por la alteración de la repolarización (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> como forma de taquicardia ventricular polimórfica, está relacionada con la alteración de la repolarización miocárdica; el mecanismo incluye la posdespolarización temprana en células ventriculares y en el sistema His-Purkinje (1,6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Alteraciones electrolíticas: hipopotasemia, hipomagnesemia e hipocalcemia, que alteran la repolarización y favorecen la prolongación del intervalo QT.</td></tr>
+                                    <tr><td>Bradicardia severa y bradiarritmias: disminuyen la frecuencia cardíaca y prolongan el intervalo QT.</td></tr>
+                                    <tr><td>Síndrome de QT largo congénito: alteraciones congénitas de la repolarización.</td></tr>
+                                    <tr><td>Fármacos antiarrítmicos: amiodarona, bretilio, sotalol, quinidina, procainamida y disopiramida.</td></tr>
+                                    <tr><td>Antimicrobianos: eritromicina, trimetoprim-sulfametoxazol, ketoconazol y pentamidina.</td></tr>
+                                    <tr><td>Antihistamínicos: terfenadina y astemizol.</td></tr>
+                                    <tr><td>Otros medicamentos: amantadina, nifedipina, nimodipino, nicardipino, indinavir, ritonavir, saquinavir, probucol e indapamida.</td></tr>
+                                    <tr><td>Alteraciones gastrointestinales y nutricionales: cisaprida, anorexia y dietas líquidas proteicas.</td></tr>
+                                    <tr><td>Procesos intracerebrales: pueden asociarse con alteraciones adquiridas de la repolarización.</td></tr>
+                                    <tr><td>Hipopotasemia grave: cuando el potasio disminuye marcadamente puede aparecer prolongación del QT y evolucionar hacia la torsión de puntas, especialmente en presencia de digoxina o quinidina.</td></tr>
+                                    <tr><td>Síndromes congénitos asociados a sordera: Romano-Ward y Jervell-Lange-Nielsen.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 6 · Ritmos Letales</h3>
-                        <p>Estos ritmos corresponden a un paro cardíaco. Reconocerlos de inmediato — y saber cuáles son desfibrilables — es una de las competencias más críticas de este módulo. El error clínico más grave en este grupo es intentar desfibrilar Asistolia o AESP: ninguna de las dos responde a la descarga, y se pierde tiempo valioso de RCP de alta calidad y búsqueda de causa reversible.</p>
 
-                        <ul>
-                            <li><strong>Fibrilación ventricular (FV):</strong> caos eléctrico total, sin complejos organizados ni ciclo reconocible.</li>
-                            <li><strong>Asistolia:</strong> ausencia total de actividad eléctrica organizada — línea isoeléctrica.</li>
-                            <li><strong>Actividad eléctrica sin pulso (AESP):</strong> el monitor muestra un ritmo organizado (a veces incluso de apariencia normal), pero el paciente no tiene pulso palpable — el tratamiento se centra en identificar y corregir la causa (6H y 6T, ver Módulo 02).</li>
-                        </ul>
+                        <h4>6.1. Fibrilación ventricular</h4>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> "Ritmo organizado en el monitor" no es sinónimo de "paciente con pulso" — en AESP, siempre se debe verificar el pulso, nunca confiar solo en el trazado.
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la fibrilación ventricular.
                         </div>
 
-                        <h4>Actividad: ¿desfibrilable o no?</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="fv" onclick="manejarClicEmparejar(this)">Fibrilación ventricular</button>
-                                <button class="reto-emparejar-item" data-par="asistolia" onclick="manejarClicEmparejar(this)">Asistolia</button>
-                                <button class="reto-emparejar-item" data-par="aesp" onclick="manejarClicEmparejar(this)">AESP</button>
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>300-500 impulsos por minuto</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Irregular</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Ausente</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="asistolia" onclick="manejarClicEmparejar(this)">No desfibrilable — línea isoeléctrica, sin actividad eléctrica</button>
-                                <button class="reto-emparejar-item" data-par="aesp" onclick="manejarClicEmparejar(this)">No desfibrilable — ritmo organizado en el monitor pero sin pulso palpable</button>
-                                <button class="reto-emparejar-item" data-par="fv" onclick="manejarClicEmparejar(this)">Desfibrilable — caos eléctrico total sin ciclo reconocible</button>
+                            <div class="figura-fila-texto">
+                                <p>La fibrilación ventricular es una arritmia ventricular grave caracterizada por una actividad eléctrica caótica y desorganizada que se origina en múltiples focos ectópicos de las redes de Purkinje y del miocardio ventricular. Como consecuencia, no existe una despolarización ventricular organizada: desaparece completamente el complejo QRS y se pierde la contracción ventricular eficaz, lo que produce una caída súbita del gasto cardíaco y ausencia de pulso y de presión arterial. Las ondas de fibrilación pueden ser finas (&lt; 3 mm) o gruesas (&gt; 3 mm) (1,6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la actividad eléctrica ocurre de manera rápida, desorganizada y desincronizada; no corresponde a latidos ventriculares, sino a los impulsos que genera el ventrículo, que pueden llegar a ser de 300 a 500 por minuto (1,6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> ritmo totalmente irregular, dado que las ondas de fibrilación cambian continuamente de amplitud, forma y dirección (1,6).</p>
+                                <p><span class="etiqueta">Onda P:</span> no existe actividad auricular organizada que se logre identificar (1,6).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> se observan ondas de fibrilación caóticas sin complejos ventriculares organizados, por lo que el complejo QRS está ausente (1,6).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> al no existir una despolarización ventricular organizada, no es identificable en el trazado (1,6).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> sin complejo QRS ni onda T definidos, no puede medirse (1,6).</p>
+                                <p><span class="etiqueta">Onda T:</span> no hay onda T definida durante la fibrilación ventricular (1,6).</p>
+                                <p><span class="etiqueta">Origen:</span> se genera desde múltiples zonas ectópicas de las redes de Purkinje y del miocardio ventricular, por una despolarización ventricular caótica completamente irregular (1,6).</p>
                             </div>
                         </div>
 
-                        <p class="placeholder-nota">Practica los tres ritmos de esta unidad en el simulador (grupo "Ritmos de Parada Cardiaca") y observa cuándo se habilita el botón de desfibrilación.</p>
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Enfermedad arterial coronaria: la isquemia miocárdica, el infarto agudo de miocardio y el síndrome coronario agudo constituyen la causa más frecuente.</td></tr>
+                                    <tr><td>Miocardiopatías: las alteraciones estructurales del miocardio pueden favorecer la aparición de actividad ventricular caótica.</td></tr>
+                                    <tr><td>Prolapso de la válvula mitral: puede asociarse por alteraciones de la estabilidad eléctrica cardíaca.</td></tr>
+                                    <tr><td>Traumatismo cardíaco, especialmente el cerrado.</td></tr>
+                                    <tr><td>Hipoxia: la disminución importante de la oxigenación puede alterar la estabilidad eléctrica del corazón.</td></tr>
+                                    <tr><td>Acidosis: las alteraciones metabólicas asociadas pueden favorecer su aparición.</td></tr>
+                                    <tr><td>Alteraciones electrolíticas, especialmente hipopotasemia e hiperpotasemia.</td></tr>
+                                    <tr><td>Toxicidad farmacológica: la administración excesiva de digital o procainamida.</td></tr>
+                                    <tr><td>Electrocución: una descarga eléctrica accidental.</td></tr>
+                                    <tr><td>Desfibrilación o cardioversión ineficaz: puede aparecer tras un intento eléctrico fallido de convertir otro ritmo.</td></tr>
+                                    <tr><td>Extrasístole ventricular que ocurre durante el período vulnerable de la repolarización, mediante el fenómeno de R sobre T.</td></tr>
+                                    <tr><td>Taquicardia ventricular sostenida: puede preceder al inicio de la FV.</td></tr>
+                                    <tr><td>Reentrada o aumento del automatismo: mecanismos electrofisiológicos implicados en su desarrollo.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>6.2. Actividad eléctrica sin pulso</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la actividad eléctrica sin pulso.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>No hay pulso; no hay frecuencia cardíaca efectiva</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Variable</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Presente o ausente; si está presente, &lt; 0,12 s</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Presente y organizado; ancho &gt; 0,12 s</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>Alteraciones inespecíficas o elevación del ST</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Según el ritmo y la frecuencia</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Presente o alterada</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La actividad eléctrica sin pulso es la presencia de actividad cardíaca semiorganizada que puede detectarse en el monitor pero no genera una contracción mecánica eficaz ni un pulso palpable, por lo que no produce una perfusión tisular adecuada. Puede manifestarse como disociación electromecánica, ritmo de escape ventricular, ritmos idioventriculares, bradisistolia o ritmos idioventriculares posteriores a la desfibrilación. Es un ritmo de paro cardíaco que no se desfibrila y cuyo tratamiento requiere reanimación cardiopulmonar e identificación y corrección de la causa desencadenante (1,7).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> al no existir una frecuencia cardíaca efectiva, ya que no hay pulso, la frecuencia eléctrica observada depende del ritmo subyacente y puede ser lenta o bradicárdica (1,7).</p>
+                                <p><span class="etiqueta">Regularidad:</span> según el ritmo eléctrico presente, se puede observar actividad organizada, bradicárdica, idioventricular o de escape (1,7).</p>
+                                <p><span class="etiqueta">Onda P:</span> puede estar presente o ausente dependiendo del ritmo subyacente (1,7).</p>
+                                <p><span class="etiqueta">Complejo QRS:</span> puede estar presente y organizado según el ritmo eléctrico subyacente (1,7).</p>
+                                <p><span class="etiqueta">Segmento ST:</span> el electrocardiograma puede mostrar alteraciones inespecíficas del segmento ST, y también cambios compatibles con pericarditis, como su elevación (1,7).</p>
+                                <p><span class="etiqueta">Intervalo QT:</span> depende del ritmo y de la frecuencia; aproximadamente puede ser de 0,35 a 0,44 s (1,7).</p>
+                                <p><span class="etiqueta">Onda T:</span> puede estar presente o alterada, con una duración aproximada de 0,04 a 0,08 s, según la causa de la actividad eléctrica sin pulso (1,7).</p>
+                                <p><span class="etiqueta">Origen:</span> actividad eléctrica semiorganizada de origen variable, que puede corresponder a disociación electromecánica, ritmo de escape ventricular, ritmo bradisistólico o ritmo idioventricular posterior a la desfibrilación (1,7).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Hipovolemia: disminución del volumen circulante que reduce el retorno venoso y compromete la perfusión cardíaca. Es señalada como la causa más común de AESP.</td></tr>
+                                    <tr><td>Hipoxia: disminución del aporte de oxígeno que deteriora la función miocárdica.</td></tr>
+                                    <tr><td>Hidrogeniones o acidosis: alteración del equilibrio ácido-base que compromete la función celular y la contractilidad cardíaca.</td></tr>
+                                    <tr><td>Hipopotasemia o hiperpotasemia: modifican la excitabilidad y la conducción eléctrica cardíaca.</td></tr>
+                                    <tr><td>Hipotermia o hipertermia: alteraciones extremas de la temperatura corporal que comprometen la actividad eléctrica y la función mecánica cardíaca.</td></tr>
+                                    <tr><td>Taponamiento cardíaco: acumulación de líquido en el espacio pericárdico que limita el llenado cardíaco.</td></tr>
+                                    <tr><td>Trombosis coronaria: obstrucción de una arteria coronaria que produce isquemia o infarto.</td></tr>
+                                    <tr><td>Tromboembolia pulmonar: obstrucción de la circulación pulmonar que puede producir colapso hemodinámico.</td></tr>
+                                    <tr><td>Neumotórax a tensión: aumento de la presión intratorácica que compromete el retorno venoso.</td></tr>
+                                    <tr><td>Desfibrilación o cardioversión ineficaz.</td></tr>
+                                    <tr><td>Tóxicos e intoxicaciones: pueden producir alteraciones de la actividad eléctrica y de la función cardíaca.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>6.3. Asistolia</h4>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🫀</span>
+                            Espacio reservado para el trazado de la asistolia.
+                        </div>
+
+                        <div class="figura-fila alinear-arriba">
+                            <div class="tabla-scroll">
+                                <table class="tabla-comparativa">
+                                    <thead>
+                                        <tr><th>Parámetro</th><th>Contenido</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><strong>Frecuencia cardíaca</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Regularidad</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Onda P</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Complejo QRS</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Segmento ST</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Intervalo QT</strong></td><td>Ausente</td></tr>
+                                        <tr><td><strong>Onda T</strong></td><td>Ausente</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La asistolia es la ausencia de actividad eléctrica ventricular organizada, por lo que no hay despolarización ventricular ni contracción cardíaca efectiva y, en consecuencia, no hay gasto cardíaco ni pulso palpable. Se considera la única arritmia genuina por ausencia de ritmo ventricular, y puede presentarse por falla del marcapasos dominante o de escape, o por bloqueo de la conducción hacia los ventrículos sin aparición de ritmo, como fase final de un corazón agonizante, frecuentemente después de una taquicardia o una fibrilación ventricular (6).</p>
+                                <p><span class="etiqueta">Frecuencia:</span> la actividad cardíaca está ausente, dado que no hay latidos por minuto por la inexistencia de actividad eléctrica ventricular organizada (6).</p>
+                                <p><span class="etiqueta">Regularidad:</span> no existe patrón regular ni irregular, por ausencia de la actividad eléctrica (6).</p>
+                                <p><span class="etiqueta">Onda P:</span> puede estar ausente o presente, siempre y cuando haya una detención ventricular, dado que la actividad auricular puede mantenerse activa mientras los ventrículos permanecen eléctricamente inactivos (6).</p>
+                                <p><span class="etiqueta">Complejo QRS, segmento ST, intervalo QT y onda T:</span> ausentes, porque no hay despolarización ventricular (6).</p>
+                                <p><span class="etiqueta">Origen:</span> no hay origen rítmico, dado que no hay ritmo ventricular. Puede producirse por incapacidad del nodo sinoauricular, del marcapasos de escape de la unión AV o de ambos para generar un impulso; también puede aparecer cuando un bloqueo AV completo impide la llegada de impulsos a los ventrículos y no se genera un ritmo de escape ventricular (6).</p>
+                            </div>
+                        </div>
+
+                        <h5>Etiología</h5>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead><tr><th>Causa</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Falla del nódulo sinoauricular: incapacidad del marcapasos dominante para generar impulsos eléctricos.</td></tr>
+                                    <tr><td>Falla del marcapasos de escape de la unión AV: incapacidad del marcapasos de respaldo para generar impulsos cuando falla el dominante.</td></tr>
+                                    <tr><td>Falla simultánea de ambos marcapasos.</td></tr>
+                                    <tr><td>Bloqueo auriculoventricular de tercer grado: si no aparece un marcapasos de escape ventricular, puede producirse asistolia.</td></tr>
+                                    <tr><td>Cardiopatía avanzada: deterioro grave del sistema de generación y conducción eléctrica.</td></tr>
+                                    <tr><td>Taquicardia ventricular: la asistolia puede aparecer después, especialmente con deterioro cardíaco grave.</td></tr>
+                                    <tr><td>Fibrilación ventricular: puede preceder a la asistolia como fase final de un paro cardíaco no tratado.</td></tr>
+                                    <tr><td>Taquicardias supraventriculares o ventriculares: puede presentarse un período breve de asistolia tras su terminación.</td></tr>
+                                    <tr><td>Fármacos: determinados tratamientos pueden producir un período de asistolia tras su administración.</td></tr>
+                                    <tr><td>Desfibrilación: puede producirse un período breve de asistolia inmediatamente después del choque.</td></tr>
+                                    <tr><td>Cardioversión sincronizada: puede aparecer un período transitorio de asistolia posterior.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- UNIDAD 7 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 7 · Algoritmo Diagnóstico (AHA) — Simulador ECG</h3>
-                        <p>Esta unidad integra todo lo anterior en un solo flujo de trabajo, apoyado en el simulador interactivo de esta misma página. El algoritmo diagnóstico no es una lista de memoria — es el mismo método de 4 pasos aplicado una y otra vez, ritmo por ritmo.</p>
+                        <h3 class="unidad-titulo">Unidad 7 · Algoritmo Diagnóstico</h3>
 
-                        <h4>Recorre el algoritmo de 4 pasos</h4>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'metodo')">1. Método</button>
-                                <button onclick="activarPasoStepper(this,'familia')">2. Familia</button>
-                                <button onclick="activarPasoStepper(this,'diagnostico')">3. Diagnóstico</button>
-                                <button onclick="activarPasoStepper(this,'hemodinamica')">4. Hemodinámica</button>
-                            </div>
-                            <div class="stepper-panel activo" data-paso="metodo">
-                                <h5>1. Aplica el método</h5>
-                                <p>Aplica el método sistemático del Módulo 02 (frecuencia, ritmo, onda P, PR, QRS, eje) al ritmo del monitor.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="familia">
-                                <h5>2. Ubica la familia</h5>
-                                <p>Ubica el ritmo dentro de una de las seis familias de este módulo: sinusal, bradicardia, extrasístole, taquicardia supraventricular, taquicardia ventricular o ritmo letal.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="diagnostico">
-                                <h5>3. Confirma el diagnóstico</h5>
-                                <p>Dentro de esa familia, confirma el diagnóstico específico usando los criterios distintivos de cada unidad.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="hemodinamica">
-                                <h5>4. Verifica la hemodinámica</h5>
-                                <p>Verifica el estado hemodinámico del paciente (Módulo 02, Unidad 3) para decidir la urgencia de la respuesta.</p>
-                            </div>
+                        <p>El algoritmo diagnóstico de la AHA ordena la clasificación de las arritmias según la frecuencia cardíaca y la anchura del complejo QRS, y se trabaja sobre el simulador de ECG.</p>
+
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el algoritmo diagnóstico de la AHA y el simulador de ECG.
                         </div>
-
-                        <h4>Cómo usar el simulador de esta unidad</h4>
-                        <ul>
-                            <li>Selecciona cualquier ritmo del listado y observa el trazado, los signos vitales y el registro clínico en tiempo real.</li>
-                            <li>Antes de mirar el nombre del ritmo seleccionado, intenta nombrarlo tú mismo aplicando el algoritmo de los 4 pasos.</li>
-                            <li>En los ritmos de paro, identifica si el botón de desfibrilación se habilita — y recuerda por qué (Unidad 6).</li>
-                        </ul>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo incluye el simulador ECG interactivo — desplázate hasta el final para practicar con los distintos ritmos clínicos mencionados en cada unidad.</p>
-                    </div>
-
-                    <!-- CASO CLÍNICO -->
-                    <div class="modulo-caso-clinico">
-                        <h3>Caso clínico</h3>
-                        <div class="caso-clinico-grid">
-                            <div class="caso-clinico-campo">
-                                <h5>Motivo de consulta</h5>
-                                <p>Paciente de 74 años que refiere palpitaciones irregulares de 3 días de evolución.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Antecedentes</h5>
-                                <p>Hipertensión arterial e hipotiroidismo.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Signos vitales</h5>
-                                <p>FC 138 lpm (irregular) · TA 118/76 mmHg · SpO2 96%</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Trazado ECG</h5>
-                                <p>Ausencia de ondas P organizadas, línea de base fibrilatoria, QRS estrecho de conducción irregularmente irregular.</p>
-                            </div>
-                        </div>
-                        <div class="caso-clinico-preguntas">
-                            <h4>Preguntas del caso</h4>
-                            <p>Aplicando el algoritmo de 4 pasos de la Unidad 7: ¿a qué familia de ritmos pertenece este trazado y cuál es el diagnóstico específico? ¿Qué hallazgo del ECG fue determinante para descartar el flutter auricular como diagnóstico alternativo?</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el simulador de ECG del módulo.
                         </div>
                     </div>
 
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
-                        <p class="actividad-enunciado">¿Cuál de los siguientes ritmos de paro cardíaco es desfibrilable?</p>
-                        <div class="actividad-opciones">
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="A"> A — Asistolia</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="B"> B — Fibrilación ventricular</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-03" value="C"> C — Actividad eléctrica sin pulso</label>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">📝</span>
+                            Espacio reservado para las preguntas de la actividad de aprendizaje.
                         </div>
-                        <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
-                    </div>
-
-                    <!-- RESUMEN -->
-                    <div class="modulo-resumen">
-                        <h3>Resumen</h3>
-                        <ul>
-                            <li>El ritmo sinusal normal (5 criterios) es la referencia contra la que se compara cualquier arritmia.</li>
-                            <li>Las bradicardias se diferencian por dónde falla la conducción: sinusal, o los distintos grados de bloqueo AV.</li>
-                            <li>Las extrasístoles auriculares y ventriculares se distinguen por la morfología del QRS y la presencia o no de pausa compensatoria.</li>
-                            <li>Las taquicardias supraventriculares mantienen QRS estrecho; su diferencia está en la onda P y la regularidad.</li>
-                            <li>Las taquicardias ventriculares tienen QRS ancho y mayor riesgo hemodinámico; Torsades se asocia a QT prolongado.</li>
-                            <li>De los ritmos letales, solo la FV (y la TV sin pulso) son desfibrilables — Asistolia y AESP nunca se desfibrilan.</li>
-                            <li>El algoritmo diagnóstico es un método de 4 pasos, repetible para cualquier trazado, aplicable directamente en el simulador.</li>
-                        </ul>
-                    </div>
-
-                    <!-- AUTOEVALUACIÓN -->
-                    <div class="modulo-autoevaluacion">
-                        <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">6 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>1. ¿Qué diferencia principal distingue al Bloqueo AV Mobitz I del Mobitz II?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Mobitz I tiene PR progresivamente prolongado; Mobitz II tiene PR fijo</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> Mobitz I tiene QRS ancho; Mobitz II tiene QRS estrecho</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-1"> No hay ninguna diferencia clínica relevante</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>2. Una extrasístole ventricular se caracteriza por:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> QRS estrecho precedido de onda P prematura</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> QRS ancho y prematuro, sin onda P que lo preceda</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-2"> Ausencia total de QRS</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>3. El hallazgo característico del flutter auricular es:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> Línea de base fibrilatoria sin ondas P</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> Ondas en patrón regular de "dientes de sierra"</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-3"> PR progresivamente prolongado</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>4. Torsades de Pointes se asocia clásicamente con:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> QT prolongado</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> PR prolongado</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-4"> QRS estrecho</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>5. ¿Cuál de estos ritmos de paro NUNCA se desfibrila?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Fibrilación ventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Asistolia</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-5"> Taquicardia ventricular sin pulso</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>6. El primer paso del algoritmo diagnóstico de la Unidad 7 es:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Verificar el estado hemodinámico del paciente</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Aplicar el método sistemático de interpretación (frecuencia, ritmo, onda P, PR, QRS, eje)</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-03-6"> Administrar el medicamento antiarrítmico</label>
-                            </div>
-                        </div>
-
-                        <button class="btn-enviar-eval" onclick="verificarAutoevaluacion(this)">Enviar respuestas</button>
                     </div>
 
                     <!-- BIBLIOGRAFÍA -->
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>American Heart Association. Aspectos destacados de las guías de la AHA para RCP y atención cardiovascular de emergencia (ACLS/BLS).</li>
-                            <li>Herdman TH, Kamitsuru S, editores. NANDA International: Diagnósticos enfermeros. Definiciones y clasificación.</li>
-                            <li>Moorhead S, Johnson M, Maas ML, Swanson E. Clasificación de Resultados de Enfermería (NOC).</li>
-                            <li>Bulechek GM, Butcher HK, Dochterman JM, Wagner CM. Clasificación de Intervenciones de Enfermería (NIC).</li>
+                            <li>Vélez Rodríguez D. ECG. Pautas de Electrocardiografía. 2ª ed. Madrid: Marbán Libros; 2009.</li>
+                            <li>Gargallo García E, Sánchez Sendín D, Martínez-Sellés M, Sevillano Fernández JA. Arritmias cardíacas. Diagnóstico electrocardiográfico y manejo terapéutico en urgencias. Medicine (Madr). 2023;13(87):5125-37.</li>
+                            <li>Universidad Autónoma de Zacatecas. Arritmias: definición, síntomas y diagnósticos diferenciales [Internet]. Studocu: Apuntes de Oncología; 2025 [citado 16 ago 2026]. Disponible en: https://www.studocu.com/.</li>
+                            <li>Fundación Universitaria del Área Andina. Arritmias todas: tipos y protocolos esenciales [Internet]. Studocu: Apuntes de Fisiología; [citado 16 ago 2026]. Disponible en: https://www.studocu.com/.</li>
+                            <li>de Jong JSSG. Sinus node rhythms and arrhythmias [Internet]. ECGpedia; 14 ene 2021 [citado 16 ago 2026]. Disponible en: https://en.ecgpedia.org/wiki/Sinus_Node_Rhythms_and_Arrhythmias.</li>
+                            <li>Wesley K. Huszar. Interpretación del ECG: monitorización y 12 derivaciones. 6ª ed. Madrid: Elsevier España; 2023. Capítulo Anatomía y fisiología del corazón; p. 77-142. ISBN 978-84-1382-368-3.</li>
+                            <li>Zamarripa Mottu J. Reanimación cardiopulmonar. En: Instituto Nacional de Cardiología Ignacio Chávez, editor. Manual de urgencias cardiovasculares. 3ª ed. México: McGraw-Hill Interamericana; 2007. p. 3-13.</li>
                         </ol>
                     </div>
 
