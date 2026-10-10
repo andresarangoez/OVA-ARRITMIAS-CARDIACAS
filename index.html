@@ -66,6 +66,7 @@
     <link rel="stylesheet" href="css/18-simulador-potencial.css">
     <link rel="stylesheet" href="css/19-paciente-virtual.css">
     <link rel="stylesheet" href="css/20-widget-externo.css">
+    <link rel="stylesheet" href="css/21-tablero-farmacos.css">
 </head>
 <body>
 
@@ -478,9 +479,19 @@
 
                         <button id="btn-aplicar-intervencion" class="btn-action btn-aplicar" disabled>Seleccione una intervención</button>
 
-                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué.</p>
+                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué. El tablero de abajo reúne la información de cada fármaco.</p>
                     </div>
                 </div>
+
+                <!-- TABLERO DE INTERVENCIONES FARMACOLÓGICAS
+                     Lo rellena js/26-tablero-farmacos.js, que lleva dentro el
+                     contenido de la Unidad 2 del Módulo 05. Va aquí, dentro de
+                     #simulador-wrapper, y no en el HTML de un módulo: así viaja
+                     con el simulador a los módulos 03, 05 y 06 sin duplicarse.
+                     No se adapta al ritmo seleccionado a propósito — señalar el
+                     fármaco correcto delataría el ejercicio del panel de
+                     intervenciones. -->
+                <div id="tablero-farmacos"></div>
             </div>
         </div>
 
@@ -684,5 +695,6 @@
     <script src="js/23-simulador-potencial.js"></script>
     <script src="js/24-paciente-virtual.js"></script>
     <script src="js/25-widget-externo.js"></script>
+    <script src="js/26-tablero-farmacos.js"></script>
 </body>
 </html>
