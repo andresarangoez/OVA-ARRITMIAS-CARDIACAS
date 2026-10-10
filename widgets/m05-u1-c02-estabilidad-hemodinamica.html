@@ -38,10 +38,17 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
-header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:22px}
+/* La cabecera era un flex con space-between y align-items:end. El titulo
+   quedaba arrinconado abajo a la izquierda, con un tope de 24ch que lo partia
+   en tres lineas, y la entradilla pegada al borde derecho: entre los dos, y
+   encima de ella, un rectangulo vacio de casi 300 px. Ahora se apilan a la
+   izquierda, que es como se presentan los otros 40 codigos. El titulo sube a
+   34ch —text-wrap:balance reparte las lineas— y la entradilla pasa a 70ch,
+   el mismo tope de linea legible que usa el resto. */
+header{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
 .eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-h1{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:4px 0 0;text-wrap:balance;max-width:24ch}
-.lead{color:var(--muted);max-width:52ch;margin:0}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:4px 0 0;text-wrap:balance;max-width:34ch}
+.lead{color:var(--muted);max-width:70ch;margin:0}
 
 .grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
 @media (max-width:880px){.grid{grid-template-columns:1fr}}

@@ -28,7 +28,9 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
-.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+/* Sin max-width propio: el ancho ya lo fija el contenedor del OVA (1040 px
+   dentro del modulo), y 1000 px aqui dejaba una franja muerta a cada lado. */
+.wrap{margin:0 auto;padding-inline:16px;padding-block:28px 48px}
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
 .lead{color:var(--muted);max-width:70ch;margin:0 0 16px}
