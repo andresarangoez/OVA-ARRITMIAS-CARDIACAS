@@ -301,7 +301,12 @@ let q={ok:0,n:0,cur:null,order:[],answered:false};
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function nextQ(){
   if(!q.order.length) q.order=shuffle(R.map(r=>r.id));
-  q.cur=R.find(r=>r.id===q.order.pop()); q.answered=false; renderQ();
+  /* pop() iba dentro del callback de find, asi que se ejecutaba una vez por
+     cada elemento de R: vaciaba la lista de un tiron, se saltaba ritmos y
+     acababa devolviendo undefined (TypeError al leer r.strip). Se saca un
+     solo id y luego se busca. */
+  const id=q.order.pop();
+  q.cur=R.find(r=>r.id===id); q.answered=false; renderQ();
 }
 function hintFor(r){
   if(r.g==="pc") return "Paciente sin pulso. "+r.see[0]+".";

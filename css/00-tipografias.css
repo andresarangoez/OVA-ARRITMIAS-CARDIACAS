@@ -1,26 +1,10 @@
-/* --- TIPOGRAFIAS DEL PROYECTO --- */
+/* --- TIPOGRAFIA DEL PROYECTO ---
+   Se sirve desde el repositorio, no desde Google Fonts, para que el paquete
+   SCORM funcione sin salida a internet. La ruta relativa ../assets/fonts/
+   resuelve igual desde index.html que desde widgets/. */
 
-/* Inter — interfaz del OVA */
-/* latin-ext */
-@font-face {
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400 800;
-font-display: swap;
-src: url(../assets/fonts/inter-latin-ext.woff2) format('woff2');
-unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400 800;
-font-display: swap;
-src: url(../assets/fonts/inter-latin.woff2) format('woff2');
-unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* Raleway — codigos interactivos */
+/* Raleway — la unica familia del OVA: interfaz, modulos y los 41
+   codigos interactivos. Es variable (400 a 800 en un solo fichero). */
 /* latin-ext */
 @font-face {
 font-family: 'Raleway';
@@ -40,62 +24,22 @@ src: url(../assets/fonts/raleway-latin.woff2) format('woff2');
 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Figtree — codigo de estabilidad hemodinamica */
-/* latin-ext */
-@font-face {
-font-family: 'Figtree';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/figtree-latin-ext.woff2) format('woff2');
-unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-font-family: 'Figtree';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/figtree-latin.woff2) format('woff2');
-unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* Fraunces — codigo de estabilidad hemodinamica */
-/* latin-ext */
-@font-face {
-font-family: 'Fraunces';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/fraunces-latin-ext.woff2) format('woff2');
-unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-font-family: 'Fraunces';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/fraunces-latin.woff2) format('woff2');
-unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* JetBrains Mono — codigo de estabilidad hemodinamica */
-/* latin-ext */
-@font-face {
-font-family: 'JetBrains Mono';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/jetbrains-latin-ext.woff2) format('woff2');
-unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-font-family: 'JetBrains Mono';
-font-style: normal;
-font-weight: 400 700;
-font-display: swap;
-src: url(../assets/fonts/jetbrains-latin.woff2) format('woff2');
-unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+/* --- CONTROLES DE FORMULARIO ---
+   Los controles nativos (button, input, select, textarea) no heredan
+   font-family: la hoja del navegador les impone la suya, que en Windows es
+   Arial. Sin esta regla, botones como «Comenzar», los desplegables de unidad,
+   los del visor 3D y los de los códigos interactivos se ven en Arial aunque
+   todo lo demás esté en Raleway — y los <svg> que llevan dentro heredan ese
+   Arial. Vive en esta hoja, y no en 01-variables.css, porque es la única que
+   comparten index.html y los 41 códigos de widgets/: una sola regla cubre
+   ambos lados y cualquier código que se añada después.
+   Se hereda solo la familia: heredar además tamaño y altura de línea
+   estiraría los botones que hoy se apoyan en el tamaño por defecto del
+   navegador. Cada componente conserva los suyos. */
+button,
+input,
+select,
+optgroup,
+textarea {
+    font-family: inherit;
 }

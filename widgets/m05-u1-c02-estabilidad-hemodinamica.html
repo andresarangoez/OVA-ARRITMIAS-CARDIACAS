@@ -15,9 +15,12 @@
   --green:#2f8a4c; --green-soft:#e5f4e9;
   --blue:#24506f; --blue-soft:#e3edf5;
   --path:#24506f;
-  --f-display:"Fraunces", Georgia, serif;
-  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono:"JetBrains Mono", ui-monospace, monospace;
+  /* Las tres eran Fraunces, Figtree y JetBrains Mono. El OVA usa una sola
+     familia, asi que apuntan a Raleway; la jerarquia la dan el peso y el
+     letter-spacing, no un cambio de tipografia. */
+  --f-display:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f;

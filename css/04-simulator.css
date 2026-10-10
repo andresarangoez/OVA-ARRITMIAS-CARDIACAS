@@ -17,7 +17,11 @@
 .vitals-panel { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 .vital-box { text-align: left; background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: var(--radius-sm); border-left: 3px solid currentColor; display: flex; flex-direction: column; justify-content: center; }
 .label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #888; }
-.value { font-size: 2.2rem; font-weight: bold; line-height: 1.1; font-family: monospace; color: inherit; }
+/* Las cifras se alineaban con una monoespaciada. Ahora heredan Raleway, como
+   el resto del OVA, y la columna la mantiene tabular-nums: todos los digitos
+   ocupan lo mismo, asi que el numero no baila al actualizarse. */
+.value { font-size: 2.2rem; font-weight: 700; line-height: 1.1; color: inherit;
+         font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 .value.small-text { font-size: 1.6rem; }
 
 .fc { color: #2ecc71; border-left-color: #2ecc71; }
