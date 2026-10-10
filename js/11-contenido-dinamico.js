@@ -55,7 +55,7 @@
         return html;
     }
 
-    // --- CONSTRUCCIÓN DE LA INTERFAZ (breadcrumb + barra de progreso + contenido + navegación) ---
+    // --- CONSTRUCCIÓN DE LA INTERFAZ (breadcrumb + contenido + navegación) ---
     function construirInterfaz(contenedor) {
         contenedor.innerHTML = '';
 
@@ -63,30 +63,6 @@
         breadcrumb.className = 'breadcrumb';
         breadcrumb.setAttribute('data-rol', 'breadcrumb');
 
-        const progresoWrap = document.createElement('div');
-        progresoWrap.className = 'barra-progreso-wrap';
-        progresoWrap.setAttribute('data-rol', 'progreso-wrap');
-
-        const progresoMeta = document.createElement('div');
-        progresoMeta.className = 'barra-progreso-meta';
-        const progresoTexto = document.createElement('span');
-        progresoTexto.setAttribute('data-rol', 'progreso-texto');
-        const progresoPorcentaje = document.createElement('span');
-        progresoPorcentaje.className = 'porcentaje';
-        progresoPorcentaje.setAttribute('data-rol', 'progreso-porcentaje');
-        progresoMeta.appendChild(progresoTexto);
-        progresoMeta.appendChild(progresoPorcentaje);
-
-        const progresoBarra = document.createElement('div');
-        progresoBarra.className = 'barra-progreso';
-        const progresoFill = document.createElement('div');
-        progresoFill.className = 'barra-progreso-fill';
-        progresoFill.setAttribute('data-rol', 'progreso-fill');
-        progresoFill.style.width = '0%';
-        progresoBarra.appendChild(progresoFill);
-
-        progresoWrap.appendChild(progresoMeta);
-        progresoWrap.appendChild(progresoBarra);
 
         const areaContenido = document.createElement('div');
         areaContenido.setAttribute('data-rol', 'area-contenido');
@@ -113,7 +89,6 @@
         navegacion.appendChild(btnSiguiente);
 
         contenedor.appendChild(breadcrumb);
-        contenedor.appendChild(progresoWrap);
         contenedor.appendChild(areaContenido);
         contenedor.appendChild(navegacion);
     }
@@ -140,20 +115,6 @@
         });
     }
 
-    function actualizarBarraProgreso(contenedor) {
-        const { manifiesto, indicePaso } = estadoActual;
-        const total = manifiesto.pasos.length;
-        const numeroActual = indicePaso + 1;
-        const porcentaje = Math.round((numeroActual / total) * 100);
-
-        const textoEl = contenedor.querySelector('[data-rol="progreso-texto"]');
-        const porcentajeEl = contenedor.querySelector('[data-rol="progreso-porcentaje"]');
-        const fillEl = contenedor.querySelector('[data-rol="progreso-fill"]');
-
-        if (textoEl) textoEl.textContent = `Paso ${numeroActual} de ${total}`;
-        if (porcentajeEl) porcentajeEl.textContent = `${porcentaje}%`;
-        if (fillEl) fillEl.style.width = porcentaje + '%';
-    }
 
     function actualizarBotonesNavegacion(contenedor) {
         const { manifiesto, indicePaso } = estadoActual;
@@ -178,7 +139,6 @@
         const areaContenido = contenedor.querySelector('[data-rol="area-contenido"]');
 
         actualizarBreadcrumb(contenedor);
-        actualizarBarraProgreso(contenedor);
         actualizarBotonesNavegacion(contenedor);
 
         if (areaContenido) areaContenido.innerHTML = '<div class="modulo-cargando">Cargando contenido…</div>';

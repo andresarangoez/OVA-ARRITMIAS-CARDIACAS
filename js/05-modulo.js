@@ -20,7 +20,7 @@ function iniciarModulo(idModulo) {
     if (bienvenida) bienvenida.style.display = 'none';
     if (desarrollo) {
         desarrollo.style.display = 'block';
-        activarBarraProgreso(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onProgresoUnidad);
+        activarSeguimientoUnidad(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onUnidadVisible);
     }
 
     // Los botones flotantes (índice del módulo y volver arriba) se revelan
@@ -86,40 +86,35 @@ function reiniciarEstadoModulo(idModulo) {
     }
 }
 
-// --- BARRA DE PROGRESO (opcional — no hace nada si el módulo no la incluye) ---
-// Observa las .modulo-unidad del módulo y actualiza .barra-progreso-fill /
-// .barra-progreso-meta .porcentaje según cuántas unidades distintas ha
-// visto el estudiante mientras hace scroll. Se activa una sola vez por
-// contenedor (guardia en dataset) para no acumular observers si el
-// estudiante entra y sale del módulo varias veces en la misma sesión.
+// --- UNIDAD VISIBLE (opcional — no hace nada si el módulo no tiene unidades) ---
+// Observa las .modulo-unidad y avisa de cuál es la que el estudiante tiene
+// delante, para que el sidebar de índice (js/13-shell-indice.js) la marque.
+// Se activa una sola vez por contenedor (guardia en dataset) para no acumular
+// observers si el estudiante entra y sale del módulo varias veces.
 //
-// onProgreso (opcional) permite que otro componente (el sidebar de índice
-// del curso, ver js/13-shell-indice.js) se entere de cada actualización sin
-// que este archivo sepa nada de él — se le pasa un solo objeto con todo lo
-// que podría necesitar, no argumentos posicionales sueltos:
-//   { indiceActual, elementoActual, indicesVistos, totalUnidades, porcentaje }
-// indiceActual es la unidad visible más arriba en pantalla ahora mismo (se
+// Antes esto llevaba además la cuenta de unidades vistas y pintaba una barra
+// de progreso. Se retiró: el avance del estudiante no sobrevive a salir y
+// volver a entrar, y cuando el curso se empaquete en SCORM es Moodle quien lo
+// registra.
+//
+// onUnidadVisible recibe un solo objeto, no argumentos posicionales sueltos:
+//   { indiceActual, elementoActual, totalUnidades }
+// indiceActual es la unidad visible más arriba en pantalla ahora mismo; se
 // conserva la última conocida si momentáneamente ninguna cumple el umbral,
-// para no "parpadear" a 0 en huecos de scroll). indicesVistos es la lista
-// completa de unidades vistas alguna vez (igual que vistas.size, pero con
-// el detalle de cuáles, no solo cuántas).
-function activarBarraProgreso(desarrollo, onProgreso) {
-    const barra = desarrollo.querySelector('.barra-progreso-fill');
-    if (!barra || desarrollo.dataset.progresoActivo === 'true') return;
-    desarrollo.dataset.progresoActivo = 'true';
+// para que la marca no parpadee en los huecos del scroll.
+function activarSeguimientoUnidad(desarrollo, onUnidadVisible) {
+    if (desarrollo.dataset.seguimientoActivo === 'true') return;
 
     const unidades = Array.from(desarrollo.querySelectorAll('.modulo-unidad'));
     if (unidades.length === 0) return;
+    desarrollo.dataset.seguimientoActivo = 'true';
 
-    const meta = desarrollo.querySelector('.barra-progreso-meta .porcentaje');
-    const vistas = new Set();
     const actualmenteVisibles = new Set();
     let indiceActual = 0;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                vistas.add(entry.target);
                 actualmenteVisibles.add(entry.target);
             } else {
                 actualmenteVisibles.delete(entry.target);
@@ -130,22 +125,11 @@ function activarBarraProgreso(desarrollo, onProgreso) {
             indiceActual = unidades.findIndex(unidad => actualmenteVisibles.has(unidad));
         }
 
-        const porcentaje = Math.round((vistas.size / unidades.length) * 100);
-        barra.style.width = porcentaje + '%';
-        if (meta) meta.textContent = porcentaje + '%';
-
-        if (typeof onProgreso === 'function') {
-            const indicesVistos = unidades.reduce((acc, unidad, indice) => {
-                if (vistas.has(unidad)) acc.push(indice);
-                return acc;
-            }, []);
-
-            onProgreso({
+        if (typeof onUnidadVisible === 'function') {
+            onUnidadVisible({
                 indiceActual,
                 elementoActual: unidades[indiceActual],
-                indicesVistos,
-                totalUnidades: unidades.length,
-                porcentaje
+                totalUnidades: unidades.length
             });
         }
     }, { threshold: 0.3 });

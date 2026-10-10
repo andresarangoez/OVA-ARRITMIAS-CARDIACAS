@@ -98,14 +98,6 @@
                 <h2 class="indice-titulo">Selecciona un módulo</h2>
                 <button class="indice-btn-buscar" onclick="alternarBusqueda()" aria-label="Buscar en el módulo" title="Buscar en el módulo">🔍</button>
             </div>
-            <div class="indice-progreso-linea">
-                <span class="indice-porcentaje">0% completado</span>
-            </div>
-            <div class="indice-barra"><div class="indice-barra-fill" style="width: 0%;"></div></div>
-            <div class="indice-meta-linea">
-                <span class="indice-conteo">0 de 0 unidades</span>
-                <span class="indice-tiempo-restante"></span>
-            </div>
         </div>
 
         <div class="indice-busqueda">
@@ -551,7 +543,6 @@
             <div class="modal-finalizacion-check" aria-hidden="true">✓</div>
             <h2 class="modal-finalizacion-titulo">¡Felicitaciones!</h2>
             <p class="modal-finalizacion-texto">Has concluido exitosamente este módulo.</p>
-            <div class="modal-finalizacion-progreso">100% completado</div>
             <div class="modal-finalizacion-acciones">
                 <button id="modal-finalizacion-siguiente" class="btn-comenzar" onclick="continuarSiguienteModulo()">Continuar al siguiente módulo</button>
                 <button class="btn-accion" onclick="cerrarModal('modal-finalizacion'); volverHome();">Volver al inicio</button>
