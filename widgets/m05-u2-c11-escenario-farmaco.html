@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escenario y fármaco de elección</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: interruptor de estabilidad y de modo arriba; filas escenario → fármaco con detalle desplegable; modo emparejar con columna de fármacos mezclada */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#2b6cc4; --drug-soft:#e4eef9;
+  --elec:#2f8a4c; --elec-soft:#e5f4e9;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#7fb3ec; --drug-soft:#182c42; --elec:#6fcf8f; --elec-soft:#183326; --stop:#f07178; --stop-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#7fb3ec; --drug-soft:#182c42; --elec:#6fcf8f; --elec-soft:#183326; --stop:#f07178; --stop-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:68ch;margin:0 0 18px}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:14px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--head);color:var(--head-ink)}
+.seg.st button[aria-pressed="true"][data-s="1"]{background:var(--stop);color:var(--surface)}
+.seg.st button[aria-pressed="true"][data-s="0"]{background:var(--elec);color:var(--surface)}
+.lbl{font-size:13px;font-weight:700;color:var(--muted);margin-right:6px}
+.seg button:focus-visible,.sc:focus-visible,.dr:focus-visible,.btn:focus-visible{outline:3px solid var(--drug);outline-offset:2px}
+
+.banner{border:1.5px solid var(--elec);background:var(--elec-soft);border-radius:12px;padding:12px 16px;text-align:center;font-weight:700;margin-bottom:12px;transition:all .2s}
+.banner.on{border-color:var(--stop);background:var(--stop-soft)}
+.banner small{display:block;font-weight:500;color:var(--muted);margin-top:2px}
+.banner.on b{color:var(--stop)}
+
+.heads{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:6px 0 6px}
+.heads span:last-child{grid-column:3}
+.rows{display:grid;gap:8px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr);align-items:stretch}
+.arrow{position:relative}
+.arrow::before{content:"";position:absolute;left:10px;right:14px;top:50%;border-top:2px solid var(--line)}
+.arrow::after{content:"";position:absolute;right:12px;top:50%;width:9px;height:9px;border-top:2px solid var(--line);border-right:2px solid var(--line);transform:translateY(-50%) rotate(45deg)}
+.pair.open .arrow::before,.pair.open .arrow::after{border-color:var(--drug)}
+.sc,.dr{font:inherit;color:inherit;text-align:left;border-radius:10px;padding:10px 14px;cursor:pointer;min-width:0;width:100%}
+.sc{background:var(--surface);border:1.5px solid var(--line)}
+.sc b,.dr b{display:block;font-size:15px;font-weight:800}
+.sc small,.dr small{display:block;font-size:13px;color:var(--muted)}
+.dr{background:var(--drug-soft);border:1.5px solid var(--drug)}
+.pair.open .sc{border-color:var(--head)}
+.unstable .dr{opacity:.35}
+.det{grid-column:1/-1;margin-top:6px;background:var(--surface);border:1.5px solid var(--drug);border-radius:12px;padding:12px 16px}
+.det ul{margin:0;padding-left:20px;display:grid;gap:3px}
+.det .elec{margin-top:8px;padding:8px 12px;border-radius:9px;background:var(--stop-soft);font-size:14px}
+.det .elec b{color:var(--stop)}
+@media (max-width:640px){
+  .heads{display:none}
+  .pair{grid-template-columns:1fr;gap:4px}
+  .arrow{height:18px}
+  .arrow::before{left:50%;right:auto;top:0;bottom:4px;border-top:none;border-left:2px solid var(--line)}
+  .arrow::after{left:50%;right:auto;top:auto;bottom:4px;transform:translateX(-5px) rotate(135deg)}
+}
+
+/* emparejar */
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 40px}
+@media (max-width:640px){.game{gap:8px 12px}}
+.game .colh{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.gcol{display:grid;gap:8px;align-content:start}
+.sc.pick,.dr.pick{box-shadow:0 0 0 3px var(--head)}
+.sc.done,.dr.done{border-color:var(--elec);background:var(--elec-soft);cursor:default}
+.dr.done{opacity:1}
+.num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--elec);color:var(--surface);font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
+.bad{animation:shake .3s;border-color:var(--stop)!important}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.bad{animation:none}}
+.status{margin-top:12px;border-radius:10px;padding:10px 14px;background:var(--node);font-size:14.5px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.status b{font-weight:800}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Elección del fármaco</div>
+  <h1>El escenario clínico orienta la elección del fármaco</h1>
+  <p class="lead">En «Explorar» toca un escenario para ver el fármaco, la dosis y la alternativa. En «Emparejar» une cada escenario con su fármaco. Cambia la estabilidad del paciente para ver qué tiene prioridad.</p>
+
+  <div class="bar">
+    <div><span class="lbl">Modo</span><div class="seg" id="mode" role="group" aria-label="Modo"><button data-m="exp" aria-pressed="true">Explorar</button><button data-m="game" aria-pressed="false">Emparejar</button></div></div>
+    <div><span class="lbl">Paciente con pulso</span><div class="seg st" id="stab" role="group" aria-label="Estabilidad"><button data-s="0" aria-pressed="true">Estable</button><button data-s="1" aria-pressed="false">Inestable</button></div></div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+  <div id="main"></div>
+
+  <footer>Material educativo. Resume las fichas de los fármacos del módulo; las dosis son para el adulto. Confirma siempre la prescripción y el protocolo institucional.</footer>
+</div>
+
+<script>
+const S=[
+  {id:"bra",s:"Bradicardia sintomática",ss:"con compromiso cardiopulmonar",d:"Atropina",ds:"luego infusión de dopamina o adrenalina",
+   li:["Atropina 1 mg IV en bolo cada 3 a 5 minutos; máximo 3 mg.","Si no responde: infusión de dopamina o adrenalina (2 a 10 mcg/min), o marcapasos transcutáneo.","Escasa eficacia en bloqueos infranodales y no indicada en el trasplante cardíaco."],
+   el:"prepara el marcapasos transcutáneo; la atropina puede darse mientras se coloca."},
+  {id:"tre",s:"Taquicardia regular estrecha",ss:"estable, tras maniobras vagales",d:"Adenosina",ds:"si no cede: betabloqueador o calcioantagonista",
+   li:["Adenosina 6 mg IV en bolo rápido con lavado; 12 mg si es necesario.","Vena proximal y registro continuo del ECG.","Si no cede: metoprolol, o un calcioantagonista como diltiazem o verapamilo."],
+   el:"cardioversión sincronizada."},
+  {id:"fa",s:"FA o flúter con respuesta rápida",ss:"estable; control de la frecuencia",d:"Metoprolol",ds:"alternativas: esmolol, diltiazem, amiodarona",
+   li:["Metoprolol 2,5 a 5 mg IV en 2 minutos; hasta 3 dosis.","Contraindicado en la insuficiencia cardíaca descompensada, la hipotensión y la FA preexcitada.","Alternativas: esmolol, diltiazem o amiodarona."],
+   el:"cardioversión sincronizada."},
+  {id:"anc",s:"Taquicardia de complejo ancho",ss:"regular y estable",d:"Amiodarona",ds:"o procainamida o sotalol",
+   li:["Amiodarona 150 mg en 10 minutos; luego 1 mg/min durante 6 horas.","Alternativas: procainamida o sotalol.","No combinar antiarrítmicos; desfibrilador disponible."],
+   el:"cardioversión sincronizada."},
+  {id:"tdp",s:"TV polimórfica con QT largo",ss:"torsades de pointes",d:"Sulfato de magnesio",ds:"corregir potasio; retirar fármacos",
+   li:["Sulfato de magnesio 2 g IV; repetir si persiste o recurre.","Potasio entre 4,5 y 5 mmol/L.","Suspender los fármacos que prolongan el QT."],
+   el:"descarga no sincronizada (desfibrilación), también si pierde el pulso."},
+  {id:"fv",s:"Paro: FV o TV sin pulso",ss:"tras desfibrilación",d:"Adrenalina",ds:"más amiodarona o lidocaína",paro:1,
+   li:["Adrenalina 1 mg IV o IO cada 3 a 5 minutos, tras fracasar las descargas iniciales.","Amiodarona 300 mg en bolo; segunda dosis de 150 mg. O lidocaína.","La desfibrilación y la RCP de alta calidad son la prioridad."]},
+  {id:"asi",s:"Paro: asistolia o AESP",ss:"ritmo no desfibrilable",d:"Adrenalina",ds:"lo antes posible",paro:1,
+   li:["Adrenalina 1 mg IV o IO lo antes posible y cada 3 a 5 minutos.","No se desfibrila.","Buscar y tratar las causas reversibles (H y T)."]}
+];
+let mode="exp", unstable=false, open=null, game=null;
+
+function banner(){
+  const b=document.getElementById("banner");
+  b.classList.toggle("on",unstable);
+  b.innerHTML=unstable
+    ? `<b>Paciente inestable con pulso: la terapia eléctrica tiene prioridad (Unidades 3 a 5)</b><small>Los fármacos quedan en segundo plano: cardioversión sincronizada en las taquicardias y marcapasos en las bradicardias. Los escenarios de paro no cambian.</small>`
+    : `Paciente inestable con pulso: la terapia eléctrica tiene prioridad (Unidades 3 a 5)<small>Ahora el paciente está estable: el fármaco depende del escenario.</small>`;
+}
+function renderExp(){
+  const m=document.getElementById("main"); m.className=unstable?"unstable":"";
+  m.innerHTML=`<div class="heads"><span>Escenario</span><span>Fármaco de elección</span></div><div class="rows">${S.map(s=>`
+    <div class="pair ${s.paro?"paro":""} ${open===s.id?"open":""}">
+      <button class="sc" data-id="${s.id}" aria-expanded="${open===s.id}"><b>${s.s}</b><small>${s.ss}</small></button>
+      <div class="arrow" aria-hidden="true"></div>
+      <button class="dr" data-id="${s.id}" ${s.paro?'style="opacity:1"':""}><b>${s.d}</b><small>${s.ds}</small></button>
+      ${open===s.id?`<div class="det"><ul>${s.li.map(x=>`<li>${x}</li>`).join("")}</ul>${s.el?`<div class="elec"><b>Si el paciente está inestable:</b> ${s.el}</div>`:""}</div>`:""}
+    </div>`).join("")}</div>`;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newGame(){game={order:shuffle(S.map(s=>s.id)),done:[],pick:null,err:0,msg:"Toca un escenario y después su fármaco."}}
+function renderGame(){
+  const m=document.getElementById("main"); m.className="";
+  const n=id=>game.done.indexOf(id)+1;
+  m.innerHTML=`<div class="game">
+    <div class="colh">Escenario</div><div class="colh">Fármaco de elección</div>
+    <div class="gcol">${S.map(s=>`<button class="sc ${game.done.includes(s.id)?"done":""} ${game.pick===s.id?"pick":""}" data-g="sc" data-id="${s.id}"><b>${game.done.includes(s.id)?`<span class="num">${n(s.id)}</span>`:""}${s.s}</b><small>${s.ss}</small></button>`).join("")}</div>
+    <div class="gcol">${game.order.map(id=>{const s=S.find(x=>x.id===id);return `<button class="dr ${game.done.includes(id)?"done":""}" data-g="dr" data-id="${id}"><b>${game.done.includes(id)?`<span class="num">${n(id)}</span>`:""}${s.d}</b><small>${s.ds}</small></button>`}).join("")}</div>
+  </div>
+  <div class="status"><span>${game.msg}</span><span style="margin-left:auto"><b>${game.done.length}</b> de ${S.length} · ${game.err} ${game.err===1?"error":"errores"}</span><button class="btn" id="again">Empezar de nuevo</button></div>`;
+}
+function render(){banner(); mode==="exp"?renderExp():renderGame()}
+
+document.getElementById("main").addEventListener("click",e=>{
+  if(e.target.id==="again"){newGame();renderGame();return}
+  const b=e.target.closest(".sc,.dr"); if(!b) return;
+  if(mode==="exp"){open=open===b.dataset.id?null:b.dataset.id;renderExp();return}
+  const id=b.dataset.id; if(game.done.includes(id)) return;
+  if(b.dataset.g==="sc"){game.pick=id;game.msg="Ahora toca el fármaco de elección para ese escenario.";renderGame();return}
+  if(!game.pick){game.msg="Primero elige un escenario.";renderGame();return}
+  const s=S.find(x=>x.id===game.pick), d=S.find(x=>x.id===id);
+  const ok=id===game.pick;
+  if(ok){game.done.push(id);game.pick=null;game.msg=game.done.length===S.length?`<b>¡Completo!</b> ${game.err?`Con ${game.err} ${game.err===1?"error":"errores"}.`:"Sin errores."}`:`<b>Correcto:</b> «${s.s}» → ${d.d} (${d.ds}).`;renderGame()}
+  else{game.err++;game.msg=`<b>No es ese.</b> ${d.d} con «${d.ds}» corresponde a otro escenario.`;renderGame();const x=document.querySelector(`.dr[data-id="${id}"]`);if(x)x.classList.add("bad")}
+});
+document.getElementById("mode").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;mode=b.dataset.m;
+  document.querySelectorAll("#mode button").forEach(x=>x.setAttribute("aria-pressed",x===b)); if(mode==="game"&&!game)newGame(); render()});
+document.getElementById("stab").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;unstable=b.dataset.s==="1";
+  document.querySelectorAll("#stab button").forEach(x=>x.setAttribute("aria-pressed",x===b)); render()});
+open="tre"; render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resumen de fármacos de la unidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: controles (columna en foco y riesgo transversal); tabla resumen de seis fármacos; práctica «¿Qué fármaco es?» */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --hl:#fde68a; --hl-ink:#5a3d00;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9; --no:#c8323c; --no-soft:#fbe7e8;
+  --atr:#2f8a4c; --ade:#7a4cb0; --ami:#5b4bb5; --adr:#c8323c; --met:#0f7f86; --mg:#b8660a;
+  --info:#2563a8;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --hl:#6b5414; --hl-ink:#fff3c4;
+  --ok:#6fcf8f; --ok-soft:#183326; --no:#f07178; --no-soft:#3a1d22;
+  --atr:#6fcf8f; --ade:#bb9ae6; --ami:#a99bf0; --adr:#f07178; --met:#5fcdd3; --mg:#f2b25c; --info:#7fb3ec; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --hl:#6b5414; --hl-ink:#fff3c4;
+  --ok:#6fcf8f; --ok-soft:#183326; --no:#f07178; --no-soft:#3a1d22;
+  --atr:#6fcf8f; --ade:#bb9ae6; --ami:#a99bf0; --adr:#f07178; --met:#5fcdd3; --mg:#f2b25c; --info:#7fb3ec; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:30px 0 8px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+.ctrl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:grid;gap:10px}
+.ctrl .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctrl .lbl{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);min-width:150px}
+.chip{font:inherit;font-size:13.5px;font-weight:600;padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.chip:focus-visible,.ans:focus-visible,.btn:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.found{font-size:14px;color:var(--muted)}
+.found b{color:var(--ink)}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--head);color:var(--head-ink);text-align:left;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:12px 14px;transition:opacity .2s}
+tbody td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:14.5px;transition:opacity .2s,background .2s}
+td.drug{width:15%;font-weight:800;font-size:16px;border-left:5px solid var(--dc)}
+td.drug span{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.dim{opacity:.25}
+tr.miss td{opacity:.3}
+tr.hit td{background:color-mix(in srgb,var(--hl) 25%,transparent)}
+mark{background:var(--hl);color:var(--hl-ink);border-radius:3px;padding:0 2px}
+@media (max-width:760px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);border-left:5px solid var(--dc);padding:10px 14px}
+  tbody td{border:none;padding:3px 0}
+  td.drug{border-left:none}
+  tbody td[data-l]::before{content:attr(data-l);display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .dim{display:none}
+}
+
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.qtop{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.qkind{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--info);margin-top:6px}
+.qtext{font-size:19px;font-weight:700;margin:2px 0 12px;max-width:70ch}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{font:inherit;font-weight:800;font-size:14.5px;padding:9px 16px;border-radius:9px;border:1.5px solid var(--line);border-left:5px solid var(--dc);background:var(--node);color:var(--ink);cursor:pointer}
+.ans[disabled]{cursor:default;opacity:.55}
+.ans.right{opacity:1;background:var(--ok-soft);border-color:var(--ok)}
+.ans.wrong{opacity:1;background:var(--no-soft);border-color:var(--no)}
+.fb{margin-top:12px;font-size:14.5px}
+.fb b.ok{color:var(--ok)} .fb b.no{color:var(--no)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--head);background:var(--head);color:var(--head-ink);cursor:pointer;margin-top:10px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <h1>Resumen de los fármacos de la unidad</h1>
+  <p class="lead">Pon en foco una columna para estudiarla sola, o elige un riesgo para ver qué fármacos lo comparten. Al final, identifica el fármaco a partir de una pista.</p>
+
+  <section class="ctrl">
+    <div class="row"><span class="lbl">Columna en foco</span><span id="cols"></span></div>
+    <div class="row"><span class="lbl">¿Qué fármacos…?</span><span id="risks"></span></div>
+    <div class="found" id="found" aria-live="polite"></div>
+  </section>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Fármaco</th><th data-c="ind">Indicación principal</th><th data-c="ci">Contraindicaciones y precauciones</th><th data-c="ae">Efectos adversos relevantes</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <h2>¿Qué fármaco es?</h2>
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo. Resume las fichas de los fármacos del módulo. Los superíndices remiten a las referencias del módulo. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const D=[
+  {id:"atr",n:"Atropina",g:"Anticolinérgico",ind:"Bradicardia sintomática",ir:"3,5",ci:"Trasplante cardíaco sin reinervación; isquemia miocárdica",cr:"6",crAt:"reinervación",ae:"Taquicardia, aumento del consumo de oxígeno, efectos anticolinérgicos"},
+  {id:"ade",n:"Adenosina",g:"Nucleósido",ind:"Taquicardia regular de complejo estrecho",ir:"3,7",ci:"Taquicardia irregular de complejo ancho; FA preexcitada; asma",cr:"3",ae:"Asistolia transitoria, rubor, disnea, dolor torácico"},
+  {id:"ami",n:"Amiodarona",g:"Clase III",ind:"FV o TV sin pulso refractaria; taquicardia de complejo ancho estable",ir:"3",ci:"Asociación con otros antiarrítmicos; QT prolongado",cr:"3",ae:"Hipotensión, bradicardia, prolongación del QT, flebitis"},
+  {id:"adr",n:"Adrenalina",g:"Catecolamina",ind:"Paro cardíaco; bradicardia refractaria en infusión",ir:"3,5",ci:"Uso en bolo fuera del paro",ae:"Taquiarritmias, hipertensión, isquemia miocárdica"},
+  {id:"met",n:"Metoprolol",g:"Betabloqueador · clase II",ind:"Control de la frecuencia en FA y flutter",ir:"10",ci:"Insuficiencia cardíaca descompensada; bloqueo AV avanzado; FA preexcitada",cr:"10",ae:"Bradicardia, hipotensión, broncoespasmo"},
+  {id:"mg",n:"Magnesio",g:"Electrolito",ind:"Torsades de pointes",ir:"3",ci:"Insuficiencia renal; no indicado con QT normal",cr:"3",ae:"Hipotensión, rubor, hipermagnesemia"}
+];
+const COLS=[["all","Todas"],["ind","Indicación"],["ci","Contraindicaciones"],["ae","Efectos adversos"]];
+const RISKS=[
+  {k:"hipo",l:"…causan hipotensión",t:/hipotensión/i},
+  {k:"bra",l:"…causan bradicardia o pausas",t:/bradicardia(?! sintomática| refractaria)|asistolia transitoria/i},
+  {k:"taq",l:"…causan taquicardia",t:/taquicardia,|taquiarritmias/i},
+  {k:"isq",l:"…pueden provocar o empeorar la isquemia",t:/isquemia miocárdica|consumo de oxígeno|dolor torácico/i},
+  {k:"air",l:"…afectan la vía aérea",t:/asma|broncoespasmo|disnea/i},
+  {k:"qt",l:"…se relacionan con el QT",t:/QT/},
+  {k:"pre",l:"…están contraindicados en la FA preexcitada",t:/FA preexcitada/},
+  {k:"rub",l:"…causan rubor",t:/rubor/i}
+];
+let col="all", risk=null;
+document.getElementById("cols").innerHTML=COLS.map(([k,l])=>`<button class="chip" data-col="${k}" aria-pressed="${k==="all"}">${l}</button>`).join(" ");
+document.getElementById("risks").innerHTML=RISKS.map(r=>`<button class="chip" data-risk="${r.k}" aria-pressed="false">${r.l}</button>`).join(" ");
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+function mk(text,re){if(!re)return text;const g=new RegExp(re.source,re.flags.includes("g")?re.flags:re.flags+"g");return text.replace(g,m=>`<mark>${m}</mark>`)}
+function render(){
+  const r=RISKS.find(x=>x.k===risk), re=r?r.t:null;
+  let hits=[];
+  document.getElementById("rows").innerHTML=D.map(d=>{
+    const fields=["ind","ci","ae"]; const hit=re&&fields.some(f=>new RegExp(re.source,re.flags).test(d[f]));
+    if(hit)hits.push(d.n);
+    const cls=re?(hit?"hit":"miss"):"";
+    const cell=(f,lab,rr)=>`<td data-l="${lab}" class="${col!=="all"&&col!==f?"dim":""}">${mk(d[f],re)}${ref(rr)}</td>`;
+    return `<tr class="${cls}" style="--dc:var(--${d.id})"><td class="drug">${d.n}<span>${d.g}</span></td>${cell("ind","Indicación principal",d.ir)}${cell("ci","Contraindicaciones y precauciones",d.cr)}${cell("ae","Efectos adversos relevantes")}</tr>`;
+  }).join("");
+  document.querySelectorAll("thead th[data-c]").forEach(th=>th.classList.toggle("dim",col!=="all"&&col!==th.dataset.c));
+  document.querySelectorAll("[data-col]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.col===col));
+  document.querySelectorAll("[data-risk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.risk===risk));
+  document.getElementById("found").innerHTML=r?`<b>${hits.length} ${hits.length===1?"fármaco":"fármacos"}</b> ${r.l.replace("…","")}: ${hits.join(", ")}. Toca de nuevo el filtro para quitarlo.`:"Elige un riesgo para compararlo entre los seis fármacos.";
+}
+document.querySelector(".ctrl").addEventListener("click",e=>{
+  const c=e.target.closest("[data-col]"); if(c){col=c.dataset.col;render();return}
+  const r=e.target.closest("[data-risk]"); if(r){risk=risk===r.dataset.risk?null:r.dataset.risk;render()}
+});
+
+/* --- práctica --- */
+const Q=[
+  {k:"Indicación",q:"Torsades de pointes",a:"mg"},
+  {k:"Efecto adverso",q:"Asistolia transitoria tras el bolo",a:"ade"},
+  {k:"Contraindicación",q:"Uso en bolo fuera del paro",a:"adr"},
+  {k:"Contraindicación",q:"Trasplante cardíaco sin reinervación",a:"atr"},
+  {k:"Efecto adverso",q:"Flebitis en el sitio de infusión",a:"ami"},
+  {k:"Contraindicación",q:"Insuficiencia cardíaca descompensada",a:"met"},
+  {k:"Indicación",q:"FV o TV sin pulso refractaria",a:"ami"},
+  {k:"Contraindicación",q:"Asma",a:"ade"},
+  {k:"Efecto adverso",q:"Efectos anticolinérgicos",a:"atr"},
+  {k:"Precaución",q:"Insuficiencia renal",a:"mg"},
+  {k:"Indicación",q:"Control de la frecuencia en FA y flutter",a:"met"},
+  {k:"Indicación",q:"Bradicardia refractaria, en infusión",a:"adr"}
+];
+let order=[],qi=0,ok=0,done=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQ(){order=shuffle(Q.map((_,i)=>i));qi=0;ok=0;done=false;renderQ()}
+function renderQ(fb=""){
+  const q=Q[order[qi]];
+  document.getElementById("quiz").innerHTML=`<div class="qtop"><span>Pista ${qi+1} de ${Q.length}</span><span>${ok} ${ok===1?"acierto":"aciertos"}</span></div>
+    <div class="qkind">${q.k}</div><p class="qtext">${q.q}</p>
+    <div class="answers">${D.map(d=>`<button class="ans" style="--dc:var(--${d.id})" data-a="${d.id}" ${done?"disabled":""}>${d.n}</button>`).join("")}</div>${fb}`;
+}
+document.getElementById("quiz").addEventListener("click",e=>{
+  const a=e.target.closest(".ans");
+  if(a&&!done){done=true;const q=Q[order[qi]],good=a.dataset.a===q.a;if(good)ok++;const d=D.find(x=>x.id===q.a);
+    renderQ(`<div class="fb"><b class="${good?"ok":"no"}">${good?"Correcto.":"No exactamente."}</b> Es <b>${d.n}</b>. Indicación: ${d.ind.toLowerCase()}.<br>${qi<Q.length-1?`<button class="btn" data-next>Siguiente pista</button>`:`<button class="btn" data-again>Empezar de nuevo</button> <span style="margin-left:8px;color:var(--muted)">Resultado: ${ok} de ${Q.length}</span>`}</div>`);
+    document.querySelectorAll(".ans").forEach(b=>{if(b.dataset.a===q.a)b.classList.add("right");else if(b===a)b.classList.add("wrong")});
+  }
+  if(e.target.closest("[data-next]")){qi++;done=false;renderQ()}
+  if(e.target.closest("[data-again]")) startQ();
+});
+render(); startQ();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

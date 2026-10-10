@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Administración y monitorización</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: espectro de técnicas de administración (de más rápida a más controlada); ficha del fármaco con lista de vigilancia; matriz fármaco × parámetro; tabla completa plegable */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --info:#2563a8; --info-soft:#e4eef9; --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --atr:#2f8a4c; --ade:#7a4cb0; --ami:#5b4bb5; --adr:#c8323c; --met:#0f7f86; --mg:#b8660a;
+  --sp1:#c8323c; --sp2:#d0571f; --sp3:#b8860b; --sp4:#2f8a4c; --sp5:#2563a8;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --info:#7fb3ec; --info-soft:#182c42; --ok:#6fcf8f; --ok-soft:#183326;
+  --atr:#6fcf8f; --ade:#bb9ae6; --ami:#a99bf0; --adr:#f07178; --met:#5fcdd3; --mg:#f2b25c;
+  --sp1:#f07178; --sp2:#f29a74; --sp3:#e8c35a; --sp4:#6fcf8f; --sp5:#7fb3ec; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --info:#7fb3ec; --info-soft:#182c42; --ok:#6fcf8f; --ok-soft:#183326;
+  --atr:#6fcf8f; --ade:#bb9ae6; --ami:#a99bf0; --adr:#f07178; --met:#5fcdd3; --mg:#f2b25c;
+  --sp1:#f07178; --sp2:#f29a74; --sp3:#e8c35a; --sp4:#6fcf8f; --sp5:#7fb3ec; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:30px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:72ch}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+/* espectro */
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.axis{display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.grad{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--sp1),var(--sp2),var(--sp3),var(--sp4),var(--sp5));margin-bottom:12px}
+.bands{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:860px){.bands{grid-template-columns:1fr}.axis,.grad{display:none}}
+.band{border-radius:10px;border-top:4px solid var(--bc);background:var(--node);padding:10px;min-width:0}
+.band h3{font-size:14px;font-weight:800;margin:0}
+.band p{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+.chips{display:flex;flex-direction:column;gap:6px}
+.dchip{font:inherit;text-align:left;font-size:13.5px;font-weight:700;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);border-left:5px solid var(--dc);background:var(--surface);color:var(--ink);cursor:pointer}
+.dchip small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.dchip.on{border-color:var(--dc);box-shadow:0 0 0 2px var(--dc)}
+.dchip:focus-visible,.tab:focus-visible,.chk:focus-within,.btn:focus-visible,.mx th button:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+
+/* ficha */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tab{font:inherit;font-size:14px;font-weight:800;padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);border-left:5px solid var(--dc);background:var(--surface);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--head);color:var(--head-ink);border-color:var(--head);border-left-color:var(--dc)}
+.card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;background:var(--surface);border:1.5px solid var(--dc);border-radius:14px;padding:18px 20px}
+@media (max-width:820px){.card{grid-template-columns:1fr}}
+.card h3{font-size:22px;font-weight:800;margin:0 0 6px;color:var(--dc)}
+.lab{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:10px 0 3px}
+.tech{background:var(--node);border-radius:10px;padding:10px 12px;font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--bc) 18%,transparent);color:var(--ink);border:1px solid var(--bc)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:9px;border:1.5px solid var(--line);margin-bottom:6px;cursor:pointer;font-size:14.5px}
+.chk input{margin-top:3px;width:17px;height:17px;flex:none;accent-color:var(--ok)}
+.chk:has(input:checked){border-color:var(--ok);background:var(--ok-soft)}
+.prog{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13.5px;color:var(--muted)}
+.prog .bar{flex:1;height:8px;border-radius:4px;background:var(--node);overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--ok);transition:width .2s}
+.btn{font:inherit;font-weight:700;font-size:13.5px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.done{margin-top:8px;padding:8px 12px;border-radius:9px;background:var(--ok-soft);font-size:14px}
+.done b{color:var(--ok)}
+
+/* matriz */
+.mxwrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table.mx{border-collapse:collapse;min-width:860px;width:100%}
+.mx th,.mx td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center;font-size:13px}
+.mx thead th{vertical-align:bottom;height:120px}
+.mx thead th button{font:inherit;font-size:12px;font-weight:700;color:var(--ink);background:none;border:none;cursor:pointer;writing-mode:vertical-rl;transform:rotate(180deg);padding:4px 2px;white-space:nowrap}
+.mx thead th.on button{color:var(--info);font-weight:800}
+.mx tbody th{text-align:left;font-size:14px;font-weight:800;padding-left:12px;border-left:5px solid var(--dc);white-space:nowrap}
+.mx tbody th button{font:inherit;font-weight:800;background:none;border:none;color:var(--ink);cursor:pointer;padding:0}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--dc)}
+.mx td.no .dot{display:none}
+.mx .colon{background:var(--info-soft)}
+.mx tr.rowon td,.mx tr.rowon th{background:var(--info-soft)}
+.mxinfo{font-size:14px;color:var(--muted);margin-top:8px}
+.mxinfo b{color:var(--ink)}
+
+details{margin-top:24px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+summary{font-weight:800;cursor:pointer}
+details table{width:100%;border-collapse:collapse;margin-top:10px}
+details th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px;border-bottom:1px solid var(--line)}
+details td{padding:8px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+details td:first-child{font-weight:800;border-left:4px solid var(--dc)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <h1>Técnica de administración y monitorización específica</h1>
+  <p class="lead">Cada fármaco tiene su velocidad de administración y sus parámetros de vigilancia. Toca un fármaco para ver su técnica y practicar la lista de control; abajo, la matriz muestra qué parámetros comparten.</p>
+
+  <h2>De la más rápida a la más controlada</h2>
+  <p class="sub">La velocidad de administración es parte de la técnica: algunos fármacos fallan si se dan lentos y otros causan daño si se dan rápido.</p>
+  <section class="spec">
+    <div class="axis"><span>Más rápida</span><span>Más controlada</span></div>
+    <div class="grad" aria-hidden="true"></div>
+    <div class="bands" id="bands"></div>
+  </section>
+
+  <h2>Ficha de administración</h2>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <section class="card" id="card" aria-live="polite"></section>
+
+  <h2>¿Qué vigila cada fármaco?</h2>
+  <p class="sub">Toca un parámetro para ver qué fármacos lo requieren, o un fármaco para ver todos sus parámetros.</p>
+  <div class="mxwrap"><table class="mx" id="mx"></table></div>
+  <div class="mxinfo" id="mxinfo" aria-live="polite"></div>
+
+  <details>
+    <summary>Ver la tabla original completa</summary>
+    <div style="overflow-x:auto"><table><thead><tr><th>Fármaco</th><th>Técnica de administración</th><th>Monitorización específica</th></tr></thead><tbody id="full"></tbody></table></div>
+  </details>
+
+  <footer>Material educativo. Resume las fichas de los fármacos del módulo. Los superíndices remiten a las referencias del módulo. Confirma siempre la prescripción y el protocolo institucional.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const D=[
+  {id:"atr",n:"Atropina",t:"Bolo IV; repetir cada 3 a 5 minutos hasta la dosis máxima",tr:"5",m:"Frecuencia cardíaca, perfusión, dolor torácico",
+   p:["fc","perf","isq"],chk:["Frecuencia cardíaca tras cada dosis","Perfusión: piel, llenado capilar, estado de conciencia","Dolor torácico (aumento del consumo de oxígeno)","Hora de cada dosis y dosis acumulada"]},
+  {id:"ade",n:"Adenosina",t:"Bolo IV rápido en vena proximal, seguido de solución salina",tr:"7",m:"Registro ECG continuo durante la administración; pausas transitorias",
+   p:["ecg","pausa"],chk:["Registro ECG continuo iniciado antes del bolo","Bolo rápido y lavado inmediato","Pausa transitoria esperada: registrada y explicada al paciente","Ritmo después de la pausa"]},
+  {id:"ami",n:"Amiodarona",t:"Bolo en el paro; en el paciente con pulso, carga en 10 minutos e infusión con bomba",tr:"7,9",m:"Presión arterial, frecuencia, QTc, sitio de infusión",
+   p:["pa","fc","qtc","sitio"],chk:["Presión arterial durante la carga","Frecuencia cardíaca","QTc","Sitio de infusión: signos de flebitis","Bomba de infusión programada y verificada"]},
+  {id:"adr",n:"Adrenalina",t:"Bolo IV o IO en el paro; infusión con bomba en la bradicardia",tr:"5,9",m:"Hora de cada dosis; ritmo; presión arterial y signos de isquemia",
+   p:["hora","ecg","pa","isq"],chk:["Hora de cada dosis registrada","Ritmo en el monitor","Presión arterial","Signos de isquemia: dolor torácico, cambios del ST"]},
+  {id:"met",n:"Metoprolol",t:"Bolo IV lento en 2 minutos; reevaluar antes de cada dosis",tr:"10",m:"Frecuencia, presión arterial, PR, signos de congestión y broncoespasmo",
+   p:["fc","pa","pr","cong","resp"],chk:["Frecuencia cardíaca antes de cada dosis","Presión arterial antes de cada dosis","Intervalo PR","Signos de congestión: estertores, disnea","Broncoespasmo: sibilancias"]},
+  {id:"mg",n:"Magnesio",t:"Administración IV; evitar la infusión excesivamente rápida",tr:"11",m:"QTc, presión arterial, reflejos, frecuencia respiratoria, diuresis",
+   p:["qtc","pa","refl","resp","diu"],chk:["QTc","Presión arterial (hipotensión si se infunde rápido)","Reflejos osteotendinosos","Frecuencia respiratoria","Diuresis"]}
+];
+const P=[["fc","Frecuencia cardíaca"],["pa","Presión arterial"],["ecg","Ritmo / ECG continuo"],["pausa","Pausas transitorias"],["qtc","QTc"],["pr","Intervalo PR"],["isq","Isquemia / dolor torácico"],["perf","Perfusión"],["cong","Congestión"],["resp","Respiración / broncoespasmo"],["refl","Reflejos"],["diu","Diuresis"],["sitio","Sitio de infusión"],["hora","Hora de cada dosis"]];
+const BANDS=[
+  {c:"--sp1",h:"Bolo rápido",p:"En segundos, con lavado",d:[["ade","Vena proximal y solución salina"]]},
+  {c:"--sp2",h:"Bolo",p:"Repetido a intervalos",d:[["atr","Cada 3 a 5 minutos"],["adr","Paro: IV o IO"],["ami","Paro: bolo"]]},
+  {c:"--sp3",h:"Bolo lento",p:"En 2 minutos",d:[["met","Reevaluar antes de cada dosis"]]},
+  {c:"--sp4",h:"Carga corta",p:"En 10 minutos",d:[["ami","Paciente con pulso"]]},
+  {c:"--sp5",h:"Infusión controlada",p:"Con bomba o sin prisa",d:[["ami","Infusión con bomba"],["adr","Bradicardia: infusión con bomba"],["mg","Evitar la infusión rápida"]]}
+];
+let cur="ade", checks={}, colSel=null, rowSel=null;
+const dn=id=>D.find(d=>d.id===id).n;
+
+document.getElementById("bands").innerHTML=BANDS.map(b=>`<div class="band" style="--bc:var(${b.c})"><h3>${b.h}</h3><p>${b.p}</p><div class="chips">${b.d.map(([id,s])=>`<button class="dchip" data-id="${id}" style="--dc:var(--${id})">${dn(id)}<small>${s}</small></button>`).join("")}</div></div>`).join("");
+document.getElementById("tabs").innerHTML=D.map(d=>`<button class="tab" role="tab" data-id="${d.id}" style="--dc:var(--${d.id})">${d.n}</button>`).join("");
+document.getElementById("full").innerHTML=D.map(d=>`<tr style="--dc:var(--${d.id})"><td>${d.n}</td><td>${d.t}${ref(d.tr)}</td><td>${d.m}</td></tr>`).join("");
+
+function speedTags(id){return BANDS.filter(b=>b.d.some(x=>x[0]===id)).map(b=>`<span class="tag" style="--bc:var(${b.c})">${b.h}</span>`).join("")}
+function renderCard(){
+  const d=D.find(x=>x.id===cur), c=checks[cur]||(checks[cur]=new Set());
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.id===cur));
+  document.querySelectorAll(".dchip").forEach(t=>t.classList.toggle("on",t.dataset.id===cur));
+  const card=document.getElementById("card"); card.style.setProperty("--dc",`var(--${cur})`);
+  const n=c.size, tot=d.chk.length;
+  card.innerHTML=`<div><h3>${d.n}</h3>
+      <div class="lab">Técnica de administración</div><div class="tech">${d.t}${ref(d.tr)}</div>
+      <div class="tags">${speedTags(cur)}</div>
+      <div class="lab">Monitorización específica</div><div class="tech">${d.m}</div></div>
+    <div><div class="lab" style="margin-top:0">Lista de control durante la administración</div>
+      ${d.chk.map((t,i)=>`<label class="chk" for="k-${cur}-${i}"><input type="checkbox" id="k-${cur}-${i}" data-i="${i}" ${c.has(i)?"checked":""}><span>${t}</span></label>`).join("")}
+      <div class="prog"><span>${n} de ${tot}</span><div class="bar"><i style="width:${n/tot*100}%"></i></div><button class="btn" id="clr">Reiniciar</button></div>
+      ${n===tot?`<div class="done"><b>Control completo.</b> Registra los valores y repite la vigilancia según la evolución.</div>`:""}</div>`;
+}
+document.getElementById("card").addEventListener("change",e=>{const i=Number(e.target.dataset.i);const c=checks[cur];e.target.checked?c.add(i):c.delete(i);renderCard()});
+document.getElementById("card").addEventListener("click",e=>{if(e.target.id==="clr"){checks[cur]=new Set();renderCard()}});
+function pick(id){cur=id;renderCard()}
+document.getElementById("tabs").addEventListener("click",e=>{const t=e.target.closest(".tab");if(t)pick(t.dataset.id)});
+document.getElementById("bands").addEventListener("click",e=>{const t=e.target.closest(".dchip");if(t){pick(t.dataset.id);document.getElementById("card").scrollIntoView({behavior:"smooth",block:"nearest"})}});
+
+/* matriz */
+function renderMx(){
+  const mx=document.getElementById("mx");
+  mx.innerHTML=`<thead><tr><th></th>${P.map(([k,l])=>`<th class="${colSel===k?"on":""}"><button data-col="${k}" aria-pressed="${colSel===k}">${l}</button></th>`).join("")}</tr></thead>
+  <tbody>${D.map(d=>`<tr class="${rowSel===d.id?"rowon":""}" style="--dc:var(--${d.id})"><th><button data-row="${d.id}" aria-pressed="${rowSel===d.id}">${d.n}</button></th>${P.map(([k])=>`<td class="${d.p.includes(k)?"":"no"} ${colSel===k?"colon":""}" title="${d.p.includes(k)?d.n+": vigilar":""}"><span class="dot"></span></td>`).join("")}</tr>`).join("")}</tbody>`;
+  const info=document.getElementById("mxinfo");
+  if(colSel){const l=P.find(p=>p[0]===colSel)[1];const ds=D.filter(d=>d.p.includes(colSel)).map(d=>d.n);info.innerHTML=`<b>${l}:</b> ${ds.join(", ")} (${ds.length} de ${D.length}).`}
+  else if(rowSel){const d=D.find(x=>x.id===rowSel);info.innerHTML=`<b>${d.n} vigila:</b> ${d.p.map(k=>P.find(p=>p[0]===k)[1].toLowerCase()).join(", ")}.`}
+  else{const pa=D.filter(d=>d.p.includes("pa")).length;info.innerHTML=`La presión arterial es el parámetro más compartido: la vigilan ${pa} de los ${D.length} fármacos.`}
+}
+document.getElementById("mx").addEventListener("click",e=>{
+  const c=e.target.closest("[data-col]"); if(c){colSel=colSel===c.dataset.col?null:c.dataset.col;rowSel=null;renderMx();return}
+  const r=e.target.closest("[data-row]"); if(r){rowSel=rowSel===r.dataset.row?null:r.dataset.row;colSel=null;renderMx()}
+});
+renderCard(); renderMx();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

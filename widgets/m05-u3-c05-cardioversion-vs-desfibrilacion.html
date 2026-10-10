@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cardioversión o desfibrilación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: tabla comparativa con foco por columna y fila de riesgo destacada; juego de clasificación de características en dos cajas */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --cv:#2563a8; --cv-soft:#e4eef9;
+  --df:#2f8a4c; --df-soft:#e5f4e9;
+  --risk:#c8323c; --risk-soft:#fbe7e8;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --cv:#7fb3ec; --cv-soft:#182c42; --df:#6fcf8f; --df-soft:#183326; --risk:#f07178; --risk-soft:#3a1d22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --cv:#7fb3ec; --cv-soft:#182c42; --df:#6fcf8f; --df-soft:#183326; --risk:#f07178; --risk-soft:#3a1d22; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 16px}
+h2{font-size:20px;font-weight:800;margin:30px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:72ch}
+.ref{font-size:11px;font-weight:700;color:var(--cv);vertical-align:super;margin-left:2px}
+
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);margin-bottom:12px}
+.seg button{font:inherit;font-weight:800;font-size:14px;padding:9px 16px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"][data-c="both"]{background:var(--head);color:var(--head-ink)}
+.seg button[aria-pressed="true"][data-c="cv"]{background:var(--cv);color:var(--surface)}
+.seg button[aria-pressed="true"][data-c="df"]{background:var(--df);color:var(--surface)}
+.seg button:focus-visible,.item:focus-visible,.bin:focus-visible,.btn:focus-visible{outline:3px solid var(--cv);outline-offset:2px}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:12px 14px;transition:opacity .2s}
+thead th:first-child{background:var(--head);color:var(--head-ink);width:20%}
+thead th.cv{background:var(--cv);color:var(--surface)} thead th.df{background:var(--df);color:var(--surface)}
+tbody td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:15px;transition:opacity .2s}
+tbody td:first-child{font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+tbody tr:hover td{background:var(--node)}
+tr.risk td{background:var(--risk-soft)!important}
+tr.risk td:first-child{color:var(--risk)}
+tr.risk td:not(:first-child){font-weight:700}
+.f-cv .df,.f-df .cv{opacity:.22}
+@media (max-width:680px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);padding:8px 12px}
+  tbody td{border:none;padding:4px 0 4px 10px;border-left:4px solid transparent}
+  tbody td:first-child{padding-left:0}
+  td.cv{border-left-color:var(--cv)} td.df{border-left-color:var(--df)}
+  td.cv::before,td.df::before{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+  td.cv::before{content:"Cardioversión sincronizada";color:var(--cv)} td.df::before{content:"Desfibrilación";color:var(--df)}
+  .f-cv td.df,.f-df td.cv{display:none}
+}
+
+.game{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.gtop{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px;font-size:14px;color:var(--muted)}
+.gtop b{color:var(--ink)}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:10px;border-radius:10px;background:var(--node);margin-bottom:12px}
+.item{font:inherit;font-size:14px;font-weight:600;text-align:left;padding:8px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;max-width:100%}
+.item small{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.item.pick{border-color:var(--head);box-shadow:0 0 0 3px var(--head)}
+.item.bad{border-color:var(--risk);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.item.bad{animation:none}}
+.bins{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.bins{grid-template-columns:1fr}}
+.bin{font:inherit;color:inherit;text-align:left;border:2px dashed var(--c);background:var(--cs);border-radius:12px;padding:10px 12px;min-height:120px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.bin h3{margin:0;font-size:15px;font-weight:800;color:var(--c)}
+.bin .placed{font-size:13.5px;background:var(--surface);border-radius:7px;padding:5px 9px;border-left:4px solid var(--c)}
+.bin .placed small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.bin.cv{--c:var(--cv);--cs:var(--cv-soft)} .bin.df{--c:var(--df);--cs:var(--df-soft)}
+.msg{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:14.5px;background:var(--node)}
+.msg b{font-weight:800}
+.msg.ok{background:var(--df-soft)} .msg.no{background:var(--risk-soft)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Terapia eléctrica</div>
+  <h1>Cardioversión sincronizada frente a desfibrilación</h1>
+  <p class="lead">Compara las dos terapias aspecto por aspecto o pon una sola en foco. La última fila, resaltada en rojo, es la razón de no confundirlas. Después clasifica cada característica.</p>
+
+  <div class="seg" role="group" aria-label="Foco"><button data-c="both" aria-pressed="true">Comparar ambas</button><button data-c="cv" aria-pressed="false">Cardioversión sincronizada</button><button data-c="df" aria-pressed="false">Desfibrilación</button></div>
+  <div class="tbl" id="tbl"><table><thead><tr><th>Aspecto</th><th class="cv">Cardioversión sincronizada</th><th class="df">Desfibrilación</th></tr></thead><tbody id="rows"></tbody></table></div>
+
+  <h2>¿Cardioversión o desfibrilación?</h2>
+  <p class="sub">Toca una característica y después la caja a la que pertenece. Los riesgos se clasifican según la terapia que se quería aplicar.</p>
+  <section class="game" id="game"></section>
+
+  <footer>Material educativo. Los superíndices remiten a las referencias del módulo; las unidades citadas son las del curso. No reemplaza los protocolos institucionales.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const R=[
+  {a:"Estado del paciente",cv:"Con pulso; generalmente consciente",df:"Sin pulso; inconsciente"},
+  {a:"Ritmos",cv:"TV monomórfica, TSV, FA y flutter auricular con pulso",cvr:"1-3",df:"FV, TV sin pulso; TV polimórfica sostenida",dfr:"3"},
+  {a:"Momento de la descarga",cv:"Coincide con la onda R",df:"Inmediato, al oprimir el botón"},
+  {a:"Modo del equipo",cv:"Sincronizado (debe activarse)",df:"No sincronizado (predeterminado)"},
+  {a:"Carácter",cv:"Urgente o programado",df:"Siempre de emergencia"},
+  {a:"Sedación",cv:"Siempre que sea posible",cvr:"4",df:"No aplica"},
+  {a:"Relación con la RCP",cv:"No forma parte de la RCP",df:"Integrada en la RCP (Unidades 4 y 6)"},
+  {a:"Riesgo si se confunde",cv:"Descarga no sincronizada: posible inducción de FV",df:"Modo sincronizado: retraso o ausencia de descarga",risk:1}
+];
+document.getElementById("rows").innerHTML=R.map(r=>`<tr class="${r.risk?"risk":""}"><td>${r.a}</td><td class="cv">${r.cv}${ref(r.cvr)}</td><td class="df">${r.df}${ref(r.dfr)}</td></tr>`).join("");
+document.querySelector(".seg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  const t=document.getElementById("tbl");t.classList.remove("f-cv","f-df");if(b.dataset.c!=="both")t.classList.add("f-"+b.dataset.c)});
+
+/* juego: el riesgo se clasifica según la terapia que se quería aplicar */
+const ITEMS=R.flatMap((r,i)=>[{id:"c"+i,a:r.a,t:r.cv,k:"cv"},{id:"d"+i,a:r.a,t:r.df,k:"df"}]);
+let g;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newG(){g={pool:shuffle(ITEMS.map(x=>x.id)),placed:{cv:[],df:[]},pick:null,err:0,msg:"Elige una característica del recuadro gris.",cls:""}}
+function renderG(){
+  const it=id=>ITEMS.find(x=>x.id===id);
+  const done=g.placed.cv.length+g.placed.df.length;
+  document.getElementById("game").innerHTML=`<div class="gtop"><span><b>${done}</b> de ${ITEMS.length} clasificadas · ${g.err} ${g.err===1?"error":"errores"}</span><button class="btn" id="again">Empezar de nuevo</button></div>
+    ${g.pool.length?`<div class="pool">${g.pool.map(id=>{const x=it(id);return `<button class="item ${g.pick===id?"pick":""}" data-id="${id}"><small>${x.a}</small>${x.t}</button>`}).join("")}</div>`:""}
+    <div class="bins">
+      <button class="bin cv" data-k="cv"><h3>Cardioversión sincronizada</h3>${g.placed.cv.map(id=>`<span class="placed"><small>${it(id).a}</small>${it(id).t}</span>`).join("")}</button>
+      <button class="bin df" data-k="df"><h3>Desfibrilación</h3>${g.placed.df.map(id=>`<span class="placed"><small>${it(id).a}</small>${it(id).t}</span>`).join("")}</button>
+    </div>
+    <div class="msg ${g.cls}">${g.msg}</div>`;
+}
+document.getElementById("game").addEventListener("click",e=>{
+  if(e.target.id==="again"){newG();renderG();return}
+  const i=e.target.closest(".item"); if(i){g.pick=i.dataset.id;g.msg="Ahora toca la caja correcta.";g.cls="";renderG();return}
+  const b=e.target.closest(".bin"); if(!b) return;
+  if(!g.pick){g.msg="Primero elige una característica.";g.cls="";renderG();return}
+  const x=ITEMS.find(y=>y.id===g.pick);
+  if(x.k===b.dataset.k){g.placed[x.k].push(x.id);g.pool=g.pool.filter(id=>id!==x.id);g.pick=null;
+    const left=g.pool.length;
+    g.msg=left?`<b>Correcto.</b> ${x.a}: «${x.t}».`:`<b>¡Completo!</b> ${g.err?`Con ${g.err} ${g.err===1?"error":"errores"}.`:"Sin errores."}`;g.cls="ok";renderG();}
+  else{g.err++;const id=g.pick;g.msg=`<b>No es esa.</b> Piensa en el estado del paciente: ¿tiene pulso?`;g.cls="no";renderG();const el=document.querySelector(`.item[data-id="${id}"]`);if(el)el.classList.add("bad","pick")}
+});
+newG(); renderG();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

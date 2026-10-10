@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marcadores de sincronización</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: los tres trazados de referencia; desfibrilador simulado con derivación y ganancia ajustables; práctica rápida de lectura de trazados */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --ok:#2563a8; --ok-soft:#e4eef9; --bad:#2f8a4c; --bad-soft:#e5f4e9;
+  --good:#2f8a4c; --good-soft:#e5f4e9; --err:#c8323c; --err-soft:#fbe7e8; --warn:#b8660a; --warn-soft:#fdf1df;
+  --trace:#1b2733;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --ok:#7fb3ec; --ok-soft:#182c42; --bad:#6fcf8f; --bad-soft:#183326;
+  --good:#6fcf8f; --good-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; --trace:#e6edf3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --ok:#7fb3ec; --ok-soft:#182c42; --bad:#6fcf8f; --bad-soft:#183326;
+  --good:#6fcf8f; --good-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; --trace:#e6edf3; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:72ch;margin:0 0 18px}
+h2{font-size:22px;font-weight:800;margin:32px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:74ch}
+.btn{font:inherit;font-weight:800;font-size:14.5px;padding:9px 16px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.shock{background:#d0a000;border-color:#d0a000;color:#1b2733}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.btn:focus-visible,.seg button:focus-visible,.ref-row:focus-visible,.ans:focus-visible{outline:3px solid var(--ok);outline-offset:2px}
+
+/* referencia */
+.refs{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 14px}
+.ref-row{font:inherit;color:inherit;width:100%;text-align:left;background:none;border:none;display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.ref-row:last-child{border-bottom:none}
+@media (max-width:680px){.ref-row{grid-template-columns:1fr}}
+.ref-row svg{display:block;width:100%;height:auto}
+.ref-row b{display:block;font-size:16px}
+.ref-row small{display:block;color:var(--muted);font-size:13.5px}
+.ref-row .more{font-size:13.5px;margin-top:6px;color:var(--ink)}
+.ref-row[aria-expanded="false"] .more{display:none}
+.c-ok b{color:var(--ok)} .c-bad b{color:var(--bad)}
+
+/* simulador */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.screen{position:relative;border-radius:10px;overflow:hidden;background:#0f1a14}
+.screen canvas{display:block;width:100%;height:auto}
+.hud{position:absolute;left:10px;right:10px;bottom:8px;display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:#cfe;pointer-events:none}
+.hud span{background:rgba(255,255,255,.1);padding:2px 8px;border-radius:5px}
+.hud .s{background:#2563a8;color:#fff}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s}
+.flash.on{opacity:.55;transition:none}
+.ctrls{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin-top:12px}
+.ctrl{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{font:inherit;font-weight:800;font-size:14px;padding:7px 12px;border:none;background:var(--surface);color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--head);color:var(--head-ink)}
+.state{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:14.5px;border:1.5px solid}
+.state b{display:block;font-size:16px}
+.state.ok{border-color:var(--good);background:var(--good-soft)} .state.ok b{color:var(--good)}
+.state.no{border-color:var(--err);background:var(--err-soft)} .state.no b{color:var(--err)}
+.state.warn{border-color:var(--warn);background:var(--warn-soft)} .state.warn b{color:var(--warn)}
+.res{margin-top:10px;font-size:14.5px;min-height:24px}
+.res b{font-weight:800}
+.mission{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--muted);margin-top:10px}
+.mission span b{color:var(--ink)}
+
+/* práctica */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.qtop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13.5px;color:var(--muted)}
+.qstrip{margin:10px 0;border-radius:10px;border:1px solid var(--line);background:var(--node);padding:6px}
+.qstrip svg{display:block;width:100%;height:auto}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.ans[disabled]{cursor:default;opacity:.55}
+.ans.right{opacity:1;border-color:var(--good);background:var(--good-soft)} .ans.wrong{opacity:1;border-color:var(--err);background:var(--err-soft)}
+.fb{margin-top:10px;font-size:14.5px}
+.fb b.o{color:var(--good)} .fb b.n{color:var(--err)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Antes de descargar, cada marcador debe caer sobre la onda R</h1>
+  <p class="lead">Toca cada trazado para ver por qué es correcto o no. Después ajusta un desfibrilador simulado hasta que los marcadores caigan sobre cada R, y comprueba tu lectura con trazados nuevos.</p>
+
+  <section class="refs" id="refs"></section>
+
+  <h2>Ajusta el desfibrilador</h2>
+  <p class="sub">El equipo empieza con una configuración que no sirve. Cambia la derivación y la ganancia hasta que haya un marcador sobre cada R; solo entonces descarga.</p>
+  <section class="sim">
+    <div class="screen"><canvas id="cv" width="1400" height="300" aria-label="Trazado del monitor del desfibrilador"></canvas>
+      <div class="hud"><span id="hudL">II</span><span class="s">SINC</span></div><div class="flash" id="flash"></div></div>
+    <div class="ctrls">
+      <div class="ctrl">Derivación <div class="seg" id="lead" role="group" aria-label="Derivación"></div></div>
+      <div class="ctrl">Ganancia <div class="seg" id="gain" role="group" aria-label="Ganancia"></div></div>
+      <button class="btn shock" id="shock">Descargar</button>
+    </div>
+    <div class="state" id="state" aria-live="polite"></div>
+    <div class="res" id="res" aria-live="polite"></div>
+    <div class="mission" id="mission"></div>
+  </section>
+
+  <h2>¿Puede descargarse?</h2>
+  <p class="sub">Mira dónde caen los marcadores y decide.</p>
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo. Trazados esquemáticos; la detección de la onda R varía según el equipo. Sigue las indicaciones del fabricante y el protocolo institucional.</footer>
+</div>
+
+<script>
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+/* ---------- trazados de referencia (SVG) ---------- */
+function strip(R,T,mark,W=600,H=110,col="var(--trace)"){
+  const Rs=[];for(let r=70;r<W;r+=145)Rs.push(r);
+  const f=x=>Rs.reduce((s,r)=>s+G(x,r-3,2.2,4)+G(x,r,3,-R)+G(x,r+5,2.6,R*.25)+G(x,r+48,12,-T),0);
+  let d="";for(let x=0;x<=W;x++)d+=(x?"L":"M")+x+","+(H*.7+f(x)).toFixed(1);
+  let m="";if(mark==="R")m=Rs.map(r=>`<path d="M${r-8},6 h16 l-8,11z" fill="#2563a8"/>`).join("");
+  if(mark==="T")m=Rs.map(r=>`<path d="M${r+48-8},6 h16 l-8,11z" fill="#2f8a4c"/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${m}<path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+}
+const REF=[
+  {c:"ok",t:"Correcto",s:"Un marcador sobre cada R: puede descargarse",R:46,T:9,m:"R",x:"El equipo reconoce cada complejo QRS. La descarga coincidirá con la R, lejos del período vulnerable de la onda T."},
+  {c:"bad",t:"Incorrecto",s:"El marcador cae sobre la T: cambiar derivación o ganancia",R:20,T:34,m:"T",x:"La onda T es más alta que el QRS y el equipo la toma por una R. Una descarga sobre la T puede inducir fibrilación ventricular."},
+  {c:"bad",t:"Incorrecto",s:"QRS de baja amplitud, sin marcadores: el equipo no descargará",R:8,T:4,m:"",x:"El equipo no detecta los complejos. Con el modo sincronizado activo, al pulsar no habrá descarga. Aumenta la ganancia o busca otra derivación."}
+];
+let open=-1;
+function renderRefs(){document.getElementById("refs").innerHTML=REF.map((r,i)=>`<button class="ref-row c-${r.c}" data-i="${i}" aria-expanded="${open===i}">${strip(r.R,r.T,r.m)}<span><b>${r.t}</b><small>${r.s}</small><span class="more">${r.x}</span></span></button>`).join("")}
+document.getElementById("refs").addEventListener("click",e=>{const b=e.target.closest(".ref-row");if(b){const i=+b.dataset.i;open=open===i?-1:i;renderRefs()}});
+
+/* ---------- simulador ---------- */
+const LEADS={I:{R:11,T:6},II:{R:38,T:12},III:{R:15,T:24}};
+const GAINS=[0.5,1,2,4];
+let lead="III", gain=2, shots=[], pending=null, wins=new Set();
+const TH=30, CLIP=110;
+function evalCfg(){
+  const L=LEADS[lead], r=L.R*gain, t=L.T*gain;
+  if(r>CLIP) return {k:"clip",cls:"warn",h:"QRS recortado",x:"La ganancia es excesiva: el complejo se sale de la pantalla y los marcadores pueden ser irregulares. Reduce la ganancia."};
+  if(Math.max(r,t)<TH) return {k:"none",cls:"no",h:"Incorrecto: sin marcadores",x:"QRS de baja amplitud: el equipo no detecta la R y no descargará. Aumenta la ganancia o cambia de derivación."};
+  if(t>=r) return {k:"T",cls:"no",h:"Incorrecto: el marcador cae sobre la T",x:"La onda T es más alta que el QRS en esta derivación. Cambia de derivación o de ganancia."};
+  return {k:"R",cls:"ok",h:"Correcto: un marcador sobre cada R",x:"Puede descargarse con seguridad."};
+}
+document.getElementById("lead").innerHTML=Object.keys(LEADS).map(l=>`<button data-l="${l}">${l}</button>`).join("");
+document.getElementById("gain").innerHTML=GAINS.map(g=>`<button data-g="${g}">×${String(g).replace(".",",")}</button>`).join("");
+function renderCtl(){
+  document.querySelectorAll("#lead button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lead));
+  document.querySelectorAll("#gain button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.g===gain));
+  document.getElementById("hudL").textContent=`${lead} · ×${String(gain).replace(".",",")}`;
+  const ev=evalCfg(), st=document.getElementById("state");
+  st.className="state "+ev.cls; st.innerHTML=`<b>${ev.h}</b>${ev.x}`;
+  if(ev.k==="R") wins.add(lead+gain);
+  const sols=Object.keys(LEADS).flatMap(l=>GAINS.map(g=>({l,g}))).filter(({l,g})=>{const L=LEADS[l],r=L.R*g,t=L.T*g;return r<=CLIP&&Math.max(r,t)>=TH&&r>t});
+  document.getElementById("mission").innerHTML=`<span>Configuraciones correctas encontradas: <b>${[...wins].length} de ${sols.length}</b></span><span>Pista: prueba todas las derivaciones con distintas ganancias.</span>`;
+}
+document.getElementById("lead").addEventListener("click",e=>{const b=e.target.closest("button");if(b){lead=b.dataset.l;pending=null;shots=[];document.getElementById("res").textContent="";renderCtl()}});
+document.getElementById("gain").addEventListener("click",e=>{const b=e.target.closest("button");if(b){gain=+b.dataset.g;pending=null;shots=[];document.getElementById("res").textContent="";renderCtl()}});
+
+let t=4, last=null; const RR=0.62, WIN=4;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function rTimes(a,b){const o=[];for(let k=Math.ceil(a/RR);k*RR<=b;k++)o.push(k*RR);return o}
+function sig(tt){const L=LEADS[lead];let y=0;for(const r of rTimes(tt-.5,tt+.1)){y+=G(tt,r-.012,.008,4)+G(tt,r,.011,-L.R)+G(tt,r+.018,.009,L.R*.25)+G(tt,r+.2,.045,-L.T)}return y*gain}
+function draw(){
+  const cv=document.getElementById("cv"),c=cv.getContext("2d"),W=cv.width,H=cv.height,base=H*.68,sx=W/WIN,t0=t-WIN,X=tt=>(tt-t0)*sx;
+  c.fillStyle="#0f1a14";c.fillRect(0,0,W,H);c.strokeStyle="#1f3a2a";c.lineWidth=1;
+  for(let x=0;x<W;x+=40){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}for(let y=0;y<H;y+=40){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  c.save();c.beginPath();c.rect(0,40,W,H-40);c.clip();
+  c.strokeStyle="#7ef0a4";c.lineWidth=3.4;c.lineJoin="round";c.beginPath();
+  for(let px=0;px<=W;px+=2){const y=base+sig(t0+px/sx)*1.6;px?c.lineTo(px,y):c.moveTo(px,y)}c.stroke();c.restore();
+  const ev=evalCfg();
+  for(const r of rTimes(t0,t-.05)){
+    let mx=null,col="#7fb3ec";
+    if(ev.k==="R")mx=r; else if(ev.k==="T"){mx=r+.2;col="#5fd08a"} else if(ev.k==="clip"){mx=(Math.round(r/RR)%3===0)?r+.2:r;col=mx===r?"#7fb3ec":"#ffb05f"}
+    if(mx!=null){c.fillStyle=col;c.beginPath();c.moveTo(X(mx)-13,10);c.lineTo(X(mx)+13,10);c.lineTo(X(mx),30);c.closePath();c.fill()}
+  }
+  for(const s of shots){if(s.t<t0)continue;c.strokeStyle="#ffd23f";c.lineWidth=5;c.beginPath();c.moveTo(X(s.t),34);c.lineTo(X(s.t),H-30);c.stroke()}
+}
+function frame(ts){if(last==null)last=ts;const dt=Math.min((ts-last)/1000,.05);last=ts;if(!reduce)t+=dt;
+  if(pending&&t>=pending.at){shots.push({t:pending.at});const kind=pending.kind;pending=null;flashOn();
+    const res=document.getElementById("res");
+    res.innerHTML=kind==="R"?`<b style="color:var(--good)">Descarga sincronizada sobre la R.</b> Configuración correcta.`:`<b style="color:var(--err)">La descarga cayó sobre la T.</b> En un paciente real podría inducir fibrilación ventricular. Corrige la derivación o la ganancia.`;}
+  draw();requestAnimationFrame(frame)}
+function flashOn(){const f=document.getElementById("flash");f.classList.add("on");requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove("on")))}
+document.getElementById("shock").addEventListener("click",()=>{
+  const ev=evalCfg(),res=document.getElementById("res");
+  if(ev.k==="none"){res.innerHTML=`<b style="color:var(--err)">No hay descarga.</b> Sin marcadores, el equipo sincronizado no descarga. Ajusta la derivación o la ganancia.`;return}
+  if(ev.k==="clip"){res.innerHTML=`<b style="color:var(--warn)">Revisa antes de descargar.</b> Con el QRS recortado los marcadores no son fiables. Reduce la ganancia.`;return}
+  const next=rTimes(t,t+2).find(r=>r>t+.02);
+  pending={at:ev.k==="R"?next:next+.2,kind:ev.k};
+  if(reduce){t=pending.at;}
+  res.innerHTML="El equipo espera al siguiente marcador…";
+});
+
+/* ---------- práctica ---------- */
+const CASES=[
+  {R:46,T:9,m:"R",a:"si",x:"Hay un marcador sobre cada R."},
+  {R:20,T:34,m:"T",a:"no",x:"Los marcadores caen sobre la onda T."},
+  {R:8,T:4,m:"",a:"no",x:"No hay marcadores: el equipo no descargará."},
+  {R:36,T:10,m:"R",a:"si",x:"Cada R tiene su marcador."},
+  {R:24,T:28,m:"T",a:"no",x:"La T es más alta que el QRS y recibe el marcador."},
+  {R:10,T:5,m:"",a:"no",x:"QRS de baja amplitud sin marcadores."}
+];
+let order=[],qi=0,ok=0,done=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQ(){order=shuffle(CASES.map((_,i)=>i));qi=0;ok=0;done=false;renderQ()}
+function renderQ(fb=""){
+  const c=CASES[order[qi]];
+  document.getElementById("quiz").innerHTML=`<div class="qtop"><span>Trazado ${qi+1} de ${CASES.length}</span><span>${ok} ${ok===1?"acierto":"aciertos"}</span></div>
+    <div class="qstrip">${strip(c.R,c.T,c.m,700,110)}</div>
+    <div class="answers"><button class="ans" data-a="si" ${done?"disabled":""}>Sí, puede descargarse</button><button class="ans" data-a="no" ${done?"disabled":""}>No: cambiar derivación o ganancia</button></div>${fb}`;
+}
+document.getElementById("quiz").addEventListener("click",e=>{
+  const a=e.target.closest(".ans");
+  if(a&&!done){done=true;const c=CASES[order[qi]],good=a.dataset.a===c.a;if(good)ok++;
+    renderQ(`<div class="fb"><b class="${good?"o":"n"}">${good?"Correcto.":"No exactamente."}</b> ${c.x}<br>${qi<CASES.length-1?`<button class="btn pri" data-next style="margin-top:8px">Siguiente trazado</button>`:`<button class="btn pri" data-again style="margin-top:8px">Empezar de nuevo</button> <span style="color:var(--muted);margin-left:8px">Resultado: ${ok} de ${CASES.length}</span>`}</div>`);
+    document.querySelectorAll(".ans").forEach(b=>{if(b.dataset.a===c.a)b.classList.add("right");else if(b===a)b.classList.add("wrong")})}
+  if(e.target.closest("[data-next]")){qi++;done=false;renderQ()}
+  if(e.target.closest("[data-again]"))startQ();
+});
+
+renderRefs(); renderCtl(); startQ(); requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

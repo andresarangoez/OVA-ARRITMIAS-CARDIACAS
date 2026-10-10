@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Precauciones en la cardioversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: situaciones agrupadas en tres tipos (no cardiovertir, otra descarga, precaución); asistente «¿Puedo cardiovertir?»; línea de tiempo de la anticoagulación */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --no:#c8323c; --no-soft:#fbe7e8;
+  --oth:#7a4cb0; --oth-soft:#f0e9f8;
+  --pre:#b8660a; --pre-soft:#fdf1df;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --no:#f07178; --no-soft:#3a1d22; --oth:#bb9ae6; --oth-soft:#2a2140; --pre:#f2b25c; --pre-soft:#3a2b16; --ok:#6fcf8f; --ok-soft:#183326; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --no:#f07178; --no-soft:#3a1d22; --oth:#bb9ae6; --oth-soft:#2a2140; --pre:#f2b25c; --pre-soft:#3a2b16; --ok:#6fcf8f; --ok-soft:#183326; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:32px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:72ch}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+.g-no{--c:var(--no);--cs:var(--no-soft)} .g-oth{--c:var(--oth);--cs:var(--oth-soft)} .g-pre{--c:var(--pre);--cs:var(--pre-soft)}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font:inherit;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:flex;gap:7px;align-items:center}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c,var(--muted))}
+.chip[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.chip:focus-visible,.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.sit{background:var(--surface);border:1.5px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:12px 14px;display:grid;gap:8px;min-width:0}
+.sit .kind{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--c)}
+.sit h3{font-size:16px;font-weight:800;margin:0}
+.row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;font-size:14.5px}
+.row b{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.row.act{background:var(--cs);border-radius:8px;padding:6px 8px;margin:0 -8px}
+.row.act b{color:var(--c)}
+@media (max-width:420px){.row{grid-template-columns:1fr;gap:0}}
+
+/* asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.wiz{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.q{margin-bottom:14px}
+.q:last-child{margin-bottom:0}
+.q p{font-weight:800;margin:0 0 6px}
+.q p span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--head);color:var(--head-ink);font-size:12px;margin-right:6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{font:inherit;font-size:13.5px;font-weight:700;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.opt[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.q.off{opacity:.35;pointer-events:none}
+.out h3{font-size:18px;font-weight:800;margin:0 0 8px}
+.verdict{border-radius:10px;padding:12px 14px;border:1.5px solid;margin-bottom:10px}
+.verdict b{display:block;font-size:16px}
+.verdict.ok{border-color:var(--ok);background:var(--ok-soft)} .verdict.ok b{color:var(--ok)}
+.verdict.no{border-color:var(--no);background:var(--no-soft)} .verdict.no b{color:var(--no)}
+.verdict.oth{border-color:var(--oth);background:var(--oth-soft)} .verdict.oth b{color:var(--oth)}
+.verdict.pre{border-color:var(--pre);background:var(--pre-soft)} .verdict.pre b{color:var(--pre)}
+ul.todo{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
+ul.todo b{color:var(--pre)}
+.empty{color:var(--muted);font-size:14.5px;margin:0}
+.btn{font:inherit;font-weight:700;font-size:13.5px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer;margin-top:10px}
+
+/* anticoagulación */
+.tl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tl svg{display:block;width:100%;height:auto}
+.tlab{font-family:var(--f);font-size:13px;font-weight:700}
+.tsub{font-family:var(--f);font-size:12px}
+.tl .note{font-size:14px;color:var(--muted);margin:10px 0 0;max-width:80ch}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Situaciones que contraindican o exigen precaución en la cardioversión</h1>
+  <p class="lead">Las ocho situaciones se agrupan en tres tipos. Después, el asistente te guía antes de una cardioversión y la línea de tiempo resume la anticoagulación en la FA o el flutter de 48 horas o más.</p>
+
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+
+  <h2>¿Puedo cardiovertir?</h2>
+  <p class="sub">Responde en orden. El resultado muestra si la cardioversión está indicada y qué preparar antes.</p>
+  <div class="wiz">
+    <section class="card" id="qs"></section>
+    <section class="card out" id="out" aria-live="polite"></section>
+  </div>
+
+  <h2>Anticoagulación en la FA o el flutter de 48 horas o más</h2>
+  <p class="sub">También cuando la duración es desconocida<span class="ref">6</span>.</p>
+  <section class="tl">
+    <svg viewBox="0 0 760 170" role="img" aria-label="Línea de tiempo: 3 semanas de anticoagulación o ecocardiografía transesofágica antes de la cardioversión, y 4 semanas de anticoagulación después">
+      <line x1="30" x2="730" y1="80" y2="80" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>
+      <rect x="40" y="62" width="300" height="36" rx="8" fill="var(--info)" opacity=".85"/>
+      <text class="tlab" x="190" y="85" text-anchor="middle" fill="#fff">3 semanas de anticoagulación</text>
+      <text class="tsub" x="190" y="122" text-anchor="middle" fill="var(--muted)">o ecocardiografía transesofágica</text>
+      <text class="tsub" x="190" y="140" text-anchor="middle" fill="var(--muted)">que descarte trombos</text>
+      <circle cx="380" cy="80" r="22" fill="var(--pre)"/>
+      <text class="tlab" x="380" y="86" text-anchor="middle" fill="#fff" font-size="18">⚡</text>
+      <text class="tlab" x="380" y="40" text-anchor="middle" fill="var(--ink)">Cardioversión</text>
+      <rect x="420" y="62" width="300" height="36" rx="8" fill="var(--ok)" opacity=".85"/>
+      <text class="tlab" x="570" y="85" text-anchor="middle" fill="#fff">4 semanas de anticoagulación</text>
+      <text class="tsub" x="570" y="122" text-anchor="middle" fill="var(--muted)">el riesgo de embolia persiste</text>
+      <text class="tsub" x="570" y="140" text-anchor="middle" fill="var(--muted)">después de restablecer el ritmo</text>
+      <text class="tsub" x="40" y="22" fill="var(--muted)">Antes</text><text class="tsub" x="720" y="22" text-anchor="end" fill="var(--muted)">Después</text>
+    </svg>
+    <p class="note">Esquema para la cardioversión programada. En el paciente inestable la descarga no se retrasa por este motivo; la anticoagulación se valora según la indicación médica.</p>
+  </section>
+
+  <footer>Material educativo. Los superíndices remiten a las referencias del módulo; las unidades citadas son las del curso. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const GR={no:"No se cardiovierte",oth:"Otra terapia eléctrica",pre:"Precaución antes de cardiovertir"};
+const S=[
+  {g:"no",s:"Taquicardia sinusal",r:"No es una arritmia primaria",rr:"1,2",c:"Tratar la causa subyacente"},
+  {g:"no",s:"Taquicardias por automatismo (auricular focal, multifocal, de la unión)",r:"Recurrencia inmediata tras la descarga",c:"Tratamiento farmacológico y de la causa"},
+  {g:"oth",s:"TV polimórfica sostenida",r:"La onda R no puede identificarse con fiabilidad",rr:"3",c:"Descarga no sincronizada de energía máxima",cr:"3"},
+  {g:"oth",s:"FV o TV sin pulso",r:"Paro cardíaco",c:"Desfibrilación (Unidad 4)"},
+  {g:"pre",s:"FA o flutter de 48 horas o más, o de duración desconocida",r:"Embolia sistémica",rr:"6",c:"Anticoagulación de 3 semanas o ecocardiografía transesofágica; mantenerla 4 semanas después",cr:"6"},
+  {g:"pre",s:"Hipopotasemia o intoxicación digitálica",r:"Arritmias ventriculares tras la descarga",c:"Corregir antes de la cardioversión programada"},
+  {g:"pre",s:"Enfermedad del nodo sinusal",r:"Bradicardia o pausa tras la descarga",c:"Disponer de estimulación con marcapasos (Unidad 5)"},
+  {g:"pre",s:"Marcapasos o desfibrilador implantable",r:"Daño o disfunción del dispositivo",c:"Parches a distancia del generador; revisar el dispositivo"}
+];
+let filt="all";
+document.getElementById("filters").innerHTML=`<button class="chip" data-f="all" aria-pressed="true">Todas (${S.length})</button>`+Object.entries(GR).map(([k,v])=>`<button class="chip g-${k}" data-f="${k}" aria-pressed="false"><i></i>${v} (${S.filter(s=>s.g===k).length})</button>`).join("");
+function renderGrid(){
+  document.querySelectorAll("#filters .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.f===filt));
+  document.getElementById("grid").innerHTML=S.filter(s=>filt==="all"||s.g===filt).map(s=>`<article class="sit g-${s.g}"><span class="kind">${GR[s.g]}</span><h3>${s.s}</h3>
+    <div class="row"><b>Riesgo o limitación</b><span>${s.r}${ref(s.rr)}</span></div>
+    <div class="row act"><b>Conducta</b><span>${s.c}${ref(s.cr)}</span></div></article>`).join("");
+}
+document.getElementById("filters").addEventListener("click",e=>{const c=e.target.closest(".chip");if(c){filt=c.dataset.f;renderGrid()}});
+
+/* asistente */
+const A={pulse:null,rhythm:null,checks:new Set()};
+const RH=[["fa","FA o flutter"],["tsv","TSV por reentrada"],["tvm","TV monomórfica"],["tvp","TV polimórfica sostenida"],["sin","Taquicardia sinusal"],["aut","Taquicardia por automatismo"]];
+const CK=[
+  {k:"48",t:"FA o flutter de 48 horas o más, o de duración desconocida",only:"fa",todo:"<b>Anticoagulación:</b> 3 semanas previas o ecocardiografía transesofágica; mantenerla 4 semanas después."},
+  {k:"k",t:"Hipopotasemia o intoxicación digitálica",todo:"<b>Corregir</b> el potasio o la intoxicación antes de la cardioversión programada."},
+  {k:"nodo",t:"Enfermedad del nodo sinusal",todo:"<b>Marcapasos disponible</b> por riesgo de bradicardia o pausa tras la descarga."},
+  {k:"disp",t:"Marcapasos o desfibrilador implantable",todo:"<b>Parches lejos del generador</b> y revisión del dispositivo después."}
+];
+function renderQs(){
+  const step2=A.pulse==="si", step3=step2&&["fa","tsv","tvm"].includes(A.rhythm);
+  const opt=(g,v,t,on)=>`<button class="opt" data-g="${g}" data-v="${v}" aria-pressed="${on}">${t}</button>`;
+  document.getElementById("qs").innerHTML=`
+    <div class="q"><p><span>1</span>¿El paciente tiene pulso?</p><div class="opts">${opt("pulse","si","Sí",A.pulse==="si")}${opt("pulse","no","No",A.pulse==="no")}</div></div>
+    <div class="q ${step2?"":"off"}"><p><span>2</span>¿Qué ritmo tiene?</p><div class="opts">${RH.map(([v,t])=>opt("rhythm",v,t,A.rhythm===v)).join("")}</div></div>
+    <div class="q ${step3?"":"off"}"><p><span>3</span>¿Presenta alguna de estas situaciones?</p><div class="opts">${CK.filter(c=>!c.only||c.only===A.rhythm).map(c=>opt("ck",c.k,c.t,A.checks.has(c.k))).join("")}</div>
+      <button class="btn" id="none">Ninguna</button></div>`;
+}
+function renderOut(){
+  const o=document.getElementById("out"); let h="";
+  if(A.pulse===null) h=`<h3>Resultado</h3><p class="empty">Empieza por la pregunta 1.</p>`;
+  else if(A.pulse==="no") h=`<h3>Resultado</h3><div class="verdict oth"><b>Desfibrilación, no cardioversión</b>FV o TV sin pulso: es un paro cardíaco. Sigue el algoritmo de la Unidad 4.</div>`;
+  else if(!A.rhythm) h=`<h3>Resultado</h3><p class="empty">Elige el ritmo en la pregunta 2.</p>`;
+  else if(A.rhythm==="sin") h=`<h3>Resultado</h3><div class="verdict no"><b>No cardiovertir</b>La taquicardia sinusal no es una arritmia primaria: trata la causa subyacente (fiebre, dolor, hipovolemia, hipoxia).</div>`;
+  else if(A.rhythm==="aut") h=`<h3>Resultado</h3><div class="verdict no"><b>No cardiovertir</b>Recurre de inmediato tras la descarga. Tratamiento farmacológico y de la causa.</div>`;
+  else if(A.rhythm==="tvp") h=`<h3>Resultado</h3><div class="verdict oth"><b>Descarga no sincronizada de energía máxima</b>La onda R no puede identificarse con fiabilidad${ref("3")}.</div>`;
+  else {
+    const todo=CK.filter(c=>A.checks.has(c.k)&&(!c.only||c.only===A.rhythm));
+    h=`<h3>Resultado</h3><div class="verdict ${todo.length?"pre":"ok"}"><b>${todo.length?"Cardioversión sincronizada, con precauciones":"Cardioversión sincronizada indicada"}</b>${todo.length?`Antes de la cardioversión programada, atiende ${todo.length===1?"este punto":"estos "+todo.length+" puntos"}:`:"Sin situaciones de precaución marcadas. Prepara sedación y analgesia con vigilancia continua y activa el modo sincronizado."}</div>
+      ${todo.length?`<ul class="todo">${todo.map(c=>`<li>${c.todo}</li>`).join("")}</ul>`:""}
+      <p class="empty" style="margin-top:10px">Si el paciente está inestable, la descarga no se retrasa: se atienden en paralelo los puntos que sea posible.</p>`;
+  }
+  o.innerHTML=h+`<button class="btn" id="reset">Empezar de nuevo</button>`;
+}
+function renderW(){renderQs();renderOut()}
+document.querySelector(".wiz").addEventListener("click",e=>{
+  if(e.target.id==="reset"){A.pulse=null;A.rhythm=null;A.checks.clear();renderW();return}
+  if(e.target.id==="none"){A.checks.clear();renderW();return}
+  const b=e.target.closest(".opt"); if(!b) return;
+  const {g,v}=b.dataset;
+  if(g==="pulse"){A.pulse=v;A.rhythm=null;A.checks.clear()}
+  else if(g==="rhythm"){A.rhythm=v;A.checks.clear()}
+  else {A.checks.has(v)?A.checks.delete(v):A.checks.add(v)}
+  renderW();
+});
+renderGrid(); renderW();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

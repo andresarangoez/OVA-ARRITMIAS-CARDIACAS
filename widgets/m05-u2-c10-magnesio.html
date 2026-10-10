@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sulfato de magnesio en las torsades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ficha del fármaco en rejilla; debajo: ¿está indicado? y calculadora de QTc a la izquierda; vigilancia de hipermagnesemia a la derecha */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#0f7f86; --drug-soft:#e0f3f4;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#5fcdd3; --drug-soft:#13302f; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#5fcdd3; --drug-soft:#13302f; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:4px 0 2px}
+.cls{font-size:14px;font-weight:700;color:var(--drug);background:var(--drug-soft);padding:3px 12px;border-radius:99px}
+.lead{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+.mono{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.mono{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.mono{grid-template-columns:1fr}}
+.tile{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tile:hover{border-color:var(--t,var(--muted))}
+.tile:focus-visible,.btn:focus-visible,.opt:focus-visible,input:focus-visible,.seg button:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.tile b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t,var(--muted));margin-bottom:3px}
+.tile span{font-size:15px}
+.tile.dose{--t:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.tile.dose span{font-size:17px;font-weight:700}
+.tile.ind{--t:var(--drug);background:var(--drug-soft)}
+.tile.stop{--t:var(--stop);background:var(--stop-soft)}
+.tile.warn{--t:var(--warn);background:var(--warn-soft)}
+.tile.mon{--t:var(--info);background:var(--info-soft)}
+.tile.sel{box-shadow:0 0 0 3px var(--node);border-color:var(--t,var(--ink))}
+.explain{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.explain b{font-weight:800}
+
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:28px;align-items:start}
+@media (max-width:920px){.tools{grid-template-columns:1fr}}
+.col{display:grid;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.opts{display:grid;gap:6px}
+.opt{font:inherit;text-align:left;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14.5px;font-weight:600}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.opt[aria-pressed="true"]{border-color:var(--head);background:var(--node)}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;border:1.5px solid}
+.verdict b{display:block;font-size:15.5px}
+.verdict.ok{border-color:var(--ok);background:var(--ok-soft)} .verdict.ok b{color:var(--ok)}
+.verdict.no{border-color:var(--stop);background:var(--stop-soft)} .verdict.no b{color:var(--stop)}
+.verdict.warn{border-color:var(--warn);background:var(--warn-soft)} .verdict.warn b{color:var(--warn)}
+.hint{font-size:13.5px;color:var(--muted);margin:12px 0 0}
+
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.form label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:grid;gap:4px}
+.form input{font:inherit;font-size:17px;font-weight:700;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:100%;font-variant-numeric:tabular-nums lining-nums}
+.qtc{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-top:12px}
+.qtc .big{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.qtc small{color:var(--muted)}
+.scale{position:relative;height:14px;border-radius:7px;margin:10px 0 4px;background:linear-gradient(90deg,var(--ok) 0 44%,var(--warn) 44% 60%,var(--stop) 60% 100%);opacity:.85}
+.pin{position:absolute;top:-5px;width:4px;height:24px;border-radius:2px;background:var(--ink);transform:translateX(-2px);transition:left .25s}
+@media (prefers-reduced-motion:reduce){.pin{transition:none}}
+.ticks{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+.formula{font-size:13px;color:var(--muted);margin:8px 0 0}
+
+.ladder{display:grid;gap:6px;margin:4px 0 0}
+.rung{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface)}
+.rung b{font-size:14.5px}
+.rung small{grid-column:1/-1;color:var(--muted);font-size:12.5px;margin-top:-4px}
+.rung.on{border-color:var(--sev);background:var(--sevs)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;font-weight:700;padding:5px 10px;border:none;background:var(--surface);color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"][data-v="0"]{background:var(--ok);color:var(--surface)}
+.seg button[aria-pressed="true"][data-v="1"]{background:var(--stop);color:var(--surface)}
+.r1{--sev:var(--warn);--sevs:var(--warn-soft)} .r2{--sev:var(--warn);--sevs:var(--warn-soft)} .r3{--sev:var(--stop);--sevs:var(--stop-soft)} .r4{--sev:var(--stop);--sevs:var(--stop-soft)} .r5{--sev:var(--warn);--sevs:var(--warn-soft)}
+.act{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:14.5px}
+.act.ok{background:var(--ok-soft)} .act.warn{background:var(--warn-soft)} .act.stop{background:var(--stop-soft)}
+.act b{font-weight:800}
+.btn{font:inherit;font-weight:700;font-size:13.5px;padding:7px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer;margin-top:10px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <div class="title"><h1>Sulfato de magnesio</h1><span class="cls">Electrolito · fuera de Vaughan Williams</span></div>
+  <p class="lead">Toca cada aspecto de la ficha para ver una explicación. Después decide si está indicado, calcula el QTc y practica la vigilancia de la hipermagnesemia durante la administración.</p>
+
+  <section aria-label="Ficha del fármaco">
+    <div class="mono" id="mono"></div>
+    <div class="explain" id="explain" aria-live="polite"></div>
+  </section>
+
+  <div class="tools">
+    <div class="col">
+      <section class="card">
+        <h2>¿Está indicado?</h2>
+        <p class="sub">Elige la situación del paciente.</p>
+        <div class="opts" id="opts"></div>
+        <div id="verdict" aria-live="polite"><p class="hint">La clave es el QT: el magnesio sirve para la TV polimórfica con QT largo.</p></div>
+      </section>
+      <section class="card">
+        <h2>Calculadora de QTc</h2>
+        <p class="sub">Corrige el QT medido según la frecuencia cardíaca.</p>
+        <div class="form">
+          <label>QT medido (ms)<input id="qt" type="number" inputmode="numeric" min="200" max="800" value="480"></label>
+          <label>FC (lpm)<input id="fc" type="number" inputmode="numeric" min="30" max="200" value="72"></label>
+        </div>
+        <div id="qtcOut" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Vigilancia durante la administración</h2>
+      <p class="sub">Los signos de hipermagnesemia suelen aparecer en este orden. Registra lo que encuentras.</p>
+      <div class="ladder" id="ladder"></div>
+      <div id="action" aria-live="polite"></div>
+      <button class="btn" id="clr">Todo normal</button>
+    </section>
+  </div>
+
+  <footer>Material educativo. Las dosis siguen la tabla del módulo para el adulto; confirma siempre la prescripción, la dilución, el tiempo de administración y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const M=[
+  {k:"Grupo farmacológico",v:"Electrolito; no pertenece a la clasificación de Vaughan Williams",x:"No bloquea un canal concreto como los antiarrítmicos clásicos. Se agrupa con la adenosina, la digoxina y la atropina entre los fármacos fuera de las clases."},
+  {k:"Mecanismo",v:"Estabiliza la membrana y suprime las posdespolarizaciones tempranas",r:"11",x:"Las posdespolarizaciones tempranas son el disparador de las torsades cuando el QT está prolongado. El magnesio las suprime aunque el magnesio sérico sea normal."},
+  {k:"Indicación",v:"TV polimórfica con QT prolongado (torsades de pointes)",r:"3",c:"ind",x:"Es el tratamiento farmacológico de primera línea en las torsades. Si el paciente está sin pulso, primero la desfibrilación."},
+  {k:"No indicado",v:"Uso rutinario en el paro cardíaco; TV polimórfica con QT normal",r:"3",c:"stop",x:"Con QT normal la TV polimórfica suele deberse a isquemia, y el magnesio no aporta beneficio. Tampoco mejora el pronóstico si se usa de rutina en el paro."},
+  {k:"Dosis",v:"2 g IV; repetir si la arritmia persiste o recurre",r:"11",c:"dose",x:"El tiempo de administración depende de la situación clínica y del protocolo; una administración demasiado rápida causa hipotensión y rubor."},
+  {k:"Medidas asociadas",v:"Suspender fármacos que prolongan el QT; potasio entre 4,5 y 5 mmol/L",r:"11",c:"ind",x:"El magnesio controla el episodio, pero sin retirar la causa las torsades recurren. Revisa la lista de medicamentos y los electrolitos."},
+  {k:"Precauciones",v:"Insuficiencia renal; administración rápida (hipotensión, rubor)",c:"warn",x:"El magnesio se elimina por el riñón: en la insuficiencia renal se acumula con más facilidad y aumenta el riesgo de hipermagnesemia."},
+  {k:"Signos de hipermagnesemia",v:"Hiporreflexia, somnolencia, depresión respiratoria, trastornos de la conducción",c:"warn",x:"La pérdida de reflejos suele ser el signo más temprano. Usa la herramienta de vigilancia de abajo para practicar."},
+  {k:"Parámetros de vigilancia",v:"QTc, presión arterial, frecuencia respiratoria, reflejos y diuresis",c:"mon",x:"Valora antes, durante y después de la administración, y registra cada control."}
+];
+let selM=2;
+document.getElementById("mono").innerHTML=M.map((m,i)=>`<button class="tile ${m.c||""}" data-i="${i}" aria-pressed="false"><b>${m.k}</b><span>${m.v}${ref(m.r)}</span></button>`).join("");
+function renderM(){
+  document.querySelectorAll(".tile").forEach(t=>{const on=Number(t.dataset.i)===selM;t.classList.toggle("sel",on);t.setAttribute("aria-pressed",on)});
+  document.getElementById("explain").innerHTML=`<b>${M[selM].k}:</b> ${M[selM].x}`;
+}
+document.getElementById("mono").addEventListener("click",e=>{const t=e.target.closest(".tile"); if(t){selM=Number(t.dataset.i);renderM()}});
+
+const O=[
+  {n:"TV polimórfica con QT prolongado",d:"Torsades de pointes",v:"ok",t:"Indicado",x:"2 g IV; repetir si persiste o recurre. Suspende los fármacos que prolongan el QT y corrige el potasio."},
+  {n:"TV polimórfica con QT normal",d:"Sospecha de isquemia",v:"no",t:"No indicado",x:"Sin QT prolongado el magnesio no aporta beneficio. Busca y trata la isquemia según la indicación médica."},
+  {n:"FV en el paro cardíaco, sin torsades previas",d:"Uso rutinario",v:"no",t:"No indicado de rutina",x:"La prioridad es la RCP, la desfibrilación, la adrenalina y el antiarrítmico según el algoritmo."},
+  {n:"Torsades en un paciente con insuficiencia renal",d:"Eliminación reducida",v:"warn",t:"Indicado con precaución",x:"Mayor riesgo de hipermagnesemia: vigila con más frecuencia los reflejos, la respiración y la diuresis."}
+];
+document.getElementById("opts").innerHTML=O.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false">${o.n}<small>${o.d}</small></button>`).join("");
+document.getElementById("opts").addEventListener("click",e=>{const b=e.target.closest(".opt"); if(!b)return; const i=Number(b.dataset.i);
+  document.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",Number(x.dataset.i)===i));
+  const o=O[i]; document.getElementById("verdict").innerHTML=`<div class="verdict ${o.v}"><b>${o.t}</b>${o.x}</div>`;});
+
+/* --- QTc (Bazett) --- */
+function renderQ(){
+  const qt=Number(document.getElementById("qt").value), fc=Number(document.getElementById("fc").value);
+  const out=document.getElementById("qtcOut");
+  if(!qt||!fc||qt<200||fc<30){out.innerHTML=`<p class="hint">Escribe un QT y una FC válidos.</p>`;return}
+  const rr=60/fc, qtc=Math.round(qt/Math.sqrt(rr));
+  const pct=Math.min(Math.max((qtc-350)/(600-350),0),1)*100;
+  const lvl=qtc>500?{c:"no",t:"QTc superior a 500 ms",x:"Riesgo alto de torsades de pointes. Notifica, revisa los fármacos que prolongan el QT y los electrolitos."}
+          :qtc>=460?{c:"warn",t:"QTc prolongado",x:"Vigila de cerca y revisa los fármacos y los electrolitos antes de administrar otros que prolonguen el QT."}
+          :{c:"ok",t:"QTc dentro de lo esperado",x:"Continúa la vigilancia, sobre todo si se inician fármacos que prolongan el QT."};
+  out.innerHTML=`<div class="qtc"><span class="big">${qtc} ms</span><small>QTc · RR de ${rr.toFixed(2).replace(".",",")} s</small></div>
+    <div class="scale" aria-hidden="true"><span class="pin" style="left:${pct}%"></span></div>
+    <div class="ticks"><span>350</span><span>400</span><span>450</span><span>500</span><span>550</span><span>600 ms</span></div>
+    <div class="verdict ${lvl.c}"><b>${lvl.t}</b>${lvl.x}</div>
+    <p class="formula">Fórmula de Bazett: QTc = QT ÷ √RR. Con frecuencias muy altas o muy bajas es menos precisa.</p>`;
+}
+["qt","fc"].forEach(id=>document.getElementById(id).addEventListener("input",renderQ));
+
+/* --- vigilancia --- */
+const L=[
+  {id:"ref",t:"Reflejos osteotendinosos disminuidos o ausentes",s:"Suele ser el signo más temprano",r:"r1"},
+  {id:"som",t:"Somnolencia o confusión",s:"Depresión del sistema nervioso central",r:"r2"},
+  {id:"resp",t:"Frecuencia respiratoria baja o respiración superficial",s:"Depresión respiratoria",r:"r3"},
+  {id:"cond",t:"Bradicardia, PR o QRS prolongados, bloqueo",s:"Trastornos de la conducción",r:"r4"},
+  {id:"pa",t:"Hipotensión o rubor durante la infusión",s:"Administración demasiado rápida",r:"r5"},
+  {id:"diu",t:"Diuresis disminuida",s:"Menor eliminación del magnesio",r:"r5"}
+];
+const st={};
+function renderL(){
+  document.getElementById("ladder").innerHTML=L.map(l=>`<div class="rung ${l.r} ${st[l.id]?"on":""}"><b>${l.t}</b>
+    <div class="seg" role="group" aria-label="${l.t}"><button data-id="${l.id}" data-v="0" aria-pressed="${st[l.id]===false}">No</button><button data-id="${l.id}" data-v="1" aria-pressed="${st[l.id]===true}">Sí</button></div>
+    <small>${l.s}</small></div>`).join("");
+  const on=L.filter(l=>st[l.id]);
+  const severe=on.some(l=>l.id==="resp"||l.id==="cond");
+  const any=on.length, answered=L.filter(l=>st[l.id]!==undefined).length;
+  let h;
+  if(severe) h=`<div class="act stop"><b>Suspender la infusión y notificar de inmediato.</b> La depresión respiratoria o los trastornos de la conducción indican hipermagnesemia grave. Apoya la ventilación si es necesario y ten listo el material de reanimación.</div>`;
+  else if(on.some(l=>l.id==="pa")&&on.length===1) h=`<div class="act warn"><b>Reducir la velocidad y notificar.</b> La hipotensión y el rubor suelen deberse a una administración demasiado rápida.</div>`;
+  else if(any) h=`<div class="act warn"><b>Detener o reducir la infusión y notificar.</b> Hay signos iniciales de hipermagnesemia: ${on.map(l=>l.t.toLowerCase()).join("; ")}. Aumenta la frecuencia de los controles.</div>`;
+  else if(answered===L.length) h=`<div class="act ok"><b>Sin signos de hipermagnesemia.</b> Continúa la vigilancia del QTc, la presión arterial, la respiración, los reflejos y la diuresis.</div>`;
+  else h=`<div class="act" style="background:var(--node)">Responde cada control (${answered} de ${L.length}).</div>`;
+  document.getElementById("action").innerHTML=h;
+}
+document.getElementById("ladder").addEventListener("click",e=>{const b=e.target.closest(".seg button"); if(!b)return; const v=b.dataset.v==="1"; st[b.dataset.id]=st[b.dataset.id]===v?undefined:v; renderL()});
+document.getElementById("clr").addEventListener("click",()=>{L.forEach(l=>st[l.id]=false);renderL()});
+renderM(); renderQ(); renderL();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

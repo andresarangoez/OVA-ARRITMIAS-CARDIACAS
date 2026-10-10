@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adrenalina: paro y bradicardia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: selector de contexto; tabla comparativa de dos columnas que resalta el contexto elegido; comparador de dosis bolo frente a infusión; práctica */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --paro:#c8323c; --paro-soft:#fbe7e8;
+  --bradi:#2b6cc4; --bradi-soft:#e4eef9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --paro:#f07178; --paro-soft:#3a1d22; --bradi:#7fb3ec; --bradi-soft:#182c42; --warn:#f2b25c; --warn-soft:#3a2b16; --ok:#6fcf8f; --ok-soft:#183326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --paro:#f07178; --paro-soft:#3a1d22; --bradi:#7fb3ec; --bradi-soft:#182c42; --warn:#f2b25c; --warn-soft:#3a2b16; --ok:#6fcf8f; --ok-soft:#183326; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(26px,3.6vw,36px);line-height:1.12;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:30px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:70ch}
+.ref{font-size:11px;font-weight:700;color:var(--bradi);vertical-align:super;margin-left:2px}
+
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:11px;overflow:hidden;background:var(--surface);margin-bottom:14px}
+.seg button{font:inherit;font-weight:700;font-size:14.5px;padding:10px 18px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"][data-c="paro"]{background:var(--paro);color:var(--surface)}
+.seg button[aria-pressed="true"][data-c="bradi"]{background:var(--bradi);color:var(--surface)}
+.seg button[aria-pressed="true"][data-c="both"]{background:var(--head);color:var(--head-ink)}
+.seg button:focus-visible,.btn:focus-visible,.ans:focus-visible,input:focus-visible{outline:3px solid var(--bradi);outline-offset:2px}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;vertical-align:top;padding:12px 14px}
+thead th{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+thead th:first-child{background:var(--head);color:var(--head-ink);width:18%}
+thead th.paro{background:var(--paro);color:var(--surface)}
+thead th.bradi{background:var(--bradi);color:var(--surface)}
+tbody td{border-top:1px solid var(--line);font-size:15px;transition:opacity .2s,background .2s}
+tbody td:first-child{font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+tbody tr.dose td:not(:first-child){font-weight:800;font-size:17px}
+td.paro{background:color-mix(in srgb,var(--paro-soft) 50%,transparent)}
+td.bradi{background:color-mix(in srgb,var(--bradi-soft) 50%,transparent)}
+.f-paro td.bradi,.f-paro th.bradi,.f-bradi td.paro,.f-bradi th.paro{opacity:.28}
+.f-paro td.paro{background:var(--paro-soft)} .f-bradi td.bradi{background:var(--bradi-soft)}
+@media (max-width:700px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);padding:10px 14px}
+  tbody td{border:none;padding:4px 0 4px 10px;border-left:4px solid transparent}
+  tbody td:first-child{padding-left:0}
+  td.paro{border-left-color:var(--paro)} td.bradi{border-left-color:var(--bradi)}
+  td.paro::before,td.bradi::before{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+  td.paro::before{content:"Paro cardíaco";color:var(--paro)} td.bradi::before{content:"Bradicardia sintomática";color:var(--bradi)}
+  .f-paro td.bradi,.f-bradi td.paro{display:none}
+}
+
+.cmp{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.cmp{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.card h3{font-size:17px;font-weight:800;margin:0 0 8px}
+.bars{display:grid;gap:12px;margin-top:6px}
+.bar b{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:4px}
+.bar b span{font-variant-numeric:tabular-nums lining-nums;color:var(--muted);font-weight:700}
+.track{height:26px;border-radius:6px;background:var(--node);overflow:hidden}
+.fill{height:100%;border-radius:6px;min-width:3px;transition:width .3s}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.warnbox{margin-top:14px;border-radius:10px;padding:12px 14px;background:var(--warn-soft);border:1.5px solid var(--warn);font-size:14.5px}
+.warnbox b{color:var(--warn)}
+.rate{display:flex;align-items:center;gap:12px;margin:6px 0 12px;font-weight:700}
+.rate input{flex:1;min-width:0;accent-color:var(--bradi)}
+.rate output{font-size:22px;font-weight:800;color:var(--bradi);font-variant-numeric:tabular-nums lining-nums;min-width:7ch;text-align:right}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{background:var(--node);border-radius:10px;padding:9px 12px}
+.stat b{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat span{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.note{font-size:13.5px;color:var(--muted);margin:12px 0 0}
+
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.qtop{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.qtext{font-size:18px;font-weight:700;margin:6px 0 12px;max-width:70ch}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{font:inherit;font-weight:700;font-size:14.5px;padding:10px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer;text-align:left}
+.ans[disabled]{cursor:default;opacity:.6}
+.ans.right{opacity:1;border-color:var(--ok);background:var(--ok-soft)}
+.ans.wrong{opacity:1;border-color:var(--paro);background:var(--paro-soft)}
+.fb{margin-top:12px;font-size:14.5px}
+.fb b.ok{color:var(--ok)} .fb b.no{color:var(--paro)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--head);background:var(--head);color:var(--head-ink);cursor:pointer;margin-top:10px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <h1>Adrenalina en el paro cardíaco y en la bradicardia sintomática</h1>
+  <p class="lead">El mismo fármaco se usa de dos formas muy distintas. Elige un contexto para resaltarlo en la tabla y compara después las dosis: confundir el bolo del paro con la infusión de la bradicardia es un error grave.</p>
+
+  <div class="seg" role="group" aria-label="Contexto">
+    <button data-c="both" aria-pressed="true">Comparar ambos</button>
+    <button data-c="paro" aria-pressed="false">Paro cardíaco</button>
+    <button data-c="bradi" aria-pressed="false">Bradicardia sintomática</button>
+  </div>
+
+  <div class="tbl" id="tbl">
+    <table>
+      <thead><tr><th>Aspecto</th><th class="paro">Paro cardíaco</th><th class="bradi">Bradicardia sintomática</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <h2>Bolo frente a infusión</h2>
+  <p class="sub">Las unidades cambian: el paro usa miligramos en bolo; la bradicardia, microgramos por minuto. 1 mg equivale a 1000 mcg.</p>
+  <div class="cmp">
+    <section class="card">
+      <h3>Cantidad administrada</h3>
+      <div class="bars" id="bars"></div>
+      <div class="warnbox"><b>Error que se debe evitar:</b> administrar 1 mg en bolo a un paciente con pulso y bradicardia. Es una dosis pensada para el paro y puede provocar taquiarritmias, hipertensión grave e isquemia.</div>
+    </section>
+    <section class="card">
+      <h3>Infusión en la bradicardia</h3>
+      <p class="note" style="margin:0 0 6px">Ajusta la velocidad dentro del rango de 2 a 10 mcg/min<span class="ref">5</span>.</p>
+      <div class="rate"><label for="r">Velocidad</label><input type="range" id="r" min="2" max="10" step="1" value="4"><output id="rout"></output></div>
+      <div class="stats" id="stats"></div>
+      <p class="note">La velocidad se ajusta según la frecuencia, el ritmo y la presión arterial. La dilución y los mL/h dependen del protocolo de la unidad.</p>
+    </section>
+  </div>
+
+  <h2>Ponte a prueba</h2>
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo. Dosis para el adulto según la tabla del módulo; confirma siempre la prescripción y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const R=[
+  {a:"Objetivo",p:"Aumentar la presión de perfusión coronaria y el retorno de la circulación",pr:"3",b:"Aumentar la frecuencia cardíaca y el gasto cardíaco"},
+  {a:"Indicación",p:"Todo paro cardíaco en el adulto",pr:"3",b:"Bradicardia que no responde a la atropina",br:"5"},
+  {a:"Momento",p:"Lo antes posible en ritmos no desfibrilables; tras fracasar las descargas iniciales en ritmos desfibrilables",pr:"1-3",b:"Cuando la atropina es ineficaz, como alternativa al marcapasos",br:"5"},
+  {a:"Dosis en el adulto",p:"1 mg IV o IO cada 3 a 5 minutos",pr:"3,9",b:"2 a 10 mcg/min en infusión, ajustada según la respuesta",br:"5",dose:1},
+  {a:"Precauciones",p:"No usar dosis altas de rutina",pr:"3",b:"Taquiarritmias, isquemia, hipertensión, extravasación"},
+  {a:"Parámetros de vigilancia",p:"Intervalo entre dosis y registro",b:"Frecuencia, ritmo, presión arterial y sitio de infusión"}
+];
+document.getElementById("rows").innerHTML=R.map(r=>`<tr class="${r.dose?"dose":""}"><td>${r.a}</td><td class="paro">${r.p}${ref(r.pr)}</td><td class="bradi">${r.b}${ref(r.br)}</td></tr>`).join("");
+document.querySelector(".seg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  const t=document.getElementById("tbl"); t.classList.remove("f-paro","f-bradi");
+  if(b.dataset.c!=="both") t.classList.add("f-"+b.dataset.c);
+});
+
+/* --- comparador --- */
+const nf=new Intl.NumberFormat("es-CO",{maximumFractionDigits:2});
+function render(){
+  const r=Number(document.getElementById("r").value);
+  document.getElementById("rout").textContent=`${r} mcg/min`;
+  const perH=r*60;               // mcg/h
+  const items=[
+    {l:"Un bolo del paro",v:1000,c:"var(--paro)",t:"1 mg = 1000 mcg, en segundos"},
+    {l:`Infusión a ${r} mcg/min durante 1 minuto`,v:r,c:"var(--bradi)",t:`${r} mcg`},
+    {l:`Infusión a ${r} mcg/min durante 1 hora`,v:perH,c:"var(--bradi)",t:`${nf.format(perH)} mcg = ${nf.format(perH/1000)} mg`}
+  ];
+  document.getElementById("bars").innerHTML=items.map(i=>`<div class="bar"><b>${i.l}<span>${i.t}</span></b><div class="track"><div class="fill" style="width:${Math.max(i.v/1000*100,.4)}%;background:${i.c}"></div></div></div>`).join("");
+  document.getElementById("stats").innerHTML=`
+    <div class="stat"><b>Por hora</b><span>${nf.format(perH)} mcg</span></div>
+    <div class="stat"><b>Por hora en mg</b><span>${nf.format(perH/1000)} mg</span></div>
+    <div class="stat" style="grid-column:1/-1"><b>Comparado con un bolo del paro</b><span>${perH<1000?`${nf.format(perH/1000*100)} % de 1 mg en una hora`:`${nf.format(perH/1000)} veces 1 mg en una hora`}</span></div>`;
+}
+document.getElementById("r").addEventListener("input",render);
+
+/* --- práctica --- */
+const Q=[
+  {q:"Paciente en asistolia. Se acaba de canalizar una vía intraósea.",a:"paro",x:"En los ritmos no desfibrilables la adrenalina se administra lo antes posible: 1 mg IV o IO."},
+  {q:"Bradicardia de 38 lpm con hipotensión que no mejoró tras la atropina.",a:"bradi",x:"Es una bradicardia sintomática que no responde a la atropina: infusión de 2 a 10 mcg/min ajustada según la respuesta, o marcapasos."},
+  {q:"FV que persiste tras las descargas iniciales.",a:"paro",x:"En el ritmo desfibrilable la adrenalina se da cuando fracasan las descargas iniciales: 1 mg cada 3 a 5 minutos."},
+  {q:"Paciente con pulso, FC de 40 lpm y confusión. Un compañero propone «1 mg de adrenalina en bolo».",a:"no",x:"Es un error de dosis: el bolo de 1 mg es para el paro. Con pulso se usa la infusión en mcg/min tras la atropina. Detén la administración y notifica."},
+  {q:"Durante la infusión en la bradicardia aparece taquicardia ventricular y la PA sube a 190/110.",a:"vig",x:"Son efectos adversos de la infusión (taquiarritmias, hipertensión). Notifica de inmediato y ajusta según la indicación médica."}
+];
+const OPTS=[["paro","1 mg IV o IO cada 3 a 5 min"],["bradi","Infusión de 2 a 10 mcg/min"],["no","No administrar: error de dosis"],["vig","Efecto adverso: notificar y ajustar"]];
+let qi=0, ok=0, done=false;
+function renderQ(fb=""){
+  const q=Q[qi];
+  document.getElementById("quiz").innerHTML=`<div class="qtop"><span>Caso ${qi+1} de ${Q.length}</span><span>${ok} ${ok===1?"correcta":"correctas"}</span></div>
+    <p class="qtext">${q.q}</p>
+    <div class="answers">${OPTS.map(([k,t])=>`<button class="ans" data-k="${k}" ${done?"disabled":""}>${t}</button>`).join("")}</div>${fb}`;
+}
+document.getElementById("quiz").addEventListener("click",e=>{
+  const a=e.target.closest(".ans");
+  if(a&&!done){done=true;const q=Q[qi],good=a.dataset.k===q.a;if(good)ok++;
+    renderQ(`<div class="fb"><b class="${good?"ok":"no"}">${good?"Correcto.":"No exactamente."}</b> ${q.x}<br>${qi<Q.length-1?`<button class="btn" data-next>Siguiente caso</button>`:`<button class="btn" data-again>Empezar de nuevo</button> <span style="margin-left:8px;color:var(--muted)">Resultado: ${ok} de ${Q.length}</span>`}</div>`);
+    document.querySelectorAll(".ans").forEach(b=>{if(b.dataset.k===q.a)b.classList.add("right");else if(b===a)b.classList.add("wrong")});
+  }
+  if(e.target.closest("[data-next]")){qi++;done=false;renderQ()}
+  if(e.target.closest("[data-again]")){qi=0;ok=0;done=false;renderQ()}
+});
+render(); renderQ();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

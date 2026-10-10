@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sincronización de la descarga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: dos monitores en vivo apilados (taquicardia con QRS y FV), cada uno con sus controles de desfibrilador; comparación final */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --sync:#2563a8; --sync-soft:#e4eef9;
+  --asy:#2f8a4c; --asy-soft:#e5f4e9;
+  --vuln:#2f8a4c;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --scr:#0f1a14; --scr-grid:#1f3a2a; --scr-trace:#7ef0a4; --scr-mark:#7fb3ec; --scr-shock:#ffd23f;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --sync:#7fb3ec; --sync-soft:#182c42; --asy:#6fcf8f; --asy-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --sync:#7fb3ec; --sync-soft:#182c42; --asy:#6fcf8f; --asy-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 14px}
+.top{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+
+.mon{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.mon h2{font-size:18px;font-weight:800;margin:0 0 2px}
+.mon .sub{color:var(--muted);font-size:14px;margin:0 0 10px}
+.screen{position:relative;border-radius:10px;overflow:hidden;background:var(--scr)}
+.screen canvas{display:block;width:100%;height:150px}
+.hud{position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.06em;color:#cfe;pointer-events:none}
+.hud .mode{padding:2px 8px;border-radius:5px;background:rgba(255,255,255,.12)}
+.hud .mode.s{background:#2563a8;color:#fff}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .35s}
+.flash.on{opacity:.55;transition:none}
+.ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:10px}
+.sw{display:inline-flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.sw button{font:inherit;font-weight:800;font-size:13.5px;padding:8px 13px;border:none;background:var(--surface);color:var(--muted);cursor:pointer}
+.sw button+button{border-left:1.5px solid var(--line)}
+.sw button[aria-pressed="true"][data-m="s"]{background:var(--sync);color:var(--surface)}
+.sw button[aria-pressed="true"][data-m="a"]{background:var(--asy);color:var(--surface)}
+.btn{font:inherit;font-weight:800;font-size:14px;padding:9px 16px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.shock{background:#d0a000;border-color:#d0a000;color:#1b2733}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn:focus-visible,.sw button:focus-visible{outline:3px solid var(--sync);outline-offset:2px}
+.msg{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:14.5px;background:var(--node);min-height:46px}
+.msg b{font-weight:800}
+.msg.ok{background:var(--asy-soft)} .msg.ok b{color:var(--asy)}
+.msg.sy{background:var(--sync-soft)} .msg.sy b{color:var(--sync)}
+.msg.warn{background:var(--warn-soft)} .msg.warn b{color:var(--warn)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp div{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.cmp b{display:block;font-size:15px;font-weight:800;color:var(--c);margin-bottom:4px}
+.cmp ul{margin:0;padding-left:18px;display:grid;gap:3px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Terapia eléctrica</div>
+  <h1>La sincronización decide el instante de la descarga</h1>
+  <p class="lead">Dos monitores en vivo. Arriba, el equipo marca cada onda R y espera a la siguiente para descargar. Abajo, en la FV no hay R que marcar: prueba a dejar la sincronización activada y verás que la descarga no sale.</p>
+  <div class="top"><button class="btn" id="pause">Pausar</button><span class="legend" style="margin:0"><span><i style="background:#7fb3ec"></i>Marcador de sincronización</span><span><i style="background:#2f8a4c;opacity:.6"></i>Onda T: período vulnerable</span><span><i style="background:#ffd23f"></i>Descarga</span></span></div>
+
+  <section class="mon">
+    <h2>Cardioversión sincronizada: taquicardia con QRS organizados</h2>
+    <p class="sub">Pulsa «Descargar» en cualquier momento: la descarga sale sobre la siguiente onda R.</p>
+    <div class="screen"><canvas id="cv1" width="1600" height="300"></canvas><div class="hud"><span>II · 150 lpm</span><span class="mode s">SINC</span></div><div class="flash" id="fl1"></div></div>
+    <div class="ctrls"><button class="btn shock" id="sh1">Descargar</button></div>
+    <div class="msg sy" id="m1"><b>Modo sincronizado.</b> Cada triángulo azul marca una onda R reconocida por el equipo.</div>
+  </section>
+
+  <section class="mon">
+    <h2>Desfibrilación: fibrilación ventricular sin QRS identificables</h2>
+    <p class="sub">Elige el modo del desfibrilador y pulsa «Descargar».</p>
+    <div class="screen"><canvas id="cv2" width="1600" height="300"></canvas><div class="hud"><span>II · FV</span><span class="mode" id="hud2">ASINC</span></div><div class="flash" id="fl2"></div></div>
+    <div class="ctrls">
+      <div class="sw" role="group" aria-label="Modo del desfibrilador"><button data-m="a" aria-pressed="true">Asincrónico</button><button data-m="s" aria-pressed="false">Sincronizado</button></div>
+      <button class="btn shock" id="sh2">Descargar</button><button class="btn" id="cancel2" hidden>Cancelar</button>
+    </div>
+    <div class="msg" id="m2">Modo asincrónico: la descarga sale en el instante en que se pulsa.</div>
+  </section>
+
+  <div class="cmp">
+    <div style="--c:var(--sync)"><b>Cardioversión sincronizada</b><ul><li>Paciente con pulso y QRS organizados.</li><li>La descarga coincide con la onda R.</li><li>Evita el período vulnerable de la onda T.</li><li>Hay un breve retraso entre pulsar y descargar.</li></ul></div>
+    <div style="--c:var(--asy)"><b>Desfibrilación</b><ul><li>FV o TV sin pulso.</li><li>No hay onda R que reconocer.</li><li>Descarga inmediata, sin sincronizar.</li><li>Esperar la sincronización solo retrasaría la descarga.</li></ul></div>
+  </div>
+
+  <footer>Material educativo. Animación esquemática. Tras cada descarga se reanuda la RCP o se valora el ritmo según el algoritmo correspondiente.</footer>
+</div>
+
+<script>
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let running=!reduce, t=0, last=null;
+const WIN=4;                                   // segundos visibles
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+/* ritmo 1: taquicardia regular, R cada 0,4 s */
+const RR=0.4, R0=0.2;
+const rTimes=(a,b)=>{const out=[];for(let k=Math.ceil((a-R0)/RR);R0+k*RR<=b;k++)out.push(R0+k*RR);return out};
+function s1(time){let y=0;for(const r of rTimes(time-0.5,time+0.1)){y+=G(time,r-.012,.006,6)+G(time,r,.008,-70)+G(time,r+.014,.007,18)+G(time,r+.16,.03,-16)}return y}
+/* ritmo 2: FV */
+const FV=[[3.1,22,.0],[5.3,14,1.3],[7.9,10,2.1],[1.7,12,.5],[11.2,6,2.9]];
+function s2(time){let y=0;for(const[f,a,p]of FV)y+=a*Math.sin(2*Math.PI*f*time+p)*(.6+.4*Math.sin(2*Math.PI*.37*time+p));return y}
+
+const st1={pending:false,shots:[]}, st2={mode:"a",pending:null,shots:[]};
+function col(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+function draw(cv,sig,opts){
+  const c=cv.getContext("2d"),W=cv.width,H=cv.height,base=H*.58,sx=W/WIN;
+  c.fillStyle=col("--scr");c.fillRect(0,0,W,H);
+  c.strokeStyle=col("--scr-grid");c.lineWidth=1;
+  for(let x=0;x<W;x+=40){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+  for(let y=0;y<H;y+=40){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  const t0=t-WIN, X=tt=>(tt-t0)*sx;
+  if(opts.r){ // período vulnerable y marcadores
+    for(const r of rTimes(t0-.3,t)){c.fillStyle="rgba(47,138,76,.35)";c.fillRect(X(r+.11),base-70,X(r+.21)-X(r+.11),110);
+      if(r<=t-.02){c.fillStyle=col("--scr-mark");c.beginPath();c.moveTo(X(r)-12,28);c.lineTo(X(r)+12,28);c.lineTo(X(r),46);c.closePath();c.fill()}}
+  }
+  c.strokeStyle=col("--scr-trace");c.lineWidth=3.2;c.lineJoin="round";c.beginPath();
+  for(let px=0;px<=W;px+=2){const tt=t0+px/sx;const y=base+sig(tt)*1.6;px?c.lineTo(px,y):c.moveTo(px,y)}c.stroke();
+  for(const sh of opts.shots){if(sh<t0)continue;const x=X(sh);c.strokeStyle=col("--scr-shock");c.lineWidth=5;c.beginPath();c.moveTo(x,20);c.lineTo(x,H-12);c.stroke();
+    c.fillStyle=col("--scr-shock");c.font="bold 34px Raleway, sans-serif";c.textAlign="center";c.fillText("⚡",x+(x>W-40?-24:24),60)}
+  // barrido
+  c.fillStyle="rgba(255,255,255,.15)";c.fillRect(W-4,0,4,H);
+}
+function flash(id){const f=document.getElementById(id);f.classList.add("on");requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove("on")))}
+function msg(id,cls,html){const m=document.getElementById(id);m.className="msg "+cls;m.innerHTML=html}
+
+function step(dt){
+  t+=dt;
+  if(st1.pending!==false&&t>=st1.pending){st1.shots.push(st1.pending);const wait=st1.pending-st1.pressed;st1.pending=false;flash("fl1");
+    msg("m1","ok",`<b>Descarga sincronizada sobre la onda R.</b> Salió ${Math.round(wait*1000)} ms después de pulsar, lejos de la onda T.`);document.getElementById("sh1").disabled=false}
+  if(st2.pending!==null){const w=t-st2.pending;msg("m2","warn",`<b>Buscando onda R… ${w.toFixed(1)} s sin descarga.</b> En la FV no hay R que reconocer: el equipo sincronizado no descargará. Cambia a asincrónico.`)}
+}
+function frame(ts){
+  if(last==null)last=ts;const dt=Math.min((ts-last)/1000,.05);last=ts;
+  if(running)step(dt);
+  draw(document.getElementById("cv1"),s1,{r:true,shots:st1.shots});
+  draw(document.getElementById("cv2"),s2,{r:false,shots:st2.shots});
+  requestAnimationFrame(frame);
+}
+document.getElementById("sh1").addEventListener("click",e=>{
+  if(!running){running=true;document.getElementById("pause").textContent="Pausar"}
+  const next=rTimes(t,t+1).find(r=>r>t+.005);st1.pending=next;st1.pressed=t;e.target.disabled=true;
+  msg("m1","sy","<b>Botón pulsado.</b> El equipo espera a la siguiente onda R…");
+});
+document.getElementById("sh2").addEventListener("click",()=>{
+  if(!running){running=true;document.getElementById("pause").textContent="Pausar"}
+  if(st2.mode==="a"){st2.shots.push(t);flash("fl2");msg("m2","ok","<b>Descarga inmediata, sin sincronizar.</b> Es lo correcto en la FV: no hay R que esperar.")}
+  else{st2.pending=t;document.getElementById("sh2").disabled=true;document.getElementById("cancel2").hidden=false}
+});
+document.getElementById("cancel2").addEventListener("click",()=>{st2.pending=null;document.getElementById("sh2").disabled=false;document.getElementById("cancel2").hidden=true;msg("m2","","Descarga cancelada. En la FV usa el modo asincrónico.")});
+document.querySelector(".sw").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st2.mode=b.dataset.m;
+  document.querySelectorAll(".sw button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  const h=document.getElementById("hud2");h.textContent=st2.mode==="s"?"SINC":"ASINC";h.classList.toggle("s",st2.mode==="s");
+  if(st2.mode==="a"&&st2.pending!==null){st2.pending=null;document.getElementById("sh2").disabled=false;document.getElementById("cancel2").hidden=true}
+  msg("m2",st2.mode==="s"?"sy":"",st2.mode==="s"?"<b>Modo sincronizado activado.</b> Fíjate: no aparece ningún marcador, porque no hay ondas R.":"Modo asincrónico: la descarga sale en el instante en que se pulsa.")});
+document.getElementById("pause").addEventListener("click",e=>{running=!running;e.target.textContent=running?"Pausar":"Reproducir"});
+document.getElementById("pause").textContent=running?"Pausar":"Reproducir";
+t=WIN; requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Objetivos de la cardioversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: dos columnas de objetivos (terapéuticos y preventivos) con el medio oculto hasta tocar; simulador de sincronización con la onda R */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --ter:#2563a8; --ter-soft:#e4eef9;
+  --pre:#2f8a4c; --pre-soft:#e5f4e9;
+  --shock:#d0a000; --risk:#c8323c; --risk-soft:#fbe7e8;
+  --grid:#f1c9cc; --paper:#fffafa; --trace:#1b2733;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --ter:#7fb3ec; --ter-soft:#182c42; --pre:#6fcf8f; --pre-soft:#183326; --shock:#f2cf4a; --risk:#f07178; --risk-soft:#3a1d22;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --ter:#7fb3ec; --ter-soft:#182c42; --pre:#6fcf8f; --pre-soft:#183326; --shock:#f2cf4a; --risk:#f07178; --risk-soft:#3a1d22;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:30px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px;max-width:72ch}
+.ref{font-size:11px;font-weight:700;color:var(--ter);vertical-align:super;margin-left:2px}
+
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.btn:focus-visible,.obj:focus-visible,.sw button:focus-visible,svg:focus-visible{outline:3px solid var(--ter);outline-offset:2px}
+.cnt{font-size:13.5px;color:var(--muted)}
+
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.col h3{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);margin:0 0 8px}
+.col h3::before{content:"";width:12px;height:12px;border-radius:3px;background:var(--c)}
+.col.t{--c:var(--ter);--cs:var(--ter-soft)} .col.p{--c:var(--pre);--cs:var(--pre-soft)}
+.list{display:grid;gap:10px}
+.obj{font:inherit;color:inherit;text-align:left;width:100%;border:1.5px solid var(--line);border-left:5px solid var(--c);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer}
+.obj b{display:block;font-size:16px;font-weight:800}
+.obj .how{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14.5px;display:flex;gap:8px;align-items:baseline}
+.obj .how small{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);white-space:nowrap}
+.obj .q{margin-top:6px;font-size:13px;color:var(--muted)}
+.obj[aria-expanded="true"]{background:var(--cs);border-color:var(--c)}
+
+/* simulador */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.simtop{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:10px}
+.sw{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.sw button{font:inherit;font-weight:800;font-size:14px;padding:8px 14px;border:none;background:var(--surface);color:var(--muted);cursor:pointer}
+.sw button+button{border-left:1.5px solid var(--line)}
+.sw button[aria-pressed="true"][data-s="1"]{background:var(--pre);color:var(--surface)}
+.sw button[aria-pressed="true"][data-s="0"]{background:var(--risk);color:var(--surface)}
+.strip{border-radius:8px;overflow-x:auto;border:1px solid var(--line);background:var(--paper)}
+.strip svg{display:block;width:100%;min-width:560px;height:auto;cursor:crosshair}
+.vuln{fill:var(--risk);opacity:.14}
+.syncm{fill:var(--pre)}
+.lbl{font-family:var(--f);font-size:11px;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.res{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:14.5px;border:1.5px solid var(--line);background:var(--node)}
+.res b{display:block;font-size:15.5px}
+.res.ok{border-color:var(--pre);background:var(--pre-soft)} .res.ok b{color:var(--pre)}
+.res.bad{border-color:var(--risk);background:var(--risk-soft)} .res.bad b{color:var(--risk)}
+.res.mid{border-color:var(--shock)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Objetivos de la cardioversión</h1>
+  <p class="lead">Cada objetivo se alcanza con un medio concreto. Piensa cuál es antes de tocar la tarjeta para revelarlo. Después prueba en el simulador por qué la descarga se sincroniza con la onda R.</p>
+
+  <div class="top"><button class="btn pri" id="all">Mostrar todos los medios</button><button class="btn" id="none">Ocultar todos</button><span class="cnt" id="cnt"></span></div>
+  <div class="cols">
+    <section class="col t"><h3>Terapéuticos</h3><div class="list" id="lt"></div></section>
+    <section class="col p"><h3>Preventivos</h3><div class="list" id="lp"></div></section>
+  </div>
+
+  <h2>¿Por qué sincronizar con la onda R?</h2>
+  <p class="sub">En la onda T hay un período vulnerable: una descarga que cae ahí puede inducir fibrilación ventricular. Activa o desactiva la sincronización y toca el trazado para elegir el momento de la descarga.</p>
+  <section class="sim">
+    <div class="simtop">
+      <div class="sw" role="group" aria-label="Sincronización"><button data-s="1" aria-pressed="true">Sincronizada</button><button data-s="0" aria-pressed="false">Sin sincronizar</button></div>
+      <button class="btn" id="rand">Descarga en un momento al azar</button>
+      <button class="btn" id="clear">Limpiar</button>
+    </div>
+    <div class="strip"><svg id="ecg" viewBox="0 0 700 190" role="img" aria-label="Trazado ECG de una taquicardia; toca para elegir el momento de la descarga" tabindex="0"></svg></div>
+    <div class="legend">
+      <span><i style="background:var(--pre)"></i>Marca de sincronización sobre la R</span>
+      <span><i style="background:var(--risk);opacity:.35"></i>Período vulnerable (onda T)</span>
+      <span><i style="background:var(--shock)"></i>Descarga</span>
+    </div>
+    <div class="res" id="res" aria-live="polite">Toca el trazado en cualquier punto para descargar.</div>
+  </section>
+
+  <footer>Material educativo. Trazado esquemático. La cardioversión se realiza con monitorización continua, sedación y analgesia, y equipo de reanimación disponible, según el protocolo institucional.</footer>
+</div>
+
+<script>
+const O=[
+  {g:"t",o:"Terminar la taquiarritmia y restablecer un ritmo organizado",m:"Descarga que despolariza una masa crítica de miocardio",q:"¿Qué hace la descarga sobre el miocardio?"},
+  {g:"t",o:"Recuperar la estabilidad hemodinámica",m:"Restablecimiento rápido del ritmo en el paciente inestable",r:"1,2",q:"¿En qué paciente y con qué rapidez?"},
+  {g:"t",o:"Aliviar los síntomas y mejorar la función ventricular",m:"Cardioversión programada en el paciente estable",q:"¿Urgente o programada?"},
+  {g:"p",o:"Evitar la inducción de fibrilación ventricular",m:"Sincronización de la descarga con la onda R",q:"¿Con qué onda del ECG se coordina la descarga?"},
+  {g:"p",o:"Prevenir la embolia sistémica",m:"Anticoagulación cuando está indicada",q:"¿Qué tratamiento previene los trombos?"},
+  {g:"p",o:"Evitar el dolor y proteger la vía aérea",m:"Sedación y analgesia con vigilancia continua",q:"¿Qué necesita el paciente consciente?"}
+];
+const open=new Set();
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+function renderO(){
+  ["t","p"].forEach(g=>{document.getElementById("l"+g).innerHTML=O.map((o,i)=>o.g!==g?"":`<button class="obj" data-i="${i}" aria-expanded="${open.has(i)}"><b>${o.o}</b>${open.has(i)?`<div class="how"><small>Medio</small><span>${o.m}${ref(o.r)}</span></div>`:`<div class="q">Pista: ${o.q} Toca para ver el medio.</div>`}</button>`).join("")});
+  document.getElementById("cnt").textContent=`${open.size} de ${O.length} medios revelados`;
+}
+document.querySelector(".cols").addEventListener("click",e=>{const b=e.target.closest(".obj");if(!b)return;const i=Number(b.dataset.i);open.has(i)?open.delete(i):open.add(i);renderO()});
+document.getElementById("all").addEventListener("click",()=>{O.forEach((_,i)=>open.add(i));renderO()});
+document.getElementById("none").addEventListener("click",()=>{open.clear();renderO()});
+
+/* --- simulador --- */
+const W=700, BASE=110, RR=104, R0=46;
+const Rs=[]; for(let x=R0;x<W;x+=RR) Rs.push(x);
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+const sig=x=>Rs.reduce((s,r)=>s+G(x,r-4,2,5)+G(x,r,2.6,-62)+G(x,r+5,2.4,16)+G(x,r+44,10,-18),0);
+const VULN=[30,54];       // ventana sobre la onda T, relativa a la R
+let sync=true, shocks=[];
+function inVuln(x){return Rs.some(r=>x>=r+VULN[0]&&x<=r+VULN[1])}
+function nextR(x){return Rs.find(r=>r>=x-3)??null}
+function draw(){
+  let g="";
+  for(let x=0;x<=W;x+=10)g+=`<line x1="${x}" y1="0" x2="${x}" y2="190" stroke="var(--grid)" stroke-width="${x%50?0.4:1}"/>`;
+  for(let y=0;y<=190;y+=10)g+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="var(--grid)" stroke-width="${y%50?0.4:1}"/>`;
+  let v=Rs.map(r=>`<rect class="vuln" x="${r+VULN[0]}" y="40" width="${VULN[1]-VULN[0]}" height="110" rx="4"/>`).join("");
+  let d="";for(let x=0;x<=W;x++)d+=(x?"L":"M")+x+","+(BASE+sig(x)).toFixed(1);
+  let m=sync?Rs.map(r=>`<path class="syncm" d="M${r-6},22 L${r+6},22 L${r},32 Z"/>`).join(""):"";
+  let s=shocks.map(sh=>`<g><line x1="${sh.x}" x2="${sh.x}" y1="34" y2="168" stroke="var(--shock)" stroke-width="3"/><circle cx="${sh.x}" cy="176" r="9" fill="var(--shock)"/><text class="lbl" x="${sh.x}" y="180" text-anchor="middle" fill="#1b2733">⚡</text></g>`).join("");
+  document.getElementById("ecg").innerHTML=`<rect width="${W}" height="190" fill="var(--paper)"/>${g}${v}<path d="${d}" fill="none" stroke="var(--trace)" stroke-width="2" stroke-linejoin="round"/>${m}${s}
+    <text class="lbl" x="${Rs[0]+42}" y="36" text-anchor="middle" fill="var(--risk)">T</text><text class="lbl" x="${Rs[0]}" y="16" text-anchor="middle" fill="var(--muted)">R</text>`;
+}
+function shoot(x){
+  const res=document.getElementById("res");
+  if(sync){
+    const r=nextR(x);
+    if(r==null){res.className="res mid";res.innerHTML="<b>Sin onda R detectada en lo que queda del trazado</b>El equipo sincronizado espera a la siguiente R. Toca más a la izquierda.";return}
+    shocks=[{x:r}];draw();
+    res.className="res ok";
+    res.innerHTML=`<b>Descarga sincronizada sobre la onda R</b>Tocaste ${x<r-3?"antes de la R":"la R"}; el equipo esperó a la siguiente R y descargó en ella, lejos del período vulnerable. ${x<r-3?"Por eso hay un breve retraso entre pulsar el botón y la descarga: hay que mantenerlo pulsado.":""}`;
+  } else {
+    shocks=[{x}];draw();
+    if(inVuln(x)){res.className="res bad";res.innerHTML="<b>La descarga cayó sobre la onda T</b>Es el período vulnerable: una descarga en este momento puede inducir fibrilación ventricular. Por eso, con pulso, la descarga se sincroniza con la R.";}
+    else {res.className="res mid";res.innerHTML="<b>Esta vez no cayó sobre la onda T</b>Pero sin sincronizar el momento es aleatorio: prueba varias veces y verás que a veces cae en el período vulnerable.";}
+  }
+}
+const svg=document.getElementById("ecg");
+svg.addEventListener("click",e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());shoot(Math.max(0,Math.min(W,p.x)))});
+svg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();document.getElementById("rand").click()}});
+document.getElementById("rand").addEventListener("click",()=>shoot(Math.random()*(W-120)+20));
+document.getElementById("clear").addEventListener("click",()=>{shocks=[];draw();const r=document.getElementById("res");r.className="res";r.textContent="Toca el trazado en cualquier punto para descargar."});
+document.querySelector(".sw").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;sync=b.dataset.s==="1";
+  document.querySelectorAll(".sw button").forEach(x=>x.setAttribute("aria-pressed",x===b));shocks=[];draw();
+  const r=document.getElementById("res");r.className="res";r.textContent=sync?"Sincronización activa: el equipo marca cada R. Toca el trazado para descargar.":"Sin sincronizar: la descarga sale en el momento exacto en que tocas. Prueba a tocar sobre la onda T.";});
+renderO(); draw();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amiodarona en las arritmias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ficha del fármaco en rejilla; debajo: elegir el esquema según la situación y línea de tiempo de la infusión con dosis acumulada */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#7a4cb0; --drug-soft:#f0e9f8;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --load:#d0571f;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#bb9ae6; --drug-soft:#2a2140; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; --load:#f29a74; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#bb9ae6; --drug-soft:#2a2140; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; --load:#f29a74; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:4px 0 2px}
+.cls{font-size:14px;font-weight:700;color:var(--drug);background:var(--drug-soft);padding:3px 12px;border-radius:99px}
+.lead{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+.mono{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.mono{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.mono{grid-template-columns:1fr}}
+.tile{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tile:hover{border-color:var(--t,var(--muted))}
+.tile:focus-visible,.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.tile b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t,var(--muted));margin-bottom:3px}
+.tile span{font-size:15px}
+.tile.wide{grid-column:span 2}
+@media (max-width:540px){.tile.wide{grid-column:auto}}
+.tile.dose{--t:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.tile.dose span{font-size:16.5px;font-weight:700}
+.tile.stop{--t:var(--stop);background:var(--stop-soft)}
+.tile.warn{--t:var(--warn);background:var(--warn-soft)}
+.tile.mon{--t:var(--info);background:var(--info-soft)}
+.tile.sel{box-shadow:0 0 0 3px var(--node);border-color:var(--t,var(--ink))}
+.explain{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.explain b{font-weight:800}
+
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;margin-top:28px}
+@media (max-width:960px){.tools{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.opts{display:grid;gap:6px}
+.opt{font:inherit;text-align:left;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14.5px;font-weight:600}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.opt[aria-pressed="true"]{border-color:var(--head);background:var(--node)}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;border:1.5px solid}
+.verdict b{display:block;font-size:15.5px}
+.verdict .dose{display:block;margin-top:6px;font-weight:800}
+.verdict.ok{border-color:var(--ok);background:var(--ok-soft)} .verdict.ok b{color:var(--ok)}
+.verdict.warn{border-color:var(--warn);background:var(--warn-soft)} .verdict.warn b{color:var(--warn)}
+.verdict.no{border-color:var(--stop);background:var(--stop-soft)} .verdict.no b{color:var(--stop)}
+.hint{font-size:13.5px;color:var(--muted);margin:12px 0 0}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.stat{background:var(--node);border-radius:10px;padding:9px 12px;min-width:0}
+.stat b{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat span{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.stat.ph span{font-size:16px}
+.chart svg{display:block;width:100%;height:auto}
+.axis{font-family:var(--f);font-size:11px;fill:var(--muted)}
+.gl{stroke:var(--line);stroke-width:1}
+.scrub{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:14px;font-weight:600}
+.scrub input{flex:1;min-width:0;accent-color:var(--drug)}
+.marks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.btn{font:inherit;font-weight:700;font-size:13px;padding:6px 11px;border-radius:8px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.vig{margin-top:12px;border-radius:10px;padding:10px 12px;background:var(--info-soft);font-size:14px}
+.vig b{color:var(--info)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <div class="title"><h1>Amiodarona</h1><span class="cls">Clase III, con propiedades de las cuatro clases</span></div>
+  <p class="lead">Toca cada aspecto de la ficha para ver una explicación. Después elige el esquema de dosis según la situación y recorre la infusión de la taquicardia estable en la línea de tiempo.</p>
+
+  <section aria-label="Ficha del fármaco">
+    <div class="mono" id="mono"></div>
+    <div class="explain" id="explain" aria-live="polite"></div>
+  </section>
+
+  <div class="tools">
+    <section class="card">
+      <h2>¿Qué esquema corresponde?</h2>
+      <p class="sub">Elige la situación del paciente.</p>
+      <div class="opts" id="opts"></div>
+      <div id="verdict" aria-live="polite"><p class="hint">Lo primero es saber si el paciente tiene pulso.</p></div>
+    </section>
+
+    <section class="card">
+      <h2>Infusión en la taquicardia estable</h2>
+      <p class="sub">150 mg en 10 minutos y luego 1 mg/min durante 6 horas<span class="ref">7</span>. Desliza para recorrer el tiempo.</p>
+      <div class="stats" id="stats"></div>
+      <div class="chart"><svg id="chart" viewBox="0 0 560 220" role="img" aria-label="Dosis acumulada de amiodarona a lo largo de la infusión"></svg></div>
+      <div class="scrub"><label for="t">Tiempo</label><input type="range" id="t" min="0" max="370" step="1" value="10"><output id="tout"></output></div>
+      <div class="marks" id="marks"></div>
+      <div class="vig" id="vig"></div>
+    </section>
+  </div>
+
+  <footer>Material educativo. Las dosis siguen la tabla del módulo para el adulto; confirma siempre la prescripción, la dilución y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const M=[
+  {k:"Grupo farmacológico",v:"Antiarrítmico de clase III, con propiedades de las cuatro clases",x:"Además de bloquear el K⁺, bloquea canales de Na⁺ y de Ca²⁺ y tiene efecto betabloqueante. Por eso puede causar bradicardia, bloqueo AV e hipotensión."},
+  {k:"Mecanismo",v:"Prolonga la repolarización y el período refractario",x:"La célula tarda más en volver a excitarse, lo que interrumpe los circuitos de reentrada. En el ECG se refleja como un QT más largo."},
+  {k:"Indicación en el paro",v:"FV o TV sin pulso que no responden a la desfibrilación",r:"3",c:"stop",x:"Se usa cuando la FV o la TV sin pulso persisten tras las descargas. No sustituye a la RCP ni a la desfibrilación."},
+  {k:"Indicación con pulso",v:"Taquicardia de complejo ancho estable; TV polimórfica sin QT largo recurrente; control de frecuencia en la FA",r:"3,10",c:"wide",x:"Siempre en pacientes estables. Si la TV polimórfica se asocia a QT largo (torsades), la amiodarona puede empeorarla."},
+  {k:"Dosis en el paro",v:"300 mg en bolo; segunda dosis de 150 mg",r:"9",c:"dose",x:"Bolo intravenoso o intraóseo durante la RCP, sin diluir en infusión."},
+  {k:"Dosis en la taquicardia estable",v:"150 mg en 10 minutos; luego 1 mg/min durante 6 horas",r:"7",c:"dose wide",x:"La carga lenta evita la hipotensión. Usa la línea de tiempo de abajo para ver la dosis acumulada."},
+  {k:"Efectos adversos agudos",v:"Hipotensión, bradicardia, bloqueo AV, prolongación del QT, flebitis",c:"warn",x:"La flebitis es frecuente en venas periféricas; vigila el sitio de infusión y prefiere una vena de buen calibre."},
+  {k:"Efectos a largo plazo",v:"Toxicidad tiroidea, pulmonar y hepática",x:"Relevantes en tratamientos prolongados. Requieren seguimiento de la función tiroidea, hepática y respiratoria."},
+  {k:"Precauciones",v:"No combinar con otros antiarrítmicos; desfibrilador disponible",r:"3",c:"warn",x:"La combinación suma efectos sobre el QT y la conducción y aumenta el riesgo proarrítmico."},
+  {k:"Parámetros de vigilancia",v:"Presión arterial, frecuencia, PR, QRS, QTc y sitio de infusión",c:"mon",x:"Monitorización continua durante la carga y la infusión. Notifica la hipotensión, la bradicardia o la prolongación del QTc."}
+];
+let selM=5;
+document.getElementById("mono").innerHTML=M.map((m,i)=>`<button class="tile ${m.c||""}" data-i="${i}" aria-pressed="false"><b>${m.k}</b><span>${m.v}${ref(m.r)}</span></button>`).join("");
+function renderM(){
+  document.querySelectorAll(".tile").forEach(t=>{const on=Number(t.dataset.i)===selM;t.classList.toggle("sel",on);t.setAttribute("aria-pressed",on)});
+  document.getElementById("explain").innerHTML=`<b>${M[selM].k}:</b> ${M[selM].x}`;
+}
+document.getElementById("mono").addEventListener("click",e=>{const t=e.target.closest(".tile"); if(t){selM=Number(t.dataset.i);renderM()}});
+
+const O=[
+  {n:"FV o TV sin pulso tras las descargas",d:"Paro cardíaco",v:"ok",t:"Esquema del paro",dose:"300 mg en bolo; si persiste, segunda dosis de 150 mg",r:"9",x:"Sin interrumpir la RCP ni retrasar las descargas."},
+  {n:"Taquicardia de complejo ancho estable",d:"Con pulso, sin signos de inestabilidad",v:"ok",t:"Esquema de la taquicardia estable",dose:"150 mg en 10 minutos; luego 1 mg/min durante 6 horas",r:"7",x:"Con monitorización continua y desfibrilador disponible."},
+  {n:"TV polimórfica recurrente sin QT largo",d:"Con pulso",v:"ok",t:"Esquema de la taquicardia estable",dose:"150 mg en 10 minutos; luego 1 mg/min durante 6 horas",r:"7",x:"Confirma que el QT basal es normal antes de iniciar."},
+  {n:"FA que requiere control de la frecuencia",d:"Paciente estable",v:"ok",t:"Esquema de la taquicardia estable",dose:"150 mg en 10 minutos; luego 1 mg/min durante 6 horas",r:"7",x:"Según la indicación médica y el protocolo de la unidad."},
+  {n:"TV polimórfica con QT largo (torsades)",d:"QT prolongado previo",v:"no",t:"No indicada",x:"La amiodarona prolonga aún más el QT. El tratamiento de las torsades incluye magnesio y corregir la causa."},
+  {n:"Taquicardia con pulso e inestabilidad",d:"Hipotensión, shock o alteración mental",v:"warn",t:"Primero la cardioversión",x:"La inestabilidad exige terapia eléctrica inmediata. La amiodarona puede considerarse después, según la indicación."},
+  {n:"Paciente que ya recibe otro antiarrítmico",d:"Por ejemplo, sotalol o flecainida",v:"warn",t:"Precaución",x:"No se combina con otros antiarrítmicos. Notifica y confirma la indicación antes de administrar."}
+];
+document.getElementById("opts").innerHTML=O.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false">${o.n}<small>${o.d}</small></button>`).join("");
+document.getElementById("opts").addEventListener("click",e=>{const b=e.target.closest(".opt"); if(!b)return; const i=Number(b.dataset.i);
+  document.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",Number(x.dataset.i)===i));
+  const o=O[i]; document.getElementById("verdict").innerHTML=`<div class="verdict ${o.v}"><b>${o.t}</b>${o.dose?`<span class="dose">${o.dose}${ref(o.r)}</span>`:""}${o.x}</div>`;});
+
+/* --- línea de tiempo --- */
+const cum=t=>t<=10?15*t:150+(Math.min(t,370)-10);   // mg
+const X=t=>50+t*(490/370), Y=mg=>180-mg*(150/520);
+function axisSVG(){
+  let s="";
+  [0,100,200,300,400,500].forEach(v=>{s+=`<line class="gl" x1="50" x2="545" y1="${Y(v)}" y2="${Y(v)}"/><text class="axis" x="44" y="${Y(v)+4}" text-anchor="end">${v}</text>`});
+  [0,60,120,180,240,300,360].forEach(m=>{s+=`<text class="axis" x="${X(m)}" y="198" text-anchor="middle">${m/60} h</text>`});
+  s+=`<text class="axis" x="8" y="14">mg acumulados</text>`;
+  return s;
+}
+function drawChart(t){
+  let d=`M${X(0)},${Y(0)} L${X(10)},${Y(150)} L${X(370)},${Y(510)}`;
+  let p=`M${X(0)},${Y(0)}`; for(let x=0;x<=t;x+=1)p+=` L${X(x).toFixed(1)},${Y(cum(x)).toFixed(1)}`;
+  const load=`M${X(0)},${Y(0)} L${X(Math.min(t,10))},${Y(cum(Math.min(t,10)))}`;
+  document.getElementById("chart").innerHTML=axisSVG()+
+    `<rect x="${X(0)}" y="30" width="${X(10)-X(0)}" height="150" fill="var(--load)" opacity=".12"/>
+     <text class="axis" x="${X(10)+5}" y="44" style="fill:var(--load);font-weight:700">Carga 10 min</text>
+     <path d="${d}" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="5 4"/>
+     <path d="${p}" fill="none" stroke="var(--drug)" stroke-width="3.2" stroke-linejoin="round"/>
+     <path d="${load}" fill="none" stroke="var(--load)" stroke-width="3.6"/>
+     <line x1="${X(t)}" x2="${X(t)}" y1="30" y2="180" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/>
+     <circle cx="${X(t)}" cy="${Y(cum(t))}" r="6" fill="var(--surface)" stroke="${t<=10?"var(--load)":"var(--drug)"}" stroke-width="3"/>
+     <text class="axis" x="${X(370)}" y="${Y(510)-8}" text-anchor="end" style="fill:var(--ink);font-weight:700">510 mg a las 6 h 10 min</text>`;
+}
+const fmt=t=>t<60?`${t} min`:`${Math.floor(t/60)} h ${String(t%60).padStart(2,"0")} min`;
+function renderT(){
+  const t=Number(document.getElementById("t").value);
+  const ph=t<10?"Carga":t<370?"Mantenimiento":"Fin del esquema";
+  const rate=t<10?"15 mg/min":t<370?"1 mg/min":"—";
+  document.getElementById("tout").textContent=fmt(t);
+  document.getElementById("stats").innerHTML=`<div class="stat ph"><b>Fase</b><span style="color:${t<10?"var(--load)":"var(--drug)"}">${ph}</span></div>
+    <div class="stat"><b>Velocidad</b><span>${rate}</span></div><div class="stat"><b>Acumulado</b><span>${Math.round(cum(t))} mg</span></div>`;
+  document.getElementById("vig").innerHTML = t<10
+    ? `<b>Durante la carga:</b> controla la presión arterial y la frecuencia con frecuencia; la hipotensión es más probable si se acelera la infusión.`
+    : t<370 ? `<b>Durante el mantenimiento:</b> vigila presión arterial, frecuencia, PR, QRS, QTc y el sitio de infusión por riesgo de flebitis.`
+    : `<b>Al terminar las 6 horas:</b> la continuación depende de la prescripción y del protocolo de la unidad.`;
+  drawChart(t);
+}
+document.getElementById("marks").innerHTML=[[0,"Inicio"],[10,"Fin de la carga"],[60,"1 h"],[180,"3 h"],[370,"6 h de infusión"]].map(([v,l])=>`<button class="btn" data-v="${v}">${l}</button>`).join("");
+document.getElementById("marks").addEventListener("click",e=>{const b=e.target.closest("[data-v]"); if(b){document.getElementById("t").value=b.dataset.v;renderT()}});
+document.getElementById("t").addEventListener("input",renderT);
+renderM(); renderT();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

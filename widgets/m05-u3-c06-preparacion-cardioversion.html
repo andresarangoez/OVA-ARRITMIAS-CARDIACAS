@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preparación para la cardioversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: selector urgente/programada; lista de verificación que cambia de exigencia según el contexto con barra de preparación; tabla comparativa debajo */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --urg:#c8323c; --urg-soft:#fbe7e8;
+  --prog:#2563a8; --prog-soft:#e4eef9;
+  --ind:#1b2733; --opt:#b8660a; --opt-soft:#fdf1df; --na:#8a97a4;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --urg:#f07178; --urg-soft:#3a1d22; --prog:#7fb3ec; --prog-soft:#182c42; --ind:#e6edf3; --opt:#f2b25c; --opt-soft:#3a2b16; --na:#6b7a88; --ok:#6fcf8f; --ok-soft:#183326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --urg:#f07178; --urg-soft:#3a1d22; --prog:#7fb3ec; --prog-soft:#182c42; --ind:#e6edf3; --opt:#f2b25c; --opt-soft:#3a2b16; --na:#6b7a88; --ok:#6fcf8f; --ok-soft:#183326; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 16px}
+h2{font-size:20px;font-weight:800;margin:30px 0 8px}
+.ref{font-size:11px;font-weight:700;color:var(--prog);vertical-align:super;margin-left:2px}
+
+.ctx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ctxb{font:inherit;color:inherit;text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer}
+.ctxb b{display:block;font-size:17px;font-weight:800}
+.ctxb small{color:var(--muted);font-size:13px}
+.ctxb[data-c="urg"][aria-pressed="true"]{border-color:var(--urg);background:var(--urg-soft)} .ctxb[data-c="urg"] b{color:var(--urg)}
+.ctxb[data-c="prog"][aria-pressed="true"]{border-color:var(--prog);background:var(--prog-soft)} .ctxb[data-c="prog"] b{color:var(--prog)}
+.ctxb:focus-visible,.chk:focus-within,.btn:focus-visible{outline:3px solid var(--prog);outline-offset:2px}
+
+.ready{position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:2;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;box-shadow:0 4px 14px -10px rgba(0,0,0,.3)}
+.ready .bar{flex:1;min-width:140px;height:10px;border-radius:5px;background:var(--node);overflow:hidden}
+.ready .bar i{display:block;height:100%;background:var(--c);transition:width .25s}
+.ready b{font-variant-numeric:tabular-nums lining-nums}
+.ready .st{font-weight:800}
+.ready.go{border-color:var(--ok);background:var(--ok-soft)} .ready.go .st{color:var(--ok)}
+.btn{font:inherit;font-weight:700;font-size:13.5px;padding:6px 11px;border-radius:8px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+
+.list{display:grid;gap:8px}
+.chk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:11px 14px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer}
+.chk input{margin-top:3px;width:19px;height:19px;accent-color:var(--ok)}
+.chk .t{font-weight:700;font-size:15px}
+.chk .d{grid-column:2/4;font-size:13.5px;color:var(--muted)}
+.lvl{font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap;border:1.5px solid}
+.l-ind{color:var(--ind);border-color:var(--ind)}
+.l-opt{color:var(--opt);border-color:var(--opt);background:var(--opt-soft)}
+.l-na{color:var(--na);border-color:var(--na)}
+.chk:has(input:checked){border-color:var(--ok);background:var(--ok-soft)}
+.chk.na{opacity:.6}
+.chk.na .t{text-decoration:line-through}
+@media (max-width:560px){.chk{grid-template-columns:auto minmax(0,1fr)}.lvl{grid-column:2;justify-self:start}.chk .d{grid-column:2}}
+.note{margin-top:12px;border-radius:10px;padding:10px 14px;font-size:14.5px;border-left:4px solid var(--c);background:var(--surface)}
+.note b{color:var(--c)}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:11px 14px;background:var(--head);color:var(--head-ink)}
+thead th.u{background:var(--urg);color:var(--surface)} thead th.p{background:var(--prog);color:var(--surface)}
+tbody td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:14.5px}
+tbody td:first-child{font-weight:700;width:42%}
+td.diff{background:var(--opt-soft)}
+@media (max-width:680px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);padding:8px 12px}
+  tbody td{border:none;padding:3px 0}
+  td.u::before{content:"Urgente: ";font-weight:800;color:var(--urg)} td.p::before{content:"Programada: ";font-weight:800;color:var(--prog)}
+}
+.tnote{font-size:13.5px;color:var(--muted);margin-top:8px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Preparación del paciente para la cardioversión</h1>
+  <p class="lead">Elige el contexto y la lista de verificación ajusta lo que es indispensable. Marca cada elemento; la barra indica cuándo están cubiertos todos los indispensables.</p>
+
+  <div class="ctx" role="group" aria-label="Contexto">
+    <button class="ctxb" data-c="urg" aria-pressed="true"><b>Urgente</b><small>Paciente inestable: nada debe retrasar la descarga</small></button>
+    <button class="ctxb" data-c="prog" aria-pressed="false"><b>Programada</b><small>Paciente estable: preparación completa</small></button>
+  </div>
+
+  <div class="ready" id="ready" aria-live="polite"></div>
+  <div class="list" id="list"></div>
+  <div class="note" id="note"></div>
+
+  <h2>Tabla comparativa</h2>
+  <div class="tbl"><table><thead><tr><th>Elemento</th><th class="u">Urgente</th><th class="p">Programada</th></tr></thead><tbody id="rows"></tbody></table></div>
+  <p class="tnote">Las celdas resaltadas son las que cambian entre ambos contextos.</p>
+
+  <footer>Material educativo. Los superíndices remiten a las referencias del módulo. Confirma siempre el protocolo institucional.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+// niveles: ind = indispensable, opt = no debe retrasar / si es posible, na = no aplica
+const E=[
+  {t:"Valoración de la estabilidad y confirmación del ritmo",r:"4",u:["ind","Indispensable"],p:["ind","Indispensable"]},
+  {t:"Monitorización continua, acceso IV y oxígeno si hay hipoxemia",r:"4",u:["ind","Indispensable"],p:["ind","Indispensable"]},
+  {t:"ECG de 12 derivaciones",r:"4",u:["opt","Si está disponible y no retrasa"],p:["ind","Indispensable"]},
+  {t:"Duración de la FA o el flutter y estado de anticoagulación",r:"6",u:["opt","No debe retrasar el procedimiento"],p:["ind","Indispensable"]},
+  {t:"Electrolitos, digoxina y otros antiarrítmicos",u:["opt","Si es posible"],p:["ind","Indispensable"]},
+  {t:"Valoración de la vía aérea y antecedentes para la sedación",u:["ind","Breve"],p:["ind","Completa"]},
+  {t:"Información y consentimiento",u:["ind","Explicación breve si el paciente está consciente"],p:["ind","Consentimiento informado"]},
+  {t:"Ayuno",u:["na","No aplica"],p:["ind","Según el protocolo institucional"]},
+  {t:"Piel limpia y seca, vello recortado, retirada de parches transdérmicos",u:["ind","Indispensable"],p:["ind","Indispensable"]}
+];
+let ctx="urg"; const done={urg:new Set(),prog:new Set()};
+const LV={ind:"Indispensable",opt:"Si no retrasa",na:"No aplica"};
+function render(){
+  const key=ctx==="urg"?"u":"p", c=ctx==="urg"?"var(--urg)":"var(--prog)";
+  document.querySelectorAll(".ctxb").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===ctx));
+  const req=E.map((e,i)=>({e,i})).filter(x=>x.e[key][0]==="ind");
+  const n=req.filter(x=>done[ctx].has(x.i)).length, all=n===req.length;
+  const rd=document.getElementById("ready"); rd.style.setProperty("--c",c); rd.classList.toggle("go",all);
+  rd.innerHTML=`<span class="st">${all?"Listo: indispensables cubiertos":"Preparación en curso"}</span><div class="bar"><i style="width:${n/req.length*100}%"></i></div><span><b>${n}</b> de ${req.length} indispensables</span><button class="btn" id="clr">Reiniciar</button>`;
+  document.getElementById("list").innerHTML=E.map((e,i)=>{const [lv,txt]=e[key];
+    return `<label class="chk ${lv==="na"?"na":""}" for="e${i}"><input type="checkbox" id="e${i}" data-i="${i}" ${done[ctx].has(i)?"checked":""} ${lv==="na"?"disabled":""}>
+      <span class="t">${e.t}${ref(e.r)}</span><span class="lvl l-${lv}">${LV[lv]}</span>${txt===LV[lv]||txt==="Indispensable"||txt==="No aplica"?"":`<span class="d">${txt}</span>`}</label>`}).join("");
+  const note=document.getElementById("note"); note.style.setProperty("--c",c);
+  note.innerHTML=ctx==="urg"
+    ? `<b>Urgente:</b> lo marcado como «si no retrasa» se hace solo si no demora la descarga. En el paciente inestable, la prioridad es restablecer el ritmo.`
+    : `<b>Programada:</b> todos los elementos son indispensables, incluido el consentimiento informado y el ayuno según el protocolo.`;
+}
+document.querySelector(".ctx").addEventListener("click",e=>{const b=e.target.closest(".ctxb");if(b){ctx=b.dataset.c;render()}});
+document.getElementById("list").addEventListener("change",e=>{const i=Number(e.target.dataset.i);e.target.checked?done[ctx].add(i):done[ctx].delete(i);render()});
+document.getElementById("ready").addEventListener("click",e=>{if(e.target.id==="clr"){done[ctx].clear();render()}});
+document.getElementById("rows").innerHTML=E.map(e=>{const d=e.u[1]!==e.p[1];return `<tr><td>${e.t}${ref(e.r)}</td><td class="u ${d?"diff":""}">${e.u[1]}</td><td class="p ${d?"diff":""}">${e.p[1]}</td></tr>`}).join("");
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

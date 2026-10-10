@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adrenalina en el paro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: las dos secuencias del diagrama como pasos clicables; ficha del paso; línea de tiempo con reloj del paro que compara ambos ritmos */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --adr:#2b6cc4; --adr-soft:#e4eef9;
+  --shock:#d0a000; --shock-soft:#fdf6d8;
+  --anti:#7a4cb0; --anti-soft:#f0e9f8;
+  --cpr:#c8323c; --cpr-soft:#fbe7e8;
+  --hts:#2f8a4c; --hts-soft:#e5f4e9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --adr:#7fb3ec; --adr-soft:#182c42; --shock:#f2cf4a; --shock-soft:#3a3214; --anti:#bb9ae6; --anti-soft:#2a2140;
+  --cpr:#f07178; --cpr-soft:#3a1d22; --hts:#6fcf8f; --hts-soft:#183326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --adr:#7fb3ec; --adr-soft:#182c42; --shock:#f2cf4a; --shock-soft:#3a3214; --anti:#bb9ae6; --anti-soft:#2a2140;
+  --cpr:#f07178; --cpr-soft:#3a1d22; --hts:#6fcf8f; --hts-soft:#183326; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:17px;font-weight:800;margin:0 0 8px}
+h3.s{font-size:20px;font-weight:800;margin:28px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+
+.track{margin-bottom:16px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;position:relative}
+@media (max-width:760px){.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+.step{font:inherit;color:inherit;text-align:center;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 10px;cursor:pointer;position:relative;min-width:0}
+.step b{display:block;font-size:15px;font-weight:800}
+.step small{display:block;font-size:13px;color:var(--muted)}
+.step.adr{background:var(--adr-soft);border-color:var(--adr)}
+.step:not(:last-child)::after{content:"";position:absolute;right:-17px;top:50%;width:12px;height:12px;border-top:2px solid var(--line);border-right:2px solid var(--line);transform:translateY(-50%) rotate(45deg)}
+@media (max-width:760px){.step::after{display:none}}
+.step[aria-pressed="true"]{box-shadow:0 0 0 3px var(--head);border-color:var(--head)}
+.step:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--adr);outline-offset:2px}
+
+.detail{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:4px}
+.detail .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.detail h4{font-size:19px;font-weight:800;margin:2px 0 8px}
+.detail ul{margin:0;padding-left:20px;display:grid;gap:4px;max-width:80ch}
+.hts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:8px;max-width:640px}
+.hts div{background:var(--hts-soft);border-radius:8px;padding:6px 10px;font-size:14px}
+.hts b{color:var(--hts)}
+
+/* línea de tiempo */
+.tl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.tl-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:10px}
+.clock{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums lining-nums;min-width:4.2ch}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.tl-top input{flex:1;min-width:160px;accent-color:var(--head)}
+.svgwrap{overflow-x:auto}
+.svgwrap svg{display:block;width:100%;min-width:680px;height:auto}
+.ax{font-family:var(--f);font-size:12px;fill:var(--muted)}
+.lane{font-family:var(--f);font-size:13px;font-weight:800;fill:var(--ink)}
+.ev text{font-family:var(--f);font-size:11px;font-weight:800;pointer-events:none}
+.ev{transition:opacity .2s}
+.ev.future{opacity:.3}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.logs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+@media (max-width:760px){.logs{grid-template-columns:1fr}}
+.log{background:var(--node);border-radius:10px;padding:10px 12px;font-size:14px;min-height:130px}
+.log b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.log ol{margin:0;padding-left:20px;display:grid;gap:2px;font-variant-numeric:tabular-nums lining-nums}
+.log li span{color:var(--muted)}
+.callout{margin-top:12px;border-radius:10px;padding:10px 14px;background:var(--adr-soft);border:1.5px solid var(--adr);font-size:14.5px}
+.callout b{color:var(--adr)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Paro cardíaco</div>
+  <h1>La adrenalina se adelanta en los ritmos no desfibrilables</h1>
+  <p class="lead">Toca cada paso para ver qué hace el equipo. Después reproduce el reloj del paro y compara cuándo llega la primera adrenalina en cada ritmo.</p>
+
+  <section class="track">
+    <h2>Ritmo desfibrilable (FV o TV sin pulso)</h2>
+    <div class="steps" id="trD"></div>
+  </section>
+  <section class="track">
+    <h2>Ritmo no desfibrilable (asistolia o AESP)</h2>
+    <div class="steps" id="trN"></div>
+  </section>
+  <section class="detail" id="detail" aria-live="polite"></section>
+
+  <h3 class="s">Reloj del paro</h3>
+  <p class="sub">Secuencia típica con ciclos de RCP de 2 minutos, si el ritmo no cambia. Los tiempos son orientativos.</p>
+  <section class="tl">
+    <div class="tl-top">
+      <span class="clock" id="clock">0:00</span>
+      <button class="btn pri" id="play">Reproducir</button>
+      <button class="btn" id="rst">Reiniciar</button>
+      <label for="scrub" class="sub" style="margin:0">Tiempo</label>
+      <input type="range" id="scrub" min="0" max="720" value="0" step="5">
+    </div>
+    <div class="svgwrap"><svg id="tl" viewBox="0 0 760 210" role="img" aria-label="Línea de tiempo de los dos ritmos"></svg></div>
+    <div class="legend">
+      <span><i style="background:var(--cpr-soft);border:1px solid var(--cpr)"></i>Ciclo de RCP (2 min)</span>
+      <span><i style="background:var(--shock)"></i>Descarga</span>
+      <span><i style="background:var(--adr)"></i>Adrenalina 1 mg</span>
+      <span><i style="background:var(--anti)"></i>Antiarrítmico</span>
+      <span><i style="background:var(--hts)"></i>Causas reversibles</span>
+    </div>
+    <div class="logs">
+      <div class="log"><b>Desfibrilable</b><ol id="logD"></ol></div>
+      <div class="log"><b>No desfibrilable</b><ol id="logN"></ol></div>
+    </div>
+    <div class="callout" id="callout"></div>
+  </section>
+
+  <footer>Material educativo. Secuencia simplificada; la RCP de alta calidad continúa sin interrupciones innecesarias durante todo el paro. Si el ritmo cambia, se pasa a la otra secuencia. No reemplaza los protocolos institucionales.</footer>
+</div>
+
+<script>
+const T={
+  D:[
+    {n:"RCP y descarga",s:"intentos iniciales",t:"Ritmo desfibrilable",h:"RCP y descarga",li:["Inicia RCP de alta calidad mientras se conecta el desfibrilador.","Descarga en cuanto el ritmo se confirme como FV o TV sin pulso.","Reanuda la RCP de inmediato durante 2 minutos, sin comprobar el pulso."]},
+    {n:"Adrenalina 1 mg",s:"si el ritmo persiste",adr:1,t:"Ritmo desfibrilable",h:"Adrenalina 1 mg si el ritmo persiste",li:["Se administra cuando la FV o la TV sin pulso persisten tras los intentos iniciales de descarga, habitualmente después de la segunda.","Vía intravenosa o intraósea, seguida de lavado con solución salina.","En este ritmo la prioridad inicial es la descarga, por eso la adrenalina llega más tarde."]},
+    {n:"Antiarrítmico",s:"amiodarona o lidocaína",t:"Ritmo desfibrilable",h:"Antiarrítmico: amiodarona o lidocaína",li:["Se considera si la FV o la TV sin pulso persisten tras las descargas, habitualmente después de la tercera.","Amiodarona: 300 mg en bolo; segunda dosis de 150 mg si persiste.","Lidocaína como alternativa, según el protocolo."]},
+    {n:"Adrenalina",s:"cada 3 a 5 minutos",adr:1,t:"Ritmo desfibrilable",h:"Adrenalina cada 3 a 5 minutos",li:["Se repite cada 3 a 5 minutos mientras dure el paro, lo que suele coincidir con ciclos alternos de RCP.","Registra la hora de cada dosis para no adelantar ni retrasar la siguiente.","Continúa con descargas en cada comprobación si el ritmo sigue siendo desfibrilable."]}
+  ],
+  N:[
+    {n:"RCP de alta calidad",s:"sin descarga",t:"Ritmo no desfibrilable",h:"RCP de alta calidad, sin descarga",li:["La asistolia y la AESP no responden a la descarga: no se desfibrila.","Confirma la asistolia en más de una derivación y revisa la ganancia y las conexiones.","Mantén compresiones de calidad con las mínimas interrupciones."]},
+    {n:"Adrenalina 1 mg",s:"lo antes posible",adr:1,t:"Ritmo no desfibrilable",h:"Adrenalina 1 mg lo antes posible",li:["En cuanto haya acceso intravenoso o intraóseo.","Al no haber descarga que dar, la adrenalina es la primera intervención farmacológica y se adelanta.","Seguida de lavado con solución salina."]},
+    {n:"Adrenalina",s:"cada 3 a 5 minutos",adr:1,t:"Ritmo no desfibrilable",h:"Adrenalina cada 3 a 5 minutos",li:["Se repite cada 3 a 5 minutos mientras dure el paro.","Registra la hora de cada dosis.","Comprueba el ritmo cada 2 minutos: si se vuelve desfibrilable, cambia de secuencia y descarga."]},
+    {n:"Causas reversibles",s:"buscar y tratar",t:"Ritmo no desfibrilable",h:"Causas reversibles: buscar y tratar",li:["Son la clave del pronóstico en la asistolia y la AESP.","Se buscan durante toda la reanimación, sin detener la RCP."],hts:true}
+  ]
+};
+const HTS=[["H","Hipovolemia"],["H","Hipoxia"],["H","Hidrogeniones (acidosis)"],["H","Hipo o hiperpotasemia"],["H","Hipotermia"],["T","Neumotórax a tensión"],["T","Taponamiento cardíaco"],["T","Tóxicos"],["T","Trombosis pulmonar"],["T","Trombosis coronaria"]];
+let sel={tr:"N",i:1};
+["D","N"].forEach(tr=>{document.getElementById("tr"+tr).innerHTML=T[tr].map((s,i)=>`<button class="step ${s.adr?"adr":""}" data-tr="${tr}" data-i="${i}" aria-pressed="false"><b>${s.n}</b><small>${s.s}</small></button>`).join("")});
+function renderDetail(){
+  document.querySelectorAll(".step").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tr===sel.tr&&Number(b.dataset.i)===sel.i));
+  const s=T[sel.tr][sel.i];
+  document.getElementById("detail").innerHTML=`<div class="tag">${s.t} · paso ${sel.i+1} de 4</div><h4>${s.h}</h4><ul>${s.li.map(x=>`<li>${x}</li>`).join("")}</ul>
+    ${s.hts?`<div class="hts">${HTS.map(([l,t])=>`<div><b>${l}</b> · ${t}</div>`).join("")}</div>`:""}`;
+}
+document.querySelectorAll(".steps").forEach(g=>g.addEventListener("click",e=>{const b=e.target.closest(".step"); if(b){sel={tr:b.dataset.tr,i:Number(b.dataset.i)};renderDetail()}}));
+
+/* --- reloj --- */
+// eventos en segundos (secuencia típica, orientativa)
+const EV={
+  D:[{t:0,k:"shock",l:"Descarga 1"},{t:120,k:"shock",l:"Descarga 2"},{t:150,k:"adr",l:"Adrenalina 1 mg (1.ª dosis)"},{t:240,k:"shock",l:"Descarga 3"},{t:270,k:"anti",l:"Amiodarona 300 mg"},{t:360,k:"shock",l:"Descarga 4"},{t:390,k:"adr",l:"Adrenalina 1 mg (2.ª dosis)"},{t:480,k:"shock",l:"Descarga 5"},{t:510,k:"anti",l:"Amiodarona 150 mg"},{t:600,k:"shock",l:"Descarga 6"},{t:630,k:"adr",l:"Adrenalina 1 mg (3.ª dosis)"}],
+  N:[{t:30,k:"adr",l:"Adrenalina 1 mg (1.ª dosis)"},{t:60,k:"hts",l:"Búsqueda de causas reversibles"},{t:270,k:"adr",l:"Adrenalina 1 mg (2.ª dosis)"},{t:510,k:"adr",l:"Adrenalina 1 mg (3.ª dosis)"}]
+};
+const X=s=>130+s*(610/720);
+const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
+const COL={shock:"var(--shock)",adr:"var(--adr)",anti:"var(--anti)",hts:"var(--hts)"};
+const SYM={shock:"⚡",adr:"A",anti:"Am",hts:"HT"};
+let now=0, playing=false, last=null;
+function lane(tr,y,name){
+  let s=`<text class="lane" x="10" y="${y+24}">${name}</text>`;
+  for(let c=0;c<6;c++) s+=`<rect x="${X(c*120)+1}" y="${y+6}" width="${X(120)-X(0)-2}" height="30" rx="5" fill="var(--cpr-soft)" stroke="var(--cpr)" stroke-opacity=".35"/>`;
+  if(tr==="N") s+=`<rect x="${X(60)}" y="${y+40}" width="${X(720)-X(60)}" height="5" rx="2.5" fill="var(--hts)" opacity="${now>=60?.7:.2}"/>`;
+  EV[tr].forEach(e=>{const fut=e.t>now;const cx=X(e.t);
+    s+=`<g class="ev ${fut?"future":""}"><circle cx="${cx}" cy="${y+21}" r="11" fill="${COL[e.k]}" stroke="var(--surface)" stroke-width="2"/><text x="${cx}" y="${y+25}" text-anchor="middle" fill="${e.k==="shock"?"#1b2733":"var(--surface)"}">${SYM[e.k]}</text></g>`});
+  return s;
+}
+function drawTL(){
+  let s="";
+  for(let m=0;m<=12;m+=2){s+=`<line x1="${X(m*60)}" x2="${X(m*60)}" y1="12" y2="180" stroke="var(--line)"/><text class="ax" x="${X(m*60)}" y="198" text-anchor="middle">${m} min</text>`}
+  s+=`<text class="ax" x="${X(0)}" y="10">comprobación del ritmo cada 2 min</text>`;
+  s+=lane("D",22,"Desfibrilable")+lane("N",100,"No desfibrilable");
+  // brecha primera adrenalina
+  const aD=EV.D.find(e=>e.k==="adr").t, aN=EV.N[0].t;
+  s+=`<path d="M${X(aN)},${168} H${X(aD)}" stroke="var(--adr)" stroke-width="2" marker-end="url(#ar)" opacity="${now>=aD?1:.25}"/>`;
+  s+=`<text class="ax" x="${(X(aN)+X(aD))/2}" y="162" text-anchor="middle" style="fill:var(--adr);font-weight:700;opacity:${now>=aD?1:.25}">primera adrenalina</text>`;
+  s=`<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--adr)"/></marker></defs>`+s;
+  s+=`<line x1="${X(now)}" x2="${X(now)}" y1="14" y2="180" stroke="var(--ink)" stroke-width="2"/><circle cx="${X(now)}" cy="14" r="4" fill="var(--ink)"/>`;
+  document.getElementById("tl").innerHTML=s;
+  document.getElementById("clock").textContent=fmt(now);
+  document.getElementById("scrub").value=now;
+  ["D","N"].forEach(tr=>{const past=EV[tr].filter(e=>e.t<=now);
+    document.getElementById("log"+tr).innerHTML=past.length?past.map(e=>`<li><span>${fmt(e.t)}</span> · ${e.l}</li>`).join(""):`<li style="list-style:none;margin-left:-20px;color:var(--muted)">${tr==="D"?"RCP y preparación del desfibrilador":"RCP de alta calidad y acceso venoso"}</li>`});
+  const nD=EV.D.filter(e=>e.k==="adr"&&e.t<=now).length, nN=EV.N.filter(e=>e.k==="adr"&&e.t<=now).length;
+  document.getElementById("callout").innerHTML=`<b>Adrenalina administrada hasta ${fmt(now)}:</b> ${nD} en el ritmo desfibrilable y ${nN} en el no desfibrilable. ${now<150?"En el no desfibrilable se da en cuanto hay acceso; en el desfibrilable se espera a que el ritmo persista tras las descargas.":"Después de la primera dosis, ambos ritmos la repiten cada 3 a 5 minutos."}`;
+}
+function frame(ts){
+  if(playing){ if(last!=null) now=Math.min(720,now+(ts-last)/1000*40); last=ts; if(now>=720){playing=false;document.getElementById("play").textContent="Reproducir"} drawTL(); requestAnimationFrame(frame);} else last=null;
+}
+document.getElementById("play").addEventListener("click",e=>{if(now>=720)now=0;playing=!playing;e.target.textContent=playing?"Pausar":"Reproducir";if(playing)requestAnimationFrame(frame)});
+document.getElementById("rst").addEventListener("click",()=>{playing=false;now=0;document.getElementById("play").textContent="Reproducir";drawTL()});
+document.getElementById("scrub").addEventListener("input",e=>{now=Number(e.target.value);drawTL()});
+renderDetail(); now=150; drawTL();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adenosina y nodo AV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: dos simulaciones lado a lado (reentrada nodal y flúter/FA), cada una con su circuito animado y su tira de ECG; controles comunes arriba */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --panel:#eef1f4; --box:#ffffff; --box-line:#c9d3dc;
+  --head:#18283a; --head-ink:#ffffff;
+  --av:#c8323c; --av-soft:#fbe7e8;
+  --imp:#2b6cc4; --ok:#2f8a4c; --ok-soft:#e5f4e9; --warn:#b8660a; --warn-soft:#fdf1df;
+  --grid:#f1c9cc; --paper:#fffafa; --trace:#1b2733;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --panel:#1b2631; --box:#17212b; --box-line:#3d4d5b; --head:#dbe6f0; --head-ink:#10171e;
+  --av:#f07178; --av-soft:#3a1d22; --imp:#7fb3ec; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --panel:#1b2631; --box:#17212b; --box-line:#3d4d5b; --head:#dbe6f0; --head-ink:#10171e;
+  --av:#f07178; --av-soft:#3a1d22; --imp:#7fb3ec; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:16px}
+.btn{font:inherit;font-weight:700;font-size:14.5px;padding:10px 16px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.ade{background:var(--av);border-color:var(--av);color:var(--surface)}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn:focus-visible{outline:3px solid var(--imp);outline-offset:2px}
+.timer{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+.timer b{color:var(--av)}
+.spacer{flex:1}
+
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.panels{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:17px;font-weight:800;margin:0;text-align:center}
+.diagram svg{display:block;width:100%;max-width:360px;height:auto;margin:0 auto}
+.boxr{fill:var(--box);stroke:var(--box-line);stroke-width:1.5}
+.boxt{font-family:var(--f);font-size:15px;font-weight:600;fill:var(--ink)}
+.boxs{font-family:var(--f);font-size:12px;fill:var(--muted)}
+.av .boxr{fill:var(--av-soft);stroke:var(--av);stroke-width:2.4}
+.av .boxt{font-weight:800}
+.av.blocked .boxr{stroke-width:3.5}
+.wire{fill:none;stroke:var(--box-line);stroke-width:2}
+.xmark{stroke:var(--av);stroke-width:4;stroke-linecap:round;opacity:0;transition:opacity .2s}
+.blocked .xmark,.xmark.on{opacity:1}
+.dot{fill:var(--imp)}
+.lbl{font-family:var(--f);font-size:12px;fill:var(--muted)}
+.status{border-radius:10px;padding:10px 12px;font-size:14px;background:var(--surface);border:1.5px solid var(--line);min-height:68px}
+.status b{display:block;font-size:14.5px}
+.status.blk{border-color:var(--av);background:var(--av-soft)} .status.blk b{color:var(--av)}
+.status.end{border-color:var(--ok);background:var(--ok-soft)} .status.end b{color:var(--ok)}
+.status.per{border-color:var(--warn);background:var(--warn-soft)} .status.per b{color:var(--warn)}
+.strip{border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--paper)}
+.strip canvas{display:block;width:100%;height:110px}
+.cap{font-size:12px;color:var(--muted);margin-top:-4px}
+
+.lesson{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.lesson{grid-template-columns:1fr}}
+.lesson div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.lesson b{display:block;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Adenosina</div>
+  <h1>La adenosina termina solo las taquicardias que dependen del nodo AV</h1>
+  <p class="lead">Observa cómo viaja el impulso en cada arritmia y pulsa «Administrar adenosina». El nodo AV se bloquea unos segundos: en la reentrada el circuito se rompe; en el flúter la aurícula sigue sola y sus ondas se hacen visibles.</p>
+
+  <div class="controls">
+    <button class="btn ade" id="ade">Administrar adenosina</button>
+    <button class="btn" id="play">Pausar</button>
+    <button class="btn" id="reset">Reiniciar</button>
+    <span class="spacer"></span>
+    <span class="timer" id="timer">Nodo AV conduciendo</span>
+  </div>
+
+  <div class="panels">
+    <section class="panel" id="pL">
+      <h2>Reentrada que usa el nodo AV</h2>
+      <div class="diagram"><svg viewBox="0 0 340 290" id="svgL" role="img" aria-label="Circuito de reentrada que pasa por el nodo AV"></svg></div>
+      <div class="status" id="stL"></div>
+      <div class="strip"><canvas id="ecgL" width="1200" height="220"></canvas></div>
+      <div class="cap">ECG en tiempo real (esquemático, cámara lenta)</div>
+    </section>
+    <section class="panel" id="pR">
+      <h2>Flúter o fibrilación auricular</h2>
+      <div class="diagram"><svg viewBox="0 0 340 290" id="svgR" role="img" aria-label="Flúter auricular con circuito propio en la aurícula"></svg></div>
+      <div class="status" id="stR"></div>
+      <div class="strip"><canvas id="ecgR" width="1200" height="220"></canvas></div>
+      <div class="cap">ECG en tiempo real (esquemático, cámara lenta)</div>
+    </section>
+  </div>
+
+  <div class="lesson">
+    <div><b>Termina</b>TSV por reentrada nodal o por vía accesoria ortodrómica: el nodo AV es parte del circuito.</div>
+    <div><b>No termina, pero ayuda</b>Flúter, FA y taquicardia auricular: el bloqueo transitorio deja ver las ondas auriculares y aclara el diagnóstico.</div>
+    <div><b>Cuidados</b>Administrar con monitorización ECG continua y registrar el trazado durante el bloqueo. Evitar en la FA preexcitada.</div>
+  </div>
+
+  <footer>Material educativo. Animación esquemática y en cámara lenta. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+/* ---------- geometría ---------- */
+const BOX={A:{y:20,h:56},AV:{y:118,h:56},V:{y:214,h:56}};
+function boxes(sub){
+  return `
+  <g><rect class="boxr" x="100" y="${BOX.A.y}" width="160" height="${BOX.A.h}" rx="8"/>
+    <text class="boxt" x="180" y="${BOX.A.y+(sub.A?26:34)}" text-anchor="middle">Aurícula</text>
+    ${sub.A?`<text class="boxs" x="180" y="${BOX.A.y+44}" text-anchor="middle">${sub.A}</text>`:""}</g>
+  <g class="av" id="${sub.id}-av"><rect class="boxr" x="100" y="${BOX.AV.y}" width="160" height="${BOX.AV.h}" rx="8"/>
+    <text class="boxt" x="180" y="${BOX.AV.y+26}" text-anchor="middle">Nodo AV</text>
+    <text class="boxs" x="180" y="${BOX.AV.y+44}" text-anchor="middle" id="${sub.id}-avs">conduce</text></g>
+  <g><rect class="boxr" x="100" y="${BOX.V.y}" width="160" height="${BOX.V.h}" rx="8"/>
+    <text class="boxt" x="180" y="${BOX.V.y+(sub.V?26:34)}" text-anchor="middle">Ventrículo</text>
+    ${sub.V?`<text class="boxs" x="180" y="${BOX.V.y+44}" text-anchor="middle" id="${sub.id}-vs">${sub.V}</text>`:""}</g>
+  <line class="wire" x1="180" y1="${BOX.A.y+BOX.A.h}" x2="180" y2="${BOX.AV.y}"/>
+  <line class="wire" x1="180" y1="${BOX.AV.y+BOX.AV.h}" x2="180" y2="${BOX.V.y}"/>
+  <g class="xmark" id="${sub.id}-x"><line x1="170" y1="186" x2="190" y2="202"/><line x1="190" y1="186" x2="170" y2="202"/></g>`;
+}
+document.getElementById("svgL").innerHTML=`
+  <path class="wire" d="M100,${BOX.V.y+28} H44 V${BOX.A.y+28} H100"/>
+  <text class="lbl" x="38" y="150" text-anchor="end" transform="rotate(-90 38 150)" style="text-anchor:middle">retorno</text>
+  ${boxes({id:"L"})}<circle class="dot" id="dotL" r="7" cx="-20" cy="-20"/>`;
+document.getElementById("svgR").innerHTML=`
+  ${boxes({id:"R",A:"circuito propio",V:"frecuencia ventricular"})}
+  <ellipse cx="300" cy="${BOX.A.y+28}" rx="22" ry="16" fill="none" stroke="var(--box-line)" stroke-width="2" stroke-dasharray="4 3"/>
+  <line class="wire" x1="260" y1="${BOX.A.y+28}" x2="278" y2="${BOX.A.y+28}"/>
+  <circle class="dot" id="loopR" r="5" cx="-20" cy="-20"/>
+  <g id="dotsR"></g>`;
+
+/* recorrido de la reentrada: bajada por el nodo y retorno por la vía lateral */
+const LOOP=[[180,BOX.A.y+BOX.A.h-6],[180,BOX.V.y+20],[180,BOX.V.y+28],[100,BOX.V.y+28],[44,BOX.V.y+28],[44,BOX.A.y+28],[100,BOX.A.y+28],[180,BOX.A.y+28],[180,BOX.A.y+BOX.A.h-6]];
+const segLen=LOOP.slice(1).map((p,i)=>Math.hypot(p[0]-LOOP[i][0],p[1]-LOOP[i][1]));
+const total=segLen.reduce((a,b)=>a+b,0);
+function along(f){let d=f*total;for(let i=0;i<segLen.length;i++){if(d<=segLen[i]){const u=d/segLen[i];return[lerp(LOOP[i][0],LOOP[i+1][0],u),lerp(LOOP[i][1],LOOP[i+1][1],u)]}d-=segLen[i]}return LOOP[0]}
+const lerp=(a,b,t)=>a+(b-a)*t;
+const fAVin=(BOX.AV.y-LOOP[0][1])/total;              // llega al nodo
+const fVin=(BOX.V.y-LOOP[0][1])/total;                // llega al ventrículo
+
+/* ---------- estado ---------- */
+const SPEED=0.5;          // cámara lenta
+const BLOCK=3.2;          // segundos de simulación de bloqueo
+let S;
+function init(){
+  S={t:0,blockStart:null,
+     L:{mode:"tsv",f:0,sinusNext:0,down:[],qrs:[],p:[]},
+     R:{ang:0,rev:0,down:[],qrs:[],lastF:0}};
+  bufL.fill(null); bufR.fill(null);
+}
+const blocked=()=>S.blockStart!==null&&S.t>=S.blockStart&&S.t<S.blockStart+BLOCK;
+
+/* ---------- ECG ---------- */
+const PX=120, N=600;     // 120 muestras por segundo, 5 s visibles
+const bufL=new Array(N).fill(null), bufR=new Array(N).fill(null);
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function qrsWave(t,list){let y=0;for(const q of list){const d=t-q;if(d<-.1||d>.5)continue;y+=G(t,q,.012,-38)+G(t,q+.025,.01,10)+G(t,q+.24,.045,-8)}return y}
+function pWave(t,list){let y=0;for(const p of list){if(Math.abs(t-p)<.1)y+=G(t,p,.025,-6)}return y}
+function sigL(t){return qrsWave(t,S.L.qrs)+pWave(t,S.L.p)}
+function sigR(t){const ph=(t%0.24)/0.24;const saw=ph<.8?-5+ph/.8*9:4-((ph-.8)/.2)*9;return qrsWave(t,S.R.qrs)+saw}
+
+/* ---------- simulación ---------- */
+function step(dt){
+  const t0=S.t; S.t+=dt; const t=S.t;
+  // izquierda
+  const L=S.L;
+  if(L.mode==="tsv"){
+    const period=0.42, prev=L.f; L.f+=dt/period;
+    const cross=(a,b,x)=>{const fa=a%1,fb=b%1;return Math.floor(b)>Math.floor(a)?(fa<x||fb>=x):(fa<x&&fb>=x)};
+    if(blocked() && cross(prev,L.f,fAVin)){L.mode="stopped";L.stopF=fAVin;}
+    else if(cross(prev,L.f,fVin)) L.qrs.push(t);
+  } else if(L.mode==="stopped"){
+    if(!blocked()){L.mode="sinus";L.sinusNext=t+0.15}
+  } else if(L.mode==="sinus"){
+    if(t>=L.sinusNext){L.p.push(t);L.down.push({s:t});L.sinusNext=t+0.95}
+  }
+  L.down=L.down.filter(d=>{const age=t-d.s;const y=lerp(BOX.A.y+BOX.A.h-6,BOX.V.y+20,Math.min(age/0.28,1));d.y=y;
+    if(!d.q&&age>=0.16+0.12){d.q=1;L.qrs.push(t)} return age<0.4});
+  // derecha
+  const R=S.R, ap=0.24; const prevRev=Math.floor(R.ang); R.ang+=dt/ap;
+  if(Math.floor(R.ang)>prevRev){R.rev++; if(R.rev%2===0) R.down.push({s:t})}
+  R.down=R.down.filter(d=>{const age=t-d.s;
+    if(d.stop==null && blocked() && age>=0.08) d.stop=age;
+    const a=d.stop!=null?Math.min(age,d.stop):age;
+    d.y=lerp(BOX.A.y+BOX.A.h-6,BOX.V.y+20,Math.min(a/0.22,1));
+    if(d.stop==null && !d.q && age>=0.22){d.q=1;R.qrs.push(t)}
+    return d.stop!=null?age<d.stop+0.25:age<0.3});
+  // limpieza
+  ["qrs","p"].forEach(k=>{S.L[k]=S.L[k].filter(x=>t-x<1)}); S.R.qrs=S.R.qrs.filter(x=>t-x<1);
+  // muestras ECG
+  const n0=Math.floor(t0*PX), n1=Math.floor(t*PX);
+  for(let n=n0+1;n<=n1;n++){const ts=n/PX;bufL[n%N]=sigL(ts);bufR[n%N]=sigR(ts)}
+}
+
+/* ---------- dibujo ---------- */
+const css=()=>getComputedStyle(document.documentElement);
+function drawStrip(cv,buf){
+  const c=cv.getContext("2d"),W=cv.width,H=cv.height,st=css();
+  c.fillStyle=st.getPropertyValue("--paper").trim();c.fillRect(0,0,W,H);
+  c.strokeStyle=st.getPropertyValue("--grid").trim();
+  for(let x=0;x<=W;x+=20){c.lineWidth=x%100?0.6:1.4;c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+  for(let y=0;y<=H;y+=20){c.lineWidth=y%100?0.6:1.4;c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  const head=Math.floor(S.t*PX)%N;
+  c.strokeStyle=st.getPropertyValue("--trace").trim();c.lineWidth=3;c.lineJoin="round";c.beginPath();
+  let started=false;
+  for(let i=0;i<N;i++){const idx=(head+1+i)%N,v=buf[idx];const x=i*(W/N);
+    if(v==null){started=false;continue}const y=H*0.6+v*2.2;
+    if(!started){c.moveTo(x,y);started=true}else c.lineTo(x,y)}
+  c.stroke();
+}
+function setStatus(id,cls,title,txt){const e=document.getElementById(id);e.className="status "+cls;e.innerHTML=`<b>${title}</b>${txt}`}
+function draw(){
+  const b=blocked();
+  ["L","R"].forEach(k=>{document.getElementById(k+"-av").classList.toggle("blocked",b);document.getElementById(k+"-avs").textContent=b?"bloqueo transitorio":"conduce"});
+  // izquierda
+  const L=S.L, dL=document.getElementById("dotL");
+  if(L.mode==="tsv"){const [x,y]=along(L.f%1);dL.setAttribute("cx",x);dL.setAttribute("cy",y);dL.style.opacity=1}
+  else if(L.mode==="stopped"){const [x,y]=along(L.stopF);dL.setAttribute("cx",x);dL.setAttribute("cy",y);dL.style.opacity=Math.max(0,1-(S.t-S.blockStart)*0.8)}
+  else if(L.down.length){const d=L.down[L.down.length-1];dL.setAttribute("cx",180);dL.setAttribute("cy",d.y);dL.style.opacity=1}
+  else dL.style.opacity=0;
+  if(L.mode==="tsv"&&!S.blockStart) setStatus("stL","","Taquicardia por reentrada","El impulso baja por el nodo AV y vuelve a la aurícula por el retorno: el circuito se repite sin parar.");
+  else if(L.mode==="tsv") setStatus("stL","blk","Adenosina administrada","El impulso se acerca al nodo AV bloqueado.");
+  else if(L.mode==="stopped") setStatus("stL","blk","El circuito se interrumpe","El impulso no puede atravesar el nodo AV y la taquicardia termina. En el ECG aparece una pausa breve.");
+  else setStatus("stL","end","Ritmo sinusal restablecido","Pasado el efecto, el nodo sinusal retoma el control con ondas P antes de cada QRS.");
+  // derecha
+  const R=S.R, a=(R.ang%1)*2*Math.PI, lr=document.getElementById("loopR");
+  lr.setAttribute("cx",300+22*Math.cos(a)); lr.setAttribute("cy",BOX.A.y+28+16*Math.sin(a));
+  document.getElementById("dotsR").innerHTML=R.down.map(d=>`<circle class="dot" r="7" cx="180" cy="${d.y}" opacity="${d.stop!=null?Math.max(0,1-(S.t-d.s-d.stop)*4):1}"/>`).join("");
+  document.getElementById("R-vs").textContent=b?"frecuencia disminuye":"frecuencia ventricular";
+  if(!S.blockStart) setStatus("stR","","Flúter con conducción 2:1","La aurícula tiene su propio circuito. Solo uno de cada dos impulsos atraviesa el nodo AV.");
+  else if(b) setStatus("stR","per","Bloqueo AV: se ven las ondas auriculares","Los ventrículos dejan de recibir impulsos y en el ECG aparecen las ondas F en dientes de sierra. La aurícula sigue igual.");
+  else setStatus("stR","per","La arritmia persiste","Pasado el efecto, el nodo vuelve a conducir. La adenosina no terminó el flúter, pero aclaró el diagnóstico.");
+  ["L","R"].forEach(k=>document.getElementById(k+"-x").classList.toggle("on",b));
+  drawStrip(document.getElementById("ecgL"),bufL); drawStrip(document.getElementById("ecgR"),bufR);
+  const tm=document.getElementById("timer");
+  if(b) tm.innerHTML=`<b>Nodo AV bloqueado</b> · ${(S.blockStart+BLOCK-S.t).toFixed(1)} s`;
+  else tm.textContent=S.blockStart?"Efecto de la adenosina terminado":"Nodo AV conduciendo";
+  document.getElementById("ade").disabled=!!S.blockStart;
+}
+
+/* ---------- bucle ---------- */
+let running=!matchMedia("(prefers-reduced-motion: reduce)").matches, last=null;
+function frame(ts){
+  if(last==null) last=ts;
+  const dt=Math.min((ts-last)/1000,0.05)*SPEED; last=ts;
+  if(running){ const sub=Math.ceil(dt/0.005); for(let i=0;i<sub;i++) step(dt/sub); }
+  draw(); requestAnimationFrame(frame);
+}
+init();
+for(let i=0;i<Math.round(5/0.005);i++) step(0.005);   // tira llena desde el inicio
+document.getElementById("play").textContent=running?"Pausar":"Reproducir";
+document.getElementById("ade").addEventListener("click",()=>{if(!S.blockStart){S.blockStart=S.t+0.2;if(!running){running=true;document.getElementById("play").textContent="Pausar"}}});
+document.getElementById("play").addEventListener("click",e=>{running=!running;e.target.textContent=running?"Pausar":"Reproducir"});
+document.getElementById("reset").addEventListener("click",()=>{init();for(let i=0;i<1000;i++)step(0.005)});
+requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

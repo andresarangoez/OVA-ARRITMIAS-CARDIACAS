@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atropina en la bradicardia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ficha del fármaco en rejilla; debajo dos herramientas: ¿funcionará la atropina? y registro de dosis con reloj simulado */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#2f8a4c; --drug-soft:#e5f4e9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#6fcf8f; --drug-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#6fcf8f; --drug-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:4px 0 2px}
+.cls{font-size:14px;font-weight:700;color:var(--drug);background:var(--drug-soft);padding:3px 12px;border-radius:99px}
+.lead{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+/* ficha */
+.mono{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.mono{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.mono{grid-template-columns:1fr}}
+.tile{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tile:hover{border-color:var(--t,var(--muted))}
+.tile:focus-visible,.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.tile b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t,var(--muted));margin-bottom:3px}
+.tile span{font-size:15px}
+.tile.dose{--t:var(--drug);background:var(--drug-soft);border-color:var(--drug)}
+.tile.dose span{font-size:17px;font-weight:700}
+.tile.stop{--t:var(--stop);background:var(--stop-soft)}
+.tile.warn{--t:var(--warn);background:var(--warn-soft)}
+.tile.next{--t:var(--info);background:var(--info-soft)}
+.tile.sel{box-shadow:0 0 0 3px var(--node);border-color:var(--t,var(--ink))}
+.explain{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.explain b{font-weight:800}
+
+/* herramientas */
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;margin-top:28px}
+@media (max-width:900px){.tools{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.opts{display:grid;gap:6px}
+.opt{font:inherit;text-align:left;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14.5px;font-weight:600}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.opt[aria-pressed="true"]{border-color:var(--head);background:var(--node)}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;border:1.5px solid}
+.verdict b{display:block;font-size:15.5px}
+.verdict.ok{border-color:var(--drug);background:var(--drug-soft)} .verdict.ok b{color:var(--drug)}
+.verdict.low{border-color:var(--warn);background:var(--warn-soft)} .verdict.low b{color:var(--warn)}
+.verdict.no{border-color:var(--stop);background:var(--stop-soft)} .verdict.no b{color:var(--stop)}
+
+.sim-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stat{background:var(--node);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat span{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.meter{height:10px;border-radius:5px;background:var(--node);overflow:hidden;margin:4px 0 12px;display:flex;gap:2px}
+.meter i{flex:1;background:var(--node)}
+.meter i.on{background:var(--drug)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--drug);border-color:var(--drug);color:var(--surface)}
+.btn.yes{border-color:var(--drug)} .btn.no{border-color:var(--stop)}
+.btn[disabled]{opacity:.45;cursor:default}
+.msg{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:14px;background:var(--node)}
+.msg.warn{background:var(--warn-soft)} .msg.stop{background:var(--stop-soft)} .msg.ok{background:var(--drug-soft)}
+.msg b{font-weight:800}
+.ask{margin-top:12px;padding:10px 12px;border:1.5px dashed var(--line);border-radius:10px}
+.ask p{margin:0 0 8px;font-weight:700}
+.vig{font-size:13px;color:var(--muted);margin:6px 0 0}
+ol.log{margin:12px 0 0;padding-left:20px;font-size:14px;display:grid;gap:3px;font-variant-numeric:tabular-nums lining-nums}
+ol.log span{color:var(--muted)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <div class="title"><h1>Atropina</h1><span class="cls">Antagonista muscarínico</span></div>
+  <p class="lead">Toca cada aspecto de la ficha para ver una explicación. Después usa las dos herramientas: decide si la atropina funcionará según el ritmo y practica el registro de dosis.</p>
+
+  <section aria-label="Ficha del fármaco">
+    <div class="mono" id="mono"></div>
+    <div class="explain" id="explain" aria-live="polite"></div>
+  </section>
+
+  <div class="tools">
+    <section class="card">
+      <h2>¿Funcionará la atropina?</h2>
+      <p class="sub">Elige la situación del paciente con bradicardia sintomática.</p>
+      <div class="opts" id="opts"></div>
+      <div id="verdict" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2>Registro de dosis</h2>
+      <p class="sub">Reloj simulado: avanza los minutos con el botón. Cada dosis es de 1 mg IV en bolo.</p>
+      <div id="sim" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <footer>Material educativo. Las dosis siguen la tabla del módulo para el adulto; confirma siempre la prescripción y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const M=[
+  {k:"Grupo farmacológico",v:"Antagonista muscarínico (anticolinérgico)",x:"Compite con la acetilcolina en los receptores muscarínicos. No estimula el corazón: retira el freno vagal."},
+  {k:"Mecanismo",v:"Bloquea el efecto vagal sobre los nodos sinusal y auriculoventricular",x:"Por eso actúa donde hay inervación vagal: el nodo sinusal y el nodo AV. Casi no tiene efecto por debajo del nodo AV."},
+  {k:"Indicación principal",v:"Bradicardia sintomática con compromiso cardiopulmonar",r:"3,5",x:"Hipotensión, alteración del estado mental, signos de shock, dolor torácico isquémico o insuficiencia cardíaca aguda atribuibles a la bradicardia."},
+  {k:"Dosis en el adulto",v:"1 mg IV en bolo cada 3 a 5 minutos; máximo 3 mg",r:"5",c:"dose",x:"Tres dosis como máximo. Usa el registro de dosis de abajo para practicar los intervalos."},
+  {k:"Situación en que no debe usarse",v:"Trasplante cardíaco sin reinervación autonómica",r:"6",c:"stop",x:"El corazón trasplantado no tiene inervación vagal, así que la atropina no tiene sobre qué actuar."},
+  {k:"Escasa eficacia",v:"Bloqueos infranodales (Mobitz II, bloqueo completo con QRS ancho)",c:"warn",x:"El bloqueo está por debajo del nodo AV, donde el vago no actúa. No retrases el marcapasos en estos casos."},
+  {k:"Efectos adversos",v:"Taquicardia, aumento del consumo de oxígeno miocárdico, efectos anticolinérgicos",x:"Los anticolinérgicos incluyen boca seca, midriasis, retención urinaria y confusión. La taquicardia puede agravar la isquemia."},
+  {k:"Parámetros de vigilancia",v:"Frecuencia cardíaca, presión arterial, estado de conciencia, perfusión",x:"Valora la respuesta tras cada dosis con monitorización continua y registra los valores."},
+  {k:"Si no hay respuesta",v:"Marcapasos transcutáneo o infusión de dopamina o adrenalina",r:"5",c:"next",x:"Prepara el marcapasos desde el inicio si la bradicardia es grave o el bloqueo es infranodal."}
+];
+let selM=3;
+document.getElementById("mono").innerHTML=M.map((m,i)=>`<button class="tile ${m.c||""}" data-i="${i}" aria-pressed="false"><b>${m.k}</b><span>${m.v}${ref(m.r)}</span></button>`).join("");
+function renderM(){
+  document.querySelectorAll(".tile").forEach(t=>{const on=Number(t.dataset.i)===selM;t.classList.toggle("sel",on);t.setAttribute("aria-pressed",on)});
+  document.getElementById("explain").innerHTML=`<b>${M[selM].k}:</b> ${M[selM].x}`;
+}
+document.getElementById("mono").addEventListener("click",e=>{const t=e.target.closest(".tile"); if(t){selM=Number(t.dataset.i);renderM()}});
+
+/* --- ¿funcionará? --- */
+const O=[
+  {n:"Bradicardia sinusal",d:"Origen en el nodo sinusal",v:"ok",t:"Probable respuesta",x:"El nodo sinusal tiene inervación vagal: la atropina suele aumentar la frecuencia."},
+  {n:"Bloqueo AV de segundo grado Mobitz I",d:"Bloqueo en el nodo AV",v:"ok",t:"Probable respuesta",x:"El bloqueo es nodal, donde actúa el vago. La atropina puede mejorar la conducción."},
+  {n:"Bloqueo AV de segundo grado Mobitz II",d:"Bloqueo infranodal",v:"low",t:"Escasa eficacia",x:"El bloqueo está por debajo del nodo AV. Prepara el marcapasos transcutáneo sin retrasarlo."},
+  {n:"Bloqueo AV completo con QRS ancho",d:"Escape ventricular",v:"low",t:"Escasa eficacia",x:"El ritmo de escape es ventricular y el vago no actúa ahí. El marcapasos es el tratamiento."},
+  {n:"Paciente con trasplante cardíaco",d:"Sin reinervación autonómica",v:"no",t:"No debe usarse",x:"Sin inervación vagal no hay efecto que bloquear. Usa marcapasos o infusión cronotrópica."}
+];
+let selO=null;
+document.getElementById("opts").innerHTML=O.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false">${o.n}<small>${o.d}</small></button>`).join("");
+document.getElementById("opts").addEventListener("click",e=>{const b=e.target.closest(".opt"); if(!b)return; selO=Number(b.dataset.i);
+  document.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",Number(x.dataset.i)===selO));
+  const o=O[selO]; document.getElementById("verdict").innerHTML=`<div class="verdict ${o.v}"><b>${o.t}</b>${o.x}</div>`;});
+document.getElementById("verdict").innerHTML=`<p class="vig" style="margin-top:12px">La respuesta depende de dónde está el problema: por encima o por debajo del nodo AV.</p>`;
+
+/* --- registro de dosis --- */
+let st;
+function resetSim(){st={min:0,doses:[],waiting:false,responded:false}}
+function renderSim(){
+  const total=st.doses.length, last=total?st.doses[total-1]:null, since=last!=null?st.min-last:null;
+  const canDose=!st.responded && !st.waiting && total<3 && (last==null||since>=3);
+  let msg="";
+  if(st.responded) msg=`<div class="msg ok"><b>Hay respuesta.</b> No se administran más dosis por ahora. Mantén la vigilancia de frecuencia, presión arterial, estado de conciencia y perfusión.</div>`;
+  else if(total>=3 && !st.waiting) msg=`<div class="msg stop"><b>Dosis máxima alcanzada (3 mg) sin respuesta.</b> Siguiente paso: marcapasos transcutáneo o infusión de dopamina o adrenalina${ref("5")}.</div>`;
+  else if(last!=null && since<3 && !st.waiting) msg=`<div class="msg warn">Faltan <b>${3-since} min</b> para poder repetir la dosis (intervalo de 3 a 5 minutos).</div>`;
+  else if(last!=null && since>5 && !st.waiting) msg=`<div class="msg warn">Han pasado <b>${since} min</b> desde la última dosis: se superó el intervalo recomendado de 3 a 5 minutos.</div>`;
+  else if(last!=null && !st.waiting) msg=`<div class="msg">Dentro del intervalo. Puedes administrar la siguiente dosis si persiste la bradicardia sintomática.</div>`;
+  const ask=st.waiting?`<div class="ask"><p>Tras la dosis ${total}, ¿hubo respuesta?</p>
+     <div class="btns"><button class="btn yes" data-a="si">Sí, mejora</button><button class="btn no" data-a="no">No, persiste</button></div>
+     <p class="vig">Valora frecuencia cardíaca, presión arterial, estado de conciencia y perfusión.</p></div>`:"";
+  document.getElementById("sim").innerHTML=`
+    <div class="sim-top">
+      <div class="stat"><b>Minuto</b><span>${st.min}</span></div>
+      <div class="stat"><b>Dosis acumulada</b><span>${total} mg</span></div>
+      <div class="stat"><b>Desde la última</b><span>${since==null?"—":since+" min"}</span></div>
+    </div>
+    <div class="meter" aria-label="Dosis acumulada sobre el máximo de 3 mg"><i class="${total>0?"on":""}"></i><i class="${total>1?"on":""}"></i><i class="${total>2?"on":""}"></i></div>
+    <div class="btns">
+      <button class="btn pri" id="give" ${canDose?"":"disabled"}>Administrar 1 mg IV</button>
+      <button class="btn" id="tick" ${st.waiting?"disabled":""}>Avanzar 1 minuto</button>
+      <button class="btn" id="rs">Reiniciar</button>
+    </div>
+    ${ask}${msg}
+    ${total?`<ol class="log">${st.doses.map((m,i)=>`<li>1 mg IV en el minuto ${m} <span>· acumulado ${i+1} mg${st.ans&&st.ans[i]?" · "+st.ans[i]:""}</span></li>`).join("")}</ol>`:""}`;
+}
+document.getElementById("sim").addEventListener("click",e=>{
+  const id=e.target.id;
+  if(id==="give"){st.doses.push(st.min);st.waiting=true}
+  else if(id==="tick"){st.min++}
+  else if(id==="rs"){resetSim()}
+  else if(e.target.dataset.a){st.ans=st.ans||[];st.ans[st.doses.length-1]=e.target.dataset.a==="si"?"con respuesta":"sin respuesta";st.waiting=false;if(e.target.dataset.a==="si")st.responded=true}
+  else return;
+  renderSim();
+});
+resetSim(); renderM(); renderSim();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

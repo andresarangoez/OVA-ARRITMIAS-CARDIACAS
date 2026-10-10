@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Indicaciones de la cardioversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: selector de arritmia con miniatura de ECG + interruptor de estabilidad → tarjeta de decisión; tabla completa con la celda activa resaltada; casos de práctica */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --inst:#c8323c; --inst-soft:#fbe7e8;
+  --est:#2f8a4c; --est-soft:#e5f4e9;
+  --sync:#2563a8; --sync-soft:#e4eef9;
+  --plan:#7a4cb0; --plan-soft:#f0e9f8;
+  --nos:#b8660a; --nos-soft:#fdf1df;
+  --grid:#f1c9cc; --paper:#fffafa; --trace:#1b2733;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --inst:#f07178; --inst-soft:#3a1d22; --est:#6fcf8f; --est-soft:#183326; --sync:#7fb3ec; --sync-soft:#182c42; --plan:#bb9ae6; --plan-soft:#2a2140; --nos:#f2b25c; --nos-soft:#3a2b16;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --inst:#f07178; --inst-soft:#3a1d22; --est:#6fcf8f; --est-soft:#183326; --sync:#7fb3ec; --sync-soft:#182c42; --plan:#bb9ae6; --plan-soft:#2a2140; --nos:#f2b25c; --nos-soft:#3a2b16;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+h2{font-size:20px;font-weight:800;margin:30px 0 8px}
+.lbl{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.ref{font-size:11px;font-weight:700;color:var(--sync);vertical-align:super;margin-left:2px}
+
+.rhythms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px}
+@media (max-width:900px){.rhythms{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.rhythms{grid-template-columns:1fr}}
+.rh{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0}
+.rh svg{display:block;width:100%;height:auto;border-radius:6px;background:var(--paper)}
+.rh b{font-size:13.5px;font-weight:800;line-height:1.3;padding:0 2px}
+.rh[aria-pressed="true"]{border-color:var(--head);box-shadow:0 0 0 3px var(--head)}
+.rh:focus-visible,.sw button:focus-visible,.ans:focus-visible,.btn:focus-visible{outline:3px solid var(--sync);outline-offset:2px}
+
+.stab{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.sw{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.sw button{font:inherit;font-weight:800;font-size:14.5px;padding:9px 18px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.sw button+button{border-left:1.5px solid var(--line)}
+.sw button[aria-pressed="true"][data-s="i"]{background:var(--inst);color:var(--surface)}
+.sw button[aria-pressed="true"][data-s="e"]{background:var(--est);color:var(--surface)}
+.stab small{color:var(--muted);font-size:13.5px}
+
+.dec{border-radius:14px;border:2px solid var(--dc);background:var(--surface);padding:18px 20px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:600px){.dec{grid-template-columns:1fr}}
+.badge{border-radius:12px;padding:12px 16px;background:var(--dcs);color:var(--dc);font-weight:800;font-size:15px;text-align:center;min-width:170px}
+.badge span{display:block;font-size:28px;line-height:1.1}
+.dec h3{font-size:20px;font-weight:800;margin:0 0 6px}
+.dec p{margin:0 0 8px;max-width:70ch}
+.dec .ctx{font-size:13.5px;color:var(--muted)}
+.steps{margin:8px 0 0;padding-left:20px;display:grid;gap:3px;font-size:14.5px}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:11px 14px;background:var(--head);color:var(--head-ink)}
+thead th.i{background:var(--inst);color:var(--surface)} thead th.e{background:var(--est);color:var(--surface)}
+tbody td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:14.5px;transition:background .2s}
+tbody td:first-child{font-weight:800;width:26%}
+td.cell{cursor:pointer}
+td.cell:hover{background:var(--node)}
+td.act{background:var(--dcs);box-shadow:inset 0 0 0 2px var(--dc)}
+tr.act td:first-child{color:var(--ink)}
+tr:not(.act) td:first-child{color:var(--muted)}
+td.empty{color:var(--muted)}
+@media (max-width:700px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);padding:8px 12px}
+  tbody td{border:none;padding:6px 8px;border-radius:8px}
+  td.cell::before{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+  td.ci::before{content:"Paciente inestable";color:var(--inst)} td.ce::before{content:"Paciente estable";color:var(--est)}
+}
+
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.qtop{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.qtext{font-size:18px;font-weight:700;margin:6px 0 12px;max-width:72ch}
+.answers{display:flex;flex-wrap:wrap;gap:8px}
+.ans{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);border-left:5px solid var(--ac);background:var(--node);color:var(--ink);cursor:pointer;text-align:left}
+.ans[disabled]{cursor:default;opacity:.55}
+.ans.right{opacity:1;border-color:var(--est);background:var(--est-soft)} .ans.wrong{opacity:1;border-color:var(--inst);background:var(--inst-soft)}
+.fb{margin-top:12px;font-size:14.5px}
+.fb b.ok{color:var(--est)} .fb b.no{color:var(--inst)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--head);background:var(--head);color:var(--head-ink);cursor:pointer;margin-top:10px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>¿Cuándo está indicada la cardioversión?</h1>
+  <p class="lead">Elige la arritmia y la estabilidad del paciente: la tarjeta muestra el tipo de terapia eléctrica y el momento. La tabla completa resalta la celda elegida; al final, practica con casos.</p>
+
+  <div class="lbl">Arritmia</div>
+  <div class="rhythms" id="rhythms"></div>
+  <div class="stab"><div class="sw" role="group" aria-label="Estabilidad"><button data-s="i" aria-pressed="true">Paciente inestable</button><button data-s="e" aria-pressed="false">Paciente estable</button></div><small>Inestable: hipotensión, alteración mental, shock, dolor isquémico o insuficiencia cardíaca aguda.</small></div>
+  <section class="dec" id="dec" aria-live="polite"></section>
+
+  <h2>Tabla completa</h2>
+  <div class="tbl"><table><thead><tr><th>Arritmia</th><th class="i">Paciente inestable</th><th class="e">Paciente estable</th></tr></thead><tbody id="rows"></tbody></table></div>
+
+  <h2>Ponte a prueba</h2>
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo. Trazados esquemáticos. Los superíndices remiten a las referencias del módulo. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const TYPES={
+  inm:{n:"Inmediata",s:"Sincronizada",c:"--inst",cs:"--inst-soft"},
+  urg:{n:"Urgente",s:"Sincronizada",c:"--inst",cs:"--inst-soft"},
+  cond:{n:"Si fracasa lo anterior",s:"Sincronizada",c:"--sync",cs:"--sync-soft"},
+  prog:{n:"Programada",s:"Sincronizada",c:"--plan",cs:"--plan-soft"},
+  nos:{n:"No sincronizada",s:"Descarga de desfibrilación",c:"--nos",cs:"--nos-soft"},
+  na:{n:"No aplica",s:"",c:"--muted",cs:"--node"}
+};
+const R=[
+  {id:"tv",n:"Taquicardia de complejo ancho regular (monomórfica)",short:"Complejo ancho regular",strip:"tv",
+   i:{t:"inm",x:"Cardioversión sincronizada inmediata",r:"1-3",why:"La TV monomórfica inestable puede degenerar en FV. No se retrasa la descarga para administrar fármacos.",st:["Sedación y analgesia si el estado lo permite, sin retrasar la descarga","Modo sincronizado activado y marcas sobre cada R","Desfibrilador listo por si degenera en FV o pierde el pulso"]},
+   e:{t:"cond",x:"Cardioversión si maniobras vagales y fármacos fracasan o están contraindicados",r:"1-3",why:"Con estabilidad hay tiempo para el ECG de 12 derivaciones y el tratamiento farmacológico; la cardioversión queda como siguiente paso.",st:["ECG de 12 derivaciones","Tratamiento farmacológico según la indicación","Cardioversión sincronizada si fracasa o está contraindicado"]}},
+  {id:"tsv",n:"Taquicardia supraventricular",short:"TSV",strip:"tsv",
+   i:{t:"cond",x:"Cardioversión si maniobras vagales y adenosina son ineficaces o no factibles",r:"5",why:"En la TSV inestable pueden intentarse la maniobra vagal y la adenosina si no retrasan el tratamiento; si fallan o no son factibles, cardioversión.",st:["Maniobras vagales y adenosina si están disponibles de inmediato","Cardioversión sincronizada si son ineficaces o no factibles"]},
+   e:{t:"cond",x:"Cardioversión si el tratamiento farmacológico fracasa",r:"5",why:"La TSV estable suele responder a maniobras vagales y fármacos; la cardioversión es el recurso si fracasan.",st:["Maniobras vagales","Adenosina; después betabloqueador o calcioantagonista","Cardioversión sincronizada si fracasa el tratamiento"]}},
+  {id:"fa",n:"Fibrilación auricular",short:"Fibrilación auricular",strip:"fa",
+   i:{t:"urg",x:"Cardioversión sincronizada urgente",r:"6",why:"La inestabilidad justifica la descarga sin esperar la anticoagulación completa.",st:["Sedación y analgesia con vigilancia continua","Modo sincronizado activado","Iniciar o valorar la anticoagulación según la indicación"]},
+   e:{t:"prog",x:"Cardioversión programada como control del ritmo, con anticoagulación adecuada",r:"6",why:"Con estabilidad, la cardioversión se planifica y se protege al paciente de la embolia.",st:["Precisar la hora de inicio de los síntomas","Anticoagulación adecuada según la indicación","Cardioversión sincronizada programada"]}},
+  {id:"fl",n:"Flutter auricular",short:"Flutter auricular",strip:"flutter",
+   i:{t:"urg",x:"Cardioversión sincronizada urgente",r:"1,2",why:"Como en la FA inestable, la prioridad es restablecer el ritmo.",st:["Sedación y analgesia con vigilancia continua","Modo sincronizado activado"]},
+   e:{t:"prog",x:"Cardioversión programada, con los mismos requisitos que la FA",r:"6",why:"El riesgo de embolia es similar al de la FA, por eso se aplican los mismos requisitos de anticoagulación.",st:["Precisar la hora de inicio","Anticoagulación adecuada","Cardioversión sincronizada programada"]}},
+  {id:"tvp",n:"Taquicardia ventricular polimórfica",short:"TV polimórfica",strip:"tvp",
+   i:{t:"nos",x:"No se sincroniza: descarga no sincronizada",r:"3",why:"Los QRS cambian de forma y amplitud: el equipo no puede reconocer la R de forma fiable y la descarga sincronizada podría no salir.",st:["Modo sincronizado desactivado","Descarga con energía de desfibrilación","Si es torsades, considerar después el sulfato de magnesio"]},
+   e:{t:"na",x:"—",why:"La tabla no recoge cardioversión para este escenario. La TV polimórfica suele ser inestable; si es torsades estable, el tratamiento es el magnesio.",st:[]}}
+];
+let cur="tv", st="i";
+
+/* miniaturas ECG */
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function rng(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}}
+function sig(kind){
+  const W=240,b=[],r=rng(kind.length*977+3);const sum=x=>b.reduce((s,f)=>s+f(x),0);const beat=(t,w)=>x=>w?G(x,t,7,-24)+G(x,t+12,8,10):G(x,t,1.6,-28)+G(x,t+3,1.6,8)+G(x,t+24,6,-6);
+  if(kind==="tsv")for(let t=12;t<W;t+=30)b.push(beat(t));
+  if(kind==="tv")for(let t=12;t<W;t+=34){const tt=t;b.push(x=>G(x,tt,6,-24)+G(x,tt+16,7,18))}
+  if(kind==="fa"){let t=10;while(t<W){b.push(beat(t));t+=24+r()*36}for(let i=0;i<6;i++){const f=.25+r()*.4,ph=r()*6;b.push(x=>.9*Math.sin(f*x+ph))}}
+  if(kind==="flutter"){const s=[30,30,45,30];let t=14,i=0;while(t<W){b.push(beat(t));t+=s[i++%4]}b.push(x=>{const p=(x%15)/15;return p<.8?-3+p/.8*5:2-((p-.8)/.2)*5})}
+  if(kind==="tvp")b.push(x=>-22*Math.sin(x*2*Math.PI/18)*(.3+.7*Math.abs(Math.sin(x*Math.PI/160))));
+  let d="";for(let x=0;x<=W;x++)d+=(x?"L":"M")+x+","+(36+sum(x)).toFixed(1);
+  let g="";for(let x=0;x<=W;x+=12)g+=`<line x1="${x}" y1="0" x2="${x}" y2="70" stroke="var(--grid)" stroke-width=".5"/>`;
+  return `<svg viewBox="0 0 240 70" aria-hidden="true">${g}<path d="${d}" fill="none" stroke="var(--trace)" stroke-width="1.5"/></svg>`;
+}
+document.getElementById("rhythms").innerHTML=R.map(r=>`<button class="rh" data-id="${r.id}" aria-pressed="false">${sig(r.strip)}<b>${r.short}</b></button>`).join("");
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+
+function render(){
+  const r=R.find(x=>x.id===cur), c=r[st], T=TYPES[c.t];
+  document.querySelectorAll(".rh").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===cur));
+  document.querySelectorAll(".sw button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===st));
+  const dec=document.getElementById("dec"); dec.style.setProperty("--dc",`var(${T.c})`); dec.style.setProperty("--dcs",`var(${T.cs})`);
+  dec.innerHTML=`<div class="badge"><span>${T.n}</span>${T.s}</div>
+    <div><div class="ctx">${r.n} · ${st==="i"?"paciente inestable":"paciente estable"}</div>
+      <h3>${c.x}${ref(c.r)}</h3><p>${c.why}</p>
+      ${c.st.length?`<ol class="steps">${c.st.map(s=>`<li>${s}</li>`).join("")}</ol>`:""}</div>`;
+  document.getElementById("rows").innerHTML=R.map(x=>`<tr class="${x.id===cur?"act":""}"><td>${x.n}</td>
+    <td class="cell ci ${x.id===cur&&st==="i"?"act":""} ${x.i.t==="na"?"empty":""}" data-id="${x.id}" data-s="i">${x.i.x}${ref(x.i.r)}</td>
+    <td class="cell ce ${x.id===cur&&st==="e"?"act":""} ${x.e.t==="na"?"empty":""}" data-id="${x.id}" data-s="e">${x.e.x}${ref(x.e.r)}</td></tr>`).join("");
+  document.querySelectorAll("td.act").forEach(td=>{td.style.setProperty("--dc",`var(${T.c})`);td.style.setProperty("--dcs",`var(${T.cs})`)});
+}
+document.getElementById("rhythms").addEventListener("click",e=>{const b=e.target.closest(".rh");if(b){cur=b.dataset.id;render()}});
+document.querySelector(".sw").addEventListener("click",e=>{const b=e.target.closest("button");if(b){st=b.dataset.s;render()}});
+document.getElementById("rows").addEventListener("click",e=>{const td=e.target.closest("td.cell");if(td){cur=td.dataset.id;st=td.dataset.s;render();document.getElementById("dec").scrollIntoView({behavior:"smooth",block:"nearest"})}});
+
+/* práctica */
+const Q=[
+  {q:"TV monomórfica a 180 lpm con PA de 70/40 y confusión.",a:"inm"},
+  {q:"FA de inicio hace 3 días, paciente estable, se decide controlar el ritmo.",a:"prog"},
+  {q:"TV polimórfica con pulso, hipotensión y QRS que cambian de forma.",a:"nos"},
+  {q:"TSV estable que no cedió con maniobras vagales, adenosina ni metoprolol.",a:"cond"},
+  {q:"Flutter con respuesta rápida, dolor torácico isquémico e hipotensión.",a:"urg"},
+  {q:"Complejo ancho regular estable; los fármacos están contraindicados.",a:"cond"}
+];
+const OPTS=[["inm","Sincronizada inmediata"],["urg","Sincronizada urgente"],["cond","Sincronizada si fracasa lo anterior"],["prog","Sincronizada programada"],["nos","No sincronizada"]];
+let qi=0,ok=0,done=false;
+function renderQ(fb=""){
+  const q=Q[qi];
+  document.getElementById("quiz").innerHTML=`<div class="qtop"><span>Caso ${qi+1} de ${Q.length}</span><span>${ok} ${ok===1?"acierto":"aciertos"}</span></div>
+    <p class="qtext">${q.q}</p><div class="answers">${OPTS.map(([k,t])=>`<button class="ans" data-a="${k}" style="--ac:var(${TYPES[k].c})" ${done?"disabled":""}>${t}</button>`).join("")}</div>${fb}`;
+}
+document.getElementById("quiz").addEventListener("click",e=>{
+  const a=e.target.closest(".ans");
+  if(a&&!done){done=true;const q=Q[qi],good=a.dataset.a===q.a;if(good)ok++;
+    const exp={inm:"Taquicardia de complejo ancho monomórfica inestable: cardioversión sincronizada inmediata.",prog:"FA estable para control del ritmo: cardioversión programada con anticoagulación adecuada.",nos:"TV polimórfica: no se puede sincronizar; descarga no sincronizada.",cond:"Paciente estable: la cardioversión queda para cuando fracasan o están contraindicadas las otras medidas.",urg:"Flutter inestable: cardioversión sincronizada urgente."}[q.a];
+    renderQ(`<div class="fb"><b class="${good?"ok":"no"}">${good?"Correcto.":"No exactamente."}</b> ${exp}<br>${qi<Q.length-1?`<button class="btn" data-next>Siguiente caso</button>`:`<button class="btn" data-again>Empezar de nuevo</button> <span style="margin-left:8px;color:var(--muted)">Resultado: ${ok} de ${Q.length}</span>`}</div>`);
+    document.querySelectorAll(".ans").forEach(b=>{if(b.dataset.a===q.a)b.classList.add("right");else if(b===a)b.classList.add("wrong")});
+  }
+  if(e.target.closest("[data-next]")){qi++;done=false;renderQ()}
+  if(e.target.closest("[data-again]")){qi=0;ok=0;done=false;renderQ()}
+});
+render(); renderQ();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

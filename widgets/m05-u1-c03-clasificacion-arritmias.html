@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clasificación de las arritmias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: nodo raíz → tres familias en columnas; panel de detalle con trazado ECG debajo; modo práctica al final */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#c9d3dc; --node:#eef2f6;
+  --root:#18283a; --root-ink:#ffffff;
+  --tq:#2563a8; --tq-soft:#e4eef9;
+  --br:#2f8a4c; --br-soft:#e5f4e9;
+  --pc:#c8323c; --pc-soft:#fbe7e8;
+  --grid:#f1c9cc; --trace:#1b2733; --paper:#fffafa;
+  --f-display:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Raleway", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --root:#dbe6f0; --root-ink:#10171e;
+  --tq:#7fb3ec; --tq-soft:#182c42; --br:#6fcf8f; --br-soft:#183326; --pc:#f07178; --pc-soft:#3a1d22;
+  --grid:#3a2a2e; --trace:#e6edf3; --paper:#1a1d22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --root:#dbe6f0; --root-ink:#10171e;
+  --tq:#7fb3ec; --tq-soft:#182c42; --br:#6fcf8f; --br-soft:#183326; --pc:#f07178; --pc-soft:#3a1d22;
+  --grid:#3a2a2e; --trace:#e6edf3; --paper:#1a1d22; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow,.tag{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:28ch}
+.lead{color:var(--muted);max-width:60ch;margin:0 0 22px}
+
+/* árbol */
+.tree{display:flex;flex-direction:column;align-items:center}
+.root{background:var(--root);color:var(--root-ink);font-weight:600;font-size:17px;padding:10px 34px;border-radius:9px}
+.stem{width:2px;height:18px;background:var(--line)}
+.branch{width:calc(66.66% + 4px);height:18px;border:2px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
+@media (max-width:820px){.cols{grid-template-columns:1fr}.branch{display:none}}
+
+.col{border:1.5px solid var(--c);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.col.tq{--c:var(--tq);--cs:var(--tq-soft)} .col.br{--c:var(--br);--cs:var(--br-soft)} .col.pc{--c:var(--pc);--cs:var(--pc-soft)}
+.col-head{font:inherit;color:inherit;background:var(--cs);border:none;border-bottom:1px solid color-mix(in srgb,var(--c) 30%,transparent);display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;text-align:left}
+.col-head:focus-visible,.item:focus-visible,.btn:focus-visible{outline:3px solid var(--c,var(--tq));outline-offset:2px}
+.ico{flex:none;width:38px;height:38px;border-radius:50%;background:var(--c);display:grid;place-items:center;color:var(--surface)}
+.ico svg{width:20px;height:20px}
+.col-head b{font-size:16px}
+.col-head small{display:block;color:var(--muted);font-size:12px}
+.items{list-style:none;margin:0;padding:10px;display:grid;gap:4px;flex:1}
+.sub{font-size:12.5px;font-weight:700;color:var(--muted);padding:6px 10px 2px}
+.item{font:inherit;color:inherit;width:100%;text-align:left;background:transparent;border:1.5px solid transparent;border-radius:8px;padding:7px 10px;cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.item::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);transform:translateY(-1px)}
+.item:hover{background:var(--cs)}
+.item.sel{background:var(--cs);border-color:var(--c)}
+.item em{font-style:normal;font-weight:700}
+.item span{color:var(--muted)}
+.item.sel span{color:var(--ink)}
+.action{margin:0 10px 10px;background:var(--cs);border-radius:8px;padding:9px 12px;text-align:center;font-weight:600;font-size:14px;color:var(--c)}
+
+/* detalle */
+.detail{margin-top:20px;background:var(--surface);border:1.5px solid var(--dc,var(--line));border-radius:14px;padding:20px 22px;scroll-margin-top:16px}
+.detail.tq{--dc:var(--tq);--dcs:var(--tq-soft)} .detail.br{--dc:var(--br);--dcs:var(--br-soft)} .detail.pc{--dc:var(--pc);--dcs:var(--pc-soft)}
+.detail h2{font-family:var(--f-display);font-weight:600;font-size:24px;margin:2px 0 4px;text-wrap:balance}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:99px;background:var(--dcs,var(--node));color:var(--dc,var(--muted))}
+.strip{margin:14px 0 4px;border-radius:8px;overflow-x:auto;background:var(--paper);border:1px solid var(--line)}
+.strip svg{display:block;width:100%;min-width:520px;height:auto}
+.strip-cap{font-size:12px;color:var(--muted);margin-bottom:12px}
+.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.dgrid{grid-template-columns:1fr}}
+.dbox{background:var(--node);border-radius:10px;padding:12px 14px;min-width:0}
+.dbox h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.dbox ul{margin:0;padding-left:18px}.dbox li{margin:3px 0}
+.dbox.key{background:var(--dcs,var(--node))}
+.dbox.key h3{color:var(--dc,var(--muted))}
+.empty{color:var(--muted)}
+
+/* práctica */
+.quiz{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.quiz h2{font-family:var(--f-display);font-weight:600;font-size:22px;margin:2px 0 6px}
+.qrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.score{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.btn{font:inherit;font-weight:600;font-size:14.5px;padding:10px 16px;border-radius:9px;border:1.5px solid var(--c,var(--line));background:var(--cs,var(--node));color:var(--ink);cursor:pointer}
+.btn.tq{--c:var(--tq);--cs:var(--tq-soft)} .btn.br{--c:var(--br);--cs:var(--br-soft)} .btn.pc{--c:var(--pc);--cs:var(--pc-soft)}
+.btn.next{--c:var(--ink);background:var(--ink);color:var(--surface)}
+.btn[disabled]{opacity:.5;cursor:default}
+.fb{margin-top:12px;padding:10px 14px;border-radius:9px;background:var(--node)}
+.fb b.ok{color:var(--br)} .fb b.no{color:var(--pc)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Clasificación · AHA 2025</div>
+  <h1>Las arritmias se agrupan en tres comportamientos con prioridades distintas</h1>
+  <p class="lead">Toca cualquier ritmo para ver cómo se ve en el ECG, cómo se reconoce y qué se hace. Al final puedes practicar la clasificación.</p>
+
+  <div class="tree">
+    <div class="root">Arritmias cardíacas</div>
+    <div class="stem"></div>
+    <div class="branch"></div>
+    <div class="cols" id="cols"></div>
+  </div>
+
+  <section class="detail" id="detail" aria-live="polite"></section>
+
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo basado en las guías AHA 2025. Los trazados son esquemáticos. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const ICONS = {
+  tq:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-6 3 12 2.5-9 1.5 3h7"/></svg>',
+  br:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-8-5-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15 12 20 12 20z"/></svg>',
+  pc:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2 5 13.5h5.5L9.5 22 19 9.5h-5.5z"/></svg>'
+};
+
+const GROUPS = {
+  tq:{name:"Taquiarritmias con pulso",short:"FC > 150 lpm habitualmente",action:"Cardioversión si inestable",
+      intro:"Ritmos rápidos en un paciente que conserva el pulso. Primero se decide si está estable o inestable; si es estable, el ancho del QRS y la regularidad orientan el diagnóstico.",
+      do:["Inestable: cardioversión sincronizada","Estable: ECG de 12 derivaciones y tratamiento según QRS estrecho o ancho, regular o irregular"]},
+  br:{name:"Bradiarritmias",short:"FC < 50 lpm o bloqueos AV",action:"Atropina o marcapasos",
+      intro:"Ritmos lentos o con fallos en la conducción auriculoventricular. Se tratan cuando causan síntomas o signos de hipoperfusión, o cuando el bloqueo tiene riesgo de progresar.",
+      do:["Sintomática o inestable: atropina","Si no responde: marcapasos transcutáneo o infusión cronotrópica según protocolo","Bloqueos infranodales (Mobitz II, completo): pensar pronto en marcapasos"]},
+  pc:{name:"Ritmos de paro cardíaco",short:"Sin pulso",action:"RCP y desfibrilación si procede",
+      intro:"El paciente no tiene pulso. La prioridad es la RCP de alta calidad; el ritmo solo decide si se da una descarga.",
+      do:["Desfibrilables (FV, TV sin pulso): descarga lo antes posible","No desfibrilables (asistolia, AESP): RCP, epinefrina y búsqueda de causas reversibles"]}
+};
+
+const R = [
+  // Taquiarritmias
+  {id:"tsv",g:"tq",label:"Estrecho regular",name:"TSV",full:"Taquicardia supraventricular",strip:"tsv",
+   see:["QRS estrecho (< 0,12 s)","Ritmo regular, FC habitualmente 150 a 250 lpm","Ondas P no visibles o retrógradas"],
+   do:["Inestable: cardioversión sincronizada","Estable: maniobras vagales y, si no ceden, adenosina"],
+   key:"La adenosina también ayuda al diagnóstico: al frenar el nodo AV puede revelar un flúter o una FA ocultos."},
+  {id:"fa",g:"tq",label:"Estrecho irregular",name:"FA",full:"Fibrilación auricular",strip:"fa",
+   see:["Ritmo irregularmente irregular","Sin ondas P; línea de base fibrilatoria","QRS estrecho"],
+   do:["Inestable: cardioversión sincronizada","Estable: control de la frecuencia y valorar anticoagulación según riesgo"],
+   key:"La irregularidad sin patrón es el dato que más ayuda: los intervalos R‑R nunca se repiten."},
+  {id:"fl",g:"tq",label:"Estrecho irregular",name:"Flúter",full:"Flúter auricular",strip:"flutter",
+   see:["Ondas F en dientes de sierra, mejor vistas en II, III y aVF","Conducción 2:1 típica (FC cercana a 150 lpm)","Es regular con conducción fija e irregular cuando la conducción varía"],
+   do:["Inestable: cardioversión sincronizada","Estable: control de la frecuencia y valorar anticoagulación como en la FA"],
+   key:"Una taquicardia regular de QRS estrecho a unos 150 lpm debe hacer buscar ondas F ocultas."},
+  {id:"tv",g:"tq",label:"Ancho",name:"TV",full:"Taquicardia ventricular monomórfica",strip:"tv",
+   see:["QRS ancho (≥ 0,12 s), todos de la misma forma","Ritmo regular","Puede haber disociación AV"],
+   do:["Inestable: cardioversión sincronizada","Estable: antiarrítmico IV y consulta con experto"],
+   key:"Ante una taquicardia de QRS ancho y regular, se asume TV hasta demostrar lo contrario."},
+  {id:"fap",g:"tq",label:"Ancho",name:"FA preexcitada",full:"FA con vía accesoria (preexcitación)",strip:"fap",
+   see:["QRS ancho y de morfología variable","Ritmo irregular y a menudo muy rápido","Asociada a síndrome de Wolff‑Parkinson‑White"],
+   do:["Inestable: cardioversión sincronizada","Estable: consulta con experto y antiarrítmico adecuado para vía accesoria"],
+   key:"Evitar fármacos que bloquean el nodo AV (adenosina, betabloqueantes, calcioantagonistas, digoxina): pueden acelerar la conducción por la vía accesoria y precipitar FV."},
+  {id:"tvp",g:"tq",label:"TV polimórfica",name:"inestable",full:"Taquicardia ventricular polimórfica",strip:"tvp",
+   see:["QRS ancho con forma y amplitud cambiantes","Torsades de pointes si se asocia a QT largo","Suele causar inestabilidad o degenerar en FV"],
+   do:["Se trata con descarga no sincronizada (dosis de desfibrilación), porque no es posible sincronizar","Torsades: magnesio IV y corregir la causa del QT largo"],
+   key:"Es la excepción de su grupo: la variación del QRS impide sincronizar la descarga."},
+  // Bradiarritmias
+  {id:"bs",g:"br",name:"Bradicardia sinusal",full:"Bradicardia sinusal",strip:"bs",
+   see:["Una onda P antes de cada QRS","PR normal y constante","FC baja (< 50 lpm en el contexto de bradicardia sintomática)"],
+   do:["Asintomática: observar y buscar la causa","Sintomática: atropina; si no responde, marcapasos o infusión cronotrópica"],
+   key:"Puede ser normal en deportistas o durante el sueño. Se trata al paciente, no la cifra."},
+  {id:"b1",g:"br",name:"Bloqueo AV de primer grado",full:"Bloqueo AV de primer grado",strip:"b1",
+   see:["PR prolongado (> 0,20 s) y constante","Todas las P conducen a un QRS"],
+   do:["Habitualmente no requiere tratamiento","Revisar fármacos que enlentecen la conducción AV"],
+   key:"Es un retraso, no un bloqueo real: ninguna P se queda sin QRS."},
+  {id:"b2",g:"br",name:"Bloqueo AV de segundo grado",full:"Bloqueo AV de segundo grado (Mobitz I y II)",strip:"b2",
+   see:["Mobitz I (Wenckebach): el PR se alarga latido a latido hasta que una P no conduce","Mobitz II: PR constante y, de forma súbita, una P sin QRS"],
+   do:["Mobitz I sintomático: atropina","Mobitz II: preparar marcapasos; la atropina suele ser poco eficaz"],
+   key:"Mobitz II tiene riesgo de progresar a bloqueo completo."},
+  {id:"b3",g:"br",name:"Bloqueo AV completo",full:"Bloqueo AV de tercer grado",strip:"b3",
+   see:["Disociación AV: las P y los QRS van cada uno a su ritmo","Ritmo de escape lento, a menudo con QRS ancho"],
+   do:["Marcapasos transcutáneo y luego definitivo","Atropina como puente; con frecuencia no responde"],
+   key:"Las P marchan regulares y atraviesan los QRS sin relación con ellos."},
+  // Paro
+  {id:"fv",g:"pc",sub:"Desfibrilables",name:"FV",full:"Fibrilación ventricular",strip:"fv",
+   see:["Actividad eléctrica caótica, sin QRS identificables","Sin pulso"],
+   do:["RCP de alta calidad","Desfibrilación lo antes posible","Epinefrina y antiarrítmico según el algoritmo de paro"],
+   key:"Cada minuto sin descarga reduce la supervivencia: la desfibrilación precoz es la intervención decisiva."},
+  {id:"tvsp",g:"pc",sub:"Desfibrilables",name:"TV sin pulso",full:"Taquicardia ventricular sin pulso",strip:"tv",
+   see:["QRS ancho y regular, igual que una TV","El paciente no tiene pulso"],
+   do:["Se trata igual que la FV: RCP y desfibrilación"],
+   key:"El trazado puede ser idéntico al de una TV con pulso. Lo que cambia el tratamiento es la palpación del pulso."},
+  {id:"asis",g:"pc",sub:"No desfibrilables",name:"Asistolia",full:"Asistolia",strip:"asis",
+   see:["Línea prácticamente plana","Confirmar en más de una derivación y revisar ganancia y cables"],
+   do:["RCP de alta calidad","Epinefrina lo antes posible","Buscar causas reversibles (H y T)","No desfibrilar"],
+   key:"Una FV fina puede parecer asistolia: verifica derivación, ganancia y conexiones."},
+  {id:"aesp",g:"pc",sub:"No desfibrilables",name:"AESP",full:"Actividad eléctrica sin pulso",strip:"aesp",
+   see:["Ritmo organizado en el monitor (no FV ni TV)","El paciente no tiene pulso"],
+   do:["RCP de alta calidad","Epinefrina lo antes posible","Buscar y tratar causas reversibles (H y T)"],
+   key:"El monitor puede mostrar un ritmo casi normal. Siempre se confirma con el pulso, no con la pantalla."}
+];
+
+/* ---------- Trazados esquemáticos ---------- */
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function beat(x,t,o={}){ // t = posición del QRS
+  let y=0; const wide=o.wide, amp=o.amp||1;
+  if(o.p!==false && o.pr!==undefined) y+=G(x,t-o.pr,5,-7);
+  if(wide){ y+=G(x,t,9,-38*amp)+G(x,t+16,10,16*amp)+G(x,t+42,12,10*amp); }
+  else { y+=G(x,t-6,2,4)+G(x,t,2.6,-46*amp)+G(x,t+5,2.4,13*amp)+G(x,t+38,9,-11); }
+  return y;
+}
+function signal(kind){
+  const W=600, pts=[]; const r=rng(kind.length*977+13);
+  let fn=()=>0;
+  const sum=(arr)=>x=>arr.reduce((s,f)=>s+f(x),0);
+  switch(kind){
+    case "tsv":{const b=[];for(let t=20;t<W;t+=48)b.push(x=>beat(x,t));fn=sum(b);break}
+    case "bs":{const b=[];for(let t=70;t<W;t+=175)b.push(x=>beat(x,t,{pr:32}));fn=sum(b);break}
+    case "aesp":{const b=[];for(let t=60;t<W;t+=125)b.push(x=>beat(x,t,{pr:30,amp:.7}));fn=sum(b);break}
+    case "b1":{const b=[];for(let t=80;t<W;t+=150)b.push(x=>beat(x,t,{pr:62}));fn=sum(b);break}
+    case "b2":{ // Wenckebach 4:3
+      const b=[];let p=40;const prs=[32,46,62,null];let i=0;
+      while(p<W){const pr=prs[i%4];const pp=p;
+        if(pr) b.push(x=>beat(x,pp+pr,{pr})); else b.push(x=>G(x,pp,5,-7));
+        p+=70;i++} fn=sum(b);break}
+    case "b3":{const b=[];for(let p=20;p<W;p+=62)b.push(x=>G(x,p,5,-7));
+      for(let t=90;t<W;t+=200)b.push(x=>beat(x,t,{wide:true,p:false}));fn=sum(b);break}
+    case "fa":{const b=[];let t=25;while(t<W){const tt=t;b.push(x=>beat(x,tt));t+=40+r()*55}
+      const n=[];for(let i=0;i<9;i++){const f=.15+r()*.3,ph=r()*6,a=1+r()*1.5;n.push(x=>a*Math.sin(f*x+ph))}
+      fn=sum([...b,...n]);break}
+    case "flutter":{const b=[];const st=[48,48,72,48,72,48,48,72];let t=30,i=0;while(t<W){const tt=t;b.push(x=>beat(x,tt));t+=st[i++%st.length]}
+      b.push(x=>{const ph=(x%24)/24;return ph<.75?-7+ph/.75*12:5-((ph-.75)/.25)*12});fn=sum(b);break}
+    case "tv":{const b=[];for(let t=20;t<W;t+=52)b.push(x=>G(x,t,10,-40)+G(x,t+24,11,30));fn=sum(b);break}
+    case "fap":{const b=[];let t=20;while(t<W){const tt=t,a=.7+r()*.6,w=7+r()*5;b.push(x=>G(x,tt,w,-38*a)+G(x,tt+18,w+3,18*a));t+=32+r()*42}fn=sum(b);break}
+    case "tvp":fn=x=>-34*Math.sin(x*2*Math.PI/30)*(.25+.75*Math.abs(Math.sin(x*Math.PI/300)));break;
+    case "fv":{const n=[];for(let i=0;i<6;i++){const f=.12+r()*.35,ph=r()*6,a=4+r()*9,m=.004+r()*.02;n.push(x=>a*Math.sin(f*x+ph)*(.5+.5*Math.sin(m*x+ph)))}fn=sum(n);break}
+    case "asis":fn=x=>1.2*Math.sin(x*.02)+.6*Math.sin(x*.11);break;
+  }
+  for(let x=0;x<=W;x+=1)pts.push([x,(55+fn(x)).toFixed(1)]);
+  return pts;
+}
+function stripSVG(kind){
+  const W=600,H=100; let g="";
+  for(let x=0;x<=W;x+=10)g+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="var(--grid)" stroke-width="${x%50?0.4:1}"/>`;
+  for(let y=0;y<=H;y+=10)g+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="var(--grid)" stroke-width="${y%50?0.4:1}"/>`;
+  const d="M"+signal(kind).map(p=>p.join(",")).join(" L");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Trazado esquemático"><rect width="${W}" height="${H}" fill="var(--paper)"/>${g}<path d="${d}" fill="none" stroke="var(--trace)" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+}
+
+/* ---------- Columnas ---------- */
+const cols=document.getElementById("cols");
+cols.innerHTML=Object.entries(GROUPS).map(([k,g])=>{
+  let lastSub=null;
+  const items=R.filter(r=>r.g===k).map(r=>{
+    let s="";
+    if(r.sub && r.sub!==lastSub){s+=`<li class="sub">${r.sub}:</li>`;lastSub=r.sub}
+    const txt=r.label?`<em>${r.label}:</em> <span>${r.name}</span>`:`<span style="color:var(--ink)">${r.name}</span>`;
+    return s+`<li><button class="item" data-id="${r.id}">${txt}</button></li>`;
+  }).join("");
+  return `<div class="col ${k}">
+    <button class="col-head" data-g="${k}"><span class="ico">${ICONS[k]}</span><span><b>${g.name}</b><small>${g.short}</small></span></button>
+    <ul class="items">${items}</ul>
+    <div class="action">${g.action}</div></div>`;
+}).join("");
+
+const detail=document.getElementById("detail");
+const li=a=>"<ul>"+a.map(x=>`<li>${x}</li>`).join("")+"</ul>";
+
+function showRhythm(id,scroll){
+  const r=R.find(x=>x.id===id), g=GROUPS[r.g];
+  document.querySelectorAll(".item").forEach(b=>b.classList.toggle("sel",b.dataset.id===id));
+  detail.className="detail "+r.g;
+  detail.innerHTML=`<span class="pill">${g.name}${r.sub?" · "+r.sub.toLowerCase():""}</span>
+    <h2>${r.full}</h2>
+    <div class="strip">${stripSVG(r.strip)}</div>
+    <div class="strip-cap">Trazado esquemático con fines didácticos, no a escala clínica.</div>
+    <div class="dgrid">
+      <div class="dbox"><h3>Cómo se reconoce</h3>${li(r.see)}</div>
+      <div class="dbox"><h3>Qué se hace</h3>${li(r.do)}</div>
+      <div class="dbox key"><h3>Clave</h3><p style="margin:0">${r.key}</p></div>
+    </div>`;
+  if(scroll) detail.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+}
+function showGroup(k,scroll){
+  const g=GROUPS[k];
+  document.querySelectorAll(".item").forEach(b=>b.classList.remove("sel"));
+  detail.className="detail "+k;
+  detail.innerHTML=`<span class="pill">Grupo</span><h2>${g.name}</h2>
+    <p style="max-width:70ch">${g.intro}</p>
+    <div class="dgrid" style="grid-template-columns:minmax(0,1fr)"><div class="dbox key"><h3>Conducta general</h3>${li(g.do)}</div></div>
+    <p class="empty" style="margin:12px 0 0">Elige un ritmo de la columna para ver su trazado.</p>`;
+  if(scroll) detail.scrollIntoView({behavior:"smooth",block:"start"});
+}
+cols.addEventListener("click",e=>{
+  const it=e.target.closest(".item"); if(it) return showRhythm(it.dataset.id,true);
+  const h=e.target.closest(".col-head"); if(h) showGroup(h.dataset.g,true);
+});
+showRhythm("tsv",false);
+
+/* ---------- Práctica ---------- */
+const quiz=document.getElementById("quiz");
+let q={ok:0,n:0,cur:null,order:[],answered:false};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function nextQ(){
+  if(!q.order.length) q.order=shuffle(R.map(r=>r.id));
+  q.cur=R.find(r=>r.id===q.order.pop()); q.answered=false; renderQ();
+}
+function hintFor(r){
+  if(r.g==="pc") return "Paciente sin pulso. "+r.see[0]+".";
+  return "Paciente con pulso. "+r.see.slice(0,2).join(". ")+".";
+}
+function renderQ(fb=""){
+  const r=q.cur;
+  quiz.innerHTML=`<div class="qrow"><div><div class="tag">Ponte a prueba</div><h2>¿A qué grupo pertenece este ritmo?</h2></div>
+    <div class="score">${q.ok} / ${q.n} correctas</div></div>
+    <div class="strip">${stripSVG(r.strip)}</div>
+    <p style="margin:8px 0 0">${hintFor(r)}</p>
+    <div class="btns">${Object.entries(GROUPS).map(([k,g])=>`<button class="btn ${k}" data-a="${k}" ${q.answered?"disabled":""}>${g.name}</button>`).join("")}</div>
+    ${fb}`;
+}
+quiz.addEventListener("click",e=>{
+  const a=e.target.closest("[data-a]");
+  if(a && !q.answered){
+    q.answered=true; q.n++; const good=a.dataset.a===q.cur.g; if(good)q.ok++;
+    renderQ(`<div class="fb"><b class="${good?"ok":"no"}">${good?"Correcto.":"No exactamente."}</b> Es <b>${q.cur.full}</b>, del grupo ${GROUPS[q.cur.g].name.toLowerCase()}. ${GROUPS[q.cur.g].action}.
+      <div class="btns"><button class="btn next" data-next>Siguiente ritmo</button><button class="btn" data-see="${q.cur.id}">Ver detalle</button></div></div>`);
+  }
+  if(e.target.closest("[data-next]")) nextQ();
+  const s=e.target.closest("[data-see]"); if(s) showRhythm(s.dataset.see,true);
+});
+nextQ();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

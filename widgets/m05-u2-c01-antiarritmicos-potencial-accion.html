@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Antiarrítmicos y potencial de acción</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: selector de clase arriba; dos potenciales de acción (ventricular y nodal) lado a lado; ficha de la clase y de la fase debajo */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --vent:#2b6cc4; --nod:#e2683c; --base:#9fb0c0;
+  --c1:#2b6cc4; --c1s:#e4eef9;
+  --c2:#2f8a4c; --c2s:#e5f4e9;
+  --c3:#7a4cb0; --c3s:#f0e9f8;
+  --c4:#d0571f; --c4s:#fcebe2;
+  --band:#18283a;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --vent:#7fb3ec; --nod:#f29a74; --base:#55687a;
+  --c1:#7fb3ec; --c1s:#182c42; --c2:#6fcf8f; --c2s:#183326; --c3:#bb9ae6; --c3s:#2a2140; --c4:#f29a74; --c4s:#3a2418;
+  --band:#dbe6f0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --vent:#7fb3ec; --nod:#f29a74; --base:#55687a;
+  --c1:#7fb3ec; --c1s:#182c42; --c2:#6fcf8f; --c2s:#183326; --c3:#bb9ae6; --c3s:#2a2140; --c4:#f29a74; --c4s:#3a2418;
+  --band:#dbe6f0; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+
+.classes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px}
+@media (max-width:820px){.classes{grid-template-columns:repeat(2,minmax(0,1fr))}.classes .cls:first-child{grid-column:1/-1}}
+.cls{font:inherit;text-align:left;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:1px}
+.cls b{font-size:15px;font-weight:800}
+.cls small{font-size:12.5px;color:var(--muted)}
+.cls[data-c="1"]{--c:var(--c1);--cs:var(--c1s)} .cls[data-c="2"]{--c:var(--c2);--cs:var(--c2s)}
+.cls[data-c="3"]{--c:var(--c3);--cs:var(--c3s)} .cls[data-c="4"]{--c:var(--c4);--cs:var(--c4s)}
+.cls[data-c] b{color:var(--c)}
+.cls[aria-pressed="true"]{border-color:var(--c,var(--head));background:var(--cs,var(--node));box-shadow:0 0 0 3px var(--cs,var(--node))}
+.cls:not([data-c])[aria-pressed="true"]{border-color:var(--head)}
+.cls:focus-visible,.ph:focus-visible,.ann:focus-visible{outline:3px solid var(--vent);outline-offset:2px}
+
+.slider{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px;font-size:14px;font-weight:600}
+.slider input{flex:1;min-width:160px;max-width:340px;accent-color:var(--c,var(--head))}
+.slider output{font-variant-numeric:tabular-nums lining-nums;color:var(--muted);min-width:4ch}
+
+.panels{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.panels{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;min-width:0}
+.panel h2{font-size:16px;font-weight:800;margin:0 4px 2px}
+.panel .sub{font-size:13px;color:var(--muted);margin:0 4px 6px}
+.panel svg{display:block;width:100%;height:auto;overflow:visible}
+.axis{font-family:var(--f);font-size:11px;fill:var(--muted)}
+.gridl{stroke:var(--line);stroke-width:1}
+.thr{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4}
+.ph circle{fill:var(--surface);stroke:var(--muted);stroke-width:1.5}
+.ph text{font-family:var(--f);font-weight:800;font-size:13px;fill:var(--ink);pointer-events:none}
+.ph{cursor:pointer}
+.ph:hover circle{stroke:var(--ink)}
+.ph.sel circle{fill:var(--band);stroke:var(--band)} .ph.sel text{fill:var(--surface)}
+.bandr{fill:var(--band);opacity:.07}
+.ann{cursor:pointer}
+.ann text{font-family:var(--f);font-size:12.5px;fill:var(--muted)}
+.ann text tspan.t{font-weight:800}
+.ann line{stroke:var(--muted);stroke-width:1.2}
+.ann.on text{fill:var(--ink)} .ann.on line{stroke:var(--ink)}
+.ann.off{opacity:.25}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted);margin:4px 4px 0}
+.legend i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:4px;margin-right:6px}
+
+.info{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:860px){.info{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.card.k{border-color:var(--c,var(--line))}
+.card .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--muted))}
+.card h3{font-size:21px;font-weight:800;margin:2px 0 10px;text-wrap:balance}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.facts{grid-template-columns:1fr}}
+.fact{background:var(--node);border-radius:9px;padding:8px 11px}
+.fact b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.fact.ecg{background:var(--cs,var(--node))} .fact.ecg b{color:var(--c,var(--muted))}
+.warn{margin:10px 0 0;padding:9px 12px;border-radius:9px;border-left:3px solid var(--c,var(--muted));background:var(--node);font-size:14px}
+.card p{margin:0 0 8px;max-width:62ch}
+.ion{display:inline-block;font-weight:800;font-size:13px;padding:1px 8px;border-radius:99px;background:var(--node)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Farmacología</div>
+  <h1>Cada clase de antiarrítmicos actúa sobre una fase distinta del potencial de acción</h1>
+  <p class="lead">Elige una clase para ver cómo cambia la curva: la línea gris es el potencial normal y la discontinua, el efecto del fármaco. Toca los números para conocer cada fase.</p>
+
+  <div class="classes" id="classes">
+    <button class="cls" aria-pressed="true"><b>Todas</b><small>Vista general</small></button>
+    <button class="cls" data-c="1" aria-pressed="false"><b>Clase I</b><small>Bloquea el Na⁺</small></button>
+    <button class="cls" data-c="2" aria-pressed="false"><b>Clase II</b><small>Bloquea el estímulo simpático</small></button>
+    <button class="cls" data-c="3" aria-pressed="false"><b>Clase III</b><small>Bloquea el K⁺</small></button>
+    <button class="cls" data-c="4" aria-pressed="false"><b>Clase IV</b><small>Bloquea el Ca²⁺</small></button>
+  </div>
+
+  <div class="slider" id="sliderRow" hidden>
+    <label for="dose">Intensidad del efecto</label>
+    <input type="range" id="dose" min="0" max="100" value="100">
+    <output id="doseOut">100 %</output>
+  </div>
+
+  <div class="panels">
+    <section class="panel">
+      <h2>Célula ventricular</h2>
+      <p class="sub">Respuesta rápida, dependiente del Na⁺</p>
+      <svg id="svgV" viewBox="0 0 580 300" role="img" aria-label="Potencial de acción de la célula ventricular"></svg>
+      <div class="legend" id="legV"></div>
+    </section>
+    <section class="panel">
+      <h2>Célula nodal (sinusal o AV)</h2>
+      <p class="sub">Respuesta lenta, dependiente del Ca²⁺, con automatismo</p>
+      <svg id="svgN" viewBox="0 0 420 300" role="img" aria-label="Potencial de acción de la célula nodal"></svg>
+      <div class="legend" id="legN"></div>
+    </section>
+  </div>
+
+  <div class="info">
+    <section class="card k" id="classCard" aria-live="polite"></section>
+    <section class="card" id="phaseCard" aria-live="polite"></section>
+  </div>
+
+  <footer>Material educativo. Curvas esquemáticas, no a escala. Clasificación de Vaughan Williams simplificada; varios fármacos tienen acciones de más de una clase. No reemplaza el juicio clínico.</footer>
+</div>
+
+<script>
+const Y=mv=>40+(30-mv)*(220/120);           // +30 mV → 40, −90 mV → 260
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ss=u=>u<=0?0:u>=1?1:u*u*(3-2*u);
+
+/* --- curvas --- */
+function vent(p){ // p: w0, peak, p2end
+  return x=>{
+    const a=90;
+    if(x<a) return -90;
+    if(x<a+p.w0) return -90+(p.peak+90)*((x-a)/p.w0);
+    const b=a+p.w0;
+    if(x<b+14) return lerp(p.peak,5,ss((x-b)/14));
+    if(x<p.p2end) return lerp(5,-12,(x-b-14)/(p.p2end-b-14));
+    if(x<p.p2end+110) return -12-78*ss((x-p.p2end)/110);
+    return -90;
+  };
+}
+function nodal(p){ // p: s4, w0, peak
+  return x=>{
+    const a=20;
+    if(x<a) return -62;
+    if(x<a+p.s4) return -62+22*Math.pow((x-a)/p.s4,1.5);
+    const b=a+p.s4;
+    if(x<b+p.w0) return lerp(-40,p.peak,ss((x-b)/p.w0));
+    const c=b+p.w0;
+    if(x<c+90) return lerp(p.peak,-62,ss((x-c)/90));
+    const d=c+90; return -62+22*Math.pow(Math.min((x-d)/p.s4,1.15),1.5);
+  };
+}
+const V0={w0:4,peak:25,p2end:300}, N0={s4:110,w0:34,peak:8};
+const EFF={
+  1:{v:{w0:20,peak:15}}, 3:{v:{p2end:372}},
+  2:{n:{s4:175}}, 4:{n:{w0:66,peak:-4}}
+};
+function mix(base,delta,t){const o={...base};for(const k in delta)o[k]=lerp(base[k],delta[k],t);return o}
+function path(fn,x0,x1){let d="";for(let x=x0;x<=x1;x+=1)d+=(x===x0?"M":"L")+x+","+Y(fn(x)).toFixed(1);return d}
+
+/* --- datos --- */
+const PH={
+  v:{
+    4:{n:"Fase 4 · Reposo",ion:"K⁺",t:"Potencial de reposo estable, cercano a −90 mV, mantenido por la salida de K⁺. La célula ventricular no tiene automatismo normal.",r:[0,90]},
+    0:{n:"Fase 0 · Despolarización rápida",ion:"Na⁺",t:"Se abren los canales rápidos de Na⁺ y el potencial sube en milisegundos. La pendiente de esta fase determina la velocidad de conducción y, en el ECG, el ancho del QRS.",r:[86,104]},
+    1:{n:"Fase 1 · Repolarización inicial",ion:"K⁺",t:"Salida transitoria de K⁺ que produce la pequeña muesca tras el pico.",r:[100,118]},
+    2:{n:"Fase 2 · Meseta",ion:"Ca²⁺ / K⁺",t:"La entrada de Ca²⁺ equilibra la salida de K⁺. El Ca²⁺ que entra dispara la contracción. Corresponde al segmento ST.",r:[118,300]},
+    3:{n:"Fase 3 · Repolarización rápida",ion:"K⁺",t:"Predomina la salida de K⁺ y la célula vuelve al reposo. Su duración define el periodo refractario y, en el ECG, el intervalo QT.",r:[300,410]}
+  },
+  n:{
+    4:{n:"Fase 4 · Despolarización diastólica",ion:"Na⁺ (If) / Ca²⁺",t:"El potencial sube solo hasta el umbral: es el automatismo. El sistema simpático aumenta la pendiente y acelera la frecuencia; el vago la reduce.",r:[20,130]},
+    0:{n:"Fase 0 · Despolarización lenta",ion:"Ca²⁺",t:"Al alcanzar el umbral se abren los canales de Ca²⁺ tipo L. La subida es lenta, por eso la conducción por el nodo AV es lenta y genera el intervalo PR.",r:[130,164]},
+    3:{n:"Fase 3 · Repolarización",ion:"K⁺",t:"La salida de K⁺ devuelve el potencial al valor más negativo, desde donde empieza otra vez la fase 4. Las células nodales no tienen fases 1 ni 2.",r:[164,254]}
+  }
+};
+const CL={
+  1:{n:"Clase I",s:"Bloqueantes de los canales de Na⁺",cell:"Célula ventricular",phase:"Fase 0",fx:"Disminuyen la pendiente de la fase 0 y enlentecen la conducción en el músculo cardíaco.",
+     ecg:"QRS más ancho",ex:"Procainamida (Ia), lidocaína (Ib), flecainida (Ic)",use:"Taquicardias ventriculares; la flecainida, en FA sin cardiopatía estructural",
+     warn:"Los de clase Ic se evitan en cardiopatía estructural o isquémica por riesgo proarrítmico."},
+  2:{n:"Clase II",s:"Betabloqueantes",cell:"Célula nodal",phase:"Fase 4",fx:"Bloquean el estímulo simpático sobre los receptores β₁: aplanan la fase 4, reducen el automatismo y enlentecen la conducción AV.",
+     ecg:"FC más baja y PR más largo",ex:"Metoprolol, esmolol, propranolol",use:"Control de la frecuencia en FA y flúter; TSV",
+     warn:"Precaución en bradicardia, bloqueo AV, hipotensión e insuficiencia cardíaca descompensada."},
+  3:{n:"Clase III",s:"Bloqueantes de los canales de K⁺",cell:"Célula ventricular",phase:"Fase 3",fx:"Retrasan la repolarización: prolongan la fase 3, el potencial de acción y el periodo refractario.",
+     ecg:"QT más largo",ex:"Amiodarona, sotalol, ibutilida",use:"FA y TV; la amiodarona también en el paro refractario",
+     warn:"Vigilar el QT por riesgo de torsades de pointes. La amiodarona tiene además acciones de las otras tres clases."},
+  4:{n:"Clase IV",s:"Calcioantagonistas no dihidropiridínicos",cell:"Célula nodal",phase:"Fase 0",fx:"Bloquean los canales de Ca²⁺ tipo L: la fase 0 nodal sube más despacio y se enlentece la conducción AV.",
+     ecg:"PR más largo y FC más baja",ex:"Verapamilo, diltiazem",use:"Control de la frecuencia en FA y flúter; TSV",
+     warn:"Evitar en insuficiencia cardíaca con fracción de eyección reducida y en FA preexcitada."}
+};
+
+/* --- estado --- */
+let cls=null, dose=1, phase={cell:"v",k:"0"};
+
+function phaseMarks(cell,fn){
+  const pos=cell==="v"?{4:[45,-90,-1],0:[78,-30,0],1:[112,25,-1],2:[200,4,-1],3:[352,-50,1]}
+                     :{4:[72,-58,1],0:[136,-10,0],3:[214,-25,1]};
+  return Object.entries(pos).map(([k,[x,mv,side]])=>{
+    let cx=x, cy;
+    if(side===-1) cy=Y(fn(x))-20; else if(side===1){cx=x+18;cy=Y(fn(x))+6}else{cy=Y(mv)}
+    if(cell==="v"&&k==="0"){cx=72;cy=Y(-30)}
+    if(cell==="n"&&k==="0"){cx=120;cy=Y(-12)}
+    if(cell==="n"&&k==="4"){cx=60;cy=Y(-46)}
+    const sel=phase.cell===cell&&phase.k===k;
+    return `<g class="ph ${sel?"sel":""}" data-cell="${cell}" data-k="${k}" tabindex="0" role="button" aria-label="${PH[cell][k].n}"><circle cx="${cx}" cy="${cy}" r="11"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle">${k}</text></g>`;
+  }).join("");
+}
+function axes(W){
+  let s="";
+  [[30,"+30"],[0,"0"],[-40,""],[-90,"−90"]].forEach(([mv,l])=>{
+    if(l) s+=`<line class="gridl" x1="34" x2="${W-6}" y1="${Y(mv)}" y2="${Y(mv)}"/><text class="axis" x="28" y="${Y(mv)+4}" text-anchor="end">${l}</text>`;
+  });
+  s+=`<text class="axis" x="6" y="22">mV</text>`;
+  return s;
+}
+function ann(c,x1,y1,x2,y2,title,sub,anchor,below){
+  const on=cls===c, off=cls&&cls!==c;
+  return `<g class="ann ${on?"on":""} ${off?"off":""}" data-c="${c}" tabindex="0" role="button" aria-label="${CL[c].n}">
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>
+    <text x="${x1}" y="${below?y1+16:y1-20}" text-anchor="${anchor}"><tspan class="t" style="fill:var(--c${c})">${CL[c].n}: ${title}</tspan><tspan x="${x1}" dy="16">${sub}</tspan></text></g>`;
+}
+
+function draw(){
+  const tV=cls&&EFF[cls].v?dose:0, tN=cls&&EFF[cls].n?dose:0;
+  const vB=vent(V0), nB=nodal(N0);
+  const vD=vent(mix(V0,(cls&&EFF[cls].v)||{},tV)), nD=nodal(mix(N0,(cls&&EFF[cls].n)||{},tN));
+  const col=cls?`var(--c${cls})`:"";
+
+  // ventricular
+  const bV=PH.v[phase.k]&&phase.cell==="v"?PH.v[phase.k].r:null;
+  let s=axes(580);
+  if(bV) s+=`<rect class="bandr" x="${bV[0]}" y="30" width="${bV[1]-bV[0]}" height="240"/>`;
+  const vAct=cls&&EFF[cls].v;
+  s+=`<path d="${path(vB,34,574)}" fill="none" stroke="${vAct?"var(--base)":"var(--vent)"}" stroke-width="${vAct?2.5:3.2}" stroke-linejoin="round"/>`;
+  if(vAct&&dose>0) s+=`<path d="${path(vD,34,574)}" fill="none" stroke="${col}" stroke-width="3.2" stroke-dasharray="8 5" stroke-linejoin="round"/>`;
+  s+=ann(1,172,44,152,Y(21),"bloquea el Na⁺","y enlentece la fase 0","start");
+  s+=phaseMarks("v",vB);
+  s+=ann(3,420,160,392,Y(-58),"bloquea el K⁺","y prolonga la fase 3","start");
+  document.getElementById("svgV").innerHTML=s;
+
+  // nodal
+  const bN=phase.cell==="n"?PH.n[phase.k].r:null;
+  let n=axes(420);
+  n+=`<line class="thr" x1="34" x2="414" y1="${Y(-40)}" y2="${Y(-40)}"/><text class="axis" x="262" y="${Y(-40)-5}">umbral</text>`;
+  if(bN) n+=`<rect class="bandr" x="${bN[0]}" y="30" width="${bN[1]-bN[0]}" height="240"/>`;
+  const nAct=cls&&EFF[cls].n;
+  n+=`<path d="${path(nB,20,414)}" fill="none" stroke="${nAct?"var(--base)":"var(--nod)"}" stroke-width="${nAct?2.5:3.2}" stroke-linejoin="round"/>`;
+  if(nAct&&dose>0) n+=`<path d="${path(nD,20,414)}" fill="none" stroke="${col}" stroke-width="3.2" stroke-dasharray="8 5" stroke-linejoin="round"/>`;
+  n+=ann(4,150,Y(8)-28,150,Y(8)-6,"bloquea el Ca²⁺","y enlentece la conducción AV","middle");
+  n+=ann(2,40,Y(-74),62,Y(-59)+3,"bloquea el estímulo","simpático sobre la fase 4","start",true);
+  n+=phaseMarks("n",nB);
+  document.getElementById("svgN").innerHTML=n;
+
+  const leg=(act,c)=>act?`<span><i style="border-color:var(--base)"></i>Normal</span><span><i style="border-color:var(--c${cls});border-top-style:dashed"></i>Con ${CL[cls].n.toLowerCase()}</span>`:`<span><i style="border-color:var(${c})"></i>Potencial normal</span>`;
+  document.getElementById("legV").innerHTML=leg(vAct,"--vent");
+  document.getElementById("legN").innerHTML=leg(nAct,"--nod");
+}
+
+function cards(){
+  const cc=document.getElementById("classCard");
+  if(!cls){
+    cc.style.removeProperty("--c"); cc.style.removeProperty("--cs");
+    cc.innerHTML=`<div class="tag">Vista general</div><h3>Dónde actúa cada clase</h3>
+      <div class="facts">${[1,2,3,4].map(c=>`<div class="fact"><b style="color:var(--c${c})">${CL[c].n} · ${CL[c].phase} ${CL[c].cell==="Célula nodal"?"nodal":"ventricular"}</b>${CL[c].s}</div>`).join("")}</div>
+      <p class="warn" style="margin-top:12px">Las clases I y III actúan sobre la célula ventricular; las clases II y IV, sobre las células nodales. Elige una para ver su efecto en la curva.</p>`;
+  } else {
+    const c=CL[cls];
+    cc.style.setProperty("--c",`var(--c${cls})`); cc.style.setProperty("--cs",`var(--c${cls}s)`);
+    cc.innerHTML=`<div class="tag">${c.n} · ${c.cell} · ${c.phase}</div><h3>${c.s}</h3>
+      <p>${c.fx}</p>
+      <div class="facts">
+        <div class="fact ecg"><b>Efecto en el ECG</b>${c.ecg}</div>
+        <div class="fact"><b>Ejemplos</b>${c.ex}</div>
+        <div class="fact" style="grid-column:1/-1"><b>Uso habitual</b>${c.use}</div>
+      </div>
+      <p class="warn">${c.warn}</p>`;
+  }
+  const p=PH[phase.cell][phase.k];
+  document.getElementById("phaseCard").innerHTML=`<div class="tag">${phase.cell==="v"?"Célula ventricular":"Célula nodal"}</div>
+    <h3>${p.n}</h3><p>${p.t}</p><p><span class="ion">Ion principal: ${p.ion}</span></p>`;
+}
+function render(){
+  document.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.c||null)===(cls?String(cls):null)));
+  const row=document.getElementById("sliderRow"); row.hidden=!cls;
+  if(cls) row.style.setProperty("--c",`var(--c${cls})`);
+  draw(); cards();
+}
+function setClass(c){
+  cls=c?Number(c):null; dose=1; dl.value=100; document.getElementById("doseOut").textContent="100 %";
+  if(cls){ const map={1:["v","0"],2:["n","4"],3:["v","3"],4:["n","0"]}; phase={cell:map[cls][0],k:map[cls][1]} }
+  render();
+}
+document.getElementById("classes").addEventListener("click",e=>{const b=e.target.closest(".cls"); if(b) setClass(b.dataset.c)});
+function svgClick(e){
+  const p=e.target.closest(".ph"); if(p){phase={cell:p.dataset.cell,k:p.dataset.k};render();return}
+  const a=e.target.closest(".ann"); if(a) setClass(cls===Number(a.dataset.c)?null:a.dataset.c);
+}
+function svgKey(e){ if(e.key==="Enter"||e.key===" "){ if(e.target.closest(".ph,.ann")){e.preventDefault();svgClick(e)} } }
+["svgV","svgN"].forEach(id=>{const s=document.getElementById(id);s.addEventListener("click",svgClick);s.addEventListener("keydown",svgKey)});
+const dl=document.getElementById("dose");
+dl.addEventListener("input",()=>{dose=dl.value/100;document.getElementById("doseOut").textContent=dl.value+" %";draw()});
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

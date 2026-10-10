@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Energía de la cardioversión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: casos a la izquierda; panel del desfibrilador con perilla de energía, SYNC y descarga en el centro; manual del equipo y tabla de referencia */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --acc:#2563a8; --acc-soft:#e4eef9;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9; --err:#c8323c; --err-soft:#fbe7e8; --warn:#b8660a; --warn-soft:#fdf1df;
+  --dev:#2a3138; --dev2:#3a434c;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --acc:#7fb3ec; --acc-soft:#182c42;
+  --ok:#6fcf8f; --ok-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --acc:#7fb3ec; --acc-soft:#182c42;
+  --ok:#6fcf8f; --ok-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:74ch;margin:0 0 16px}
+h2{font-size:20px;font-weight:800;margin:30px 0 8px}
+.rf{font-size:11px;font-weight:700;color:var(--acc);vertical-align:super;margin-left:2px}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr) 280px;gap:14px;align-items:start}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr) 280px}.cases{grid-column:1/-1}}
+@media (max-width:720px){.layout{grid-template-columns:1fr}}
+
+.cases{display:grid;gap:6px}
+@media (max-width:1080px){.cases{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
+.case{font:inherit;color:inherit;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:11px;padding:9px 11px;cursor:pointer}
+.case b{display:block;font-size:14.5px}
+.case small{font-size:12px;color:var(--muted)}
+.case[aria-current="true"]{border-color:var(--head);box-shadow:0 0 0 2px var(--head)}
+.case.done{border-color:var(--ok)} .case.done small{color:var(--ok);font-weight:700}
+.case:focus-visible,.btn:focus-visible,.k:focus-visible,.dial:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+.dev{background:var(--dev);border-radius:20px;padding:16px;color:#e8eef3;box-shadow:0 10px 30px -18px rgba(0,0,0,.6)}
+.lcd{background:#0f1a14;border:3px solid #111;border-radius:10px;padding:10px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center}
+.lcd .rhy{font-size:15px;font-weight:800;color:#7ef0a4}
+.lcd .pt{font-size:12.5px;color:#9fc}
+.lcd .j{font-size:40px;font-weight:800;color:#ffd76a;font-variant-numeric:tabular-nums lining-nums;text-align:right;line-height:1}
+.lcd .j small{font-size:16px;margin-left:4px}
+.lcd .mode{grid-column:1/-1;display:flex;gap:6px;font-size:12px;font-weight:800;letter-spacing:.05em}
+.lcd .mode span{padding:2px 8px;border-radius:5px;background:rgba(255,255,255,.1)}
+.lcd .mode .s{background:#2563a8}
+.lcd .mode .c{background:#d0a000;color:#1b2733}
+.lcd canvas{grid-column:1/-1;width:100%;height:auto;display:block}
+.panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;margin-top:14px}
+@media (max-width:520px){.panel{grid-template-columns:1fr}}
+.dialbox{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dial{display:block;width:100%;max-width:300px;touch-action:none;cursor:grab;border-radius:50%}
+.dial text{font-family:var(--f);font-weight:800;fill:#e8eef3;cursor:pointer}
+.dial .sel{fill:#ffd76a}
+.dialhint{font-size:12px;color:#b8c4ce;text-align:center}
+.keys{display:grid;gap:8px;min-width:150px}
+.k{font:inherit;color:#e8eef3;background:var(--dev2);border:2px solid #4b5560;border-radius:12px;padding:10px;cursor:pointer;font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:8px;justify-content:center}
+.k .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:#fff;color:#1b2733}
+.k.sync[aria-pressed="true"]{background:#2563a8;border-color:#7fb3ec}
+.k.charge{background:#2f6f3e;border-color:#6fcf8f}
+.k.shock{background:#c0491b;border-color:#ff9a6b}
+.k[disabled]{opacity:.45;cursor:default}
+.flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .4s;z-index:9}
+.flash.on{opacity:.45;transition:none}
+
+.task{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.task .tag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.task h3{margin:2px 0 6px;font-size:18px;font-weight:800}
+.task p{margin:0}
+.fb{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:14.5px;border:1.5px solid}
+.fb b{display:block}
+.fb.ok{border-color:var(--ok);background:var(--ok-soft)} .fb.ok b{color:var(--ok)}
+.fb.no{border-color:var(--err);background:var(--err-soft)} .fb.no b{color:var(--err)}
+.fb.warn{border-color:var(--warn);background:var(--warn-soft)} .fb.warn b{color:var(--warn)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer;margin-top:10px}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+
+.side{display:grid;gap:12px}
+.manual{background:#fffbea;color:#3a3220;border:1px solid #e6d9a8;border-radius:12px;padding:12px 14px;font-size:13.5px;box-shadow:2px 3px 0 #e6d9a8}
+.manual h3{margin:0 0 6px;font-size:14px;font-weight:800}
+.manual table{width:100%;border-collapse:collapse}
+.manual td{padding:3px 0;border-bottom:1px dashed #e6d9a8}
+.manual td:last-child{text-align:right;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.manual .note{margin-top:6px;font-size:12px;color:#6b5e3a}
+.score{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.score b{font-size:22px;font-variant-numeric:tabular-nums lining-nums}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table.ref{width:100%;border-collapse:collapse}
+.ref th{text-align:left;font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:11px 14px;background:var(--head);color:var(--head-ink)}
+.ref td{padding:10px 14px;border-top:1px solid var(--line);font-size:14.5px;vertical-align:top}
+.ref td:first-child{font-weight:800}
+.ref.hide td:not(:first-child){color:transparent;text-shadow:0 0 8px var(--muted);user-select:none}
+.togg{display:flex;gap:8px;align-items:center;font-size:14px;margin-bottom:8px}
+@media (max-width:640px){
+  .ref thead{display:none} .ref,.ref tbody,.ref tr,.ref td{display:block;width:100%}
+  .ref tr{border-top:1px solid var(--line);padding:8px 12px} .ref td{border:none;padding:2px 0}
+  .ref td[data-l]::before{content:attr(data-l)": ";font-weight:800;color:var(--muted)}
+}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Energía de la cardioversión según la arritmia</h1>
+  <p class="lead">Elige un caso, gira la perilla hasta la energía correcta (arrastra, usa las flechas del teclado o toca un número), decide si sincronizar, carga y descarga. Si la primera descarga no es eficaz, tendrás que ajustar la energía.</p>
+
+  <div class="layout">
+    <nav class="cases" id="cases" aria-label="Casos"></nav>
+    <section>
+      <div class="dev">
+        <div class="lcd"><div><div class="rhy" id="rhy"></div><div class="pt" id="pt"></div></div><div class="j" id="jout"></div>
+          <canvas id="cv" width="900" height="150" aria-hidden="true"></canvas>
+          <div class="mode"><span id="mSync">ASINC</span><span id="mChg" class="c" hidden>CARGADO</span></div></div>
+        <div class="panel">
+          <div class="dialbox"><svg class="dial" id="dial" viewBox="0 0 300 300" role="slider" tabindex="0" aria-label="Selector de energía" aria-valuemin="50" aria-valuemax="360"></svg><span class="dialhint">1 · Selector de energía</span></div>
+          <div class="keys">
+            <button class="k sync" id="kSync" aria-pressed="false">SYNC</button>
+            <button class="k charge" id="kCharge"><span class="n">2</span>Cargar</button>
+            <button class="k shock" id="kShock"><span class="n">3</span>Descargar</button>
+          </div>
+        </div>
+      </div>
+      <div class="task" id="task" aria-live="polite"></div>
+    </section>
+    <aside class="side">
+      <div class="manual"><h3>Manual del equipo · ejemplo ficticio</h3>
+        <table><tr><td>TSV, energía inicial</td><td>100 J</td></tr><tr><td>TV monomórfica con pulso</td><td>100 J</td></tr><tr><td>Escalones de energía</td><td>siguiente posición</td></tr><tr><td>Energía máxima</td><td>360 J</td></tr></table>
+        <p class="note">Valores inventados para practicar. En la práctica real, consulta el manual de tu equipo y el protocolo institucional.</p></div>
+      <div class="score" id="score"></div>
+    </aside>
+  </div>
+
+  <h2>Tabla de referencia</h2>
+  <label class="togg"><input type="checkbox" id="hide"> Ocultar las respuestas para practicar</label>
+  <div class="tbl"><table class="ref" id="ref"><thead><tr><th>Arritmia</th><th>Energía inicial</th><th>Si la descarga no es eficaz</th></tr></thead><tbody id="rows"></tbody></table></div>
+
+  <div class="flash" id="flash"></div>
+  <footer>Material educativo. Simulación con un equipo bifásico ficticio de 50 a 360 J. Los superíndices remiten a las referencias del módulo; la Unidad 4 corresponde al curso. No sustituye el manual del fabricante ni el protocolo institucional.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="rf" title="Referencia ${r}">${r}</span>`:"";
+const STOPS=[50,75,100,150,200,300,360];
+const C=[
+  {id:"fa",n:"Fibrilación auricular",d:"FA rápida con pulso, inestable",sync:true,init:j=>j>=200,ie:"Al menos 200 J",ir:"1,2",fail:true,esc:"Incrementar según el equipo",er:"1,2",strip:"fa",
+   why:"En la FA se empieza con al menos 200 J.",escWhy:"Se incrementa según el equipo: aquí, a la siguiente posición."},
+  {id:"fl",n:"Flutter auricular",d:"Flutter con conducción 2:1, inestable",sync:true,init:j=>j===200,ie:"200 J",ir:"1,2",fail:false,esc:"Incrementar según el equipo",er:"1,2",strip:"fl",
+   why:"En el flutter la energía inicial es 200 J."},
+  {id:"tsv",n:"Taquicardia supraventricular",d:"TSV inestable, sin respuesta a adenosina",sync:true,init:j=>j===100,ie:"Según el fabricante del equipo",ir:"4",fail:true,esc:"Incremento escalonado",strip:"tsv",
+   why:"La energía de la TSV la indica el fabricante: en el manual de este equipo, 100 J.",escWhy:"Incremento escalonado: la siguiente posición de la perilla."},
+  {id:"tvm",n:"TV monomórfica con pulso",d:"QRS ancho y regular, hipotensión",sync:true,init:j=>j===100,ie:"Según el fabricante del equipo",ir:"4",fail:false,esc:"Incremento escalonado",strip:"tv",
+   why:"La energía de la TV monomórfica la indica el fabricante: en el manual de este equipo, 100 J."},
+  {id:"tvp",n:"TV polimórfica sostenida",d:"QRS cambiante, inestable",sync:false,init:j=>j===360,ie:"Energía máxima, sin sincronizar",ir:"3",fail:false,esc:"Manejo como desfibrilación (Unidad 4)",strip:"tvp",
+   why:"Energía máxima y sin sincronizar: no hay ondas R fiables que marcar."}
+];
+let cur="fa", J=50, sync=false, charged=false, stage={}, results={};
+function st(){return stage[cur]||(stage[cur]={step:0,last:null,tries:0,msg:null})}
+/* perilla */
+const dial=document.getElementById("dial"), A0=-135, A1=135;
+const ang=i=>A0+(A1-A0)*i/(STOPS.length-1);
+function drawDial(){
+  const i=STOPS.indexOf(J), a=ang(i)*Math.PI/180;
+  let s=`<circle cx="150" cy="150" r="140" fill="#1e252c"/><circle cx="150" cy="150" r="120" fill="none" stroke="#4b5560" stroke-width="2"/>`;
+  STOPS.forEach((v,k)=>{const t=ang(k)*Math.PI/180,x=150+Math.sin(t)*124,y=150-Math.cos(t)*124,tx=150+Math.sin(t)*104,ty=150-Math.cos(t)*104;
+    s+=`<line x1="${150+Math.sin(t)*132}" y1="${150-Math.cos(t)*132}" x2="${x}" y2="${y}" stroke="${v===J?"#ffd76a":"#8a96a2"}" stroke-width="${v===J?4:2}"/>`;
+    s+=`<text class="${v===J?"sel":""}" data-v="${v}" x="${tx}" y="${ty+6}" text-anchor="middle" font-size="${v===J?19:16}">${v}</text>`});
+  s+=`<g transform="rotate(${ang(i)} 150 150)"><circle cx="150" cy="150" r="66" fill="#11161b" stroke="#5c6670" stroke-width="3"/>
+      <rect x="138" y="76" width="24" height="70" rx="10" fill="#2a3138" stroke="#5c6670" stroke-width="2"/><rect x="146" y="80" width="8" height="26" rx="4" fill="#ffd76a"/></g>
+      <text x="150" y="160" text-anchor="middle" font-size="26" fill="#ffd76a" style="pointer-events:none">${J}</text><text x="150" y="182" text-anchor="middle" font-size="13" fill="#b8c4ce" style="pointer-events:none">julios</text>`;
+  dial.innerHTML=s; dial.setAttribute("aria-valuenow",J); dial.setAttribute("aria-valuetext",J+" julios");
+}
+function setJ(v){if(v===J)return;J=v;if(charged){charged=false;note("Has cambiado la energía: el equipo se ha descargado internamente. Vuelve a cargar.","warn")}render()}
+function angleFromEvent(e){const r=dial.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);return Math.atan2(x,-y)*180/Math.PI}
+function nearest(a){a=Math.max(A0,Math.min(A1,a));let best=0,bd=1e9;STOPS.forEach((_,k)=>{const d=Math.abs(ang(k)-a);if(d<bd){bd=d;best=k}});return STOPS[best]}
+let dragging=false;
+dial.addEventListener("pointerdown",e=>{const t=e.target.closest("text[data-v]");if(t){setJ(+t.dataset.v);return}dragging=true;dial.setPointerCapture(e.pointerId);dial.style.cursor="grabbing";setJ(nearest(angleFromEvent(e)))});
+dial.addEventListener("pointermove",e=>{if(dragging)setJ(nearest(angleFromEvent(e)))});
+dial.addEventListener("pointerup",()=>{dragging=false;dial.style.cursor="grab"});
+dial.addEventListener("keydown",e=>{const i=STOPS.indexOf(J);if(["ArrowRight","ArrowUp"].includes(e.key)){e.preventDefault();setJ(STOPS[Math.min(i+1,STOPS.length-1)])}if(["ArrowLeft","ArrowDown"].includes(e.key)){e.preventDefault();setJ(STOPS[Math.max(i-1,0)])}});
+
+/* trazado */
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function strip(){
+  const c=C.find(x=>x.id===cur),s=st(),cv=document.getElementById("cv"),g=cv.getContext("2d"),W=cv.width,H=cv.height;
+  g.fillStyle="#0f1a14";g.fillRect(0,0,W,H);g.strokeStyle="#1f3a2a";for(let x=0;x<W;x+=30){g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+  const conv=s.step===3;let f;
+  if(conv)f=x=>{let y=0;for(let r=40;r<W;r+=170)y+=G(x,r-28,7,-6)+G(x,r,3,-50)+G(x,r+5,3,12)+G(x,r+50,12,-10);return y};
+  else if(c.strip==="tvp")f=x=>-40*Math.sin(x*2*Math.PI/36)*(.3+.7*Math.abs(Math.sin(x*Math.PI/300)));
+  else if(c.strip==="tv")f=x=>{let y=0;for(let r=20;r<W;r+=62)y+=G(x,r,10,-42)+G(x,r+26,11,32);return y};
+  else{const rs=[];let r=20,k=0;const st2=c.strip==="fa"?null:(c.strip==="fl"?66:52);while(r<W){rs.push(r);r+=st2||(40+((Math.sin(k*91.7)+1)/2)*60);k++}
+    f=x=>rs.reduce((y,r)=>y+G(x,r,3,-48)+G(x,r+5,3,12)+G(x,r+38,10,-9),0)+(c.strip==="fa"?2*Math.sin(x*.3)+1.4*Math.sin(x*.47):c.strip==="fl"?(((x%22)/22)<.8?-5+((x%22)/22)/.8*9:4-(((x%22)/22)-.8)/.2*9):0)}
+  g.strokeStyle="#7ef0a4";g.lineWidth=2.6;g.beginPath();for(let x=0;x<=W;x++){const y=H*.6+f(x);x?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();
+  if(sync&&c.sync&&!conv){g.fillStyle="#7fb3ec";const rs=[];let r=20,k=0;const st2=c.strip==="fa"?null:c.strip==="tv"?62:(c.strip==="fl"?66:52);while(r<W){rs.push(r);r+=st2||(40+((Math.sin(k*91.7)+1)/2)*60);k++}
+    rs.forEach(r=>{g.beginPath();g.moveTo(r-8,6);g.lineTo(r+8,6);g.lineTo(r,18);g.closePath();g.fill()})}
+}
+/* tarea */
+function note(t,cls){st().msg={t,cls}}
+function render(){
+  const c=C.find(x=>x.id===cur),s=st();
+  document.getElementById("cases").innerHTML=C.map(x=>`<button class="case ${results[x.id]?"done":""}" data-id="${x.id}" aria-current="${x.id===cur}"><b>${x.n}</b><small>${results[x.id]?"✓ Resuelto"+(results[x.id].err?` · ${results[x.id].err} ${results[x.id].err===1?"error":"errores"}`:""):x.d}</small></button>`).join("");
+  document.getElementById("rhy").textContent=s.step===3?"Ritmo sinusal":c.n;
+  document.getElementById("pt").textContent=s.step===3?"Cardioversión eficaz":c.d;
+  document.getElementById("jout").innerHTML=`${J}<small>J</small>`;
+  const ms=document.getElementById("mSync");ms.textContent=sync?"SINC":"ASINC";ms.className=sync?"s":"";
+  document.getElementById("mChg").hidden=!charged;
+  document.getElementById("kSync").setAttribute("aria-pressed",sync);
+  document.getElementById("kShock").disabled=s.step===3;document.getElementById("kCharge").disabled=s.step===3;
+  drawDial();strip();
+  const head=s.step===0?`<div class="tag">Primera descarga</div><h3>¿Con qué energía empiezas?</h3><p>${c.d}. Ajusta la perilla y el modo, carga y descarga.</p>`
+    :s.step===1?`<div class="tag">Descarga no eficaz</div><h3>La arritmia persiste</h3><p>La descarga de ${s.last} J no ha sido eficaz. ¿Qué energía eliges ahora?</p>`
+    :`<div class="tag">Caso resuelto</div><h3>${c.n}</h3>`;
+  const m=s.msg?`<div class="fb ${s.msg.cls}">${s.msg.t}</div>`:"";
+  const nxt=s.step===3?`<button class="btn pri" id="nextCase">${C.findIndex(x=>x.id===cur)<C.length-1?"Siguiente caso":"Ver resultados"}</button> <button class="btn" id="redo">Repetir este caso</button>`:"";
+  document.getElementById("task").innerHTML=head+m+nxt;
+  const done=Object.keys(results).length, errs=Object.values(results).reduce((a,r)=>a+r.err,0);
+  document.getElementById("score").innerHTML=`<div><b>${done}</b> de ${C.length} casos resueltos</div><div style="color:var(--muted)">${errs} ${errs===1?"error":"errores"} en total</div>${done===C.length?`<div style="margin-top:6px;color:var(--ok);font-weight:800">${errs?"Completado. Repite los casos con errores.":"¡Completado sin errores!"}</div>`:""}`;
+  document.getElementById("rows").innerHTML=C.map(x=>`<tr><td>${x.n}</td><td data-l="Energía inicial">${x.ie}${ref(x.ir)}</td><td data-l="Si no es eficaz">${x.esc}${ref(x.er)}</td></tr>`).join("");
+}
+function flash(){const f=document.getElementById("flash");f.classList.add("on");requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove("on")))}
+document.getElementById("kSync").addEventListener("click",()=>{sync=!sync;render()});
+document.getElementById("kCharge").addEventListener("click",()=>{if(charged)return;charged=true;note(`Cargado a ${J} J. Pulsa «Descargar».`,"");render()});
+document.getElementById("kShock").addEventListener("click",()=>{
+  const c=C.find(x=>x.id===cur),s=st();
+  if(!charged){note("Primero <b>carga</b> el desfibrilador.","warn");render();return}
+  const err=t=>{s.tries++;note(t,"no");charged=false;render()};
+  if(c.sync&&!sync)return err("<b>Descarga sin sincronizar.</b> El paciente tiene pulso y QRS organizados: activa SYNC antes de descargar.");
+  if(!c.sync&&sync)return err("<b>No hubo descarga.</b> En la TV polimórfica no hay ondas R fiables: desactiva SYNC.");
+  charged=false;flash();
+  if(s.step===0){
+    if(!c.init(J)){s.tries++;note(`<b>Energía incorrecta: ${J} J.</b> ${c.why} Ajusta la perilla y repite.`,"no");render();return}
+    s.last=J;
+    if(c.fail&&J<360){s.step=1;note(`<b>Correcto: ${J} J.</b> ${c.why}`,"ok")}
+    else{s.step=3;results[cur]={err:s.tries};note(`<b>Correcto: ${J} J${c.sync?", sincronizada":", sin sincronizar"}.</b> ${c.why}${c.id==="tvp"?" A partir de aquí, se maneja como una desfibrilación (Unidad 4).":" La descarga ha sido eficaz."}`,"ok")}
+  } else if(s.step===1){
+    const nextStop=STOPS[STOPS.indexOf(s.last)+1];
+    if(J<=s.last){s.tries++;note(`<b>${J} J no es un incremento.</b> Tras una descarga no eficaz se aumenta la energía.`,"no");render();return}
+    s.step=3;results[cur]={err:s.tries};
+    note(J===nextStop?`<b>Correcto: ${J} J.</b> ${c.escWhy} La descarga ha sido eficaz.`:`<b>Descarga eficaz con ${J} J.</b> Aceptable, aunque el incremento escalonado sería la siguiente posición: ${nextStop} J.`,J===nextStop?"ok":"warn");
+  }
+  render();
+});
+document.getElementById("cases").addEventListener("click",e=>{const b=e.target.closest(".case");if(b){cur=b.dataset.id;sync=false;charged=false;render()}});
+document.getElementById("task").addEventListener("click",e=>{
+  if(e.target.id==="redo"){stage[cur]={step:0,last:null,tries:0,msg:null};delete results[cur];sync=false;charged=false;render()}
+  if(e.target.id==="nextCase"){const i=C.findIndex(x=>x.id===cur);if(i<C.length-1){cur=C[i+1].id;sync=false;charged=false;render()}else document.getElementById("score").scrollIntoView({behavior:"smooth"})}
+});
+document.getElementById("hide").addEventListener("change",e=>document.getElementById("ref").classList.toggle("hide",e.target.checked));
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

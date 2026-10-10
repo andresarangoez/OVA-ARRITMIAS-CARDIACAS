@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudios complementarios en arritmias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: escenarios clínicos arriba; tarjetas de estudios en rejilla, cada una seleccionable; retroalimentación de la solicitud */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --lab:#2563a8; --lab-soft:#e4eef9;
+  --mon:#7a4cb0; --mon-soft:#f0e9f8;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --miss:#c8323c; --miss-soft:#fbe7e8;
+  --extra:#b8660a; --extra-soft:#fdf1df;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --lab:#7fb3ec; --lab-soft:#182c42; --mon:#bb9ae6; --mon-soft:#2a2140;
+  --ok:#6fcf8f; --ok-soft:#183326; --miss:#f07178; --miss-soft:#3a1d22; --extra:#f2b25c; --extra-soft:#3a2b16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --lab:#7fb3ec; --lab-soft:#182c42; --mon:#bb9ae6; --mon-soft:#2a2140;
+  --ok:#6fcf8f; --ok-soft:#183326; --miss:#f07178; --miss-soft:#3a1d22; --extra:#f2b25c; --extra-soft:#3a2b16; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+
+.bar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:2;box-shadow:0 4px 18px -10px rgba(0,0,0,.25)}
+@media (max-width:760px){.bar{position:static}}
+.bar h2{font-size:16px;font-weight:800;margin:0 0 8px}
+.scn{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13.5px;font-weight:600;padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left}
+.chip[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.case{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--node);font-size:14.5px}
+.case b{font-weight:800}
+.row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:12px}
+.cnt{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+.cnt b{color:var(--ink)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.btn[disabled]{opacity:.45;cursor:default}
+.chip:focus-visible,.btn:focus-visible,.pick:focus-visible{outline:3px solid var(--lab);outline-offset:2px}
+.fb{margin-top:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:820px){.fb{grid-template-columns:1fr}}
+.fb div{border-radius:10px;padding:10px 12px;font-size:14px;min-width:0}
+.fb b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.fb .ok{background:var(--ok-soft)} .fb .ok b{color:var(--ok)}
+.fb .miss{background:var(--miss-soft)} .fb .miss b{color:var(--miss)}
+.fb .extra{background:var(--extra-soft)} .fb .extra b{color:var(--extra)}
+
+.sec{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px;display:flex;align-items:center;gap:10px}
+.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+@media (max-width:360px){.cards{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,box-shadow .15s;min-width:0}
+.card.lab{--c:var(--lab);--cs:var(--lab-soft)} .card.mon{--c:var(--mon);--cs:var(--mon-soft)}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card h3{margin:0;font-size:16.5px;font-weight:800;line-height:1.3}
+.kind{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
+.pick{flex:none;font:inherit;font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.pick svg{width:14px;height:14px}
+.card.sel{border-color:var(--c);box-shadow:0 0 0 3px var(--cs)}
+.card.sel .pick{background:var(--c);border-color:var(--c);color:var(--surface)}
+.qa{display:grid;gap:8px;margin:0}
+.qa div{background:var(--node);border-radius:9px;padding:8px 11px}
+.qa dt{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.qa dd{margin:0;font-size:14.5px}
+.qa div.mg{background:var(--cs)} .qa div.mg dt{color:var(--c)}
+.ref{font-size:11px;font-weight:700;color:var(--lab);vertical-align:super;margin-left:2px}
+.verdict{font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)} .verdict.miss{background:var(--miss-soft);color:var(--miss)} .verdict.extra{background:var(--extra-soft);color:var(--extra)}
+.card.v-ok{border-color:var(--ok)} .card.v-miss{border-color:var(--miss);border-style:dashed} .card.v-extra{border-color:var(--extra)}
+footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Estudios complementarios</div>
+  <h1>Estudios complementarios en el paciente con arritmia</h1>
+  <p class="lead">Cada tarjeta responde por qué se solicita la prueba, qué información aporta y cómo modifica el manejo. Elige un escenario clínico, arma tu solicitud y compárala con la sugerida.</p>
+
+  <section class="bar" aria-label="Escenario clínico">
+    <h2>Escenario clínico</h2>
+    <div class="scn" id="scn"></div>
+    <div id="case"></div>
+    <div class="row">
+      <span class="cnt" id="cnt"></span>
+      <button class="btn pri" id="cmp" disabled>Comparar con la sugerida</button>
+      <button class="btn" id="clr">Limpiar solicitud</button>
+    </div>
+    <div id="fb"></div>
+  </section>
+
+  <div id="groups"></div>
+
+  <footer>Material educativo. Los escenarios son ejemplos para practicar el razonamiento; la solicitud real depende del paciente y del protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const T=[
+  {id:"elec",k:"lab",n:"Electrolitos (potasio, magnesio, calcio)",why:"Sus alteraciones causan o agravan las arritmias",wr:"4",info:"Concentraciones séricas",mg:"Reposición antes o durante el tratamiento"},
+  {id:"glu",k:"lab",n:"Glucemia",why:"Descartar la hipoglucemia como causa de alteración mental",info:"Valor capilar o sérico",mg:"Evitar menos de 70 o más de 180 mg/dl tras el paro",mr:"1,2"},
+  {id:"ren",k:"lab",n:"Función renal",why:"Eliminación renal de numerosos fármacos",info:"Creatinina y filtración glomerular",mg:"Ajuste de la dosis"},
+  {id:"tir",k:"lab",n:"Función tiroidea",why:"El hipertiroidismo desencadena fibrilación auricular",wr:"7",info:"TSH y T4 libre",mg:"Tratamiento de la causa"},
+  {id:"trop",k:"lab",n:"Troponina",why:"Sospecha de síndrome coronario agudo",info:"Lesión miocárdica",mg:"La isquemia con fibrilación auricular indica cardioversión urgente",mr:"4"},
+  {id:"gas",k:"lab",n:"Gases arteriales",why:"Sospecha de hipoxemia, acidosis o hiperpotasemia",info:"pH, PaO<sub>2</sub>, PaCO<sub>2</sub>, lactato y potasio",mg:"Corrección de la causa"},
+  {id:"far",k:"lab",n:"Concentración de fármacos",why:"Sospecha de toxicidad",info:"Nivel plasmático, por ejemplo de digoxina",mg:"Suspensión o tratamiento de la toxicidad"},
+  {id:"mon",k:"mon",n:"Monitorización continua",why:"Arritmias intermitentes o riesgo de deterioro",info:"Ritmo en tiempo real y alarmas",mg:"Detección y respuesta tempranas"},
+  {id:"eco",k:"mon",n:"Ecocardiograma",why:"Estructura y función cardíacas",info:"Fracción de eyección, válvulas y trombos",mg:"Elección de fármacos; exclusión de trombos antes de cardiovertir",mr:"7"},
+  {id:"add",k:"mon",n:"Estudios adicionales",why:"Arritmias no documentadas",info:"Holter, monitor de eventos, prueba de esfuerzo, estudio electrofisiológico",mg:"Diagnóstico definitivo y tratamiento a largo plazo"}
+];
+const GROUPS={lab:"Laboratorio",mon:"Monitorización, imagen y otros estudios"};
+const S=[
+  {id:"fa",n:"FA de inicio reciente",c:"Mujer de 58 años con palpitaciones irregulares desde hace un día, pérdida de peso y temblor. Hemodinámicamente estable.",
+   s:["elec","ren","tir","eco","mon"],why:{tir:"Los síntomas orientan a hipertiroidismo como desencadenante.",eco:"Define la función ventricular, las válvulas y la presencia de trombos antes de cardiovertir.",ren:"Los fármacos para el control de la frecuencia y la anticoagulación pueden requerir ajuste."}},
+  {id:"dig",n:"Bradicardia con digoxina",c:"Hombre de 76 años con insuficiencia cardíaca en tratamiento con digoxina, náuseas, visión amarilla y FC de 42 lpm.",
+   s:["far","elec","ren","mon"],why:{far:"El cuadro sugiere toxicidad digitálica.",ren:"La insuficiencia renal reduce la eliminación de la digoxina.",elec:"La hipopotasemia y la hipomagnesemia potencian la toxicidad."}},
+  {id:"post",n:"Tras recuperar la circulación",c:"Paciente que recupera la circulación espontánea tras un paro por fibrilación ventricular. Sigue intubado.",
+   s:["glu","gas","elec","trop","mon","eco"],why:{glu:"Se mantiene la glucemia en el rango objetivo tras el paro.",trop:"El síndrome coronario agudo es una causa frecuente de FV.",gas:"Guía la ventilación y detecta acidosis e hiperpotasemia."}},
+  {id:"pal",n:"Palpitaciones intermitentes",c:"Hombre de 34 años con episodios breves de palpitaciones cada semana. ECG en reposo normal y exploración sin hallazgos.",
+   s:["add","eco","tir","elec"],why:{add:"El Holter o el monitor de eventos documentan la arritmia durante un episodio.",eco:"Descarta cardiopatía estructural."}},
+  {id:"isq",n:"FA con dolor torácico",c:"Mujer de 69 años con FA rápida, dolor torácico opresivo y diaforesis.",
+   s:["trop","elec","mon","gas"],why:{trop:"Si hay isquemia con FA, la cardioversión es urgente.",mon:"Riesgo de deterioro hemodinámico y eléctrico."}}
+];
+let scn=null; const pick=new Set(); let compared=false;
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+const CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const strip=s=>s.replace(/<[^>]+>/g,"");
+
+document.getElementById("scn").innerHTML=`<button class="chip" data-s="" aria-pressed="true">Explorar libremente</button>`+S.map(s=>`<button class="chip" data-s="${s.id}" aria-pressed="false">${s.n}</button>`).join("");
+document.getElementById("groups").innerHTML=Object.entries(GROUPS).map(([k,g])=>`<div class="sec">${g}</div><div class="cards">${
+  T.filter(t=>t.k===k).map(t=>`<article class="card ${t.k}" id="c-${t.id}">
+    <div class="card-top"><div><span class="kind">${k==="lab"?"Laboratorio":"Estudio"}</span><h3>${t.n}</h3></div>
+      <button class="pick" data-id="${t.id}" aria-pressed="false" aria-label="Añadir ${strip(t.n)} a la solicitud"></button></div>
+    <dl class="qa">
+      <div><dt>¿Por qué se solicita?</dt><dd>${t.why}${ref(t.wr)}</dd></div>
+      <div><dt>¿Qué información aporta?</dt><dd>${t.info}</dd></div>
+      <div class="mg"><dt>¿Cómo se modifica el manejo?</dt><dd>${t.mg}${ref(t.mr)}</dd></div>
+    </dl>
+    <div class="v" id="v-${t.id}"></div>
+  </article>`).join("")}</div>`).join("");
+
+function render(){
+  const s=S.find(x=>x.id===scn);
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",(c.dataset.s||null)===scn));
+  document.getElementById("case").innerHTML=s?`<p class="case"><b>Caso:</b> ${s.c}</p>`:"";
+  document.getElementById("cnt").innerHTML=`<b>${pick.size}</b> ${pick.size===1?"estudio":"estudios"} en tu solicitud`;
+  document.getElementById("cmp").disabled=!s||!pick.size;
+  T.forEach(t=>{
+    const c=document.getElementById("c-"+t.id), on=pick.has(t.id), b=c.querySelector(".pick");
+    c.classList.toggle("sel",on); b.setAttribute("aria-pressed",on);
+    b.innerHTML=(on?CHK+"Solicitado":PLUS+"Solicitar");
+    c.classList.remove("v-ok","v-miss","v-extra");
+    const v=document.getElementById("v-"+t.id); v.innerHTML="";
+    if(compared&&s){
+      const sug=s.s.includes(t.id); const note=s.why[t.id]?" "+s.why[t.id]:"";
+      if(sug&&on){c.classList.add("v-ok");v.innerHTML=`<div class="verdict ok">Bien solicitado.${note}</div>`}
+      else if(sug){c.classList.add("v-miss");v.innerHTML=`<div class="verdict miss">Faltó en tu solicitud.${note}</div>`}
+      else if(on){c.classList.add("v-extra");v.innerHTML=`<div class="verdict extra">No es prioritario en este caso.</div>`}
+    }
+  });
+  const fb=document.getElementById("fb");
+  if(compared&&s){
+    const ok=s.s.filter(i=>pick.has(i)), miss=s.s.filter(i=>!pick.has(i)), ex=[...pick].filter(i=>!s.s.includes(i));
+    const nm=ids=>ids.length?ids.map(i=>strip(T.find(t=>t.id===i).n)).join(", "):"Ninguno";
+    fb.innerHTML=`<div class="fb"><div class="ok"><b>Coinciden (${ok.length} de ${s.s.length})</b>${nm(ok)}</div><div class="miss"><b>Faltaron</b>${nm(miss)}</div><div class="extra"><b>No prioritarios</b>${nm(ex)}</div></div>`;
+  } else fb.innerHTML="";
+}
+document.getElementById("scn").addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(!c) return;
+  scn=c.dataset.s||null; pick.clear(); compared=false; render();
+});
+document.getElementById("groups").addEventListener("click",e=>{
+  const b=e.target.closest(".pick"); if(!b) return;
+  const id=b.dataset.id; pick.has(id)?pick.delete(id):pick.add(id); compared=false; render();
+});
+document.getElementById("cmp").addEventListener("click",()=>{compared=true;render()});
+document.getElementById("clr").addEventListener("click",()=>{pick.clear();compared=false;render()});
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

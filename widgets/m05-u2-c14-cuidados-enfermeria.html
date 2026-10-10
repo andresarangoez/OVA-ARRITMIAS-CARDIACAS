@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuidados antes, durante y después</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: línea de tiempo de tres fases con avance; tarjetas de cuidados con subtareas marcables y propósito; simulación de evento en «Durante»; registro en «Después» */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --a:#2563a8; --a-soft:#e4eef9;
+  --d:#b8660a; --d-soft:#fdf1df;
+  --p:#2f8a4c; --p-soft:#e5f4e9;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --a:#7fb3ec; --a-soft:#182c42; --d:#f2b25c; --d-soft:#3a2b16; --p:#6fcf8f; --p-soft:#183326; --stop:#f07178; --stop-soft:#3a1d22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --a:#7fb3ec; --a-soft:#182c42; --d:#f2b25c; --d-soft:#3a2b16; --p:#6fcf8f; --p-soft:#183326; --stop:#f07178; --stop-soft:#3a1d22; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 20px}
+.pa{--c:var(--a);--cs:var(--a-soft)} .pd{--c:var(--d);--cs:var(--d-soft)} .pp{--c:var(--p);--cs:var(--p-soft)}
+
+/* línea de fases */
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-bottom:16px;position:relative}
+.ph{font:inherit;color:inherit;background:none;border:none;cursor:pointer;text-align:center;padding:0 6px;position:relative}
+.ph::before{content:"";position:absolute;top:22px;left:0;right:0;height:4px;background:var(--line)}
+.ph:first-child::before{left:50%} .ph:last-child::before{right:50%}
+.ph .circ{position:relative;z-index:1;margin:0 auto 6px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:3px solid var(--c);font-weight:800;font-size:15px;color:var(--c)}
+.ph[aria-selected="true"] .circ{background:var(--c);color:var(--surface);box-shadow:0 0 0 5px var(--cs)}
+.ph b{display:block;font-size:16px;font-weight:800}
+.ph small{display:block;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums lining-nums}
+.ph .mini{height:6px;border-radius:3px;background:var(--node);margin:6px auto 0;max-width:140px;overflow:hidden}
+.ph .mini i{display:block;height:100%;background:var(--c);transition:width .2s}
+.ph:focus-visible,.btn:focus-visible,.chk:focus-within,.ans:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+
+.panel{background:var(--surface);border:1.5px solid var(--c);border-radius:14px;padding:18px 20px}
+.panel h2{font-size:22px;font-weight:800;margin:0 0 2px;color:var(--c)}
+.panel .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+.cares{display:grid;gap:12px}
+.care{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.care.alert{border-color:var(--stop);background:var(--stop-soft)}
+.care h3{font-size:15.5px;font-weight:800;margin:0 0 8px}
+.care.alert h3{color:var(--stop)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:14.5px}
+.chk input{margin-top:3px;width:17px;height:17px;flex:none;accent-color:var(--c)}
+.chk:has(input:checked){background:var(--cs)}
+.chk:has(input:checked) span{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--ink) 40%,transparent)}
+.purpose{margin-top:8px;font-size:13.5px;padding:7px 10px;border-radius:8px;background:var(--node);color:var(--muted)}
+.purpose b{color:var(--ink)}
+.care.full .purpose{background:var(--cs);color:var(--ink)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin-top:14px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--c,var(--head));border-color:var(--c,var(--head));color:var(--surface)}
+.warn{font-size:13.5px;color:var(--d)}
+
+/* simulación */
+.sim{margin-top:14px;border:1.5px dashed var(--c);border-radius:12px;padding:12px 14px}
+.sim h3{font-size:15px;font-weight:800;margin:0 0 6px}
+.monitor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+.vit{background:var(--head);color:var(--head-ink);border-radius:9px;padding:8px 10px}
+.vit b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.vit span{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums lining-nums}
+.vit.bad{background:var(--stop);color:#fff}
+.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ans{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.fb{margin-top:8px;font-size:14.5px;padding:8px 12px;border-radius:9px}
+.fb.ok{background:var(--p-soft)} .fb.no{background:var(--stop-soft)}
+.fb b{font-weight:800}
+
+/* registro */
+.reg{margin-top:14px;border:1.5px dashed var(--c);border-radius:12px;padding:12px 14px}
+.reg h3{font-size:15px;font-weight:800;margin:0 0 8px}
+.form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.form{grid-template-columns:1fr}}
+.form label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:grid;gap:4px}
+.form .wide{grid-column:1/-1}
+.form input,.form select{font:inherit;font-size:15px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.note{margin-top:10px;background:var(--node);border-radius:9px;padding:10px 12px;font-size:14.5px;white-space:pre-wrap}
+.copyrow{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:13px;color:var(--muted)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cuidados de enfermería</div>
+  <h1>Cuidados de enfermería antes, durante y después de administrar un antiarrítmico</h1>
+  <p class="lead">Recorre las tres fases y marca cada cuidado al completarlo; al terminar una tarjeta se resalta su propósito. En «Durante» practica la respuesta ante un cambio en el monitor y en «Después» redacta el registro.</p>
+
+  <div class="phases" role="tablist" id="phases"></div>
+  <section class="panel" id="panel" aria-live="polite"></section>
+
+  <footer>Material educativo. Los valores del monitor son de ejemplo. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const PH=[
+  {k:"a",n:"Antes",s:"Preparar y valorar",cls:"pa",cares:[
+    {t:"Valoración inicial",items:["Conciencia","Signos vitales","Perfusión","Síntomas","ECG de 12 derivaciones"],p:"Establecer el punto de partida y la estabilidad"},
+    {t:"Revisión de riesgos",items:["Antecedentes","Fármacos que prolongan el QT","Potasio","Magnesio"],p:"Identificar contraindicaciones y factores de riesgo"},
+    {t:"Preparación segura",items:["Acceso venoso permeable","Monitor","Desfibrilador","Verificación de la prescripción"],p:"Garantizar una administración segura"}]},
+  {k:"d",n:"Durante",s:"Observar y responder",cls:"pd",cares:[
+    {t:"Observación continua",items:["Ritmo","Frecuencia","Presión arterial","Síntomas","Respetar la velocidad indicada"],p:"Detectar precozmente la respuesta o el deterioro"},
+    {t:"Criterios para suspender y comunicar",alert:1,items:["Hipotensión","Bradicardia grave","Arritmia ventricular"],p:"Prevenir complicaciones graves"}]},
+  {k:"p",n:"Después",s:"Evaluar y registrar",cls:"pp",cares:[
+    {t:"Evaluación de la respuesta",items:["Evaluar la respuesta","Nuevo ECG","Vigilar efectos adversos específicos"],p:"Confirmar la eficacia y la seguridad del tratamiento"},
+    {t:"Registro y educación",items:["Documentar fármaco, dosis, hora, vía y respuesta","Educar al paciente y la familia"],p:"Asegurar la continuidad del cuidado"}]}
+];
+const st={}; PH.forEach(p=>p.cares.forEach((c,i)=>st[p.k+i]=new Set()));
+let cur="a";
+const count=p=>p.cares.reduce((a,c,i)=>a+st[p.k+i].size,0), total=p=>p.cares.reduce((a,c)=>a+c.items.length,0);
+
+function renderPhases(){
+  document.getElementById("phases").innerHTML=PH.map((p,i)=>{const n=count(p),t=total(p);
+    return `<button class="ph ${p.cls}" role="tab" data-k="${p.k}" aria-selected="${p.k===cur}"><span class="circ">${n===t?"✓":i+1}</span><b>${p.n}</b><small>${p.s} · ${n}/${t}</small><div class="mini"><i style="width:${n/t*100}%"></i></div></button>`}).join("");
+}
+
+/* simulación del monitor */
+const EV=[
+  {v:{PA:"78/44",FC:"92",Ritmo:"Sinusal"},bad:["PA"],a:"stop",x:"Hipotensión: suspende la administración y comunica de inmediato."},
+  {v:{PA:"112/70",FC:"34",Ritmo:"Bradicardia"},bad:["FC"],a:"stop",x:"Bradicardia grave: suspende y comunica; ten disponibles la atropina y el marcapasos según el protocolo."},
+  {v:{PA:"104/66",FC:"168",Ritmo:"TV"},bad:["FC","Ritmo"],a:"stop",x:"Arritmia ventricular: suspende, comunica y valora el pulso; prepara el desfibrilador."},
+  {v:{PA:"118/74",FC:"96",Ritmo:"Sinusal"},bad:[],a:"go",x:"Sin criterios para suspender: continúa a la velocidad indicada y sigue observando."},
+  {v:{PA:"110/68",FC:"104",Ritmo:"Sinusal"},bad:[],a:"go",x:"Valores estables: continúa y registra la respuesta."}
+];
+let sim={i:null,ans:null,ok:0,n:0};
+function simHTML(){
+  if(sim.i===null) return `<div class="sim"><h3>Practica: ¿qué muestra el monitor?</h3><p style="margin:0 0 8px;font-size:14px;color:var(--muted)">Simula un control durante la administración y decide qué hacer.</p><button class="btn pri" id="simGo">Mostrar el monitor</button></div>`;
+  const e=EV[sim.i];
+  return `<div class="sim"><h3>Control durante la administración</h3>
+    <div class="monitor">${Object.entries(e.v).map(([k,v])=>`<div class="vit ${e.bad.includes(k)?"bad":""}"><b>${k}</b><span>${v}</span></div>`).join("")}</div>
+    <div class="answers"><button class="ans" data-a="go" ${sim.ans?"disabled":""}>Continuar y observar</button><button class="ans" data-a="stop" ${sim.ans?"disabled":""}>Suspender y comunicar</button></div>
+    ${sim.ans?`<div class="fb ${sim.ans===e.a?"ok":"no"}"><b>${sim.ans===e.a?"Correcto.":"Revisa la decisión."}</b> ${e.x}</div>
+      <div class="nav" style="margin-top:8px"><span style="font-size:13.5px;color:var(--muted)">${sim.ok} de ${sim.n} decisiones correctas</span><button class="btn" id="simGo">Otro control</button></div>`:""}</div>`;
+}
+
+/* registro */
+let reg={f:"Amiodarona",d:"150 mg",h:"",v:"IV",r:""};
+function regText(){
+  return `${reg.h?reg.h+" · ":""}Se administra ${reg.f.toLowerCase()} ${reg.d} por vía ${reg.v}${reg.r?`. Respuesta: ${reg.r}`:""}.`;
+}
+function regHTML(){
+  return `<div class="reg"><h3>Redacta el registro</h3>
+    <div class="form">
+      <label>Fármaco<select id="rf">${["Atropina","Adenosina","Amiodarona","Adrenalina","Metoprolol","Sulfato de magnesio"].map(x=>`<option ${x===reg.f?"selected":""}>${x}</option>`).join("")}</select></label>
+      <label>Dosis<input id="rd" value="${reg.d}"></label>
+      <label>Vía<select id="rv">${["IV","IO"].map(x=>`<option ${x===reg.v?"selected":""}>${x}</option>`).join("")}</select></label>
+      <label>Hora<input id="rh" type="time" value="${reg.h}"></label>
+      <label class="wide">Respuesta<input id="rr" value="${reg.r}" placeholder="Ejemplo: FC de 142 a 98 lpm, PA estable, sin efectos adversos"></label>
+    </div>
+    <div class="note" id="regOut">${regText()}</div>
+    <div class="copyrow"><button class="btn" id="copy">Copiar registro</button><span id="copyMsg"></span></div></div>`;
+}
+
+function renderPanel(){
+  const p=PH.find(x=>x.k===cur), idx=PH.indexOf(p);
+  const panel=document.getElementById("panel"); panel.className="panel "+p.cls;
+  const prev=PH.slice(0,idx).filter(x=>count(x)<total(x));
+  panel.innerHTML=`<h2>${p.n}</h2><p class="sub">${p.s}</p>
+    <div class="cares">${p.cares.map((c,i)=>{const s=st[p.k+i],full=s.size===c.items.length;
+      return `<div class="care ${c.alert?"alert":""} ${full?"full":""}"><h3>${c.t}</h3>
+        ${c.items.map((it,j)=>`<label class="chk" for="c-${p.k}${i}-${j}"><input type="checkbox" id="c-${p.k}${i}-${j}" data-c="${p.k+i}" data-j="${j}" ${s.has(j)?"checked":""}><span>${c.alert?"Ante "+it.toLowerCase():it}</span></label>`).join("")}
+        <div class="purpose"><b>Propósito:</b> ${c.p}</div></div>`}).join("")}</div>
+    ${cur==="d"?simHTML():""}${cur==="p"?regHTML():""}
+    <div class="nav"><span class="warn">${prev.length?`Quedan cuidados pendientes en «${prev.map(x=>x.n).join("» y «")}».`:""}</span>
+      ${idx<PH.length-1?`<button class="btn pri" data-go="${PH[idx+1].k}">Ir a «${PH[idx+1].n}»</button>`:(PH.every(x=>count(x)===total(x))?`<span style="font-weight:800;color:var(--p)">Todos los cuidados completados.</span>`:"")}</div>`;
+}
+function render(){renderPhases();renderPanel()}
+
+document.getElementById("phases").addEventListener("click",e=>{const b=e.target.closest(".ph");if(b){cur=b.dataset.k;render()}});
+const panel=document.getElementById("panel");
+panel.addEventListener("change",e=>{
+  if(e.target.dataset.c){const s=st[e.target.dataset.c],j=Number(e.target.dataset.j);e.target.checked?s.add(j):s.delete(j);render();return}
+  if(["rf","rv","rh"].includes(e.target.id)){reg.f=document.getElementById("rf").value;reg.v=document.getElementById("rv").value;reg.h=document.getElementById("rh").value;document.getElementById("regOut").textContent=regText()}
+});
+panel.addEventListener("input",e=>{if(["rd","rr"].includes(e.target.id)){reg.d=document.getElementById("rd").value;reg.r=document.getElementById("rr").value;document.getElementById("regOut").textContent=regText()}});
+panel.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]"); if(g){cur=g.dataset.go;render();window.scrollTo({top:0,behavior:"smooth"});return}
+  if(e.target.id==="simGo"){let i;do{i=Math.floor(Math.random()*EV.length)}while(i===sim.i&&EV.length>1);sim.i=i;sim.ans=null;renderPanel();return}
+  const a=e.target.closest(".ans"); if(a&&!sim.ans){sim.ans=a.dataset.a;sim.n++;if(sim.ans===EV[sim.i].a)sim.ok++;renderPanel();return}
+  if(e.target.id==="copy"){const t=regText();const msg=document.getElementById("copyMsg");
+    try{navigator.clipboard.writeText(t).then(()=>msg.textContent="Copiado.",()=>{msg.textContent="Selecciona el texto y cópialo.";selectOut()})}catch(_){msg.textContent="Selecciona el texto y cópialo.";selectOut()}}
+});
+function selectOut(){const r=document.createRange();r.selectNodeContents(document.getElementById("regOut"));const s=getSelection();s.removeAllRanges();s.addRange(r)}
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

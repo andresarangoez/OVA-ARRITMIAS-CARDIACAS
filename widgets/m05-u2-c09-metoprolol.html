@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metoprolol en las arritmias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ficha del fármaco en rejilla; debajo: lista de verificación previa y registro de dosis con signos vitales */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#2f8a4c; --drug-soft:#e5f4e9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#6fcf8f; --drug-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#6fcf8f; --drug-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:4px 0 2px}
+.cls{font-size:14px;font-weight:700;color:var(--drug);background:var(--drug-soft);padding:3px 12px;border-radius:99px}
+.lead{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+.mono{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.mono{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.mono{grid-template-columns:1fr}}
+.tile{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tile:hover{border-color:var(--t,var(--muted))}
+.tile:focus-visible,.btn:focus-visible,.chk:focus-within,input:focus-visible,select:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.tile b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t,var(--muted));margin-bottom:3px}
+.tile span{font-size:15px}
+.tile.wide{grid-column:span 2}
+@media (max-width:540px){.tile.wide{grid-column:auto}}
+.tile.dose{--t:var(--drug);background:var(--drug-soft);border-color:var(--drug)}
+.tile.dose span{font-size:17px;font-weight:700}
+.tile.stop{--t:var(--stop);background:var(--stop-soft)}
+.tile.warn{--t:var(--warn);background:var(--warn-soft)}
+.tile.mon{--t:var(--info);background:var(--info-soft)}
+.tile.sel{box-shadow:0 0 0 3px var(--node);border-color:var(--t,var(--ink))}
+.explain{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.explain b{font-weight:800}
+
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:28px}
+@media (max-width:920px){.tools{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.grp{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin:12px 0 6px}
+.grp.stop{color:var(--stop)} .grp.warn{color:var(--warn)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:9px;border:1.5px solid var(--line);margin-bottom:6px;cursor:pointer;font-size:14.5px}
+.chk input{margin-top:3px;width:17px;height:17px;flex:none}
+.chk.stop:has(input:checked){border-color:var(--stop);background:var(--stop-soft)}
+.chk.warn:has(input:checked){border-color:var(--warn);background:var(--warn-soft)}
+.chk.stop input{accent-color:var(--stop)} .chk.warn input{accent-color:var(--warn)}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;border:1.5px solid}
+.verdict b{display:block;font-size:15.5px}
+.verdict.ok{border-color:var(--drug);background:var(--drug-soft)} .verdict.ok b{color:var(--drug)}
+.verdict.warn{border-color:var(--warn);background:var(--warn-soft)} .verdict.warn b{color:var(--warn)}
+.verdict.no{border-color:var(--stop);background:var(--stop-soft)} .verdict.no b{color:var(--stop)}
+
+.form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+@media (max-width:480px){.form{grid-template-columns:1fr}}
+.form label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:grid;gap:4px}
+.form input,.form select{font:inherit;font-size:16px;font-weight:700;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:100%;font-variant-numeric:tabular-nums lining-nums}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--drug);border-color:var(--drug);color:var(--surface)}
+.btn[disabled]{opacity:.45;cursor:default}
+.meter{display:flex;gap:4px;margin:4px 0 12px}
+.meter i{flex:1;height:10px;border-radius:5px;background:var(--node)}
+.meter i.on{background:var(--drug)}
+.msg{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:14px;background:var(--node)}
+.msg.warn{background:var(--warn-soft)} .msg.stop{background:var(--stop-soft)} .msg.ok{background:var(--drug-soft)}
+.msg b{font-weight:800}
+table.log{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;font-variant-numeric:tabular-nums lining-nums}
+table.log th{text-align:left;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+table.log td{padding:6px 8px;border-bottom:1px solid var(--line)}
+td.alert{color:var(--stop);font-weight:800}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <div class="title"><h1>Metoprolol</h1><span class="cls">Betabloqueador β₁ · clase II</span></div>
+  <p class="lead">Toca cada aspecto de la ficha para ver una explicación. Antes de administrar, revisa la lista de verificación; después practica el registro de las dosis con los signos vitales.</p>
+
+  <section aria-label="Ficha del fármaco">
+    <div class="mono" id="mono"></div>
+    <div class="explain" id="explain" aria-live="polite"></div>
+  </section>
+
+  <div class="tools">
+    <section class="card">
+      <h2>Verificación antes de administrar</h2>
+      <p class="sub">Marca lo que presente el paciente.</p>
+      <div id="checks"></div>
+      <div id="verdict" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2>Registro de dosis</h2>
+      <p class="sub">2,5 a 5 mg IV en 2 minutos; hasta 3 dosis<span class="ref">10</span>. Registra los signos vitales antes de cada dosis.</p>
+      <div id="sim" aria-live="polite"></div>
+      <p class="note">Los valores de FC y PAS que aparecen son de ejemplo; cámbialos. Los umbrales de aviso (FC menor de 60 lpm o PAS menor de 90 mmHg) son orientativos para practicar; aplica los que indique la prescripción o el protocolo.</p>
+    </section>
+  </div>
+
+  <footer>Material educativo. Las dosis siguen la tabla del módulo para el adulto; confirma siempre la prescripción y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const M=[
+  {k:"Grupo farmacológico",v:"Betabloqueador cardioselectivo (beta-1); antiarrítmico de clase II",r:"4",x:"Actúa sobre todo en los receptores β₁ del corazón. La cardioselectividad no es absoluta: a dosis altas también bloquea β₂ bronquiales."},
+  {k:"Mecanismo",v:"Reduce la frecuencia sinusal y enlentece la conducción por el nodo AV",x:"Bloquea el efecto simpático sobre la fase 4 de las células nodales. Al frenar el nodo AV, menos impulsos auriculares llegan al ventrículo."},
+  {k:"Indicación principal",v:"Control agudo de la frecuencia en la FA y el flutter auricular en el paciente estable",r:"10",x:"No convierte la FA a ritmo sinusal: reduce la respuesta ventricular. Solo en el paciente sin signos de inestabilidad."},
+  {k:"Otra indicación",v:"Taquicardia regular de complejo estrecho que no responde a maniobras vagales ni a adenosina",r:"3,8",c:"wide",x:"Es una alternativa cuando fallan las medidas de primera línea, siempre en el paciente estable."},
+  {k:"Dosis intravenosa",v:"2,5 a 5 mg en 2 minutos; hasta 3 dosis",r:"10",c:"dose",x:"Administración lenta, en 2 minutos. Antes de repetir, revisa frecuencia y presión arterial. Usa el registro de dosis de abajo para practicar."},
+  {k:"Contraindicaciones",v:"Insuficiencia cardíaca descompensada, hipotensión, bloqueo AV avanzado sin marcapasos, FA preexcitada",r:"10",c:"stop wide",x:"En la FA preexcitada, bloquear el nodo AV favorece la conducción por la vía accesoria y puede precipitar FV. En la insuficiencia cardíaca descompensada, reducir la contractilidad empeora la congestión."},
+  {k:"Precauciones",v:"Broncoespasmo; asociación con bloqueadores de calcio; QT prolongado",r:"3",c:"warn",x:"Con verapamilo o diltiazem se suma el efecto sobre el nodo AV: riesgo de bradicardia grave, bloqueo e hipotensión."},
+  {k:"Efectos adversos",v:"Bradicardia, hipotensión, bloqueo AV, broncoespasmo, empeoramiento de la insuficiencia cardíaca",c:"wide",x:"Aparecen sobre todo tras dosis repetidas o en pacientes con función ventricular reducida."},
+  {k:"Parámetros de vigilancia",v:"Frecuencia, presión arterial, PR, signos de congestión y patrón respiratorio",c:"mon",x:"Valora antes y después de cada dosis: estertores, disnea o sibilancias nuevas obligan a suspender y notificar."}
+];
+let selM=4;
+document.getElementById("mono").innerHTML=M.map((m,i)=>`<button class="tile ${m.c||""}" data-i="${i}" aria-pressed="false"><b>${m.k}</b><span>${m.v}${ref(m.r)}</span></button>`).join("");
+function renderM(){
+  document.querySelectorAll(".tile").forEach(t=>{const on=Number(t.dataset.i)===selM;t.classList.toggle("sel",on);t.setAttribute("aria-pressed",on)});
+  document.getElementById("explain").innerHTML=`<b>${M[selM].k}:</b> ${M[selM].x}`;
+}
+document.getElementById("mono").addEventListener("click",e=>{const t=e.target.closest(".tile"); if(t){selM=Number(t.dataset.i);renderM()}});
+
+/* --- verificación --- */
+const C=[
+  {id:"ic",g:"stop",t:"Insuficiencia cardíaca descompensada (congestión, estertores, disnea)"},
+  {id:"hipo",g:"stop",t:"Hipotensión"},
+  {id:"bav",g:"stop",t:"Bloqueo AV avanzado sin marcapasos"},
+  {id:"pre",g:"stop",t:"FA preexcitada (QRS ancho e irregular, onda delta)"},
+  {id:"bronc",g:"warn",t:"Broncoespasmo o asma"},
+  {id:"ca",g:"warn",t:"Uso reciente de bloqueadores de calcio (verapamilo, diltiazem)"},
+  {id:"qt",g:"warn",t:"QT prolongado"}
+];
+document.getElementById("checks").innerHTML=
+  `<div class="grp stop">Contraindicaciones</div>`+C.filter(c=>c.g==="stop").map(c=>`<label class="chk stop" for="c-${c.id}"><input type="checkbox" id="c-${c.id}" data-id="${c.id}"><span>${c.t}</span></label>`).join("")+
+  `<div class="grp warn">Precauciones</div>`+C.filter(c=>c.g==="warn").map(c=>`<label class="chk warn" for="c-${c.id}"><input type="checkbox" id="c-${c.id}" data-id="${c.id}"><span>${c.t}</span></label>`).join("");
+function renderV(){
+  const on=C.filter(c=>document.getElementById("c-"+c.id).checked);
+  const stop=on.filter(c=>c.g==="stop"), warn=on.filter(c=>c.g==="warn");
+  let h;
+  if(stop.length) h=`<div class="verdict no"><b>No administrar: notificar</b>Presenta ${stop.length===1?"una contraindicación":stop.length+" contraindicaciones"}. Comunica los hallazgos al médico antes de cualquier dosis.</div>`;
+  else if(warn.length) h=`<div class="verdict warn"><b>Administrar solo con precaución</b>Presenta: ${warn.map(c=>c.t.split(" (")[0].toLowerCase()).join("; ")}. Confirma la indicación y vigila de cerca la frecuencia, la presión arterial y el patrón respiratorio.</div>`;
+  else h=`<div class="verdict ok"><b>Sin contraindicaciones marcadas</b>Puede administrarse según la prescripción, con monitorización continua.</div>`;
+  document.getElementById("verdict").innerHTML=h;
+  return stop.length>0;
+}
+document.getElementById("checks").addEventListener("change",()=>{renderV();renderSim()});
+
+/* --- registro de dosis --- */
+let doses=[];
+function renderSim(){
+  const blocked=renderV(), n=doses.length, total=doses.reduce((a,d)=>a+d.mg,0);
+  let msg="";
+  if(blocked) msg=`<div class="msg stop"><b>Registro bloqueado:</b> hay contraindicaciones marcadas en la verificación.</div>`;
+  else if(n>=3) msg=`<div class="msg ok"><b>Se completaron las 3 dosis (${String(total).replace(".",",")} mg).</b> Si la frecuencia sigue sin control, notifica para valorar otra estrategia.</div>`;
+  document.getElementById("sim").innerHTML=`
+    <div class="meter" aria-label="Dosis administradas de un máximo de 3">${[0,1,2].map(i=>`<i class="${i<n?"on":""}"></i>`).join("")}</div>
+    <div class="form">
+      <label>Dosis<select id="mg"><option value="2.5">2,5 mg</option><option value="5" selected>5 mg</option></select></label>
+      <label>FC (lpm)<input id="fc" type="number" inputmode="numeric" min="20" max="250" value="${n?Math.max(50,doses[n-1].fc-18):132}"></label>
+      <label>PAS (mmHg)<input id="pas" type="number" inputmode="numeric" min="40" max="250" value="${n?Math.max(80,doses[n-1].pas-6):118}"></label>
+    </div>
+    <div class="btns"><button class="btn pri" id="give" ${blocked||n>=3?"disabled":""}>Administrar dosis ${Math.min(n+1,3)} en 2 minutos</button><button class="btn" id="rs">Reiniciar</button></div>
+    <div id="warnArea"></div>${msg}
+    ${n?`<table class="log"><thead><tr><th>Dosis</th><th>mg</th><th>FC previa</th><th>PAS previa</th><th>Acumulado</th></tr></thead><tbody>${doses.map((d,i)=>`<tr><td>${i+1}</td><td>${String(d.mg).replace(".",",")}</td><td class="${d.fc<60?"alert":""}">${d.fc}</td><td class="${d.pas<90?"alert":""}">${d.pas}</td><td>${String(doses.slice(0,i+1).reduce((a,x)=>a+x.mg,0)).replace(".",",")} mg</td></tr>`).join("")}</tbody></table>`:""}`;
+}
+document.getElementById("sim").addEventListener("click",e=>{
+  if(e.target.id==="rs"){doses=[];renderSim();return}
+  if(e.target.id!=="give") return;
+  const fc=Number(document.getElementById("fc").value), pas=Number(document.getElementById("pas").value), mg=Number(document.getElementById("mg").value);
+  if(!fc||!pas){document.getElementById("warnArea").innerHTML=`<div class="msg warn">Registra la FC y la PAS antes de administrar.</div>`;return}
+  if(fc<60||pas<90){document.getElementById("warnArea").innerHTML=`<div class="msg stop"><b>No administrar la dosis.</b> ${fc<60?`FC de ${fc} lpm`:""}${fc<60&&pas<90?" y ":""}${pas<90?`PAS de ${pas} mmHg`:""}: riesgo de bradicardia o hipotensión. Notifica antes de continuar.</div>`;return}
+  doses.push({mg,fc,pas}); renderSim();
+});
+renderM(); renderSim();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

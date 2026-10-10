@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pasos de la descarga sincronizada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: desfibrilador simulado (pantalla + mandos) a la izquierda; los seis pasos con su error a la derecha, que se completan o se marcan al cometer el error */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --acc:#2563a8; --acc-soft:#e4eef9;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9; --err:#c8323c; --err-soft:#fbe7e8; --warn:#b8660a; --warn-soft:#fdf1df;
+  --dev:#2a3138; --dev2:#3a434c;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --acc:#7fb3ec; --acc-soft:#182c42;
+  --ok:#6fcf8f; --ok-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e; --acc:#7fb3ec; --acc-soft:#182c42;
+  --ok:#6fcf8f; --ok-soft:#183326; --err:#f07178; --err-soft:#3a1d22; --warn:#f2b25c; --warn-soft:#3a2b16; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance}
+.lead{color:var(--muted);max-width:74ch;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:940px){.grid{grid-template-columns:1fr}}
+
+/* equipo */
+.dev{background:var(--dev);border-radius:20px;padding:14px;box-shadow:0 10px 30px -18px rgba(0,0,0,.6);color:#e8eef3}
+.scr{position:relative;border-radius:10px;overflow:hidden;background:#0f1a14;border:3px solid #111}
+.scr canvas{display:block;width:100%;height:auto}
+.top{position:absolute;top:6px;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:800;letter-spacing:.05em;pointer-events:none}
+.top span{background:rgba(255,255,255,.1);padding:2px 8px;border-radius:5px}
+.top .sync{background:#2563a8;color:#fff}
+.top .chg{background:#d0a000;color:#1b2733}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .4s}
+.flash.on{opacity:.6;transition:none}
+.msgbar{min-height:44px;margin-top:10px;padding:8px 12px;border-radius:9px;background:var(--dev2);font-size:14px}
+.msgbar b{color:#ffd76a}
+.knobs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:520px){.knobs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.k{font:inherit;color:#e8eef3;background:var(--dev2);border:2px solid #4b5560;border-radius:12px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;font-size:13px;user-select:none;-webkit-user-select:none;touch-action:none}
+.k small{font-size:11px;font-weight:700;opacity:.8}
+.k .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:#fff;color:#1b2733}
+.k:focus-visible{outline:3px solid #7fb3ec;outline-offset:2px}
+.k.sync[aria-pressed="true"]{background:#2563a8;border-color:#7fb3ec}
+.k.charge{background:#2f6f3e;border-color:#6fcf8f}
+.k.shock{background:#c0491b;border-color:#ff9a6b}
+.k.shock.hold{background:#ff6a2b;transform:scale(.97)}
+.k[disabled]{opacity:.45;cursor:default}
+.holdbar{height:6px;border-radius:3px;background:#4b5560;margin-top:8px;overflow:hidden}
+.holdbar i{display:block;height:100%;width:0;background:#ffd23f}
+.scen{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:13.5px}
+.btn{font:inherit;font-weight:700;font-size:13.5px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+/* pasos */
+.steps{display:grid;gap:8px}
+.st{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px}
+.st .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--node);color:var(--muted)}
+.st b{font-size:14.5px}
+.st .err{grid-column:2;font-size:13px;color:var(--muted)}
+.st .err em{font-style:normal;font-weight:800;color:var(--err)}
+.st.now{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc-soft)} .st.now .num{background:var(--acc);color:#fff}
+.st.done{border-color:var(--ok);background:var(--ok-soft)} .st.done .num{background:var(--ok);color:#fff}
+.st.bad{border-color:var(--err);background:var(--err-soft)} .st.bad .err{color:var(--ink)}
+.log{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.log h3{margin:0 0 6px;font-size:14px;font-weight:800}
+.log ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:13.5px}
+.log li.e{color:var(--err)} .log li.o{color:var(--ok)}
+.final{margin-top:12px;border-radius:12px;padding:12px 14px;background:var(--ok-soft);border:1.5px solid var(--ok)}
+.final b{color:var(--ok);font-size:16px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Cardioversión</div>
+  <h1>Seis pasos para una descarga sincronizada segura</h1>
+  <p class="lead">Realiza una cardioversión en el desfibrilador simulado. El paciente tiene una fibrilación auricular rápida con pulso. Usa los mandos como en un equipo real: los pasos de la derecha se completan cuando los haces bien y se marcan en rojo si cometes el error que deben evitar.</p>
+
+  <div class="grid">
+    <section>
+      <div class="dev">
+        <div class="scr"><canvas id="cv" width="1200" height="380" aria-label="Pantalla del desfibrilador"></canvas>
+          <div class="top"><span id="tRhy">FA rápida · con pulso</span><span id="tCfg">III ×2</span><span id="tSync">ASINC</span><span id="tChg" hidden>CARGADO</span></div>
+          <div class="flash" id="flash"></div></div>
+        <div class="msgbar" id="msg" aria-live="polite"></div>
+        <div class="knobs">
+          <button class="k sync" id="kSync" aria-pressed="false"><span class="n">S</span>SYNC<small>sincronizar</small></button>
+          <button class="k" id="kLead"><span class="n">D</span>Derivación<small id="sLead">III</small></button>
+          <button class="k" id="kGain"><span class="n">G</span>Ganancia<small id="sGain">×2</small></button>
+          <button class="k charge" id="kCharge"><span class="n">2</span>Cargar<small>energía indicada</small></button>
+          <button class="k shock" id="kShock"><span class="n">3</span>Descargar<small>mantener</small></button>
+        </div>
+        <div class="holdbar" aria-hidden="true"><i id="hold"></i></div>
+      </div>
+      <div class="scen"><button class="btn" id="reset">Reiniciar caso</button><span style="color:var(--muted)">Mantén pulsado «Descargar» (también con la barra espaciadora).</span></div>
+    </section>
+
+    <section>
+      <div class="steps" id="steps"></div>
+      <div id="fin"></div>
+      <div class="log"><h3>Registro</h3><ol id="log"></ol></div>
+    </section>
+  </div>
+
+  <footer>Material educativo. Simulación esquemática: el comportamiento de cada equipo varía (algunos mantienen el modo sincronizado tras la descarga). Sigue las indicaciones del fabricante, la energía recomendada y el protocolo institucional. El superíndice remite a las referencias del módulo.</footer>
+</div>
+
+<script>
+const STEPS=[
+  {a:"Activar el modo sincronizado («sync»)",e:"Descargar en el modo predeterminado de desfibrilación"},
+  {a:"Verificar un marcador sobre cada QRS",e:"Marcadores sobre la onda T o ausentes"},
+  {a:"Cambiar la derivación o la ganancia si el marcaje es incorrecto",e:"Continuar con un marcaje dudoso"},
+  {a:"Mantener oprimido el botón de descarga hasta que se produzca",e:"Soltar el botón durante el retraso de sincronización"},
+  {a:"Reactivar el modo sincronizado antes de cada nueva descarga, si el equipo lo desactiva",e:"Asumir que el modo permanece activo"},
+  {a:"Desactivarlo ante FV, TV sin pulso o TV polimórfica",r:"3",e:"Intentar sincronizar un ritmo sin ondas R identificables"}
+];
+const LEADS={I:{R:11,T:6},II:{R:38,T:12},III:{R:15,T:24}}, LORD=["I","II","III"], GAINS=[1,2,4];
+let S;
+function reset(){S={phase:0,sync:false,lead:"III",gain:2,charged:false,charging:0,holding:false,holdStart:0,shotAt:null,shots:[],done:new Set(),bad:new Set(),log:[],sawWrong:false,t:4,syncWaitWarned:false};
+  msg("Paciente con FA rápida y pulso. Prepara la cardioversión sincronizada.");render()}
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function msg(h){document.getElementById("msg").innerHTML=h}
+function log(t,c){S.log.push({t,c});}
+function ok(i){if(!S.done.has(i)){S.done.add(i);S.bad.delete(i);log("Paso "+(i+1)+": "+STEPS[i].a.charAt(0).toLowerCase()+STEPS[i].a.slice(1),"o")}}
+function bad(i,txt){S.bad.add(i);log("Error · "+txt,"e")}
+/* ritmo */
+const RRs=[];let acc=0.2;for(let k=0;k<4000;k++){const h=Math.abs(Math.sin(k*12.9898)*43758.5453)%1;acc+=0.42+0.42*h;RRs.push(acc)}
+function rIn(a,b){return RRs.filter(r=>r>=a&&r<=b)}
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function evalCfg(){const L=LEADS[S.lead],r=L.R*S.gain,t=L.T*S.gain;if(r>110)return"clip";if(Math.max(r,t)<30)return"none";return t>=r?"T":"R"}
+function sig(tt){
+  if(S.phase>=2&&tt>=S.fvAt){let y=0;[[3.1,20,0],[5.3,13,1.3],[7.9,9,2.1],[1.7,11,.5]].forEach(([f,a,p])=>y+=a*Math.sin(2*Math.PI*f*tt+p)*(.6+.4*Math.sin(2*Math.PI*.37*tt+p)));return y*Math.min(S.gain,2)/1.4}
+  const L=LEADS[S.lead];let y=0;for(const r of rIn(tt-.5,tt+.1))y+=G(tt,r,.011,-L.R)+G(tt,r+.018,.009,L.R*.25)+G(tt,r+.2,.045,-L.T);
+  y+=1.2*Math.sin(tt*31)+0.8*Math.sin(tt*47);return y*S.gain}
+function markers(a,b){
+  if(!S.sync)return[];
+  if(S.phase>=2&&a>=S.fvAt)return[];
+  const k=evalCfg();if(k==="none")return[];
+  return rIn(a,b).map(r=>({t:k==="R"?r:k==="T"?r+.2:(Math.round(r*7)%3===0?r+.2:r),bad:k!=="R"&&!(k==="clip"&&Math.round(r*7)%3!==0)}));
+}
+/* dibujo */
+const WIN=4;
+function draw(){
+  const cv=document.getElementById("cv"),c=cv.getContext("2d"),W=cv.width,H=cv.height,base=H*.62,sx=W/WIN,t0=S.t-WIN,X=tt=>(tt-t0)*sx;
+  c.fillStyle="#0f1a14";c.fillRect(0,0,W,H);c.strokeStyle="#1f3a2a";c.lineWidth=1;
+  for(let x=0;x<W;x+=40){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}for(let y=0;y<H;y+=40){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  c.save();c.beginPath();c.rect(0,70,W,H-70);c.clip();c.strokeStyle="#7ef0a4";c.lineWidth=3.4;c.lineJoin="round";c.beginPath();
+  for(let px=0;px<=W;px+=2){const y=base+sig(t0+px/sx)*1.7;px?c.lineTo(px,y):c.moveTo(px,y)}c.stroke();c.restore();
+  for(const m of markers(t0,S.t-.03)){c.fillStyle=m.bad?"#ffb05f":"#7fb3ec";c.beginPath();c.moveTo(X(m.t)-14,40);c.lineTo(X(m.t)+14,40);c.lineTo(X(m.t),62);c.closePath();c.fill()}
+  for(const s of S.shots){if(s<t0)continue;c.strokeStyle="#ffd23f";c.lineWidth=6;c.beginPath();c.moveTo(X(s),40);c.lineTo(X(s),H-10);c.stroke()}
+}
+function flash(){const f=document.getElementById("flash");f.classList.add("on");requestAnimationFrame(()=>requestAnimationFrame(()=>f.classList.remove("on")))}
+/* descarga */
+function discharge(at,kind){
+  S.shots.push(at);S.charged=false;flash();const ph=S.phase;
+  if(ph<2){
+    if(kind==="async"){bad(ph===0?0:4,ph===0?"descarga en modo de desfibrilación con el paciente con pulso":"se asumió que el modo sincronizado seguía activo");
+      msg(`<b>Descarga NO sincronizada.</b> Ha caído en un momento aleatorio, posiblemente sobre la onda T: riesgo de inducir FV. ${ph===0?"Activa SYNC antes de descargar.":"El equipo desactivó SYNC tras la descarga anterior: reactívalo."}`);render();return}
+    if(kind==="T"){bad(2,"se descargó con los marcadores sobre la onda T");msg("<b>La descarga cayó sobre la onda T.</b> Había marcadores dudosos: cambia la derivación o la ganancia antes de descargar.");render();return}
+    ok(3); if(ph===1)ok(4);
+    if(ph===0){S.phase=1;S.sync=false;msg("<b>Descarga sincronizada sobre la R.</b> La FA persiste. Este equipo ha <b>desactivado SYNC</b> tras la descarga. Prepara una segunda descarga.");log("La FA persiste; el equipo vuelve al modo asincrónico","")}
+    else{S.phase=2;S.sync=false;S.fvAt=S.t+0.8;msg("<b>Descarga sincronizada.</b> Atención: el ritmo degenera en <b>fibrilación ventricular</b>. El paciente pierde el pulso.");log("El ritmo degenera en FV, sin pulso","")}
+  } else {
+    if(kind==="async"){ok(5);S.phase=3;msg("<b>Desfibrilación inmediata.</b> Correcto: en la FV no hay R que sincronizar. Reanuda la RCP según el algoritmo.");}
+  }
+  render();
+}
+/* mandos */
+const $=id=>document.getElementById(id);
+$("kSync").addEventListener("click",()=>{S.sync=!S.sync;
+  if(S.sync&&S.phase===0)ok(0);
+  if(S.sync&&S.phase===2&&S.t>=S.fvAt){msg("SYNC activado en FV: <b>no hay ondas R</b> que marcar. Si pulsas descargar, el equipo no descargará.")}
+  else if(S.sync){const k=evalCfg();msg(k==="R"?"SYNC activo. <b>Un marcador sobre cada QRS.</b> Puedes cargar.":k==="T"?"SYNC activo, pero <b>los marcadores caen sobre la onda T</b>. Cambia la derivación o la ganancia.":k==="none"?"SYNC activo, pero <b>no hay marcadores</b>: QRS de baja amplitud.":"SYNC activo, pero el <b>QRS está recortado</b> y los marcadores son irregulares.")}
+  else msg(S.phase===2?"Modo asincrónico: la descarga será inmediata.":"SYNC desactivado: el equipo descargará en cuanto pulses.");
+  checkCfg();render()});
+function cfgMsg(){const k=evalCfg();if(!S.sync)return;msg(k==="R"?"<b>Un marcador sobre cada QRS.</b> Marcaje correcto.":k==="T"?"<b>Marcadores sobre la onda T.</b> Sigue ajustando.":k==="none"?"<b>Sin marcadores:</b> amplitud insuficiente.":"<b>QRS recortado:</b> reduce la ganancia.")}
+function checkCfg(){const k=evalCfg();if(k!=="R")S.sawWrong=true;if(S.sync&&k==="R"&&S.phase<2){ok(1);if(S.sawWrong)ok(2)}}
+$("kLead").addEventListener("click",()=>{S.lead=LORD[(LORD.indexOf(S.lead)+1)%3];checkCfg();cfgMsg();render()});
+$("kGain").addEventListener("click",()=>{S.gain=GAINS[(GAINS.indexOf(S.gain)+1)%3];checkCfg();cfgMsg();render()});
+$("kCharge").addEventListener("click",()=>{if(S.charged||S.charging||S.phase===3)return;S.charging=S.t+1.2;msg("Cargando… (energía según el fabricante y el protocolo)");render()});
+function pressStart(){
+  if(S.phase===3)return;
+  if(!S.charged){msg("Primero <b>carga</b> el desfibrilador.");return}
+  S.holding=true;S.holdStart=S.t;$("kShock").classList.add("hold");
+  const fv=S.phase>=2&&S.t>=S.fvAt;
+  if(!S.sync){discharge(S.t,"async");endHold(true);return}
+  if(fv){msg("Mantienes pulsado… <b>el equipo busca una onda R</b> y no la encuentra.");S.shotAt=null;return}
+  const k=evalCfg();if(k==="none"){msg("Mantienes pulsado… <b>sin marcadores, no habrá descarga</b>.");S.shotAt=null;return}
+  const nm=markers(S.t,S.t+3).find(m=>m.t>S.t+.03);S.shotAt=nm?{t:nm.t,bad:nm.bad}:null;msg("Mantén pulsado: el equipo espera al siguiente marcador…");
+}
+function endHold(silent){
+  if(!S.holding)return;S.holding=false;$("kShock").classList.remove("hold");$("hold").style.width="0";
+  if(silent)return;
+  const fv=S.phase>=2&&S.t>=S.fvAt;
+  if(fv&&S.sync){bad(5,"se intentó sincronizar la FV");msg("<b>No hubo descarga.</b> En FV no hay ondas R: desactiva SYNC y desfibrila de inmediato.");render();return}
+  if(S.shotAt){bad(3,"se soltó el botón antes de la descarga");msg("<b>Soltaste el botón durante el retraso de sincronización.</b> No hubo descarga: mantenlo oprimido hasta que se produzca.");S.shotAt=null;render()}
+}
+const kS=$("kShock");
+kS.addEventListener("pointerdown",e=>{e.preventDefault();kS.setPointerCapture(e.pointerId);pressStart()});
+kS.addEventListener("pointerup",()=>endHold(false));kS.addEventListener("pointercancel",()=>endHold(false));
+kS.addEventListener("keydown",e=>{if((e.key===" "||e.key==="Enter")&&!e.repeat){e.preventDefault();pressStart()}});
+kS.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();endHold(false)}});
+$("reset").addEventListener("click",reset);
+
+/* render */
+function render(){
+  $("kSync").setAttribute("aria-pressed",S.sync);$("sLead").textContent=S.lead;$("sGain").textContent="×"+S.gain;
+  $("tCfg").textContent=`${S.lead} ×${S.gain}`;const ts=$("tSync");ts.textContent=S.sync?"SINC":"ASINC";ts.className=S.sync?"sync":"";
+  $("tChg").hidden=!S.charged;$("tRhy").textContent=S.phase>=2&&S.t>=S.fvAt?"FV · sin pulso":S.phase===3?"Reanimación":"FA rápida · con pulso";
+  const cur=S.phase===0?(S.done.has(0)?(S.done.has(1)?3:2):0):S.phase===1?4:5;
+  $("steps").innerHTML=STEPS.map((s,i)=>`<div class="st ${S.done.has(i)?"done":S.bad.has(i)?"bad":i===cur&&S.phase<3?"now":""}"><span class="num">${S.done.has(i)?"✓":i+1}</span><b>${s.a}${s.r?`<sup style="font-size:11px;color:var(--acc)">${s.r}</sup>`:""}</b><span class="err">${S.bad.has(i)?"<em>Error cometido:</em> ":"Evitar: "}${s.e}</span></div>`).join("");
+  $("log").innerHTML=S.log.length?S.log.map(l=>`<li class="${l.c}">${l.t}</li>`).join(""):'<li style="list-style:none;margin-left:-20px;color:var(--muted)">Aún no hay acciones.</li>';
+  const errs=S.log.filter(l=>l.c==="e").length;
+  $("fin").innerHTML=S.phase===3?`<div class="final"><b>Caso completado.</b><br>${errs?`Con ${errs} ${errs===1?"error":"errores"}: revisa en el registro qué falló y vuelve a intentarlo.`:"Sin errores: has aplicado los seis pasos."}</div>`:"";
+}
+/* bucle */
+let last=null;
+function frame(ts){
+  if(last==null)last=ts;const dt=Math.min((ts-last)/1000,.05);last=ts;S.t+=reduce?dt*.5:dt;
+  if(S.charging&&S.t>=S.charging){S.charging=0;S.charged=true;msg("<b>Cargado.</b> Mantén pulsado «Descargar».");render()}
+  if(S.holding){const p=Math.min((S.t-S.holdStart)/1.2,1);$("hold").style.width=(p*100)+"%";
+    if(S.shotAt&&S.t>=S.shotAt.t){const st=S.shotAt;S.shotAt=null;endHold(true);discharge(st.t,st.bad?"T":"R")}}
+  if(S.phase===2&&S.t>=S.fvAt&&!S.fvShown){S.fvShown=true;render()}
+  draw();requestAnimationFrame(frame);
+}
+reset();requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

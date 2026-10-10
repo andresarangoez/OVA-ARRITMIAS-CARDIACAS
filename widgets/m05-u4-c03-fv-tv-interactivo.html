@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>FV y TV: ¿pulso o no?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: fondo blanco; azul como color principal de interfaz, amarillo para resaltar y señalar selección */
+:root{
+  --bg:#ffffff; --surface:#ffffff; --tint:#f4f8fd; --grid:#e3ecf8; --grid-strong:#c4d6ee;
+  --fg:#1b2433; --muted:#5b6678; --line:#dde5f0;
+  --trace:#1d4f91; --accent:#1d4f91; --accent-soft:#fff3bf; --yellow:#f5c400;
+  --ok:#1f7a4d; --ok-soft:#e2f3ea; --bad:#b3261e; --bad-soft:#fbe5e3; --warn:#7a5a00; --warn-soft:#fff3bf;
+  --display:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;font-variant-numeric:lining-nums}
+header{border-bottom:4px solid var(--yellow);padding-bottom:16px}
+.eyebrow{font-weight:700}
+h1{font-weight:800!important;color:var(--accent)}
+h2{color:var(--accent)}
+.strip{background:var(--tint)!important}
+.lead[aria-pressed="true"]{border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--yellow)!important}
+thead th{background:var(--accent)!important;color:#ffffff}
+thead th.col-on{background:var(--yellow)!important;color:var(--fg)}
+.chip[aria-pressed="true"]{background:var(--yellow)!important;border-color:var(--yellow)!important;color:var(--fg)!important}
+.vital{background:var(--tint)!important}
+.vital b{font-weight:700}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:flex;flex-direction:column;gap:36px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5vw,3rem);line-height:1.02;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.65rem;margin:0;text-wrap:balance}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+section{display:flex;flex-direction:column;gap:14px}
+.hint{color:var(--muted);font-size:.92rem;margin:0}
+
+/* Tarjetas de ritmo */
+.leads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.leads{grid-template-columns:1fr}}
+.lead{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:border-color .15s, box-shadow .15s}
+.lead:hover{border-color:var(--grid-strong)}
+.lead[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.lead:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.lead-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lead-name{font-family:var(--display);font-weight:600;font-size:1.4rem;line-height:1.1}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.pill.absent{background:var(--bad-soft);color:var(--bad)}
+.pill.present{background:var(--ok-soft);color:var(--ok)}
+.strip{position:relative;height:110px;border-radius:6px;overflow:hidden;background:var(--bg)}
+.strip canvas{display:block;width:100%;height:100%}
+.meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:middle}
+.pulse-dot.on{background:var(--ok);animation:beat .33s ease-in-out infinite alternate}
+@keyframes beat{from{transform:scale(.7);opacity:.6}to{transform:scale(1.2);opacity:1}}
+
+/* Tabla */
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:inherit;font-size:.9rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+tr:last-child th,tr:last-child td{border-bottom:none}
+thead th{font-family:var(--display);font-weight:600;font-size:1.15rem;background:var(--bg);cursor:pointer;user-select:none}
+thead th:first-child{cursor:default}
+tbody th{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500;width:18%;white-space:nowrap}
+td{transition:background .15s, opacity .15s}
+.ref{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap}
+table.focus td:not(.col-on),table.focus thead th:not(:first-child):not(.col-on){opacity:.35}
+td.col-on,thead th.col-on{background:var(--accent-soft)}
+table.diff tr.same td{opacity:.35}
+table.diff tr.diffrow th{color:var(--accent)}
+td .grp{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+td.k-pulse-no .grp,td.k-shock-unsync .grp{background:var(--bad)}
+td.k-pulse-yes .grp,td.k-shock-sync .grp{background:var(--ok)}
+
+/* Práctica */
+.drill{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.drill{grid-template-columns:1fr}}
+.drill .strip{height:140px}
+.vitals{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:13px}
+.vital{border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--bg)}
+.vital b{font-weight:500;color:var(--accent)}
+.case-text{margin:0;font-size:1rem}
+.steps{display:flex;flex-direction:column;gap:14px;min-width:0}
+.step-label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:inherit;font-size:.95rem;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.feedback{border-radius:8px;padding:10px 12px;font-size:.95rem;margin:0}
+.feedback.ok{background:var(--ok-soft);color:var(--fg)}
+.feedback.no{background:var(--warn-soft);color:var(--fg)}
+.drill-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.score{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.primary{font:inherit;font-weight:700;padding:9px 16px;border-radius:8px;border:none;background:var(--accent);color:var(--surface);cursor:pointer}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion: reduce){.pulse-dot.on{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Ritmos de QRS ancho · Paro y periparo</span>
+    <h1>FV, TV sin pulso y TV con pulso</h1>
+    <p class="lede">Las tres se ven graves en el monitor. Lo que cambia la conducta es la organización del ritmo y, sobre todo, si el paciente tiene pulso.</p>
+  </header>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1">Mira el trazado</h2>
+    <p class="hint">Toca un ritmo para resaltar su columna en la tabla.</p>
+    <div class="leads" id="leads"></div>
+  </section>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2">Compara aspecto por aspecto</h2>
+    <div class="controls">
+      <button class="chip" id="diffBtn" aria-pressed="false">Resaltar solo las diferencias clave</button>
+      <button class="chip" id="clearBtn">Ver las tres columnas</button>
+    </div>
+    <div class="table-wrap"><table id="tbl"></table></div>
+    <p class="hint">La TV sin pulso se parece en el trazado a la TV con pulso, pero se trata igual que la FV. El pulso decide.</p>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3">Practica la decisión</h2>
+    <div class="drill">
+      <div class="steps">
+        <div class="strip"><canvas id="drillCanvas"></canvas></div>
+        <div class="vitals" id="vitals"></div>
+        <p class="case-text" id="caseText"></p>
+      </div>
+      <div class="steps">
+        <div>
+          <p class="step-label">1 · ¿Qué ritmo es?</p>
+          <div class="opts" id="q1"></div>
+        </div>
+        <div id="q2wrap" hidden>
+          <p class="step-label">2 · ¿Qué descarga corresponde?</p>
+          <div class="opts" id="q2"></div>
+        </div>
+        <p class="feedback" id="fb" hidden></p>
+        <div class="drill-foot">
+          <span class="score" id="score">Aciertos 0 / 0</span>
+          <button class="primary" id="nextBtn">Nuevo caso</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Trazados esquemáticos con fines didácticos; no reproducen registros reales. Referencias según la numeración del módulo.</footer>
+</div>
+
+<script>
+const R = [
+  {id:"fv", name:"Fibrilación ventricular", short:"FV", pulse:false, rate:"Sin frecuencia medible", kind:"vf"},
+  {id:"tvsp", name:"TV sin pulso", short:"TV sin pulso", pulse:false, rate:"≈ 180 lpm", kind:"vt"},
+  {id:"tvcp", name:"TV con pulso", short:"TV con pulso", pulse:true, rate:"≈ 180 lpm", kind:"vt"}
+];
+const ROWS = [
+  {k:"Organización del ritmo", v:["Desorganizado","Organizado","Organizado"], key:false},
+  {k:"Trazado", v:["Ondas caóticas sin QRS","QRS anchos, regulares y rápidos","QRS anchos, regulares y rápidos"], key:false},
+  {k:"Pulso", v:["Ausente","Ausente","Presente"], key:true, cls:["k-pulse-no","k-pulse-no","k-pulse-yes"]},
+  {k:"Tipo de descarga", v:["Desfibrilación no sincronizada <span class=ref>(3,5)</span>","Desfibrilación no sincronizada <span class=ref>(3,5)</span>","Cardioversión sincronizada si es inestable <span class=ref>(Unidad 3)</span>"], key:true, cls:["k-shock-unsync","k-shock-unsync","k-shock-sync"]},
+  {k:"Otras intervenciones", v:["RCP, adrenalina, antiarrítmico <span class=ref>(3,5)</span>","RCP, adrenalina, antiarrítmico <span class=ref>(3,5)</span>","Fármacos si es estable <span class=ref>(Unidad 2)</span>"], key:true}
+];
+
+/* ---------- Generador de trazados ---------- */
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+function sample(kind, t, seed){
+  if(kind==="vt"){ // TV monomórfica: complejos anchos regulares ~3 Hz
+    const ph = (t*3) % 1;
+    return Math.sin(ph*2*Math.PI)*0.75 + Math.sin(ph*4*Math.PI+0.6)*0.18;
+  }
+  // FV: suma de ondas irregulares con amplitud que fluctúa
+  const a = 0.45 + 0.3*Math.sin(t*0.9+seed) + 0.15*Math.sin(t*2.3+seed*2);
+  return a*(Math.sin(t*2*Math.PI*4.7+seed)*0.6 + Math.sin(t*2*Math.PI*6.3+seed*3)*0.35 + Math.sin(t*2*Math.PI*3.1+seed*5)*0.4);
+}
+const strips = [];
+function makeStrip(canvas, kind){
+  const s = {canvas, kind, seed:Math.random()*10, t0:performance.now()};
+  strips.push(s); sizeStrip(s); return s;
+}
+function sizeStrip(s){
+  const r = s.canvas.getBoundingClientRect(), d = devicePixelRatio||1;
+  s.canvas.width = Math.max(1,r.width*d); s.canvas.height = Math.max(1,r.height*d);
+  s.w=r.width; s.h=r.height; s.d=d;
+}
+function drawStrip(s, now){
+  const c = s.canvas.getContext("2d"); if(!s.w) return;
+  c.setTransform(s.d,0,0,s.d,0,0);
+  c.fillStyle = css("--bg"); c.fillRect(0,0,s.w,s.h);
+  const sq = 8; // cuadro pequeño = 0,04 s
+  for(let x=0;x<s.w;x+=sq){c.strokeStyle = (Math.round(x/sq)%5===0)?css("--grid-strong"):css("--grid"); c.lineWidth=1; c.beginPath(); c.moveTo(x+.5,0); c.lineTo(x+.5,s.h); c.stroke();}
+  for(let y=0;y<s.h;y+=sq){c.strokeStyle = (Math.round(y/sq)%5===0)?css("--grid-strong"):css("--grid"); c.beginPath(); c.moveTo(0,y+.5); c.lineTo(s.w,y+.5); c.stroke();}
+  const pxPerSec = sq*25; // 25 mm/s
+  const tEnd = reduce ? 3 : (now - s.t0)/1000;
+  c.strokeStyle = css("--trace"); c.lineWidth = 2; c.lineJoin="round"; c.beginPath();
+  for(let x=0;x<=s.w;x+=1.5){
+    const t = tEnd - (s.w - x)/pxPerSec;
+    const y = s.h/2 - sample(s.kind,t,s.seed)*s.h*0.36;
+    x===0?c.moveTo(x,y):c.lineTo(x,y);
+  }
+  c.stroke();
+}
+function loop(now){ strips.forEach(s=>drawStrip(s,now)); if(!reduce) requestAnimationFrame(loop); }
+addEventListener("resize",()=>{strips.forEach(sizeStrip); if(reduce) strips.forEach(s=>drawStrip(s,0));});
+try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>reduce&&strips.forEach(s=>drawStrip(s,0))); }catch(e){}
+
+/* ---------- Tarjetas ---------- */
+const leads = document.getElementById("leads");
+let focusCol = null;
+R.forEach((r,i)=>{
+  const b = document.createElement("button");
+  b.className="lead"; b.setAttribute("aria-pressed","false"); b.id="lead-"+r.id;
+  b.innerHTML = `<div class="lead-top"><span class="lead-name">${r.name}</span><span class="pill ${r.pulse?"present":"absent"}">Pulso ${r.pulse?"presente":"ausente"}</span></div>
+  <div class="strip"><canvas aria-label="Trazado esquemático de ${r.name}" role="img"></canvas></div>
+  <div class="meta"><span><span class="pulse-dot ${r.pulse?"on":""}"></span>${r.pulse?"Pulso palpable":"Sin pulso"}</span><span>${r.rate}</span></div>`;
+  b.onclick = ()=> setFocus(focusCol===i?null:i);
+  leads.appendChild(b);
+  makeStrip(b.querySelector("canvas"), r.kind);
+});
+
+/* ---------- Tabla ---------- */
+const tbl = document.getElementById("tbl");
+tbl.innerHTML = `<thead><tr><th scope="col">Aspecto</th>${R.map((r,i)=>`<th scope="col" data-col="${i}">${r.name}</th>`).join("")}</tr></thead>
+<tbody>${ROWS.map(row=>{
+  const same = row.v.every(v=>v===row.v[0]);
+  return `<tr class="${row.key?"diffrow":"same"}"><th scope="row">${row.k}</th>${row.v.map((v,i)=>`<td data-col="${i}" class="${row.cls?row.cls[i]:""}">${row.cls?'<span class="grp"></span>':""}${v}</td>`).join("")}</tr>`;
+}).join("")}</tbody>`;
+tbl.querySelectorAll("thead th[data-col]").forEach(th=>th.onclick=()=>{const i=+th.dataset.col; setFocus(focusCol===i?null:i);});
+function setFocus(i){
+  focusCol = i;
+  tbl.classList.toggle("focus", i!==null);
+  tbl.querySelectorAll("[data-col]").forEach(el=>el.classList.toggle("col-on", i!==null && +el.dataset.col===i));
+  R.forEach((r,j)=>document.getElementById("lead-"+r.id).setAttribute("aria-pressed", String(j===i)));
+}
+const diffBtn = document.getElementById("diffBtn");
+diffBtn.onclick = ()=>{const on = diffBtn.getAttribute("aria-pressed")!=="true"; diffBtn.setAttribute("aria-pressed",String(on)); tbl.classList.toggle("diff",on);};
+document.getElementById("clearBtn").onclick = ()=>{setFocus(null); diffBtn.setAttribute("aria-pressed","false"); tbl.classList.remove("diff");};
+
+/* ---------- Práctica ---------- */
+const CASES = [
+  {r:0, txt:"Paciente que colapsa en la sala. No responde, no respira con normalidad.", v:[["Pulso carotídeo","ausente"],["FC","no medible"],["PA","no registrable"]]},
+  {r:1, txt:"Monitor con complejos anchos regulares. No responde y no se palpa pulso carotídeo en 10 s.", v:[["Pulso carotídeo","ausente"],["FC monitor","≈180 lpm"],["PA","no registrable"]]},
+  {r:2, txt:"Refiere palpitaciones, está somnoliento, con dolor torácico y frialdad distal.", v:[["Pulso","presente, débil"],["FC","≈180 lpm"],["PA","78/44 mmHg"]], unstable:true},
+  {r:2, txt:"Refiere palpitaciones desde hace 1 hora. Alerta, sin dolor torácico ni disnea.", v:[["Pulso","presente"],["FC","≈170 lpm"],["PA","124/78 mmHg"]], unstable:false},
+  {r:0, txt:"Durante la ronda, la alarma del monitor suena y el paciente no responde.", v:[["Pulso carotídeo","ausente"],["Respiración","jadeante"],["SpO₂","sin señal"]]},
+  {r:1, txt:"Tras un periodo de TV con pulso, el paciente pierde la consciencia. Monitor sin cambios en el trazado.", v:[["Pulso carotídeo","ausente"],["FC monitor","≈185 lpm"],["Respiración","ausente"]]}
+];
+const SHOCKS = [
+  {id:"unsync", t:"Desfibrilación no sincronizada"},
+  {id:"sync", t:"Cardioversión sincronizada"},
+  {id:"none", t:"No descargar: fármacos"}
+];
+const drillStrip = makeStrip(document.getElementById("drillCanvas"), "vf");
+let cur=null, last=-1, hits=0, total=0, firstTry=true;
+const $ = id=>document.getElementById(id);
+function correctShock(c){ if(c.r!==2) return "unsync"; return c.unstable?"sync":"none"; }
+function newCase(){
+  let n; do{ n=Math.floor(Math.random()*CASES.length);}while(n===last); last=n; cur=CASES[n]; firstTry=true;
+  drillStrip.kind = R[cur.r].kind; drillStrip.seed=Math.random()*10;
+  if(reduce) drawStrip(drillStrip,0);
+  $("vitals").innerHTML = cur.v.map(([a,b])=>`<span class="vital">${a}: <b>${b}</b></span>`).join("");
+  $("caseText").textContent = cur.txt;
+  $("q1").innerHTML = R.map((r,i)=>`<button class="opt" data-i="${i}">${r.name}</button>`).join("");
+  $("q1").querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer1(+b.dataset.i,b));
+  $("q2wrap").hidden=true; $("fb").hidden=true;
+}
+function feedback(ok, msg){ const f=$("fb"); f.hidden=false; f.className="feedback "+(ok?"ok":"no"); f.textContent=msg; }
+function answer1(i,btn){
+  if(i===cur.r){
+    btn.classList.add("right"); $("q1").querySelectorAll(".opt").forEach(b=>b.disabled=true);
+    $("fb").hidden=true;
+    $("q2").innerHTML = SHOCKS.map(s=>`<button class="opt" data-s="${s.id}">${s.t}</button>`).join("");
+    $("q2").querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer2(b.dataset.s,b));
+    $("q2wrap").hidden=false;
+  } else {
+    firstTry=false; btn.classList.add("wrong"); btn.disabled=true;
+    const r=R[cur.r];
+    feedback(false, r.kind==="vf" ? "Revisa el trazado: no hay QRS identificables, solo ondas caóticas." :
+      (r.pulse ? "El trazado es organizado y el paciente tiene pulso." : "El trazado es organizado, pero no hay pulso."));
+  }
+}
+function answer2(s,btn){
+  const want = correctShock(cur);
+  if(s===want){
+    btn.classList.add("right"); $("q2").querySelectorAll(".opt").forEach(b=>b.disabled=true);
+    total++; if(firstTry) hits++; $("score").textContent=`Aciertos ${hits} / ${total}`;
+    const msg = cur.r!==2 ? "Correcto. Sin pulso: desfibrilación no sincronizada, RCP, adrenalina y antiarrítmico (3,5)." :
+      cur.unstable ? "Correcto. TV con pulso inestable (hipotensión, alteración de consciencia, dolor torácico): cardioversión sincronizada (Unidad 3)." :
+      "Correcto. TV con pulso estable: manejo farmacológico, sin descarga inmediata (Unidad 2).";
+    feedback(true, msg);
+  } else {
+    firstTry=false; btn.classList.add("wrong"); btn.disabled=true;
+    const msg = cur.r!==2 ? (s==="sync" ? "Sin pulso no hay QRS confiable para sincronizar: la descarga debe ser no sincronizada." : "Un paciente sin pulso necesita descarga inmediata y RCP.") :
+      s==="unsync" ? "Hay pulso: una descarga no sincronizada puede caer en la onda T. Si se descarga, debe ser sincronizada." :
+      cur.unstable ? "Hay signos de inestabilidad. No conviene esperar a los fármacos." : "El paciente está estable: no requiere descarga inmediata.";
+    feedback(false, msg);
+  }
+}
+$("nextBtn").onclick=newCase;
+newCase();
+if(reduce) strips.forEach(s=>drawStrip(s,0)); else requestAnimationFrame(loop);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

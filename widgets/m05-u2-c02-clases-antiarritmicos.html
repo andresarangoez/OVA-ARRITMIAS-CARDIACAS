@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clases de antiarrítmicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: selector de clase; ficha de la clase junto a un ECG que muestra el intervalo afectado; tabla comparativa; práctica de clasificación */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --c1:#2b6cc4; --c1s:#e4eef9;
+  --c2:#2f8a4c; --c2s:#e5f4e9;
+  --c3:#7a4cb0; --c3s:#f0e9f8;
+  --c4:#d0571f; --c4s:#fcebe2;
+  --c5:#0f7f86; --c5s:#e0f3f4;
+  --unit:#b8660a; --unit-s:#fdf1df;
+  --ok:#2f8a4c; --ok-s:#e5f4e9; --no:#c8323c; --no-s:#fbe7e8;
+  --grid:#f1c9cc; --paper:#fffafa; --trace:#1b2733; --base:#b7c3ce;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --c1:#7fb3ec; --c1s:#182c42; --c2:#6fcf8f; --c2s:#183326; --c3:#bb9ae6; --c3s:#2a2140; --c4:#f29a74; --c4s:#3a2418; --c5:#5fcdd3; --c5s:#13302f;
+  --unit:#f2b25c; --unit-s:#3a2b16; --ok:#6fcf8f; --ok-s:#183326; --no:#f07178; --no-s:#3a1d22;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; --base:#4a5866; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --c1:#7fb3ec; --c1s:#182c42; --c2:#6fcf8f; --c2s:#183326; --c3:#bb9ae6; --c3s:#2a2140; --c4:#f29a74; --c4s:#3a2418; --c5:#5fcdd3; --c5s:#13302f;
+  --unit:#f2b25c; --unit-s:#3a2b16; --ok:#6fcf8f; --ok-s:#183326; --no:#f07178; --no-s:#3a1d22;
+  --grid:#3a2a2e; --paper:#1a1d22; --trace:#e6edf3; --base:#4a5866; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+h2.s{font-size:20px;font-weight:800;margin:30px 0 10px}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+.k1{--c:var(--c1);--cs:var(--c1s)} .k2{--c:var(--c2);--cs:var(--c2s)} .k3{--c:var(--c3);--cs:var(--c3s)} .k4{--c:var(--c4);--cs:var(--c4s)} .k5{--c:var(--c5);--cs:var(--c5s)}
+
+.classes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:16px}
+@media (max-width:820px){.classes{grid-template-columns:repeat(2,minmax(0,1fr))}.classes .cls:last-child{grid-column:1/-1}}
+.cls{font:inherit;text-align:left;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:1px}
+.cls b{font-size:15px;font-weight:800;color:var(--c)}
+.cls small{font-size:12.5px;color:var(--muted)}
+.cls[aria-pressed="true"]{border-color:var(--c);background:var(--cs);box-shadow:0 0 0 3px var(--cs)}
+.cls:focus-visible,.btn:focus-visible,.ans:focus-visible,tr.row:focus-visible,.drug:focus-visible{outline:3px solid var(--c1);outline-offset:2px}
+
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.card.k{border-color:var(--c)}
+.tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--muted))}
+.card h3{font-size:21px;font-weight:800;margin:2px 0 12px;text-wrap:balance}
+.facts{display:grid;gap:8px}
+.fact{background:var(--node);border-radius:9px;padding:8px 11px}
+.fact b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.fact.ecg{background:var(--cs)} .fact.ecg b{color:var(--c)}
+.drugs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.drug{font-size:13.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--surface);border:1.5px solid var(--line);display:inline-flex;gap:6px;align-items:center}
+.drug.unit{border-color:var(--unit);background:var(--unit-s)}
+.drug .sub{font-size:11px;font-weight:800;color:var(--muted)}
+.drug .u{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--unit)}
+.extra{margin-top:10px;display:grid;gap:6px}
+.extra div{font-size:14px;padding:7px 10px;border-radius:8px;background:var(--node)}
+.extra div b{font-weight:800}
+
+.ecgcard h3{font-size:17px;margin-bottom:4px}
+.ecgcard p{margin:0 0 10px;color:var(--muted);font-size:14px}
+.strip{border-radius:8px;overflow-x:auto;background:var(--paper);border:1px solid var(--line)}
+.strip svg{display:block;width:100%;min-width:440px;height:auto}
+.lbl{font-family:var(--f);font-size:12px;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:4px;margin-right:6px}
+.badge{display:inline-block;margin-top:8px;font-size:13px;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--cs);color:var(--c)}
+
+.tbl-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:860px}
+thead th{background:var(--head);color:var(--head-ink);text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:11px 12px}
+tbody td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:top;font-size:14px}
+tr.row{cursor:pointer}
+tr.row:hover{background:var(--node)}
+tr.row td:first-child{font-weight:800;color:var(--c);border-left:4px solid var(--c);white-space:nowrap}
+tr.row.sel{background:var(--cs)}
+td.unitc{font-weight:700;color:var(--unit)}
+td.unitc.none{color:var(--muted);font-weight:500}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;margin:0 0 10px}
+
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.qtop{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.score{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+.qdrug{font-size:26px;font-weight:800;margin:4px 0 2px}
+.qdrug .u{font-size:12px;vertical-align:6px}
+.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ans{font:inherit;font-weight:700;font-size:14.5px;padding:9px 16px;border-radius:9px;border:1.5px solid var(--c);background:var(--cs);color:var(--ink);cursor:pointer}
+.ans[disabled]{opacity:.5;cursor:default}
+.fb{margin-top:12px;padding:10px 14px;border-radius:9px}
+.fb.ok{background:var(--ok-s)} .fb.no{background:var(--no-s)}
+.fb b.t{font-weight:800}
+.fb.ok b.t{color:var(--ok)} .fb.no b.t{color:var(--no)}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer;margin-top:10px}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Farmacología</div>
+  <h1>Clasificación de los antiarrítmicos</h1>
+  <p class="lead">Elige una clase para ver su mecanismo, el intervalo del ECG que modifica y los fármacos que se usan en esta unidad, resaltados en naranja. Al final puedes practicar la clasificación.</p>
+
+  <div class="classes" id="classes"></div>
+
+  <div class="main">
+    <section class="card k" id="detail" aria-live="polite"></section>
+    <section class="card k ecgcard" id="ecg" aria-live="polite"></section>
+  </div>
+
+  <h2 class="s">Tabla comparativa</h2>
+  <label class="toggle"><input type="checkbox" id="onlyUnit"> Mostrar solo las clases con fármacos en esta unidad</label>
+  <div class="tbl-wrap"><div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Clase</th><th>Mecanismo</th><th>Efecto electrofisiológico</th><th>Efecto en el ECG</th><th>Ejemplos</th><th>Fármacos de esta unidad</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div></div>
+
+  <h2 class="s">Ponte a prueba</h2>
+  <section class="quiz" id="quiz"></section>
+
+  <footer>Material educativo. Clasificación de Vaughan Williams simplificada; varios fármacos tienen acciones de más de una clase (la amiodarona, de las cuatro). Trazado ECG esquemático. No reemplaza el juicio clínico.</footer>
+</div>
+
+<script>
+const C=[
+  {k:1,n:"Clase I",short:"Bloqueo del Na⁺",mech:"Bloqueo de los canales de sodio",ef:"Enlentece la fase 0 y la conducción",ecg:"Ensanchamiento del QRS",
+   ex:[["Procainamida","Ia"],["Lidocaína","Ib"],["Flecainida","Ic"],["Propafenona","Ic"]],unit:[],hl:["qrs"]},
+  {k:2,n:"Clase II",short:"Betabloqueantes",mech:"Bloqueo de los receptores beta-adrenérgicos",ef:"Reduce el automatismo sinusal y la conducción AV",ecg:"Disminución de la frecuencia; prolongación del PR",
+   ex:[["Metoprolol"],["Esmolol"],["Propranolol"]],unit:["Metoprolol"],hl:["pr","rr"]},
+  {k:3,n:"Clase III",short:"Bloqueo del K⁺",mech:"Bloqueo de los canales de potasio",ef:"Prolonga la repolarización y el período refractario",ecg:"Prolongación del QT",
+   ex:[["Amiodarona"],["Sotalol"],["Dofetilida"]],unit:["Amiodarona"],hl:["qt"]},
+  {k:4,n:"Clase IV",short:"Bloqueo del Ca²⁺",mech:"Bloqueo de los canales de calcio tipo L",ef:"Enlentece la conducción AV",ecg:"Prolongación del PR; disminución de la frecuencia",
+   ex:[["Verapamilo"],["Diltiazem"]],unit:[],hl:["pr","rr"]},
+  {k:5,n:"Fuera de las clases clásicas",short:"Mecanismos diversos",mech:"Mecanismos diversos",ef:"Variable según el fármaco",ecg:"Variable",
+   ex:[["Adenosina"],["Digoxina"],["Atropina"],["Magnesio"]],unit:["Adenosina","Atropina","Magnesio"],hl:[],
+   extra:{Adenosina:"Bloqueo transitorio del nodo AV; útil para revertir la TSV.",Digoxina:"Aumenta el tono vagal y enlentece el nodo AV; controla la frecuencia en la FA.",
+          Atropina:"Bloquea el efecto vagal; aumenta la frecuencia en la bradicardia sintomática.",Magnesio:"Estabiliza la membrana; tratamiento de las torsades de pointes."}}
+];
+let cur=3;
+
+/* --- ECG esquemático --- */
+const G=(x,c,w,a)=>a*Math.exp(-((x-c)**2)/(2*w*w));
+function beatFn(q,o){ // q = inicio del QRS
+  const pr=o.pr, qw=o.qw, tOff=o.tOff;
+  return x=>G(x,q-pr+10,7,-9) + G(x,q+qw*0.15,qw*0.12,4) + G(x,q+qw*0.5,qw*0.17,-48) + G(x,q+qw*0.85,qw*0.12,14) + G(x,q+qw+tOff,16,-14);
+}
+function ecg(o){ // dos latidos
+  const q1=110, q2=q1+o.rr; const b1=beatFn(q1,o), b2=beatFn(q2,o);
+  let d=""; for(let x=0;x<=560;x++){d+=(x?"L":"M")+x+","+(80+b1(x)+b2(x)).toFixed(1)}
+  const tEnd=q1+o.qw+o.tOff+30;
+  return {d,q1,q2,tEnd};
+}
+const N={pr:44,qw:16,tOff:62,rr:230};
+function modFor(k){
+  const m={...N};
+  if(k===1) m.qw=30;
+  if(k===3) m.tOff=100;
+  if(k===2||k===4){m.pr=72;m.rr=300}
+  return m;
+}
+function bracket(x1,x2,y,label,on,col){
+  const c=on?col:"var(--muted)", w=on?2.2:1.2;
+  return `<path d="M${x1},${y-5} V${y} H${x2} V${y-5}" fill="none" stroke="${c}" stroke-width="${w}"/><text class="lbl" x="${(x1+x2)/2}" y="${y+15}" text-anchor="middle" fill="${c}">${label}</text>`;
+}
+function ecgSVG(k){
+  const cls=C.find(c=>c.k===k), col=`var(--c${k})`;
+  const base=ecg(N), mod=k<=4?ecg(modFor(k)):null, o=k<=4?modFor(k):N;
+  let g=""; for(let x=0;x<=560;x+=10)g+=`<line x1="${x}" y1="0" x2="${x}" y2="190" stroke="var(--grid)" stroke-width="${x%50?0.4:1}"/>`;
+  for(let y=0;y<=190;y+=10)g+=`<line x1="0" y1="${y}" x2="560" y2="${y}" stroke="var(--grid)" stroke-width="${y%50?0.4:1}"/>`;
+  const ref=mod||base, q1=ref.q1;
+  let s=`<svg viewBox="0 0 560 200" role="img" aria-label="Trazado ECG esquemático"><rect width="560" height="200" fill="var(--paper)"/>${g}`;
+  if(mod) s+=`<path d="${base.d}" fill="none" stroke="var(--base)" stroke-width="2"/>`;
+  s+=`<path d="${ref.d}" fill="none" stroke="${mod?col:"var(--trace)"}" stroke-width="2.4" ${mod?'stroke-dasharray="7 4"':""} stroke-linejoin="round"/>`;
+  const hl=cls.hl;
+  s+=bracket(q1-o.pr,q1,130,"PR",hl.includes("pr"),col);
+  s+=bracket(q1,q1+o.qw,152,"QRS",hl.includes("qrs"),col);
+  s+=bracket(q1,ref.tEnd,174,"QT",hl.includes("qt"),col);
+  s+=bracket(q1+o.qw*0.5,ref.q2+o.qw*0.5,24,"R‑R (frecuencia)",hl.includes("rr"),col);
+  return s+"</svg>";
+}
+
+/* --- interfaz --- */
+document.getElementById("classes").innerHTML=C.map(c=>`<button class="cls k${c.k}" data-k="${c.k}" aria-pressed="false"><b>${c.k<=4?c.n:"Otros"}</b><small>${c.short}</small></button>`).join("");
+const drugChip=(d,c)=>{const u=c.unit.includes(d[0]);return `<span class="drug ${u?"unit":""}">${d[0]}${d[1]?`<span class="sub">${d[1]}</span>`:""}${u?`<span class="u">En la unidad</span>`:""}</span>`};
+
+function renderDetail(){
+  const c=C.find(x=>x.k===cur);
+  document.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",Number(b.dataset.k)===cur));
+  const det=document.getElementById("detail"), e=document.getElementById("ecg");
+  det.className="card k k"+cur; e.className="card k ecgcard k"+cur;
+  det.innerHTML=`<div class="tag">${c.n}</div><h3>${c.mech}</h3>
+    <div class="facts">
+      <div class="fact"><b>Efecto electrofisiológico</b>${c.ef}</div>
+      <div class="fact ecg"><b>Efecto en el ECG</b>${c.ecg}</div>
+      <div class="fact"><b>Ejemplos</b><div class="drugs">${c.ex.map(d=>drugChip(d,c)).join("")}</div></div>
+      <div class="fact"><b>Fármacos de esta unidad</b>${c.unit.length?c.unit.join(", "):"Ninguno"}</div>
+    </div>
+    ${c.extra?`<div class="extra">${Object.entries(c.extra).map(([d,t])=>`<div><b>${d}:</b> ${t}</div>`).join("")}</div>`:""}`;
+  const changes={1:"El QRS se ensancha porque la despolarización ventricular es más lenta.",2:"El PR se alarga y los latidos se separan: baja la frecuencia.",3:"El QT se alarga porque la repolarización tarda más.",4:"El PR se alarga y los latidos se separan: baja la frecuencia.",5:"El efecto depende de cada fármaco, por eso el trazado no cambia aquí."}[cur];
+  e.innerHTML=`<div class="tag">ECG esquemático</div><h3>¿Qué intervalo cambia?</h3><p>${changes}</p>
+    <div class="strip">${ecgSVG(cur)}</div>
+    <div class="legend">${cur<=4?`<span><i style="border-color:var(--base)"></i>Normal</span><span><i style="border-color:var(--c${cur});border-top-style:dashed"></i>Con ${c.n.replace("Clase","clase")}</span>`:`<span><i style="border-color:var(--trace)"></i>Trazado normal</span>`}</div>`;
+  document.querySelectorAll("tr.row").forEach(r=>r.classList.toggle("sel",Number(r.dataset.k)===cur));
+}
+function renderTable(){
+  const only=document.getElementById("onlyUnit").checked;
+  document.getElementById("rows").innerHTML=C.filter(c=>!only||c.unit.length).map(c=>`<tr class="row k${c.k} ${c.k===cur?"sel":""}" data-k="${c.k}" tabindex="0">
+    <td>${c.k<=4?c.n.replace("Clase ",""):c.n}</td><td>${c.mech}</td><td>${c.ef}</td><td>${c.ecg}</td>
+    <td>${c.ex.map(d=>(d[1]?d[1]+": ":"")+d[0].toLowerCase()).join(", ").replace(/^./,s=>s.toUpperCase())}</td>
+    <td class="unitc ${c.unit.length?"":"none"}">${c.unit.length?c.unit.join(", "):"Ninguno"}</td></tr>`).join("");
+}
+function select(k){cur=k;renderDetail()}
+document.getElementById("classes").addEventListener("click",e=>{const b=e.target.closest(".cls"); if(b) select(Number(b.dataset.k))});
+document.getElementById("rows").addEventListener("click",e=>{const r=e.target.closest("tr.row"); if(r){select(Number(r.dataset.k));document.getElementById("detail").scrollIntoView({behavior:"smooth",block:"start"})}});
+document.getElementById("rows").addEventListener("keydown",e=>{const r=e.target.closest("tr.row"); if(r&&(e.key==="Enter"||e.key===" ")){e.preventDefault();select(Number(r.dataset.k))}});
+document.getElementById("onlyUnit").addEventListener("change",()=>{renderTable();renderDetail()});
+
+/* --- práctica --- */
+const DRUGS=C.flatMap(c=>c.ex.map(d=>({d:d[0],k:c.k,unit:c.unit.includes(d[0])})));
+const quiz=document.getElementById("quiz");
+let q={ok:0,n:0,cur:null,deck:[],done:false};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function nextQ(){ if(!q.deck.length) q.deck=shuffle([...DRUGS]); q.cur=q.deck.pop(); q.done=false; renderQ(); }
+function renderQ(fb=""){
+  const d=q.cur;
+  quiz.innerHTML=`<div class="qtop"><div class="tag">¿A qué clase pertenece?</div><div class="score">${q.ok} / ${q.n} correctas</div></div>
+    <div class="qdrug">${d.d}${d.unit?' <span class="drug unit u" style="padding:2px 8px">En la unidad</span>':""}</div>
+    <div class="answers">${C.map(c=>`<button class="ans k${c.k}" data-k="${c.k}" ${q.done?"disabled":""}>${c.k<=4?c.n:"Otros"}</button>`).join("")}</div>${fb}`;
+}
+quiz.addEventListener("click",e=>{
+  const a=e.target.closest(".ans");
+  if(a&&!q.done){
+    q.done=true; q.n++; const k=Number(a.dataset.k), c=C.find(x=>x.k===q.cur.k), good=k===q.cur.k; if(good)q.ok++;
+    const why=c.extra&&c.extra[q.cur.d]?c.extra[q.cur.d]:`${c.mech}. ${c.ecg}.`;
+    renderQ(`<div class="fb ${good?"ok":"no"}"><b class="t">${good?"Correcto.":"No exactamente."}</b> ${q.cur.d} pertenece a ${c.k<=4?"la "+c.n.toLowerCase():"los fármacos fuera de las clases clásicas"}. ${why}
+      <div><button class="btn pri" data-next>Siguiente fármaco</button> <button class="btn" data-see="${c.k}">Ver la clase</button></div></div>`);
+  }
+  if(e.target.closest("[data-next]")) nextQ();
+  const s=e.target.closest("[data-see]"); if(s){select(Number(s.dataset.see));document.getElementById("detail").scrollIntoView({behavior:"smooth",block:"start"})}
+});
+
+renderTable(); renderDetail(); nextQ();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

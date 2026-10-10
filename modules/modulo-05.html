@@ -63,73 +63,6 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
-                <!-- ============ PANTALLA DE BIENVENIDA ============ -->
-                <div class="modulo-bienvenida">
-                    <div class="breadcrumb">
-                        <span class="breadcrumb-item" onclick="volverHome()" style="cursor:pointer;">Inicio</span>
-                        <span class="breadcrumb-separador" aria-hidden="true">›</span>
-                        <span class="breadcrumb-item actual">Módulo 05 · Intervención</span>
-                    </div>
-
-                    <div class="bienvenida-encabezado">
-                        <h2 class="modulo-titulo-bienvenida">Intervención</h2>
-                    </div>
-
-                    <div class="bienvenida-cuerpo">
-                        <div class="bienvenida-principal">
-
-                    <div class="modulo-objetivos">
-                        <h3>Objetivos de aprendizaje</h3>
-                        <ul>
-                            <li>Explicar los objetivos del tratamiento de las arritmias cardíacas y diferenciar las principales indicaciones y contraindicaciones de las intervenciones terapéuticas. <strong>→ Unidad 1</strong></li>
-                            <li>Relacionar los principales medicamentos utilizados en el manejo de las arritmias cardíacas con sus indicaciones, mecanismos de acción, administración y cuidados de enfermería. <strong>→ Unidad 2</strong></li>
-                            <li>Analizar las indicaciones y contraindicaciones de la cardioversión sincronizada y organizar las acciones necesarias para su preparación y realización segura. <strong>→ Unidad 3</strong></li>
-                            <li>Diferenciar los ritmos desfibrilables y aplicar los principios de seguridad y preparación para la realización de la desfibrilación. <strong>→ Unidad 4</strong></li>
-                            <li>Analizar las indicaciones del marcapasos y seleccionar las intervenciones requeridas durante la estimulación cardíaca. <strong>→ Unidad 5</strong></li>
-                            <li>Aplicar los principios de la RCP de alta calidad y ejecutar los algoritmos establecidos para el manejo de bradicardias, taquicardias y paro cardíaco. <strong>→ Unidad 6</strong></li>
-                            <li>Evaluar la respuesta del paciente al tratamiento y determinar las necesidades de monitorización, prevención de complicaciones y continuidad del cuidado de enfermería. <strong>→ Unidad 7</strong></li>
-                        </ul>
-                    </div>
-
-
-                        </div>
-
-                        <aside class="bienvenida-lateral">
-                            <div class="bienvenida-dato">
-                                <span class="bienvenida-dato-icono" data-icono="reloj" aria-hidden="true"></span>
-                                <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
-                                <!-- La clase modulo-meta la lee js/13-shell-indice.js para
-                                     calcular el tiempo restante del módulo. -->
-                                <p class="bienvenida-dato-valor modulo-meta">240 minutos</p>
-                            </div>
-                            <div class="bienvenida-dato">
-                                <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
-                                <p class="bienvenida-dato-rotulo">Total de unidades</p>
-                                <p class="bienvenida-dato-valor" data-bienvenida-unidades></p>
-                            </div>
-                            <div class="bienvenida-contenido">
-                                <h3>Contenido del módulo</h3>
-                                <ol class="bienvenida-unidades" data-bienvenida-lista></ol>
-                            </div>
-                        </aside>
-                    </div>
-
-                    <div class="modulo-introduccion">
-                    <h3>Competencia del módulo</h3>
-                    <p>Al finalizar este módulo, el estudiante reconocerá y comprenderá los principios generales para el manejo de las alteraciones del ritmo cardíaco, incluyendo el tratamiento farmacológico, la cardioversión sincronizada, la desfibrilación, el uso del marcapasos y la reanimación cardiopulmonar avanzada.</p>
-                    <p>El estudiante comprenderá la importancia de la valoración inicial, la identificación de la estabilidad del paciente y la aplicación de intervenciones de manera segura y organizada. Estos conocimientos constituyen las bases para desarrollar posteriormente habilidades de razonamiento clínico y actuación frente a pacientes con arritmias y emergencias cardiovasculares.</p>
-                    <p>El módulo busca que el estudiante conozca los principales tratamientos y procedimientos utilizados en las alteraciones del ritmo cardíaco, reconozca sus indicaciones generales y comprenda los cuidados de enfermería asociados, sin limitarse únicamente a la memorización de algoritmos.</p>
-                    </div>
-
-                    <div class="modulo-comenzar-wrap">
-                        <button class="btn-comenzar" onclick="iniciarModulo('05')">Comenzar</button>
-                    </div>
-                </div>
-
-                <!-- ============ DESARROLLO DEL MÓDULO ============ -->
-                <div class="modulo-desarrollo" style="display: none;">
-
-
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Principios Generales del Tratamiento</h3>
@@ -140,10 +73,8 @@
                         <h5>1.1.1. Principio de partida: la arritmia como causa o como consecuencia</h5>
                         <p>Las guías de reanimación de 2025 señalan que las arritmias pueden constituir tanto la causa como una manifestación de la inestabilidad clínica, y que la identificación de la causa próxima de dicha inestabilidad orienta el uso adecuado de los algoritmos terapéuticos (1,2). La guía completa precisa que el tratamiento eléctrico de una taquicardia de complejo estrecho solo se justifica cuando existe una expectativa razonable de que la taquicardia es la causa de la inestabilidad, y no una respuesta a otra condición clínica, como la sepsis (3).</p>
 
-                        <div class="espacio-reservado" data-codigo="1">
-                            <span class="icono" aria-hidden="true">💡</span>
-                            Consideración didáctica — espacio reservado para el código 1 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u1-c01-taquicardia-sepsis.html" title="Taquicardia en sepsis" loading="lazy"></iframe>
+                        <p class="widget-ova-pie">Consideración didáctica</p>
 
                         <h5>1.1.2. Objetivos inmediatos</h5>
                         <p>El abordaje de las arritmias requiere una valoración rápida y sistemática que permita determinar no solo el tipo de alteración del ritmo, sino también su repercusión sobre la perfusión y la estabilidad hemodinámica del paciente. La prioridad terapéutica dependerá de la presencia de compromiso cardiopulmonar, de la generación efectiva de pulso y de las características específicas del ritmo identificado. En este contexto, las intervenciones deben orientarse hacia objetivos clínicos concretos, cuya respuesta debe evaluarse de manera continua antes, durante y después del tratamiento. Para Enfermería, esta valoración resulta fundamental, ya que permite identificar cambios en el estado del paciente, verificar la efectividad de las intervenciones y reconocer oportunamente signos de deterioro que requieran una nueva intervención.</p>
@@ -179,10 +110,8 @@
                         <p>En los pacientes sin pulso, el abordaje cambia de manera inmediata y corresponde al manejo del paro cardíaco, de acuerdo con el ritmo identificado y los algoritmos de reanimación establecidos (1,2). Existen además determinadas arritmias en las que la elección terapéutica depende de mecanismos electrofisiológicos específicos. Entre ellas se encuentran la <em>torsades de pointes</em>, cuyo manejo incluye magnesio y corrección de alteraciones asociadas al intervalo QT y al potasio, y la fibrilación auricular preexcitada, en la que deben evitarse determinados bloqueadores del nodo auriculoventricular debido al riesgo de favorecer la conducción por la vía accesoria (3,4).</p>
                         <p>La Figura 1.1 sintetiza este proceso mediante una secuencia de decisiones. Su propósito es mostrar cómo la evaluación inicial permite diferenciar el paro cardíaco de las arritmias con pulso y, posteriormente, separar los escenarios que requieren intervención inmediata de aquellos en los que es posible realizar una valoración diagnóstica más completa. El proceso se mantiene dinámico, por lo que la respuesta al tratamiento debe comprobarse mediante monitorización y reevaluación continua.</p>
 
-                        <div class="espacio-reservado" data-codigo="2">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 1.1 · Secuencia de decisión según la presencia de pulso y la estabilidad hemodinámica — espacio reservado para el código 2 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u1-c02-estabilidad-hemodinamica.html" title="Estabilidad hemodinámica y arritmias" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 1.1.</strong> Secuencia de decisión según la presencia de pulso y la estabilidad hemodinámica</p>
                         <p class="figura-caption"><strong>Figura 1.1.</strong> Secuencia de decisión según la presencia de pulso y la estabilidad hemodinámica. Fuente: elaboración propia a partir de (1-3,7,8).</p>
 
                         <h4>1.2. Indicaciones del tratamiento</h4>
@@ -216,10 +145,8 @@
                         <p>Una vez establecida la estabilidad del paciente, el tipo de arritmia orienta la intervención. Para facilitar su comprensión, las arritmias pueden agruparse según su comportamiento.</p>
                         <p>La Figura 1.2 presenta esta agrupación. Las arritmias se distribuyen en tres categorías —taquiarritmias con pulso, bradiarritmias y ritmos de paro cardíaco—, cada una con una prioridad y una orientación terapéutica propias. Esta organización facilita el reconocimiento inicial de la arritmia y su vinculación con la intervención que corresponde.</p>
 
-                        <div class="espacio-reservado" data-codigo="3">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 1.2 · Clasificación de las arritmias según su comportamiento clínico — espacio reservado para el código 3 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u1-c03-clasificacion-arritmias.html" title="Clasificación de las arritmias" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 1.2.</strong> Clasificación de las arritmias según su comportamiento clínico</p>
                         <p class="figura-caption"><strong>Figura 1.2.</strong> Clasificación de las arritmias según su comportamiento clínico. TSV: taquicardia supraventricular; FA: fibrilación auricular; TV: taquicardia ventricular; FV: fibrilación ventricular; AESP: actividad eléctrica sin pulso. Fuente: elaboración propia a partir de (1-3).</p>
 
                         <p>La conducta terapéutica depende principalmente del tipo de arritmia, la presencia de pulso y la estabilidad hemodinámica. En términos generales, las taquiarritmias con pulso requieren diferenciar el complejo QRS y la regularidad del ritmo, mientras que las bradiarritmias se intervienen cuando existe repercusión clínica. En el paro cardíaco, la presencia o ausencia de un ritmo desfibrilable determina la estrategia inicial.</p>
@@ -357,6 +284,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.7.</strong> Condiciones del paciente que exigen precaución y actuación del equipo de salud. Fuente: elaboración propia a partir de (1-4).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u1-c09-riesgos-arritmias.html" title="Condiciones de riesgo en arritmias" loading="lazy"></iframe>
+
                         <h4>1.4. Valoración del paciente con arritmia</h4>
 
                         <h5>1.4.1. Tres preguntas, en orden</h5>
@@ -388,6 +317,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.8.</strong> Valoración inicial del paciente con arritmia según prioridades clínicas. Fuente: elaboración propia a partir de (3,7,8).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u1-c04-valoracion-arritmias.html" title="Valoración del paciente con arritmia" loading="lazy"></iframe>
+
                         <h5>1.4.3. Anamnesis</h5>
                         <p>En el paciente estable, la anamnesis se realiza de forma completa; en el inestable, se obtiene lo esencial mientras el equipo actúa. Su valor no reside en recopilar datos, sino en que varios de ellos modifican directamente la conducta terapéutica.</p>
                         <p>El momento de inicio de los síntomas es el ejemplo más claro: en la fibrilación auricular, que su duración sea superior o inferior a 48 horas cambia la decisión de cardiovertir (3). La forma de inicio también orienta el diagnóstico: un comienzo y un final súbitos sugieren una taquicardia por reentrada, mientras que la percepción de palpitaciones rápidas y regulares en el cuello es característica de la reentrada nodal, y las palpitaciones irregulares sugieren fibrilación auricular (10). El síncope, en particular el que ocurre durante el esfuerzo, obliga a descartar una arritmia ventricular (6).</p>
@@ -415,6 +346,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.9.</strong> Datos de la anamnesis y su relevancia clínica. Fuente: elaboración propia a partir de (3,6,10).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u1-c05-anamnesis-arritmias.html" title="Anamnesis del paciente con arritmia" loading="lazy"></iframe>
+
                         <h5>1.4.4. Examen físico</h5>
                         <p>El examen físico permite confirmar, a la cabecera del paciente, lo que el monitor sugiere. La frecuencia cardíaca debe medirse en el pulso apical durante un minuto completo cuando el ritmo es irregular, ya que en la fibrilación auricular el pulso radial puede ser inferior al apical: algunos latidos, al no llenar suficientemente el ventrículo, no generan una onda de pulso palpable en la periferia, fenómeno conocido como <strong>déficit de pulso</strong>. Un pulso irregularmente irregular sugiere, por sí mismo, fibrilación auricular.</p>
                         <p>La presión arterial debe medirse de forma manual si el ritmo es irregular y repetirse con frecuencia, porque la hipotensión es el principal criterio de inestabilidad (3). La pulsioximetría debe interpretarse con cautela, dado que la hipoperfusión produce lecturas poco fiables. La auscultación cardíaca puede revelar soplos valvulares o un tercer ruido, y la pulmonar, estertores crepitantes; junto con la ingurgitación yugular y el edema periférico, estos hallazgos indican insuficiencia cardíaca aguda, que es un signo de inestabilidad (3).</p>
@@ -439,6 +372,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.10.</strong> Elementos del examen físico en el paciente con arritmia. Fuente: elaboración propia a partir de (3).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u1-c06-examen-fisico-arritmias.html" title="Examen físico del paciente con arritmia" loading="lazy"></iframe>
 
                         <h5>1.4.5. Electrocardiograma</h5>
                         <p>El electrocardiograma de 12 derivaciones documenta el ritmo, orienta el diagnóstico y permite detectar isquemia. En el paciente estable se obtiene antes de iniciar el tratamiento, porque se dispone de tiempo para ello; en el inestable, no debe retrasar la terapia (3). El monitor de una sola derivación es útil para la vigilancia, pero puede resultar insuficiente para diferenciar, por ejemplo, la fibrilación auricular del flutter (3).</p>
@@ -489,6 +424,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.12.</strong> Características electrocardiográficas de las principales arritmias. Fuente: elaboración propia a partir de (3).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u1-c07-criterios-ecg-arritmias.html" title="Criterios ECG de las arritmias" loading="lazy"></iframe>
+
                         <h5>1.4.6. Pruebas complementarias</h5>
                         <p>Las pruebas complementarias buscan, sobre todo, las causas reversibles y los factores que condicionan la seguridad del tratamiento. Los electrolitos ocupan el primer lugar, porque sus alteraciones causan o agravan las arritmias (3): la hipopotasemia debe corregirse antes de administrar antiarrítmicos o realizar una cardioversión electiva, la hipomagnesemia favorece la <em>torsades de pointes</em> (3) y la hipocalcemia prolonga el intervalo QT. La glucemia permite descartar la hipoglucemia como causa de alteración del estado mental; en el período posterior a un paro cardíaco, se recomienda evitar valores inferiores a 70 mg/dl y superiores a 180 mg/dl (1,2).</p>
                         <p>La función renal condiciona el ajuste de la dosis de numerosos fármacos, y la función tiroidea debe evaluarse porque el hipertiroidismo es un desencadenante conocido de fibrilación auricular (4), mientras que el hipotiroidismo puede producir bradicardia. La troponina se solicita ante la sospecha de síndrome coronario agudo, ya que la isquemia en curso con fibrilación auricular indica cardioversión urgente (3). Los gases arteriales permiten identificar hipoxemia, acidosis o hiperpotasemia, aunque su utilidad durante la reanimación es incierta (3), y la concentración sérica de fármacos como la digoxina ayuda a confirmar una toxicidad.</p>
@@ -514,6 +451,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 1.13.</strong> Pruebas complementarias: justificación, información que aportan e implicaciones para el manejo. Fuente: elaboración propia a partir de (1-4).</p>
+                        <iframe class="widget-ova" src="widgets/m05-u1-c08-estudios-complementarios-arritmias.html" title="Estudios complementarios en arritmias" loading="lazy"></iframe>
+
                     </div>
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
@@ -531,10 +470,8 @@
                         <p><span class="etiqueta">Clase IV. Bloqueadores de los canales de calcio no dihidropiridínicos.</span> Actúan sobre las células nodales, cuya despolarización depende del calcio, y enlentecen la conducción a través del nodo auriculoventricular. Sus representantes son el verapamilo y el diltiazem.</p>
                         <p>La Figura 2.1 sitúa el punto de acción de cada clase sobre el potencial de acción. Las clases I y III actúan predominantemente sobre la célula ventricular de respuesta rápida, mientras que las clases II y IV lo hacen sobre las células nodales, lo que explica que estas últimas se utilicen para controlar la frecuencia ventricular y terminar las taquicardias que dependen del nodo auriculoventricular.</p>
 
-                        <div class="espacio-reservado" data-codigo="4">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 2.1 · Sitio de acción de las clases de Vaughan Williams sobre el potencial de acción — espacio reservado para el código 4 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u2-c01-antiarritmicos-potencial-accion.html" title="Antiarrítmicos y potencial de acción" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 2.1.</strong> Sitio de acción de las clases de Vaughan Williams sobre el potencial de acción</p>
                         <p class="figura-caption"><strong>Figura 2.1.</strong> Sitio de acción de las clases de Vaughan Williams sobre el potencial de acción de la célula ventricular y de la célula nodal. Los números indican las fases del potencial de acción. Fuente: elaboración propia a partir de (11).</p>
 
                         <h5>2.0.2. Limitaciones y clasificación modernizada</h5>
@@ -559,6 +496,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.1.</strong> Clasificación de Vaughan Williams de los fármacos antiarrítmicos. Fuente: elaboración propia a partir de (11). La adrenalina no se considera un antiarrítmico: se incluye en esta unidad por su papel en el paro cardíaco y en la bradicardia.</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u2-c02-clases-antiarritmicos.html" title="Clases de antiarrítmicos" loading="lazy"></iframe>
 
                         <h4>2.1. Atropina</h4>
 
@@ -599,6 +538,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.2.</strong> Síntesis de la atropina. Fuente: elaboración propia a partir de (3,8,9).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u2-c03-atropina.html" title="Atropina en la bradicardia" loading="lazy"></iframe>
+
                         <h4>2.2. Adenosina</h4>
 
                         <h5>2.2.1. Mecanismo de acción</h5>
@@ -606,10 +547,8 @@
                         <p>El efecto clínico de la adenosina depende del mecanismo de la taquicardia. Cuando el nodo auriculoventricular forma parte del circuito de reentrada, como ocurre en la mayoría de las taquicardias supraventriculares, el bloqueo transitorio interrumpe el circuito y la taquicardia termina. Cuando la arritmia se origina en un circuito auricular independiente del nodo, como en el flutter o la fibrilación auricular, la adenosina no la termina, pero al enlentecer momentáneamente la respuesta ventricular permite observar la actividad auricular y, con ello, confirmar el diagnóstico (3).</p>
                         <p>La Figura 2.2 representa esta diferencia. En el primer caso, el bloqueo del nodo auriculoventricular rompe el circuito que sostiene la taquicardia; en el segundo, el circuito auricular persiste y la adenosina actúa como una herramienta diagnóstica más que terapéutica.</p>
 
-                        <div class="espacio-reservado" data-codigo="5">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 2.2 · Efecto de la adenosina según el mecanismo de la taquicardia — espacio reservado para el código 5 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u2-c04-adenosina-nodo-av.html" title="Adenosina y nodo AV" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 2.2.</strong> Efecto de la adenosina según el mecanismo de la taquicardia</p>
                         <p class="figura-caption"><strong>Figura 2.2.</strong> Efecto de la adenosina según el mecanismo de la taquicardia. Fuente: elaboración propia a partir de (3).</p>
 
                         <h5>2.2.2. Indicaciones</h5>
@@ -645,6 +584,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.3.</strong> Síntesis de la adenosina. Fuente: elaboración propia a partir de (3,7,10).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u2-c05-adenosina-ficha.html" title="Adenosina en la taquicardia" loading="lazy"></iframe>
 
                         <h4>2.3. Amiodarona</h4>
 
@@ -694,6 +635,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.4.</strong> Síntesis de la amiodarona. Fuente: elaboración propia a partir de (3,4,7,12).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u2-c06-amiodarona.html" title="Amiodarona en las arritmias" loading="lazy"></iframe>
+
                         <h4>2.4. Adrenalina (epinefrina)</h4>
 
                         <h5>2.4.1. Mecanismo de acción</h5>
@@ -704,10 +647,8 @@
                         <p>El momento de su administración depende del ritmo. En los ritmos no desfibrilables, como la asistolia y la actividad eléctrica sin pulso, es razonable administrarla lo antes posible, dado que su administración temprana se asocia a un mayor retorno de la circulación espontánea (3). En los ritmos desfibrilables, en cambio, la prioridad es la desfibrilación rápida, y es razonable administrar la adrenalina después de que hayan fracasado los intentos iniciales de desfibrilación (1-3). La vasopresina, sola o combinada con adrenalina, no ofrece ninguna ventaja como sustituto de esta (1,2).</p>
                         <p>La Figura 2.3 representa esta diferencia en la secuencia de la reanimación. En el ritmo desfibrilable, la adrenalina se difiere hasta que las descargas iniciales han fracasado; en el no desfibrilable, en cambio, se administra tan pronto como se dispone de un acceso vascular.</p>
 
-                        <div class="espacio-reservado" data-codigo="6">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 2.3 · Momento de administración de la adrenalina según el ritmo de paro cardíaco — espacio reservado para el código 6 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u2-c07-adrenalina-paro.html" title="Adrenalina en el paro" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 2.3.</strong> Momento de administración de la adrenalina según el ritmo de paro cardíaco</p>
                         <p class="figura-caption"><strong>Figura 2.3.</strong> Momento de administración de la adrenalina según el ritmo de paro cardíaco. AESP: actividad eléctrica sin pulso. Fuente: elaboración propia a partir de (1-3,12).</p>
 
                         <h5>2.4.3. Indicaciones en la bradicardia</h5>
@@ -742,6 +683,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.5.</strong> Síntesis de la adrenalina. Fuente: elaboración propia a partir de (1-3,8,12).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u2-c08-adrenalina-usos.html" title="Adrenalina: paro y bradicardia" loading="lazy"></iframe>
 
                         <h4>2.5. Metoprolol</h4>
 
@@ -783,6 +726,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.6.</strong> Síntesis del metoprolol. Fuente: elaboración propia a partir de (3,4,10,11).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u2-c09-metoprolol.html" title="Metoprolol en las arritmias" loading="lazy"></iframe>
+
                         <h4>2.6. Magnesio</h4>
 
                         <h5>2.6.1. Mecanismo de acción</h5>
@@ -823,6 +768,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.7.</strong> Síntesis del sulfato de magnesio. Fuente: elaboración propia a partir de (3,13).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u2-c10-magnesio.html" title="Sulfato de magnesio en las torsades" loading="lazy"></iframe>
+
                         <h4>2.7. Indicaciones y contraindicaciones de los medicamentos</h4>
                         <p>Los apartados anteriores describieron cada fármaco de manera individual. En la práctica clínica, sin embargo, el razonamiento sigue el orden inverso: el profesional parte de un escenario, definido por el tipo de arritmia y por la condición hemodinámica del paciente, y a partir de él selecciona la intervención. Este apartado integra la información desde esa perspectiva.</p>
 
@@ -833,10 +780,8 @@
                         <p>Una vez establecida la estabilidad, el análisis electrocardiográfico orienta la selección. En la bradicardia, el fármaco inicial es la atropina (8). En la taquicardia, la duración del QRS y la regularidad del ritmo permiten distinguir los principales escenarios: la taquicardia regular de complejo estrecho responde a las maniobras vagales y a la adenosina (3,7); en la fibrilación y el flutter auricular el objetivo agudo suele ser el control de la frecuencia con betabloqueadores o calcioantagonistas (4); la taquicardia de complejo ancho estable puede tratarse con amiodarona, procainamida o sotalol (3); y la taquicardia ventricular polimórfica exige medir el intervalo QT, porque de él depende que el magnesio esté o no indicado (3). En el paro cardíaco, la adrenalina y los antiarrítmicos acompañan a la reanimación y a la desfibrilación (3,12).</p>
                         <p>La Figura 2.4 resume este razonamiento: para cada escenario clínico en el paciente estable, o en el paro cardíaco, señala el fármaco de elección y las alternativas principales.</p>
 
-                        <div class="espacio-reservado" data-codigo="7">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 2.4 · Selección del fármaco según el escenario clínico — espacio reservado para el código 7 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u2-c11-escenario-farmaco.html" title="Escenario y fármaco de elección" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 2.4.</strong> Selección del fármaco según el escenario clínico</p>
                         <p class="figura-caption"><strong>Figura 2.4.</strong> Selección del fármaco según el escenario clínico. Fuente: elaboración propia a partir de (3,4,7,8,12).</p>
 
                         <h5>2.7.3. Contraindicaciones que no deben pasarse por alto</h5>
@@ -858,6 +803,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.8.</strong> Indicaciones y contraindicaciones de los fármacos de la unidad. Fuente: elaboración propia a partir de (3,4,7-9).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u2-c12-resumen-farmacos.html" title="Resumen de fármacos de la unidad" loading="lazy"></iframe>
 
                         <h4>2.8. Administración y monitorización</h4>
                         <p>La eficacia y la seguridad de los fármacos antiarrítmicos dependen tanto de la elección correcta como de la forma en que se administran. Varios de los medicamentos de esta unidad tienen un margen terapéutico estrecho, actúan en segundos o minutos y pueden producir efectos adversos graves, por lo que su administración exige un procedimiento sistemático y la vigilancia continua del paciente por parte de todo el equipo de salud.</p>
@@ -890,6 +837,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.9.</strong> Administración y monitorización específica de cada fármaco. Fuente: elaboración propia a partir de (1-4,7,8,12,13).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u2-c13-administracion-farmacos.html" title="Administración y monitorización" loading="lazy"></iframe>
+
                         <h4>2.9. Cuidados de enfermería</h4>
                         <p>Los cuidados que rodean la administración de los fármacos antiarrítmicos constituyen una responsabilidad compartida por el equipo de salud, en la que el profesional de enfermería desempeña un papel central por su presencia continua junto al paciente. Estos cuidados pueden organizarse en tres momentos: antes, durante y después de la administración, y en cada uno de ellos se integran la valoración, la seguridad del paciente y la comunicación con el resto del equipo.</p>
 
@@ -920,6 +869,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 2.10.</strong> Cuidados en la administración de fármacos antiarrítmicos. Fuente: elaboración propia a partir de (3,13).</p>
+                        <iframe class="widget-ova" src="widgets/m05-u2-c14-cuidados-enfermeria.html" title="Cuidados antes, durante y después" loading="lazy"></iframe>
+
                     </div>
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
@@ -953,6 +904,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.1.</strong> Objetivos de la cardioversión sincronizada. Fuente: elaboración propia a partir de (1,2).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c01-objetivos-cardioversion.html" title="Objetivos de la cardioversión" loading="lazy"></iframe>
+
                         <h4>3.2. Indicaciones</h4>
                         <p>Las indicaciones de la cardioversión sincronizada pueden agruparse en dos escenarios que difieren en su urgencia: la cardioversión urgente, que se realiza en el paciente con taquiarritmia e inestabilidad hemodinámica, y la cardioversión programada o electiva, que se realiza en el paciente estable cuando el tratamiento farmacológico no es eficaz o cuando se busca restablecer el ritmo sinusal como parte de una estrategia terapéutica.</p>
 
@@ -978,6 +931,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.2.</strong> Indicaciones de la cardioversión sincronizada. Fuente: elaboración propia a partir de (1-4,7,10).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u3-c02-indicaciones-cardioversion.html" title="Indicaciones de la cardioversión" loading="lazy"></iframe>
 
                         <h4>3.3. Contraindicaciones y precauciones</h4>
                         <p>La cardioversión sincronizada tiene pocas contraindicaciones absolutas, pero su seguridad depende de reconocer tres tipos de situaciones: aquellas en las que el procedimiento no es eficaz, aquellas en las que la sincronización no es posible o no es apropiada, y aquellas en las que existen riesgos que deben controlarse antes de aplicar la descarga.</p>
@@ -1013,6 +968,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.3.</strong> Contraindicaciones y precauciones de la cardioversión sincronizada. Fuente: elaboración propia a partir de (1-4).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c03-precauciones-cardioversion.html" title="Precauciones en la cardioversión" loading="lazy"></iframe>
+
                         <h4>3.4. Cardioversión sincronizada frente a desfibrilación</h4>
                         <p>La cardioversión sincronizada y la desfibrilación utilizan el mismo equipo y el mismo tipo de energía, pero responden a situaciones clínicas y a principios de funcionamiento diferentes. Confundirlas constituye un error grave, cuyas consecuencias pueden ser la inducción de una fibrilación ventricular en un paciente con pulso o el retraso de la descarga en un paciente en paro cardíaco.</p>
 
@@ -1021,10 +978,8 @@
                         <p>De esta diferencia se deriva una regla práctica: la cardioversión sincronizada se aplica al paciente que tiene pulso y un ritmo organizado; la desfibrilación, al paciente sin pulso o con un ritmo que no puede sincronizarse, como la fibrilación ventricular o la taquicardia ventricular polimórfica (3).</p>
                         <p>La Figura 3.1 representa esta diferencia: en el trazado superior, el equipo marca cada onda R y libera la descarga sobre una de ellas, evitando la onda T; en el inferior, la fibrilación ventricular carece de complejos identificables y la descarga se libera de inmediato.</p>
 
-                        <div class="espacio-reservado" data-codigo="8">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 3.1 · Momento de la descarga en la cardioversión sincronizada y en la desfibrilación — espacio reservado para el código 8 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u3-c04-sincronizacion-descarga.html" title="Sincronización de la descarga" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 3.1.</strong> Momento de la descarga en la cardioversión sincronizada y en la desfibrilación</p>
                         <p class="figura-caption"><strong>Figura 3.1.</strong> Momento de la descarga en la cardioversión sincronizada y en la desfibrilación. Fuente: elaboración propia a partir de (1-3).</p>
 
                         <h5>3.4.2. Diferencias en el contexto clínico</h5>
@@ -1048,6 +1003,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.4.</strong> Comparación entre la cardioversión sincronizada y la desfibrilación. Fuente: elaboración propia a partir de (1-3,7).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u3-c05-cardioversion-vs-desfibrilacion.html" title="Cardioversión o desfibrilación" loading="lazy"></iframe>
 
                         <h4>3.5. Preparación del paciente</h4>
                         <p>La preparación del paciente tiene como propósito confirmar que la cardioversión está indicada, reducir los riesgos del procedimiento y de la sedación, y asegurar que el paciente comprenda lo que va a ocurrir. Su extensión depende de la urgencia: en la cardioversión programada puede completarse de manera exhaustiva, mientras que en el paciente inestable se reduce a los elementos indispensables, sin que ello justifique retrasar el tratamiento.</p>
@@ -1083,6 +1040,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.5.</strong> Lista de verificación de la preparación del paciente. Fuente: elaboración propia a partir de (4,7).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c06-preparacion-cardioversion.html" title="Preparación para la cardioversión" loading="lazy"></iframe>
+
                         <h4>3.6. Preparación del equipo</h4>
                         <p>La preparación del equipo comprende el desfibrilador, los electrodos, el sistema de monitorización y los recursos necesarios para atender las complicaciones de la sedación y de la propia descarga. Su verificación antes de iniciar el procedimiento evita demoras y errores en el momento crítico.</p>
 
@@ -1090,10 +1049,8 @@
                         <p>El desfibrilador debe estar operativo, con la batería cargada o conectado a la red eléctrica, y el profesional que lo opera debe conocer su funcionamiento, dado que la energía recomendada y la forma de activar la sincronización dependen de cada modelo (7). Los equipos actuales emplean ondas bifásicas, que logran la cardioversión con menor energía que las monofásicas antiguas; las descargas monofásicas de baja energía se han asociado a una mayor probabilidad de inducir fibrilación ventricular al cardiovertir la fibrilación auricular (1,2).</p>
                         <p>Se prefieren los parches autoadhesivos a las palas manuales, porque permiten monitorizar el ritmo, cargar y descargar sin que el operador esté en contacto con el paciente y mantenerlos colocados si se requieren nuevas descargas. Los parches deben colocarse de modo que el corazón quede en la trayectoria de la corriente. Se utilizan dos posiciones: la <strong>anterolateral</strong>, con un parche en la región infraclavicular derecha, a la derecha del esternón, y otro lateral al ápex cardíaco, en la línea axilar media izquierda; y la <strong>anteroposterior</strong>, con un parche en el precordio izquierdo y otro en la región infraescapular izquierda de la espalda. La elección depende del equipo, de las recomendaciones del fabricante y de las características del paciente. En la mujer, el parche lateral se coloca por debajo del tejido mamario, y en el portador de un dispositivo implantable, a distancia del generador.</p>
 
-                        <div class="espacio-reservado" data-codigo="9">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 3.2 · Posiciones anterolateral y anteroposterior de los parches — espacio reservado para el código 9 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u3-c07-posicion-parches.html" title="Posición de los parches" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 3.2.</strong> Posiciones anterolateral y anteroposterior de los parches</p>
                         <p class="figura-caption"><strong>Figura 3.2.</strong> Posiciones anterolateral y anteroposterior de los parches. Fuente: elaboración propia.</p>
 
                         <h5>3.6.2. La señal electrocardiográfica</h5>
@@ -1119,6 +1076,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.6.</strong> Verificación del equipo para la cardioversión sincronizada. Fuente: elaboración propia a partir de (1,2,7).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u3-c08-equipo-cardioversion.html" title="Verificación del equipo" loading="lazy"></iframe>
 
                         <h4>3.7. Sedación y analgesia</h4>
                         <p>La descarga eléctrica produce una contracción brusca de la musculatura torácica y un dolor intenso, y la experiencia de recibirla consciente puede resultar traumática. Por ello, el algoritmo de atención de la taquiarritmia indica sedar al paciente siempre que sea posible antes de la cardioversión (7), y en el paciente estable con taquicardia de complejo ancho la sedación para el procedimiento debe considerarse cuando el tiempo lo permita (3).</p>
@@ -1150,16 +1109,16 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.7.</strong> Principios de la sedación y la analgesia para la cardioversión. Fuente: elaboración propia a partir de (3,7,14).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c09-sedacion-cardioversion.html" title="Sedación para la cardioversión" loading="lazy"></iframe>
+
                         <h4>3.8. Activación del modo sincronizado</h4>
                         <p>Los desfibriladores funcionan de manera predeterminada en modo no sincronizado, es decir, preparados para la desfibrilación. Por ello, la cardioversión exige que el operador active de forma deliberada el modo sincronizado, habitualmente mediante un botón identificado con la palabra «sync» o «sinc», y que verifique que el equipo reconoce correctamente cada complejo QRS antes de cargar y descargar. Este paso es el que convierte una descarga eléctrica en una cardioversión sincronizada, y su omisión expone al paciente a una descarga durante la onda T.</p>
 
                         <h5>3.8.1. Verificación de los marcadores</h5>
                         <p>Al activar el modo sincronizado, el equipo señala en la pantalla cada onda R que reconoce, mediante un marcador que puede ser una flecha, un punto o una línea, según el modelo. El operador debe comprobar que aparece un marcador sobre cada complejo QRS y que ninguno se sitúa sobre la onda T. Cuando la onda T es alta, el equipo puede confundirla con una onda R; cuando el QRS es de baja amplitud, puede no reconocerlo. En ambos casos debe cambiarse la derivación de monitorización o ajustarse la ganancia hasta obtener un marcaje correcto.</p>
 
-                        <div class="espacio-reservado" data-codigo="10">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 3.3 · Verificación de los marcadores de sincronización — espacio reservado para el código 10 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u3-c10-marcadores-sincronizacion.html" title="Marcadores de sincronización" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 3.3.</strong> Verificación de los marcadores de sincronización</p>
                         <p class="figura-caption"><strong>Figura 3.3.</strong> Verificación de los marcadores de sincronización. Fuente: elaboración propia.</p>
 
                         <h5>3.8.2. Particularidades de la descarga sincronizada</h5>
@@ -1187,6 +1146,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.8.</strong> Activación y verificación del modo sincronizado. Fuente: elaboración propia a partir de (3).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c11-pasos-sincronizacion.html" title="Pasos de la descarga sincronizada" loading="lazy"></iframe>
+
                         <h4>3.9. Selección de energía</h4>
                         <p>La energía de la descarga se expresa en julios y debe ser suficiente para despolarizar la masa crítica de miocardio que interrumpe la arritmia, sin ser innecesariamente alta. Su selección depende de tres factores: el tipo de arritmia, el tipo de onda del desfibrilador, que en los equipos actuales es bifásica, y las características del modelo utilizado. Por esta razón, el algoritmo de atención de la taquiarritmia indica consultar la energía recomendada por el fabricante del equipo o las secciones correspondientes de las guías vigentes (7).</p>
 
@@ -1213,6 +1174,8 @@
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.9.</strong> Selección de la energía según la arritmia (desfibrilador bifásico). Fuente: elaboración propia a partir de (1-3,7).</p>
 
+                        <iframe class="widget-ova" src="widgets/m05-u3-c12-energia-cardioversion.html" title="Energía de la cardioversión" loading="lazy"></iframe>
+
                         <h4>3.10. Procedimiento</h4>
                         <p>Los apartados anteriores describieron por separado cada uno de los elementos de la cardioversión. En este apartado se integran en una secuencia ordenada, cuya aplicación sistemática reduce la posibilidad de omitir un paso crítico. El procedimiento requiere una distribución clara de las funciones dentro del equipo y una comunicación en circuito cerrado, en la que cada orden se repite en voz alta antes de ejecutarse.</p>
 
@@ -1231,10 +1194,8 @@
                         <h5>3.10.2. Conducta según el resultado</h5>
                         <p>La reevaluación conduce a tres situaciones posibles. Si se restablece un ritmo organizado con pulso, se inician los cuidados posteriores descritos en el apartado 3.11. Si la arritmia persiste, se verifica que el modo sincronizado siga activo, se reactiva si el equipo lo ha desactivado, se incrementa la energía según el equipo y se repite la secuencia desde el paso 4 (1,2). Si el ritmo degenera en una fibrilación ventricular o el paciente pierde el pulso, se desactiva el modo sincronizado, se aplica una desfibrilación y se inicia la reanimación cardiopulmonar, temas que se desarrollan en las Unidades 4 y 6.</p>
 
-                        <div class="espacio-reservado" data-codigo="11">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 3.4 · Secuencia del procedimiento de cardioversión sincronizada — espacio reservado para el código 11 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u3-c13-secuencia-cardioversion.html" title="Secuencia de la cardioversión" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 3.4.</strong> Secuencia del procedimiento de cardioversión sincronizada</p>
                         <p class="figura-caption"><strong>Figura 3.4.</strong> Secuencia del procedimiento de cardioversión sincronizada. Fuente: elaboración propia a partir de (1-3,7,14).</p>
 
                         <h5>3.10.3. Distribución de funciones en el equipo</h5>
@@ -1254,6 +1215,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.10.</strong> Distribución de funciones durante la cardioversión sincronizada. Fuente: elaboración propia a partir de (14).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u3-c14-equipo-cardioversion-roles.html" title="Roles del equipo en la cardioversión" loading="lazy"></iframe>
 
                         <h4>3.11. Cuidados de enfermería y monitorización posterior</h4>
                         <p>La terminación de la arritmia no marca el final del procedimiento. En las horas siguientes a la cardioversión, el paciente se encuentra expuesto a los efectos residuales de la sedación, a la recurrencia de la arritmia, a las alteraciones del ritmo que pueden seguir a la descarga y, en el caso de la fibrilación y el flutter auricular, al riesgo de embolia. Los cuidados posteriores, en los que el profesional de enfermería desempeña un papel central, tienen como propósito detectar precozmente estas complicaciones en coordinación con el resto del equipo de salud.</p>
@@ -1289,6 +1252,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 3.11.</strong> Cuidados y monitorización posteriores a la cardioversión sincronizada. Fuente: elaboración propia a partir de (4,14).</p>
+                        <iframe class="widget-ova" src="widgets/m05-u3-c15-cuidados-post-cardioversion.html" title="Cuidados tras la cardioversión" loading="lazy"></iframe>
+
                     </div>
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
@@ -1327,10 +1292,8 @@
                         <h5>4.2.1. Fundamento de la clasificación</h5>
                         <p>La desfibrilación es eficaz cuando el paro se debe a una actividad eléctrica ventricular rápida y desorganizada o rápida y organizada, pero incapaz de generar gasto cardíaco. En estos casos, la descarga elimina la actividad anómala y permite que un ritmo organizado recupere el control. En la asistolia, en cambio, no existe actividad eléctrica que interrumpir, y en la actividad eléctrica sin pulso el problema no es el ritmo, sino la ausencia de una contracción mecánica eficaz; en ninguno de los dos casos la descarga aporta beneficio, y el tratamiento se basa en la reanimación cardiopulmonar de alta calidad, la administración temprana de adrenalina y la búsqueda de las causas reversibles (3,12).</p>
 
-                        <div class="espacio-reservado" data-codigo="12">
-                            <span class="icono" aria-hidden="true">🖼️</span>
-                            Figura 4.1 · Ritmos desfibrilables y no desfibrilables del paro cardíaco — espacio reservado para el código 12 (HTML).
-                        </div>
+                        <iframe class="widget-ova" src="widgets/m05-u4-c01-ritmos-paro.html" title="Ritmos del paro cardíaco" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 4.1.</strong> Ritmos desfibrilables y no desfibrilables del paro cardíaco</p>
                         <p class="figura-caption"><strong>Figura 4.1.</strong> Ritmos desfibrilables y no desfibrilables del paro cardíaco. Fuente: elaboración propia a partir de (3,12).</p>
 
                         <h5>4.2.2. Consideraciones para la identificación</h5>
@@ -1351,6 +1314,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 4.2.</strong> Ritmos del paro cardíaco y su respuesta a la desfibrilación. Fuente: elaboración propia a partir de (3,12).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u4-c02-tratamiento-ritmos-paro.html" title="Tratamiento según el ritmo del paro" loading="lazy"></iframe>
 
                         <h4>4.3. Fibrilación ventricular</h4>
 
@@ -1394,6 +1359,8 @@
                             </table>
                         </div>
                         <p class="figura-caption"><strong>Tabla 4.3.</strong> Fibrilación ventricular, taquicardia ventricular sin pulso y taquicardia ventricular con pulso. Fuente: elaboración propia a partir de (3,12).</p>
+
+                        <iframe class="widget-ova" src="widgets/m05-u4-c03-fv-tv-interactivo.html" title="FV y TV: pulso o no" loading="lazy"></iframe>
 
                         <h4>4.5. Desfibrilador manual</h4>
 

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anamnesis del paciente con arritmia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: guion de entrevista en tabla (cada dato se responde Sí/No), resumen de anamnesis acumulado a la derecha */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --alarm:#c8323c; --alarm-soft:#fbe7e8;
+  --pos:#2563a8; --pos-soft:#e4eef9;
+  --neg:#2f8a4c; --neg-soft:#e5f4e9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --alarm:#f07178; --alarm-soft:#3a1d22; --pos:#7fb3ec; --pos-soft:#182c42; --neg:#6fcf8f; --neg-soft:#183326; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --alarm:#f07178; --alarm-soft:#3a1d22; --pos:#7fb3ec; --pos-soft:#182c42; --neg:#6fcf8f; --neg-soft:#183326; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:68ch;margin:0 0 20px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.chip:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--pos);outline-offset:2px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media (max-width:1000px){.grid{grid-template-columns:1fr}}
+
+.tbl-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--head);color:var(--head-ink);text-align:left;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:12px 14px}
+tbody td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:14.5px}
+tbody tr.sec td{background:var(--node);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 14px}
+td.dato{font-weight:700;width:18%}
+td.q{font-style:italic}
+td.rel{color:var(--muted)}
+td.ans{width:150px}
+.ref{font-size:11px;font-weight:700;color:var(--pos);vertical-align:super;margin-left:2px}
+.flag{display:inline-block;margin-top:6px;font-size:11.5px;font-weight:700;font-style:normal;color:var(--alarm);background:var(--alarm-soft);padding:2px 8px;border-radius:99px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;font-weight:700;padding:7px 10px;border:none;background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"][data-v="si"],.seg button[aria-pressed="true"][data-v="mas"]{background:var(--pos);color:var(--surface)}
+.seg button[aria-pressed="true"][data-v="no"],.seg button[aria-pressed="true"][data-v="menos"]{background:var(--neg);color:var(--surface)}
+tr.si td.rel{color:var(--ink);font-weight:600}
+tr.si{background:var(--pos-soft)}
+tr.si.red{background:var(--alarm-soft)}
+tr.no td{color:var(--muted)}
+tr.hide{display:none}
+
+@media (max-width:760px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tbody tr{border-top:1px solid var(--line);padding:12px 14px}
+  tbody td{border:none;padding:3px 0}
+  tbody tr.sec td{padding:0;background:none}
+  tbody tr.sec{background:var(--node);padding:8px 14px}
+  tbody td[data-l]::before{content:attr(data-l);display:block;font-size:11px;font-weight:700;font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  td.dato{font-size:16px}
+  td.ans{padding-top:8px}
+}
+
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+@media (max-width:1000px){.sum{position:static}}
+.sum h2{font-weight:800;font-size:20px;margin:2px 0 10px}
+.prog{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+.bar{height:6px;border-radius:3px;background:var(--node);margin:6px 0 14px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--head);transition:width .25s}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.box{border-radius:10px;padding:12px 14px;margin-bottom:12px;border:1.5px solid var(--line);background:var(--node)}
+.box h3{margin:0 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.box.red{border-color:var(--alarm);background:var(--alarm-soft)} .box.red h3{color:var(--alarm)}
+.box.pos{border-color:var(--pos);background:var(--pos-soft)} .box.pos h3{color:var(--pos)}
+.box ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.box li b{display:block}
+.empty{color:var(--muted);font-size:14px;margin:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.note{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Anamnesis dirigida</div>
+  <h1>Datos de la anamnesis en el paciente con sospecha de arritmia</h1>
+  <p class="lead">Usa la tabla como guion de entrevista. Responde cada pregunta orientadora y el resumen reúne los datos positivos, su relevancia clínica y las banderas rojas.</p>
+
+  <div class="toolbar" role="group" aria-label="Filtrar datos">
+    <button class="chip" data-f="all" aria-pressed="true">Todos</button>
+    <button class="chip" data-f="sint" aria-pressed="false">Episodio actual</button>
+    <button class="chip" data-f="ant" aria-pressed="false">Antecedentes</button>
+    <button class="chip" data-f="red" aria-pressed="false">Banderas rojas</button>
+    <button class="chip" data-f="pend" aria-pressed="false">Sin responder</button>
+  </div>
+
+  <div class="grid">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dato</th><th>Pregunta orientadora</th><th>Relevancia clínica</th><th>Respuesta</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <aside class="sum" aria-live="polite">
+      <h2>Resumen de la anamnesis</h2>
+      <div id="sum"></div>
+      <div class="btns">
+        <button class="btn pri" id="ejemplo">Cargar caso de ejemplo</button>
+        <button class="btn" id="limpiar">Limpiar</button>
+      </div>
+      <p class="note">Los superíndices remiten a las referencias del módulo.</p>
+    </aside>
+  </div>
+
+  <footer>Material educativo. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const D = [
+  {id:"ini",s:"sint",d:"Inicio de los síntomas",q:"¿Cuándo comenzaron? ¿Fue súbito?",r:"Más o menos de 48 horas cambia la decisión de cardiovertir",ref:4,
+   opts:[["menos","< 48 h"],["mas","≥ 48 h o no sabe"]],
+   pos:{mas:"Inicio de 48 horas o más, o desconocido: cambia la decisión de cardiovertir",menos:"Inicio de menos de 48 horas"}},
+  {id:"dur",s:"sint",d:"Duración y frecuencia",q:"¿Cuánto dura cada episodio y cada cuánto se presenta?",r:"Distingue episodios paroxísticos de persistentes"},
+  {id:"pal",s:"sint",d:"Palpitaciones",q:"¿Son regulares o irregulares? ¿Se perciben en el cuello?",r:"Orientan a reentrada o a fibrilación auricular",ref:9},
+  {id:"dol",s:"sint",d:"Dolor torácico y disnea",q:"¿Hay opresión, diaforesis o disnea en decúbito?",r:"Sugieren isquemia o insuficiencia cardíaca",red:true},
+  {id:"sin",s:"sint",d:"Mareo, síncope o presíncope",q:"¿Perdió el conocimiento? ¿Durante el esfuerzo?",r:"Obligan a descartar arritmias ventriculares",ref:11,red:true},
+  {id:"cv",s:"ant",d:"Antecedentes cardiovasculares",q:"¿Infarto, insuficiencia cardíaca, valvulopatía, dispositivos?",r:"Orientan la etiología y las contraindicaciones"},
+  {id:"med",s:"ant",d:"Medicamentos",q:"¿Digoxina, antiarrítmicos, betabloqueantes, fármacos que prolongan el QT?",r:"Pueden causar la arritmia o interactuar",ref:4},
+  {id:"sus",s:"ant",d:"Consumo de sustancias",q:"¿Alcohol, estimulantes o cafeína?",r:"Desencadenantes frecuentes de taquiarritmias"},
+  {id:"fam",s:"ant",d:"Antecedentes familiares",q:"¿Muerte súbita en familiares jóvenes?",r:"Sugieren canalopatías hereditarias",ref:11,red:true},
+  {id:"prev",s:"ant",d:"Episodios previos y desencadenantes",q:"¿Cómo se trataron? ¿Qué los provoca?",r:"Orientan el manejo y el diagnóstico",ref:4}
+];
+const SEC={sint:"Episodio actual",ant:"Antecedentes"};
+const ans={}; let filter="all";
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const isPos=r=>r.opts?ans[r.id]==="mas":ans[r.id]==="si";
+
+const tbody=document.getElementById("rows");
+let last=null;
+tbody.innerHTML=D.map(r=>{
+  let h="";
+  if(r.s!==last){h+=`<tr class="sec" data-sec="${r.s}"><td colspan="4">${SEC[r.s]}</td></tr>`;last=r.s}
+  const opts=r.opts||[["si","Sí"],["no","No"]];
+  return h+`<tr id="r-${r.id}" class="${r.red?"red":""}">
+    <td class="dato" data-l="Dato">${r.d}${r.red?`<br><span class="flag">Bandera roja</span>`:""}</td>
+    <td class="q" data-l="Pregunta orientadora">${r.q}</td>
+    <td class="rel" data-l="Relevancia clínica">${r.r}${ref(r.ref)}</td>
+    <td class="ans"><div class="seg" role="group" aria-label="Respuesta: ${r.d}">${opts.map(([v,t])=>`<button data-id="${r.id}" data-v="${v}" aria-pressed="false">${t}</button>`).join("")}</div></td>
+  </tr>`;
+}).join("");
+
+function render(){
+  D.forEach(r=>{
+    const tr=document.getElementById("r-"+r.id), v=ans[r.id];
+    tr.classList.toggle("si",isPos(r));
+    tr.classList.toggle("no",!!v && !isPos(r));
+    tr.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+    const show = filter==="all" || filter===r.s || (filter==="red"&&r.red) || (filter==="pend"&&!v);
+    tr.classList.toggle("hide",!show);
+  });
+  document.querySelectorAll("tr.sec").forEach(s=>{
+    const any=D.some(r=>r.s===s.dataset.sec && !document.getElementById("r-"+r.id).classList.contains("hide"));
+    s.classList.toggle("hide",!any);
+  });
+
+  const done=D.filter(r=>ans[r.id]).length;
+  const reds=D.filter(r=>r.red && ans[r.id]==="si");
+  const pos=D.filter(r=>!r.red && isPos(r));
+  const iniMenos=ans.ini==="menos";
+  let h=`<div class="prog"><span>Datos explorados</span><span>${done} / ${D.length}</span></div><div class="bar"><i style="width:${done/D.length*100}%"></i></div>`;
+  if(reds.length) h+=`<div class="box red"><h3>Banderas rojas</h3><ul>${reds.map(r=>`<li><b>${r.d}</b>${r.r}${ref(r.ref)}</li>`).join("")}</ul></div>`;
+  if(pos.length||iniMenos) h+=`<div class="box pos"><h3>Datos positivos y su relevancia</h3><ul>${
+    D.filter(r=>!r.red && (isPos(r)||(r.id==="ini"&&iniMenos))).map(r=>`<li><b>${r.d}</b>${r.pos?r.pos[ans[r.id]]:r.r}${ref(r.ref)}</li>`).join("")}</ul></div>`;
+  if(!reds.length && !pos.length && !iniMenos) h+=`<p class="empty">${done?"Sin datos positivos hasta ahora.":"Responde las preguntas de la tabla para construir el resumen."}</p>`;
+  if(done && done<D.length) h+=`<p class="empty" style="margin-top:8px">Faltan ${D.length-done} datos por explorar.</p>`;
+  document.getElementById("sum").innerHTML=h;
+}
+tbody.addEventListener("click",e=>{
+  const b=e.target.closest(".seg button"); if(!b) return;
+  const {id,v}=b.dataset; ans[id]===v?delete ans[id]:ans[id]=v; render();
+});
+document.querySelector(".toolbar").addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(!c) return;
+  filter=c.dataset.f; document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===c)); render();
+});
+document.getElementById("ejemplo").addEventListener("click",()=>{
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  Object.assign(ans,{ini:"mas",dur:"si",pal:"si",dol:"no",sin:"si",cv:"no",med:"si",sus:"si",fam:"no",prev:"no"}); render();
+});
+document.getElementById("limpiar").addEventListener("click",()=>{Object.keys(ans).forEach(k=>delete ans[k]);render()});
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Condiciones de riesgo en arritmias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: tabla de condiciones agrupadas por tipo (se marcan las presentes), plan de cuidados y alertas combinadas a la derecha */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --risk:#c8323c; --risk-soft:#fbe7e8;
+  --act:#2563a8; --act-soft:#e4eef9;
+  --combo:#b8660a; --combo-soft:#fdf1df;
+  --g1:#2563a8; --g2:#2f8a4c; --g3:#7a4cb0; --g4:#c8323c; --g5:#b8660a;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --risk:#f07178; --risk-soft:#3a1d22; --act:#7fb3ec; --act-soft:#182c42; --combo:#f2b25c; --combo-soft:#3a2b16;
+  --g1:#7fb3ec; --g2:#6fcf8f; --g3:#bb9ae6; --g4:#f07178; --g5:#f2b25c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --risk:#f07178; --risk-soft:#3a1d22; --act:#7fb3ec; --act-soft:#182c42; --combo:#f2b25c; --combo-soft:#3a2b16;
+  --g1:#7fb3ec; --g2:#6fcf8f; --g3:#bb9ae6; --g4:#f07178; --g5:#f2b25c; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1260px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font-weight:800;font-size:clamp(24px,3.2vw,32px);line-height:1.15;margin:4px 0 6px;text-wrap:balance;max-width:32ch}
+.lead{color:var(--muted);max-width:70ch;margin:0 0 18px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:7px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--gc,var(--muted))}
+.chip[aria-pressed="true"]{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.chip:focus-visible,.btn:focus-visible,.mark:focus-visible{outline:3px solid var(--act);outline-offset:2px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+@media (max-width:1020px){.grid{grid-template-columns:1fr}}
+
+.tbl-wrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--head);color:var(--head-ink);text-align:left;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:12px 14px}
+tbody td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;font-size:14.5px}
+tr.sec td{background:var(--node);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gc);padding:8px 14px}
+td.cond{font-weight:700;width:22%;border-left:4px solid var(--gc)}
+td.risk{color:var(--risk)}
+td.mk{width:62px;text-align:center}
+.ref{font-size:11px;font-weight:700;color:var(--act);vertical-align:super;margin-left:2px}
+.mark{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;color:transparent;margin:0 auto}
+.mark svg{width:18px;height:18px}
+tr.main:hover{background:var(--node)}
+tr.on{background:var(--act-soft)!important}
+tr.on .mark{background:var(--act);border-color:var(--act);color:var(--surface)}
+tr.on td.act{font-weight:700}
+tr.hide{display:none}
+.g1{--gc:var(--g1)} .g2{--gc:var(--g2)} .g3{--gc:var(--g3)} .g4{--gc:var(--g4)} .g5{--gc:var(--g5)}
+
+@media (max-width:760px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%!important}
+  tr.main{border-top:1px solid var(--line);border-left:4px solid var(--gc);padding:12px 14px;position:relative}
+  tr.main td{border:none;padding:3px 0;padding-right:48px}
+  td.cond{border-left:none!important;font-size:16px}
+  tr.main td[data-l]::before{content:attr(data-l);display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  tr.sec td{padding:8px 14px}
+  td.mk{position:absolute;top:12px;right:12px;width:auto!important;padding:0}
+}
+
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);max-height:calc(100vh - 32px);overflow:auto}
+@media (max-width:1020px){.plan{position:static;max-height:none}}
+.plan h2{font-weight:800;font-size:20px;margin:2px 0 8px}
+.counter{font-size:13px;color:var(--muted);margin-bottom:10px;font-variant-numeric:tabular-nums lining-nums}
+.box{border-radius:10px;padding:12px 14px;margin-bottom:12px;border:1.5px solid var(--line);background:var(--node)}
+.box h3{margin:0 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.box.combo{border-color:var(--combo);background:var(--combo-soft)} .box.combo h3{color:var(--combo)}
+.box.act{border-color:var(--act);background:var(--act-soft)} .box.act h3{color:var(--act)}
+.box ul{margin:0;padding-left:18px;display:grid;gap:7px}
+.box li b{display:block;font-size:13.5px}
+.empty{color:var(--muted);font-size:14px;margin:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--head);border-color:var(--head);color:var(--head-ink)}
+.note{font-size:12.5px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Seguridad del paciente</div>
+  <h1>Condiciones que aumentan el riesgo durante el tratamiento de las arritmias</h1>
+  <p class="lead">Marca las condiciones presentes en tu paciente. El panel reúne las actuaciones del equipo de salud y avisa cuando dos condiciones juntas aumentan el riesgo.</p>
+
+  <div class="toolbar" id="toolbar" role="group" aria-label="Filtrar por tipo de condición"></div>
+
+  <div class="grid">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Condición</th><th>Riesgo asociado</th><th>Actuación del equipo de salud</th><th style="text-align:center">Presente</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <aside class="plan" aria-live="polite">
+      <h2>Plan de cuidados</h2>
+      <div id="plan"></div>
+      <div class="btns">
+        <button class="btn pri" id="ejemplo">Cargar caso de ejemplo</button>
+        <button class="btn" id="limpiar">Limpiar</button>
+      </div>
+      <p class="note">Las alertas combinadas son una ayuda didáctica para razonar sobre el paciente. Los superíndices remiten a las referencias del módulo.</p>
+    </aside>
+  </div>
+
+  <footer>Material educativo. No reemplaza los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+const G={g1:"Electrolitos y equilibrio ácido-base",g2:"Función de órganos",g3:"Fármacos",g4:"Trombosis y sangrado",g5:"Características del paciente"};
+const D=[
+  {id:"hipok",g:"g1",c:"Hipopotasemia e hipomagnesemia",r:"Arritmias ventriculares, torsades de pointes y toxicidad digitálica",rr:"3",a:"Vigilar los resultados, notificar y administrar la reposición prescrita"},
+  {id:"hiperk",g:"g1",c:"Hiperpotasemia",r:"Bradicardia, bloqueos y QRS ancho",rr:"3",a:"Reconocer ondas T picudas y QRS ancho, y notificar de inmediato"},
+  {id:"ab",g:"g1",c:"Alteraciones ácido-base",r:"Cambios en el potasio y en la respuesta a los fármacos",a:"Interpretar los gases arteriales junto con los electrolitos"},
+  {id:"renal",g:"g2",c:"Insuficiencia renal",r:"Acumulación de fármacos e hiperpotasemia",a:"Vigilar la creatinina y la diuresis; confirmar el ajuste de dosis"},
+  {id:"hep",g:"g2",c:"Insuficiencia hepática",r:"Menor metabolismo de fármacos y mayor riesgo de sangrado",a:"Vigilar efectos adversos y signos de sangrado"},
+  {id:"qt",g:"g3",c:"QT prolongado",r:"Torsades de pointes con QTc superior a 500 ms",rr:"3",a:"Medir el QTc antes y después de los fármacos que lo prolongan"},
+  {id:"inter",g:"g3",c:"Interacciones farmacológicas",r:"Suma de efectos sobre el nodo AV, el QT y la coagulación",a:"Conciliar la medicación y consultar con farmacia"},
+  {id:"brady",g:"g3",c:"Riesgo de bradicardia",r:"Combinación de fármacos que enlentecen la conducción",a:"Monitorizar la frecuencia y el PR; disponer de atropina y marcapasos"},
+  {id:"hipo",g:"g3",c:"Riesgo de hipotensión",r:"Antiarrítmicos y sedación",rr:"3",a:"Controlar la presión arterial con frecuencia"},
+  {id:"trombo",g:"g4",c:"Riesgo tromboembólico",r:"Fibrilación auricular de más de 48 horas",rr:"3",a:"Precisar y registrar la hora de inicio de los síntomas"},
+  {id:"hemo",g:"g4",c:"Riesgo hemorrágico",r:"Anticoagulación, edad avanzada, insuficiencia renal",a:"Vigilar signos de sangrado y educar al paciente"},
+  {id:"emb",g:"g5",c:"Embarazo",r:"Restricción de algunos fármacos; desplazamiento uterino en el paro",rr:"1,2",a:"Coordinar con obstetricia"},
+  {id:"edad",g:"g5",c:"Edad avanzada",r:"Polifarmacia y sensibilidad a la bradicardia y la hipotensión",a:"Revisar la medicación y prevenir caídas"},
+  {id:"cv",g:"g5",c:"Comorbilidades cardiovasculares",r:"Condicionan la elección del tratamiento",rr:"3",a:"Vigilar la congestión y el dolor torácico"},
+  {id:"cond",g:"g5",c:"Alteraciones de la conducción",r:"Preexcitación y bloqueos",rr:"4",a:"Identificar la onda delta y el PR corto antes de administrar fármacos"},
+  {id:"disp",g:"g5",c:"Portadores de marcapasos o desfibrilador",r:"Daño del dispositivo por la descarga",a:"Alejar los parches del generador y solicitar su revisión"}
+];
+const COMBOS=[
+  {ids:["hipok","qt"],t:"Hipopotasemia o hipomagnesemia con QT prolongado",m:"Ambas favorecen las torsades de pointes. Corregir los electrolitos es prioritario antes de usar fármacos que prolonguen el QT."},
+  {ids:["renal","hiperk"],t:"Insuficiencia renal con hiperpotasemia",m:"La función renal reducida dificulta eliminar el potasio. Vigilar el ECG de forma continua."},
+  {ids:["renal","hemo"],t:"Insuficiencia renal con riesgo hemorrágico",m:"Los anticoagulantes de eliminación renal pueden acumularse. Confirmar el ajuste de dosis."},
+  {ids:["edad","brady"],t:"Edad avanzada con riesgo de bradicardia",m:"Mayor sensibilidad a los fármacos que enlentecen la conducción. Monitorizar la frecuencia y el PR."},
+  {ids:["edad","hipo"],t:"Edad avanzada con riesgo de hipotensión",m:"Mayor riesgo de caídas y de hipoperfusión. Controlar la presión arterial con frecuencia y movilizar con apoyo."},
+  {ids:["trombo","hemo"],t:"Riesgo tromboembólico y hemorrágico a la vez",m:"La decisión de anticoagular exige equilibrar ambos riesgos. Notificar y documentar para la decisión médica."},
+  {ids:["inter","qt"],t:"Interacciones con QT prolongado",m:"Varios fármacos pueden sumar su efecto sobre el QT. Revisar la lista completa con farmacia."},
+  {ids:["inter","brady"],t:"Interacciones con riesgo de bradicardia",m:"Betabloqueantes, calcioantagonistas, digoxina y amiodarona suman su efecto sobre el nodo AV."},
+  {ids:["hep","hemo"],t:"Insuficiencia hepática con riesgo hemorrágico",m:"La coagulación puede estar alterada de base. Vigilar signos de sangrado con mayor frecuencia."}
+];
+const marked=new Set(); let filter="all";
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+document.getElementById("toolbar").innerHTML=`<button class="chip" data-f="all" aria-pressed="true">Todas</button>`+
+  Object.entries(G).map(([k,v])=>`<button class="chip ${k}" data-f="${k}" aria-pressed="false"><i></i>${v}</button>`).join("")+
+  `<button class="chip" data-f="on" aria-pressed="false">Solo marcadas</button>`;
+
+let last=null;
+document.getElementById("rows").innerHTML=D.map(r=>{
+  let h="";
+  if(r.g!==last){h+=`<tr class="sec ${r.g}" data-sec="${r.g}"><td colspan="4">${G[r.g]}</td></tr>`;last=r.g}
+  return h+`<tr class="main ${r.g}" id="r-${r.id}">
+    <td class="cond" data-l="Condición">${r.c}</td>
+    <td class="risk" data-l="Riesgo asociado">${r.r}${ref(r.rr)}</td>
+    <td class="act" data-l="Actuación del equipo de salud">${r.a}</td>
+    <td class="mk"><button class="mark" data-id="${r.id}" aria-pressed="false" aria-label="Marcar ${r.c} como presente">${CHECK}</button></td></tr>`;
+}).join("");
+
+function render(){
+  D.forEach(r=>{
+    const tr=document.getElementById("r-"+r.id), on=marked.has(r.id);
+    tr.classList.toggle("on",on); tr.querySelector(".mark").setAttribute("aria-pressed",on);
+    tr.classList.toggle("hide",!(filter==="all"||(filter==="on"?on:r.g===filter)));
+  });
+  document.querySelectorAll("tr.sec").forEach(s=>s.classList.toggle("hide",!D.some(r=>r.g===s.dataset.sec&&!document.getElementById("r-"+r.id).classList.contains("hide"))));
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.f===filter));
+
+  const sel=D.filter(r=>marked.has(r.id));
+  const combos=COMBOS.filter(c=>c.ids.every(i=>marked.has(i)));
+  let h=`<div class="counter">${sel.length} de ${D.length} condiciones presentes</div>`;
+  if(!sel.length) h+=`<p class="empty">Marca en la tabla las condiciones de tu paciente para construir el plan de cuidados.</p>`;
+  if(combos.length) h+=`<div class="box combo"><h3>Alertas por combinación (${combos.length})</h3><ul>${combos.map(c=>`<li><b>${c.t}</b>${c.m}</li>`).join("")}</ul></div>`;
+  if(sel.length){
+    h+=`<div class="box act"><h3>Actuaciones del equipo</h3><ul>${
+      Object.keys(G).filter(g=>sel.some(r=>r.g===g)).map(g=>sel.filter(r=>r.g===g).map(r=>`<li><b>${r.c}</b>${r.a}</li>`).join("")).join("")}</ul></div>`;
+  }
+  document.getElementById("plan").innerHTML=h;
+}
+document.getElementById("rows").addEventListener("click",e=>{
+  const b=e.target.closest(".mark"); if(!b) return;
+  const id=b.dataset.id; marked.has(id)?marked.delete(id):marked.add(id); render();
+});
+document.getElementById("toolbar").addEventListener("click",e=>{const c=e.target.closest(".chip"); if(c){filter=c.dataset.f;render()}});
+document.getElementById("ejemplo").addEventListener("click",()=>{
+  marked.clear(); ["hipok","qt","edad","renal","trombo","hemo","inter"].forEach(i=>marked.add(i)); render();
+});
+document.getElementById("limpiar").addEventListener("click",()=>{marked.clear();render()});
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

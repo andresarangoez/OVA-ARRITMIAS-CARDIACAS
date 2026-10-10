@@ -1,0 +1,31 @@
+/* --- CÓDIGOS INTERACTIVOS (widgets/) --- */
+
+/* Cada código llega como una página completa, con su propia paleta, su
+   tipografía y sus reglas sobre body, h1 o section. Inyectarlos en el módulo
+   los haría chocar entre sí y con el OVA —41 definiciones distintas de
+   :root y de body en la misma página—, así que cada uno vive en su marco.
+   El marco también deja que sus <script> se ejecuten, cosa que el HTML de un
+   módulo no consigue porque se inyecta con innerHTML. */
+
+.widget-ova {
+    display: block;
+    width: 100%;
+    /* Alto provisional: el propio código avisa del suyo en cuanto carga
+       (js/25-widget-externo.js). Sin esto, el marco mediría 150 px y el
+       contenido aparecería recortado durante un instante. */
+    height: 560px;
+    border: 0;
+    background: #ffffff;
+    border-radius: var(--bento-radius-md);
+    box-shadow: var(--bento-shadow-soft);
+    margin: 24px 0;
+    color-scheme: light;
+}
+
+/* Rótulo del recurso, en la línea de los pies de figura del módulo. */
+.widget-ova-pie {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: -14px 0 24px;
+    line-height: 1.5;
+}

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adenosina en la taquicardia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: ficha del fármaco en rejilla; debajo dos herramientas: ¿está indicada? y ordenar la secuencia de administración */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#d5dde5; --node:#eef2f6;
+  --head:#18283a; --head-ink:#ffffff;
+  --drug:#7a4cb0; --drug-soft:#f0e9f8;
+  --ok:#2f8a4c; --ok-soft:#e5f4e9;
+  --warn:#b8660a; --warn-soft:#fdf1df;
+  --stop:#c8323c; --stop-soft:#fbe7e8;
+  --info:#2563a8; --info-soft:#e4eef9;
+  --f:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#bb9ae6; --drug-soft:#2a2140; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10171e; --surface:#17212b; --ink:#e6edf3; --muted:#9aaab9; --line:#33424f; --node:#1e2a36;
+  --head:#dbe6f0; --head-ink:#10171e;
+  --drug:#bb9ae6; --drug-soft:#2a2140; --ok:#6fcf8f; --ok-soft:#183326; --warn:#f2b25c; --warn-soft:#3a2b16; --stop:#f07178; --stop-soft:#3a1d22; --info:#7fb3ec; --info-soft:#182c42; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 48px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+h1{font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:4px 0 2px}
+.cls{font-size:14px;font-weight:700;color:var(--drug);background:var(--drug-soft);padding:3px 12px;border-radius:99px}
+.lead{color:var(--muted);max-width:70ch;margin:8px 0 18px}
+h2{font-size:20px;font-weight:800;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.ref{font-size:11px;font-weight:700;color:var(--info);vertical-align:super;margin-left:2px}
+
+.mono{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.mono{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.mono{grid-template-columns:1fr}}
+.tile{font:inherit;color:inherit;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.tile:hover{border-color:var(--t,var(--muted))}
+.tile:focus-visible,.btn:focus-visible,.opt:focus-visible,.step:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.tile b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t,var(--muted));margin-bottom:3px}
+.tile span{font-size:15px}
+.tile.wide{grid-column:span 2}
+@media (max-width:540px){.tile.wide{grid-column:auto}}
+.tile.dose{--t:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.tile.dose span{font-size:17px;font-weight:700}
+.tile.stop{--t:var(--stop);background:var(--stop-soft)}
+.tile.warn{--t:var(--warn);background:var(--warn-soft)}
+.tile.tech{--t:var(--info);background:var(--info-soft)}
+.tile.sel{box-shadow:0 0 0 3px var(--node);border-color:var(--t,var(--ink))}
+.explain{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.explain b{font-weight:800}
+
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;margin-top:28px}
+@media (max-width:900px){.tools{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.opts{display:grid;gap:6px}
+.opt{font:inherit;text-align:left;padding:9px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14.5px;font-weight:600}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.opt[aria-pressed="true"]{border-color:var(--head);background:var(--node)}
+.verdict{margin-top:12px;border-radius:10px;padding:12px 14px;border:1.5px solid}
+.verdict b{display:block;font-size:15.5px}
+.verdict.ok{border-color:var(--ok);background:var(--ok-soft)} .verdict.ok b{color:var(--ok)}
+.verdict.dx{border-color:var(--info);background:var(--info-soft)} .verdict.dx b{color:var(--info)}
+.verdict.warn{border-color:var(--warn);background:var(--warn-soft)} .verdict.warn b{color:var(--warn)}
+.verdict.no{border-color:var(--stop);background:var(--stop-soft)} .verdict.no b{color:var(--stop)}
+.hint{font-size:13.5px;color:var(--muted);margin:12px 0 0}
+
+.seq{display:grid;gap:6px;margin:0 0 12px;padding:0;list-style:none;counter-reset:s}
+.seq li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:9px;background:var(--ok-soft);font-size:14.5px}
+.seq li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--ok);color:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:800}
+.seq li.empty{background:var(--node);color:var(--muted)}
+.seq li.empty::before{background:var(--line);color:var(--muted)}
+.pool{display:flex;flex-wrap:wrap;gap:6px}
+.step{font:inherit;text-align:left;font-size:14px;font-weight:600;padding:8px 12px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;max-width:100%}
+.step.bad{border-color:var(--stop);background:var(--stop-soft);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.step.bad{animation:none}}
+.fb{margin-top:12px;border-radius:10px;padding:10px 12px;font-size:14px;background:var(--node)}
+.fb.ok{background:var(--ok-soft)} .fb.no{background:var(--stop-soft)}
+.fb b{font-weight:800}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--node);color:var(--ink);cursor:pointer}
+.cnt{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums lining-nums}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
+  <div class="title"><h1>Adenosina</h1><span class="cls">Nucleósido con efecto antiarrítmico</span></div>
+  <p class="lead">Toca cada aspecto de la ficha para ver una explicación. Después decide si la adenosina está indicada en cada situación y ordena los pasos de su administración.</p>
+
+  <section aria-label="Ficha del fármaco">
+    <div class="mono" id="mono"></div>
+    <div class="explain" id="explain" aria-live="polite"></div>
+  </section>
+
+  <div class="tools">
+    <section class="card">
+      <h2>¿Está indicada la adenosina?</h2>
+      <p class="sub">Elige la situación del paciente.</p>
+      <div class="opts" id="opts"></div>
+      <div id="verdict" aria-live="polite"><p class="hint">La clave es si la taquicardia es regular y si el paciente está estable.</p></div>
+    </section>
+
+    <section class="card">
+      <h2>Ordena la administración</h2>
+      <p class="sub">Toca los pasos en el orden en que los harías.</p>
+      <div id="game" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <footer>Material educativo. Las dosis siguen la tabla del módulo para el adulto; confirma siempre la prescripción y el protocolo institucional. Los superíndices remiten a las referencias del módulo.</footer>
+</div>
+
+<script>
+const ref=r=>r?`<span class="ref" title="Referencia ${r}">${r}</span>`:"";
+const M=[
+  {k:"Grupo farmacológico",v:"Nucleósido con efecto antiarrítmico",x:"Es una sustancia propia del organismo. Actúa sobre los receptores de adenosina del tejido de conducción."},
+  {k:"Mecanismo",v:"Bloqueo transitorio del nodo auriculoventricular",r:"3",x:"El bloqueo dura pocos segundos porque la adenosina se elimina muy rápido de la sangre. Por eso se administra en bolo rápido."},
+  {k:"Indicación principal",v:"Taquicardia regular de complejo estrecho",r:"3,8",x:"Sobre todo la TSV por reentrada que usa el nodo AV: al bloquearlo, el circuito se interrumpe."},
+  {k:"Otra indicación",v:"Taquicardia de complejo ancho estable, regular y monomórfica, con fines terapéuticos o diagnósticos",r:"3",c:"wide",x:"Solo si cumple las tres condiciones: estable, regular y monomórfica. Si es una TSV con aberrancia puede revertir; si no, ayuda al diagnóstico."},
+  {k:"Dosis en el adulto",v:"6 mg IV en bolo rápido con lavado; segunda dosis de 12 mg si es necesario",r:"7",c:"dose",x:"Si la primera dosis no revierte la taquicardia, se administra 12 mg con la misma técnica."},
+  {k:"Técnica",v:"Vena proximal, bolo rápido y lavado inmediato con solución salina",c:"tech",x:"Una vena lejana o un bolo lento hacen que la adenosina se degrade antes de llegar al corazón y no tenga efecto."},
+  {k:"Contraindicaciones",v:"Taquicardia de complejo ancho inestable, irregular o polimórfica, incluida la fibrilación auricular preexcitada; asma",r:"3",c:"stop wide",x:"En la FA preexcitada, bloquear el nodo AV deja pasar los impulsos por la vía accesoria y puede precipitar FV. En el asma puede causar broncoespasmo."},
+  {k:"Precaución",v:"Dosis menores con vía central o trasplante cardíaco",r:"3",c:"warn",x:"Por vía central llega al corazón casi sin degradarse; en el corazón trasplantado la sensibilidad es mayor."},
+  {k:"Efectos esperados",v:"Rubor, opresión torácica, sensación de muerte inminente, pausa breve",x:"Son intensos pero duran segundos. Explicarlos al paciente antes del bolo reduce la angustia."},
+  {k:"Parámetros de vigilancia",v:"Registro continuo del ECG, presión arterial y síntomas",x:"El registro durante el bloqueo puede revelar ondas de flúter o de FA y aclarar el diagnóstico."}
+];
+let selM=4;
+document.getElementById("mono").innerHTML=M.map((m,i)=>`<button class="tile ${m.c||""}" data-i="${i}" aria-pressed="false"><b>${m.k}</b><span>${m.v}${ref(m.r)}</span></button>`).join("");
+function renderM(){
+  document.querySelectorAll(".tile").forEach(t=>{const on=Number(t.dataset.i)===selM;t.classList.toggle("sel",on);t.setAttribute("aria-pressed",on)});
+  document.getElementById("explain").innerHTML=`<b>${M[selM].k}:</b> ${M[selM].x}`;
+}
+document.getElementById("mono").addEventListener("click",e=>{const t=e.target.closest(".tile"); if(t){selM=Number(t.dataset.i);renderM()}});
+
+const O=[
+  {n:"TSV regular de complejo estrecho, estable",d:"Indicación principal",v:"ok",t:"Indicada",x:"Es la indicación principal. Si la reentrada usa el nodo AV, la taquicardia termina."},
+  {n:"Taquicardia regular estrecha que podría ser flúter",d:"Ondas auriculares no visibles",v:"dx",t:"Indicada con fin diagnóstico",x:"Si es flúter no lo termina, pero durante el bloqueo se ven las ondas F y se aclara el diagnóstico."},
+  {n:"Complejo ancho, estable, regular y monomórfica",d:"Cumple las tres condiciones",v:"dx",t:"Puede usarse",x:"Con fines terapéuticos o diagnósticos. Requiere registro continuo del ECG y preparación para actuar si empeora."},
+  {n:"Complejo ancho irregular",d:"Podría ser FA preexcitada",v:"no",t:"Contraindicada",x:"En la FA preexcitada la adenosina puede acelerar la conducción por la vía accesoria y precipitar FV."},
+  {n:"TV polimórfica",d:"QRS cambiante",v:"no",t:"Contraindicada",x:"No responde a la adenosina. Requiere descarga no sincronizada si es inestable."},
+  {n:"Taquicardia con inestabilidad hemodinámica",d:"Hipotensión, shock o alteración mental",v:"no",t:"No es la primera opción",x:"En la taquicardia de complejo ancho inestable está contraindicada. Ante inestabilidad, la prioridad es la cardioversión sincronizada."},
+  {n:"Paciente con asma",d:"Antecedente respiratorio",v:"no",t:"Contraindicada",x:"Puede desencadenar broncoespasmo. Consultar alternativas con el médico."},
+  {n:"Vía central o trasplante cardíaco",d:"Mayor llegada o sensibilidad",v:"warn",t:"Precaución: dosis menores",x:"El efecto es más intenso. Confirmar la dosis ajustada antes de administrar."}
+];
+document.getElementById("opts").innerHTML=O.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false">${o.n}<small>${o.d}</small></button>`).join("");
+document.getElementById("opts").addEventListener("click",e=>{const b=e.target.closest(".opt"); if(!b)return; const i=Number(b.dataset.i);
+  document.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",Number(x.dataset.i)===i));
+  const o=O[i]; document.getElementById("verdict").innerHTML=`<div class="verdict ${o.v}"><b>${o.t}</b>${o.x}</div>`;});
+
+/* --- ordenar pasos --- */
+const STEPS=[
+  "Conectar el monitor e iniciar el registro continuo del ECG",
+  "Canalizar o elegir una vena proximal, por ejemplo antecubital",
+  "Preparar la adenosina y una jeringa de solución salina en la misma vía",
+  "Explicar al paciente los efectos esperados",
+  "Administrar 6 mg IV en bolo rápido",
+  "Lavar de inmediato con solución salina",
+  "Observar el ECG, la presión arterial y los síntomas",
+  "Si no revierte: segunda dosis de 12 mg con la misma técnica"
+];
+const WHY=[
+  "El registro durante el bloqueo es lo que permite interpretar la respuesta.",
+  "Cuanto más cerca del corazón, menos se degrada la adenosina antes de actuar.",
+  "Así el lavado puede hacerse en el mismo segundo que el bolo.",
+  "Rubor, opresión y sensación de muerte inminente asustan si no se anticipan.",
+  "El bolo debe ser rápido porque la adenosina dura segundos en la sangre.",
+  "El lavado empuja el fármaco hacia la circulación central.",
+  "Se buscan la reversión, una pausa o las ondas auriculares que antes no se veían.",
+  "La segunda dosis es mayor porque la primera pudo no alcanzar el nodo con suficiente concentración."
+];
+let g;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const SWAP=[2,3]; // preparar y explicar pueden ir en cualquier orden
+function resetG(){g={picked:[],errors:0,pool:shuffle(STEPS.map((_,i)=>i)),msg:""}}
+function okNext(i){const d=g.picked.length; if(g.picked.includes(i))return false; if(SWAP.includes(d)&&SWAP.includes(i))return true; return i===d}
+function renderG(){
+  const left=g.pool.filter(i=>!g.picked.includes(i)); g.done=g.picked.length;
+  document.getElementById("game").innerHTML=`
+    <ol class="seq">${g.picked.map(i=>`<li>${STEPS[i]}</li>`).join("")}${left.length?`<li class="empty">¿Cuál sigue?</li>`:""}</ol>
+    ${left.length?`<div class="pool">${left.map(i=>`<button class="step" data-i="${i}">${STEPS[i]}</button>`).join("")}</div>`:""}
+    ${g.msg}
+    <div class="row"><span class="cnt">${g.done} de ${STEPS.length} pasos · ${g.errors} ${g.errors===1?"error":"errores"}</span><button class="btn" id="rg">Reiniciar</button></div>`;
+}
+document.getElementById("game").addEventListener("click",e=>{
+  if(e.target.id==="rg"){resetG();renderG();return}
+  const s=e.target.closest(".step"); if(!s) return;
+  const i=Number(s.dataset.i);
+  if(okNext(i)){
+    g.picked.push(i);
+    g.msg = g.picked.length===STEPS.length
+      ? `<div class="fb ok"><b>Secuencia completa${g.errors?"":" sin errores"}.</b> Recuerda: vena proximal, bolo rápido y lavado inmediato.</div>`
+      : `<div class="fb ok"><b>Correcto.</b> ${WHY[i]}</div>`;
+    renderG();
+  } else {
+    g.errors++;
+    g.msg=`<div class="fb no"><b>Todavía no.</b> Piensa qué necesitas tener listo antes de ese paso.</div>`;
+    renderG();
+    const b=document.querySelector(`.step[data-i="${i}"]`); if(b){b.classList.add("bad")}
+  }
+});
+resetG(); renderM(); renderG();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    /* Se vigila el cuerpo: el alto del documento dentro de un marco es el del
+       marco, y no cambiaria aunque el contenido crezca. */
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
