@@ -1,0 +1,69 @@
+/* --- PACIENTE VIRTUAL · MANIFESTACIONES CLÍNICAS (Módulo 02, Unidad 2) --- */
+
+/* Cada apartado de la unidad lleva su propio paciente en el lugar que ocupaba
+   la imagen, dentro de una .figura-fila. De ahí que esto se parezca a .figura
+   (css/05-modulo.css) y no a un simulador con marco propio: en la página es
+   una figura, solo que animada. El prototipo traía su propia paleta azul y
+   daba estilo a selectores tan generales como «button»; aquí todo cuelga de
+   .pv-paciente y usa los tokens de la Facultad. */
+
+.pv-paciente {
+    padding: 12px;
+    background: var(--bg-shell);
+    border-radius: var(--bento-radius-md);
+    box-shadow: var(--bento-shadow-soft);
+}
+
+.pv-stage {
+    position: relative;
+    background: linear-gradient(#ffffff, var(--fucs-niebla));
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.pv-svg { display: block; width: 100%; height: auto; }
+
+/* El rótulo describe lo que se ve en la escena (postura, respuesta), que es
+   justo lo que el texto de al lado no puede mostrar. */
+.pv-badge {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: #ffffff;
+    border: 1px solid var(--fucs-gris);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: .74rem;
+    font-weight: 600;
+    color: var(--fucs-azul-profundo);
+}
+
+/* --- Controles --- */
+
+.pv-ctl { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+.pv-boton {
+    font: inherit;
+    font-size: .8rem;
+    font-weight: 600;
+    border: 1.5px solid var(--fucs-gris);
+    background: #ffffff;
+    color: var(--fucs-azul-profundo);
+    border-radius: 999px;
+    padding: 9px 14px;
+    min-height: 44px;
+    cursor: pointer;
+    transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+}
+
+.pv-boton:hover { border-color: var(--fucs-azul-profundo); }
+.pv-boton:active { background: var(--fucs-azul-profundo); color: #ffffff; }
+.pv-boton:focus-visible { outline: 3px solid var(--fucs-dorado); outline-offset: 2px; }
+
+/* En el móvil la figura se apila sobre el texto y ocupa todo el ancho; sin
+   tope, el paciente se estira hasta ser más alto que la pantalla. Y el
+   rótulo deja de ir superpuesto: en una escena estrecha tapaba la cara. */
+@media (max-width: 780px) {
+    .pv-paciente { max-width: 420px; margin-left: auto; margin-right: auto; }
+    .pv-badge { position: static; display: inline-block; margin-bottom: 8px; }
+}
