@@ -16,12 +16,12 @@
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Aplicar un abordaje sistemático (ABCDE) al paciente con sospecha de arritmia.</li>
-                            <li>Reconocer las manifestaciones clínicas asociadas a las arritmias cardíacas.</li>
-                            <li>Valorar el estado hemodinámico del paciente mediante frecuencia cardíaca, tensión arterial, presión arterial media y signos de perfusión.</li>
-                            <li>Identificar los factores desencadenantes reversibles de una arritmia (6H y 6T).</li>
-                            <li>Aplicar los principios de la monitorización electrocardiográfica continua y del ECG de 12 derivaciones.</li>
-                            <li>Aplicar un método sistemático de interpretación inicial del ritmo cardíaco.</li>
+                            <li>Aplicar un abordaje sistemático (ABCDE) al paciente con sospecha de arritmia cardíaca. <strong>→ Unidad 1</strong></li>
+                            <li>Relacionar las manifestaciones clínicas de la arritmia con el mecanismo fisiopatológico que las produce. <strong>→ Unidad 2</strong></li>
+                            <li>Evaluar el estado hemodinámico con la interpretación de los parámetros cardiovasculares y de los signos de perfusión. <strong>→ Unidad 3</strong></li>
+                            <li>Identificar los factores desencadenantes reversibles de una arritmia (6H y 6T). <strong>→ Unidad 4</strong></li>
+                            <li>Aplicar los principios de la monitorización electrocardiográfica continua y el ECG de 12 derivaciones. <strong>→ Unidad 5</strong></li>
+                            <li>Describir un trazado electrocardiográfico mediante un método sistemático de interpretación, previo a la identificación del ritmo. <strong>→ Unidad 6</strong></li>
                         </ul>
                     </div>
 
@@ -34,7 +34,7 @@
                                 <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
                                 <!-- La clase modulo-meta la lee js/13-shell-indice.js para
                                      calcular el tiempo restante del módulo. -->
-                                <p class="bienvenida-dato-valor modulo-meta">45 minutos</p>
+                                <p class="bienvenida-dato-valor modulo-meta">75 minutos</p>
                             </div>
                             <div class="bienvenida-dato">
                                 <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
@@ -49,9 +49,9 @@
                     </div>
 
                     <div class="modulo-introduccion">
-                    <h3>Introducción</h3>
-                    <p>El Módulo 01 explicó <em>cómo</em> se genera y se conduce el impulso eléctrico del corazón. Este módulo da el siguiente paso: <em>cómo reconocer</em>, a la cabecera del paciente, que algo en ese sistema no está funcionando bien.</p>
-                    <p>Valorar una arritmia no es leer un monitor. Es observar al paciente, medir su estado hemodinámico, buscar causas reversibles y registrar el ritmo de forma sistemática — todo antes de nombrar un diagnóstico específico, que se abordará en el Módulo 03.</p>
+                    <h3>Competencia del módulo</h3>
+                    <p>Al finalizar este módulo, el estudiante valorará de forma sistemática al paciente con sospecha de arritmia cardíaca, integrando el abordaje ABCDE, las manifestaciones clínicas, el estado hemodinámico y los factores desencadenantes reversibles, y aplicará un método ordenado de interpretación inicial del electrocardiograma que le permita distinguir una arritmia estable de una inestable.</p>
+                    <p>Su propósito es que el estudiante sepa reconocer cuándo un hallazgo compromete la estabilidad y describir un trazado electrocardiográfico con rigor, para que en el módulo siguiente pueda concentrarse exclusivamente en reconocer el ritmo que ese trazado representa.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -72,398 +72,668 @@
 
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 1 · Abordaje del Paciente (ABCDE)</h3>
-                        <p>Ante todo paciente con sospecha de arritmia, el primer paso nunca es el monitor: es un abordaje sistemático que garantice que ninguna amenaza vital pase desapercibida mientras se investiga el ritmo. El ABCDE identifica en segundos si el paciente está <strong>estable</strong> o <strong>inestable</strong>, lo que determina si hay tiempo para un análisis detallado del ECG o si se requiere acción inmediata.</p>
+                        <h3 class="unidad-titulo">Unidad 1 · Abordaje del Paciente</h3>
 
-                        <h4>Recorre el ABCDE</h4>
-                        <p>Haz clic en cada letra para ver qué evaluar y qué hacer si algo está alterado.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'a')">A</button>
-                                <button onclick="activarPasoStepper(this,'b')">B</button>
-                                <button onclick="activarPasoStepper(this,'c')">C</button>
-                                <button onclick="activarPasoStepper(this,'d')">D</button>
-                                <button onclick="activarPasoStepper(this,'e')">E</button>
+                        <div class="figura-fila">
+                            <div class="figura-fila-texto">
+                                <p>El esquema ABCDE (<em>Airway, Breathing, Circulation, Disability, Exposure</em>) constituye un modelo de valoración primaria ampliamente utilizado para la identificación, estabilización inmediata y reevaluación continua del paciente (1). En situaciones de urgencia los primeros minutos son determinantes para el pronóstico y la supervivencia del paciente; en el caso de las arritmias cardíacas pueden modificar de manera significativa la frecuencia y el ritmo cardíaco, comprometiendo el gasto cardíaco y, como consecuencia, la perfusión y la oxigenación de los tejidos (1).</p>
+                                <p>La premisa fundamental del abordaje ABCDE se relaciona con la conservación de una adecuada entrega de oxígeno a los tejidos. El cerebro y el miocardio dependen de un suministro continuo de oxígeno para mantener su función y viabilidad (1). Por esta razón, cualquier alteración que comprometa la vía aérea o la ventilación, la circulación o la perfusión tisular puede generar un deterioro progresivo en poco tiempo.</p>
                             </div>
-                            <div class="stepper-panel activo" data-paso="a">
-                                <h5>A — Vía aérea (Airway)</h5>
-                                <p><strong>Qué evaluar:</strong> permeabilidad de la vía aérea; capacidad de hablar sin dificultad.</p>
-                                <p><strong>Qué hacer si está comprometida:</strong> reposicionar, aspirar secreciones si es necesario, y activar soporte avanzado de inmediato si no se resuelve — nada de lo siguiente importa si la vía aérea no está asegurada.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="b">
-                                <h5>B — Ventilación (Breathing)</h5>
-                                <p><strong>Qué evaluar:</strong> frecuencia respiratoria, saturación de oxígeno, trabajo respiratorio.</p>
-                                <p><strong>Qué hacer si está alterada:</strong> administrar oxígeno suplementario, monitorizar la SpO2 de forma continua y notificar ante cualquier signo de dificultad respiratoria franca.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="c">
-                                <h5>C — Circulación (Circulation)</h5>
-                                <p><strong>Qué evaluar:</strong> frecuencia y calidad del pulso, tensión arterial, perfusión periférica.</p>
-                                <p><strong>Qué hacer si está alterada:</strong> un pulso irregular, filiforme o ausente exige correlacionar de inmediato con el trazado del monitor y avisar al equipo tratante — este es el punto donde el ABCDE se conecta directamente con la Unidad 3.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="d">
-                                <h5>D — Déficit neurológico (Disability)</h5>
-                                <p><strong>Qué evaluar:</strong> nivel de consciencia, orientación, escala de Glasgow si aplica.</p>
-                                <p><strong>Qué hacer si está alterado:</strong> un cambio brusco del estado mental en un paciente monitorizado es tan alarmante como un cambio en el trazado — investigar ambos en paralelo, nunca uno a costa del otro.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="e">
-                                <h5>E — Exposición (Exposure)</h5>
-                                <p><strong>Qué evaluar:</strong> inspección completa buscando signos de trauma, sangrado o causas desencadenantes.</p>
-                                <p><strong>Qué hacer si hay hallazgos:</strong> correlacionarlos con la lista de causas reversibles (6H y 6T) que se revisa en la Unidad 4 — muchas veces la exposición es la que da la primera pista de la causa real.</p>
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 1.1 · Evaluación primaria del paciente mediante el enfoque ABCDE.
                             </div>
                         </div>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> El ABCDE responde primero a "¿está en riesgo la vida del paciente?" — el ritmo específico se investiga después.
-                        </div>
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> Un paciente que "se ve mal" pero tiene un monitor "tranquilo" siempre gana: confíe en la valoración clínica sobre la pantalla. Repita el ABCDE ante cualquier cambio brusco en el monitor, no solo al ingreso, y verbalice/documente cada paso incluso cuando el hallazgo es normal.
+                        <p>En este sentido, el ABCDE se convierte en una herramienta fundamental para el profesional de ciencias de la salud, ya que permite pasar de una valoración general a una identificación ordenada. Cada componente debe evaluarse de forma secuencial, pero el proceso es dinámico: ante la identificación de una alteración que comprometa la vida, esta debe ser intervenida de inmediato antes de continuar con la valoración, y posteriormente se debe reevaluar la respuesta del paciente (1).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Componente</th><th>Contenido</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>(A) Airway</strong></td><td>Evaluar si la vía aérea está permeable, valorar la respuesta verbal, presencia de cambios en la voz, respiración ruidosa como estridor, aumento del esfuerzo respiratorio y signos de obstrucción (1). La disminución del nivel de conciencia puede favorecer una obstrucción parcial o completa.</td></tr>
+                                    <tr><td><strong>(B) Breathing</strong></td><td>Valorar la respiración mediante la frecuencia respiratoria, los movimientos y la simetría de la pared torácica, el uso de músculos accesorios y la auscultación pulmonar, complementando la valoración con pulsioximetría, identificando oportunamente signos de compromiso respiratorio y así proporcionar oxígeno suplementario de acuerdo con las necesidades y el estado clínico del paciente (1).</td></tr>
+                                    <tr><td><strong>(C) Circulation</strong></td><td>Evaluar la perfusión mediante coloración de la piel, llenado capilar y características del pulso. Valorar frecuencia cardíaca y presión arterial, manteniendo la monitorización continua; ante una alteración del ritmo, realizar ECG de 12 derivaciones y establecer un acceso vascular para facilitar el manejo oportuno según la condición del paciente (1).</td></tr>
+                                    <tr><td><strong>(D) Disability</strong></td><td>Valorar rápidamente el nivel de conciencia mediante la escala de Glasgow o AVPU (alerta, respuesta a la voz, al dolor o ausencia de respuesta), junto con la respuesta pupilar, los movimientos de las extremidades y la glucemia para identificar alteraciones metabólicas que puedan comprometer el estado neurológico (1).</td></tr>
+                                    <tr><td><strong>(E) Exposure</strong></td><td>Realizar una valoración física completa para identificar traumatismos, sangrado, alteraciones cutáneas u otros hallazgos que puedan explicar el estado del paciente, manteniendo en todo momento la dignidad, privacidad y protección térmica del paciente (1).</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 2 · Manifestaciones Clínicas</h3>
-                        <p>Las arritmias se expresan clínicamente según qué tanto comprometen el gasto cardíaco. Reconocer estos signos y síntomas permite sospechar una arritmia incluso antes de ver el trazado — ningún síntoma aislado la confirma, pero su combinación, y sobre todo su instauración súbita, orienta la sospecha clínica y la urgencia de la valoración.</p>
 
-                        <ul>
-                            <li><strong>Palpitaciones:</strong> percepción consciente e incómoda del latido cardíaco; frecuente en taquiarritmias.</li>
-                            <li><strong>Síncope o presíncope:</strong> pérdida transitoria (o casi) de la consciencia por hipoperfusión cerebral súbita.</li>
-                            <li><strong>Dolor torácico:</strong> puede indicar isquemia como causa o consecuencia de la arritmia.</li>
-                            <li><strong>Disnea:</strong> signo de compromiso del gasto cardíaco o de congestión pulmonar asociada.</li>
-                            <li><strong>Mareo o inestabilidad:</strong> hipoperfusión cerebral leve a moderada, frecuente en bradiarritmias.</li>
-                        </ul>
+                        <p>Las manifestaciones clínicas de las arritmias cardíacas se producen principalmente por las alteraciones que el ritmo cardíaco genera sobre la frecuencia cardíaca, el gasto cardíaco y la presión arterial (2). Cuando el corazón late demasiado rápido, demasiado lento o de manera irregular, puede disminuir su capacidad para mantener un flujo sanguíneo adecuado hacia los diferentes órganos. Por esta razón, los síntomas pueden variar desde una sensación incómoda hasta manifestaciones de compromiso hemodinámico (2).</p>
 
-                        <div class="tarjeta-informativa">
-                            <h4>Síncope arrítmico</h4>
-                            <p><span class="etiqueta">Definición:</span> Pérdida súbita y transitoria de la consciencia secundaria a una caída abrupta del gasto cardíaco.</p>
-                            <p><span class="etiqueta">Importancia clínica:</span> A diferencia del síncope vasovagal, suele ocurrir sin pródromos y en cualquier posición, incluso sentado o acostado.</p>
-                        </div>
+                        <p>Muchas arritmias tienen un comportamiento intermitente, por lo que los síntomas pueden aparecer únicamente durante el episodio y ser más intensos al inicio o al finalizarlo (2). La intensidad de las manifestaciones depende del tipo de arritmia, su duración, la frecuencia cardíaca y la capacidad del corazón para mantener un gasto cardíaco adecuado (2). Además, una misma arritmia puede producir síntomas diferentes entre pacientes, e incluso presentarse sin síntomas.</p>
 
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            Pregunte activamente por palpitaciones, mareo o síncope: el paciente no siempre los reporta espontáneamente. Y correlacione siempre el inicio de los síntomas con el momento exacto en que cambia el trazado del monitor — esa correlación temporal vale tanto como el síntoma mismo.
-                        </div>
+                        <p>En este apartado podrás explorar cada síntoma y comprender cómo se origina, qué mecanismos fisiopatológicos intervienen y cuál es su relevancia clínica en el paciente con una posible arritmia.</p>
 
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">Un paciente refiere mareo y palpitaciones que comenzaron hace apenas 2 minutos, sin ningún síntoma previo de aviso. ¿Qué característica del síncope arrítmico coincide con este relato?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-2"> Se presenta de forma gradual, con síntomas de aviso previos</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-2" data-correcta="true"> Ausencia de pródromos y aparición súbita</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-2"> Ocurre exclusivamente en posición de pie</label>
+                        <h4>2.1. Palpitaciones</h4>
+                        <div class="figura-fila">
+                            <div class="figura-fila-texto">
+                                <p>Las palpitaciones corresponden a la percepción consciente de los propios latidos cardíacos. En el contexto de una arritmia, pueden aparecer cuando se modifica la frecuencia, el ritmo o la fuerza de contracción del corazón, haciendo que los latidos sean percibidos como rápidos, fuertes o irregulares (3).</p>
+                                <p>Las palpitaciones pueden ser una manifestación inicial de una arritmia y constituyen un motivo importante para realizar una valoración del ritmo cardíaco mediante monitorización y ECG. Sin embargo, no siempre existe una arritmia cuando el paciente presenta este síntoma. En algunos casos puede existir conciencia cardíaca, relacionada con aumentos transitorios de la frecuencia cardíaca o del volumen sistólico, entre otros mecanismos (2).</p>
                             </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 2.1 · Percepción de palpitaciones durante un episodio de alteración del ritmo cardíaco. Elaboración propia.
+                            </div>
+                        </div>
+
+                        <h4>2.2. Síncope</h4>
+                        <div class="figura-fila imagen-izquierda">
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 2.2 · Pérdida transitoria de la conciencia acompañada de pérdida de tono postural. Elaboración propia.
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>El síncope es una pérdida súbita y transitoria de la conciencia, acompañada de pérdida del tono postural, causada por una disminución temporal de la perfusión cerebral (4). En pacientes con sospecha de arritmia, una alteración del ritmo cardíaco puede producir una caída brusca del gasto cardíaco y, como consecuencia, disminuir la presión arterial y el flujo sanguíneo cerebral, provocando el episodio (4).</p>
+                            </div>
+                        </div>
+                        <p>Desde el punto de vista clínico, el síncope de origen arrítmico suele presentarse de forma súbita, sin pródromos como mareo, visión borrosa o sudoración, y puede ocurrir en cualquier posición, incluso sentado o acostado (4). Esta característica lo diferencia del síncope vasovagal, que con mayor frecuencia se presenta acompañado de síntomas previos. Por ello, ante un episodio de inicio brusco, es fundamental valorar el ritmo cardíaco y buscar signos de compromiso hemodinámico (4).</p>
+                        <p>También es importante reconocer el presíncope, que corresponde a la sensación de pérdida inminente de la conciencia sin llegar a perderla. Puede manifestarse como mareo, debilidad, visión borrosa o sensación de desvanecimiento y, al igual que el síncope, puede estar relacionado con una disminución transitoria del gasto cardíaco y de la perfusión cerebral (2).</p>
+
+                        <h4>2.3. Dolor torácico</h4>
+                        <div class="figura-fila">
+                            <div class="figura-fila-texto">
+                                <p>El dolor torácico puede presentarse durante algunas arritmias, especialmente cuando existe una taquiarritmia sostenida. El aumento significativo de la frecuencia cardíaca incrementa el consumo de oxígeno del miocardio y, al mismo tiempo, disminuye la duración de la diástole, reduciendo el tiempo disponible para la perfusión coronaria (5). Este desequilibrio entre el aporte y la demanda de oxígeno del miocardio puede favorecer la aparición de isquemia y dolor torácico, particularmente en pacientes con enfermedad coronaria (5).</p>
+                                <p>El dolor puede percibirse como una molestia, presión u opresión en el pecho y, cuando existe un componente isquémico asociado, puede irradiarse hacia el brazo, hombro, cuello, mandíbula o espalda (2).</p>
+                            </div>
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 2.3 · Presencia de dolor torácico durante una alteración del ritmo cardíaco. Elaboración propia.
+                            </div>
+                        </div>
+
+                        <h4>2.4. Disnea</h4>
+                        <div class="figura-fila imagen-izquierda">
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 2.4 · Sensación de dificultad respiratoria. Elaboración propia.
+                            </div>
+                            <div class="figura-fila-texto">
+                                <p>La disnea es la sensación subjetiva de dificultad o falta de aire y puede presentarse como manifestación de una taquiarritmia. Cuando la frecuencia cardíaca aumenta, se acorta la duración del ciclo cardíaco, disminuyendo el tiempo disponible para el llenado ventricular (6). Esto puede reducir el volumen sistólico y alterar temporalmente la capacidad del corazón para mantener un flujo sanguíneo adecuado (6).</p>
+                                <p>Estos cambios pueden generar un aumento de las presiones dentro de la circulación pulmonar y estimular los receptores respiratorios, produciendo la sensación de falta de aire. Por esta razón, la disnea puede aparecer durante un episodio de taquiarritmia y desaparecer cuando el ritmo cardíaco se normaliza (6).</p>
+                            </div>
+                        </div>
+
+                        <h4>2.5. Mareo</h4>
+                        <div class="figura-fila">
+                            <div class="figura-fila-texto">
+                                <p>El mareo o la sensación de inestabilidad puede producirse cuando una arritmia genera una reducción transitoria del gasto cardíaco y de la perfusión cerebral, sin llegar necesariamente a producir pérdida completa de la conciencia. Puede observarse particularmente durante episodios de taquicardia, bradicardia significativa o alteraciones de la conducción (2).</p>
+                                <p>En un paciente con sospecha de arritmia, el mareo debe considerarse una manifestación potencial de compromiso hemodinámico, especialmente si aparece de forma súbita o se acompaña de hipotensión, debilidad o alteración del estado de conciencia (2).</p>
+                            </div>
+                            <div class="espacio-reservado">
+                                <span class="icono" aria-hidden="true">🖼️</span>
+                                Espacio reservado para la Figura 2.5 · Sensación de inestabilidad asociada a un episodio arrítmico. Elaboración propia.
+                            </div>
                         </div>
                     </div>
 
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Valoración Hemodinámica</h3>
-                        <p>Toda arritmia debe interpretarse a la luz de su impacto hemodinámico real sobre el paciente, no solo sobre el papel del monitor.</p>
 
-                        <ul>
-                            <li><strong>Frecuencia cardíaca (FC):</strong> confirmar siempre por pulso palpable o auscultación, no solo por el número del monitor.</li>
-                            <li><strong>Tensión arterial (TA):</strong> sistólica y diastólica; su tendencia importa más que un valor aislado.</li>
-                            <li><strong>Presión arterial media (PAM):</strong> PAM = TAD + 1/3 (TAS − TAD). Refleja la presión de perfusión de los órganos — una PAM sostenida por debajo de 65 mmHg sugiere hipoperfusión de órganos vitales.</li>
-                            <li><strong>Perfusión periférica:</strong> llenado capilar, temperatura y coloración de la piel, estado mental.</li>
-                        </ul>
+                        <h4>3.1. Repercusión hemodinámica de la arritmia</h4>
+                        <p>Una arritmia no siempre significa que el paciente esté hemodinámicamente inestable. El impacto sobre la función cardiovascular depende, entre otros factores, de la frecuencia cardíaca, la regularidad del ritmo, el origen de los latidos y la capacidad del corazón para mantener un volumen sistólico y un gasto cardíaco adecuados (7).</p>
+                        <p>Cuando el ritmo cardíaco se altera, cada latido puede producir una cantidad diferente de sangre hacia la circulación. Algunas alteraciones pueden ser bien toleradas, especialmente cuando la función ventricular está conservada; otras pueden disminuir de manera importante el gasto cardíaco y comprometer la perfusión de órganos y tejidos (7).</p>
+
+                        <h4>3.2. Parámetros que deben valorarse</h4>
+                        <p>Por eso, frente a una posible arritmia, no basta con observar el monitor y reconocer que la frecuencia está alta, baja o irregular. Es necesario preguntarse: ¿cómo está respondiendo el paciente? La frecuencia cardíaca, la tensión arterial, la presión arterial media y los signos de perfusión permiten responder esta pregunta y determinar si existe repercusión hemodinámica.</p>
 
                         <div class="tabla-scroll">
                             <table class="tabla-comparativa">
                                 <thead>
-                                    <tr><th>Signo</th><th>Paciente estable</th><th>Paciente inestable</th></tr>
+                                    <tr><th>Aspecto</th><th>¿Qué se mide?</th><th>¿Cómo se mide?</th><th>¿Qué significa si está alterado?</th></tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td>Estado mental</td><td>Alerta, orientado</td><td>Confuso, somnoliento o agitado</td></tr>
-                                    <tr><td>Tensión arterial</td><td>Dentro de rangos habituales</td><td>Hipotensión sintomática</td></tr>
-                                    <tr><td>Perfusión periférica</td><td>Llenado capilar normal, piel tibia</td><td>Llenado capilar prolongado, piel fría y pálida</td></tr>
-                                    <tr><td>Dolor torácico</td><td>Ausente</td><td>Presente, sugestivo de isquemia</td></tr>
+                                    <tr><td><strong>FC</strong></td><td>Número de contracciones cardíacas por minuto y regularidad.</td><td>Confirmar mediante pulso palpable o auscultación apical. Si el ritmo es irregular, contar durante 60 segundos. Comparar pulso apical y periférico cuando se sospeche déficit de pulso.</td><td><strong>Taquicardia:</strong> FC elevada, puede disminuir el tiempo de llenado ventricular y reducir el volumen sistólico. <strong>Bradicardia:</strong> FC disminuida, puede reducir el gasto cardíaco cuando la frecuencia es insuficiente para mantener un flujo adecuado (2,7).</td></tr>
+                                    <tr><td><strong>TA</strong></td><td>Presión sistólica (PAS) y presión diastólica (PAD) ejercidas por la sangre sobre la pared arterial.</td><td>Medir con un tensiómetro de tamaño adecuado, paciente en reposo y brazo correctamente posicionado.</td><td>Una disminución significativa de la TA puede acompañar una reducción del gasto cardíaco y asociarse con inestabilidad hemodinámica, especialmente cuando se acompaña de signos de hipoperfusión (2,7).</td></tr>
+                                    <tr><td><strong>PAM</strong></td><td>Valor que representa la presión promedio que impulsa la sangre hacia los tejidos durante el ciclo cardíaco.</td><td>Puede obtenerse directamente mediante monitorización o calcularse de forma aproximada.</td><td>Una PAM reducida puede significar una presión de perfusión insuficiente para los órganos. En adultos, 60 mmHg constituye un umbral de referencia clínica en determinados contextos críticos; no debe interpretarse como un valor aislado que determine por sí solo la estabilidad (2,7).</td></tr>
+                                    <tr><td><strong>Perfusión</strong></td><td>Adecuación del flujo sanguíneo que llega a los tejidos y órganos.</td><td>Valorar llenado capilar que sea &lt; 3 segundos, temperatura, coloración de la piel, características del pulso y estado de conciencia.</td><td>La hipoperfusión indica que el sistema cardiovascular puede no estar proporcionando un flujo sanguíneo adecuado a los tejidos, orientando hacia un compromiso hemodinámico (2,7).</td></tr>
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> La presencia de <strong>cualquiera</strong> de los signos de inestabilidad de la tabla, en el contexto de una arritmia, indica la necesidad de intervención inmediata (ver Módulo 05). Mida la TA de forma seriada durante episodios de arritmia, no solo al inicio del turno, y registre el estado mental como un signo vital más: es uno de los indicadores más tempranos de bajo gasto.
-                        </div>
-
-                        <h4>¿Estable o inestable?</h4>
-                        <p>Aplica la tabla anterior al siguiente caso.</p>
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">Paciente con FC 150 lpm, TA 84/50 mmHg, llenado capilar de 4 segundos y discurso confuso. Según los signos de la tabla, ¿cómo se clasifica?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-3"> Estable — solo requiere observación seriada</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-3" data-correcta="true"> Inestable — requiere intervención inmediata</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-02-3"> No se puede determinar sin un ECG de 12 derivaciones</label>
-                            </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
-                        </div>
+                        <p class="figura-caption"><strong>Tabla 3.1.</strong> Valoración de parámetros de estabilidad hemodinámica. Elaboración propia.</p>
                     </div>
 
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 4 · Factores Desencadenantes (6H y 6T)</h3>
-                        <p>Muchas arritmias tienen una causa reversible identificable. El algoritmo de las "H y T" es la herramienta estándar para buscarlas de forma sistemática, especialmente en paro cardíaco o inestabilidad severa. Tratar la arritmia sin buscar y corregir su causa reversible expone al paciente a recurrencias inmediatas, incluso si la terapia eléctrica o farmacológica fue exitosa.</p>
 
-                        <h4>Las 6 H:</h4>
-                        <ul>
-                            <li><strong>Hipovolemia</strong></li>
-                            <li><strong>Hipoxia</strong></li>
-                            <li><strong>Hidrogeniones (acidosis)</strong></li>
-                            <li><strong>Hipo/hiperpotasemia</strong></li>
-                            <li><strong>Hipotermia</strong></li>
-                            <li><strong>Hipoglicemia</strong></li>
-                        </ul>
+                        <h4>4.1. Concepto y enfoque de las H y las T</h4>
 
-                        <h4>Las 6 T:</h4>
-                        <ul>
-                            <li><strong>Neumotórax a Tensión</strong></li>
-                            <li><strong>Taponamiento cardíaco</strong></li>
-                            <li><strong>Tóxicos</strong> (intoxicación medicamentosa)</li>
-                            <li><strong>Trombosis pulmonar</strong> (TEP)</li>
-                            <li><strong>Trombosis coronaria</strong> (IAM)</li>
-                            <li><strong>Trauma</strong></li>
-                        </ul>
+                        <h5>4.1.1. Factores desencadenantes</h5>
+                        <p>Una arritmia rara vez aparece de forma aislada. Con frecuencia, un factor clínico altera las propiedades eléctricas del miocardio —el automatismo, la excitabilidad, la conducción o la repolarización— y precipita la alteración del ritmo en un corazón que puede estar sano o tener una cardiopatía previa. Estos factores se denominan <strong>desencadenantes</strong>. Su reconocimiento forma parte de la valoración del paciente con arritmia por dos razones: muchos son reversibles, y si no se corrigen, la arritmia tiende a persistir o a recurrir aunque se trate de forma adecuada.</p>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Las "H y T" no son solo para el paro cardíaco — son la lista de verificación mental ante cualquier arritmia de causa no evidente. Revise electrolitos séricos recientes (especialmente potasio y magnesio) ante cualquier arritmia nueva, y verifique antecedentes de trauma, cirugía reciente o inmovilización prolongada como pistas de trombosis.
+                        <h5>4.1.2. El enfoque de las H y las T</h5>
+                        <p>Para facilitar su búsqueda sistemática, las causas reversibles del paro cardíaco se agrupan en dos series de palabras que comienzan por H y por T (8). Las guías de reanimación vigentes incluyen cinco de cada serie: la hipovolemia, la hipoxia, el ion hidrógeno (acidosis), la hipopotasemia o hiperpotasemia y la hipotermia; y el neumotórax a tensión, el taponamiento cardíaco, las toxinas y la trombosis pulmonar y coronaria (8). En la docencia es frecuente ampliar cada serie a seis elementos, añadiendo la hipoglucemia y el traumatismo, lo que da lugar a la regla de las 6H y las 6T.</p>
+                        <p>Aunque este enfoque se formuló para el paro cardíaco, resulta igualmente útil en el paciente con pulso, porque los mismos factores que mantienen un paro son los que desencadenan muchas arritmias. Esta unidad desarrolla los desencadenantes de mayor relevancia en la valoración: la hipoxia, la hipopotasemia y la hipomagnesemia, que corresponden a las H; el infarto agudo de miocardio, que corresponde a la trombosis coronaria; los fármacos y las drogas, que corresponden a las toxinas; y las alteraciones endocrinas, entre ellas la hipoglucemia.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Serie</th><th>Elemento</th><th>Relación con las arritmias</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>H</strong></td><td>Hipovolemia</td><td>Taquicardia sinusal compensadora; AESP con complejos rápidos</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Hipoxia</td><td>Taquicardia, extrasístoles, bradicardia grave y paro (apartado 4.2)</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Ion hidrógeno (acidosis)</td><td>Aumenta la irritabilidad miocárdica y desplaza el potasio fuera de la célula</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Hipopotasemia o hiperpotasemia</td><td>Arritmias ventriculares, torsades, bloqueos (apartado 4.3)</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Hipotermia</td><td>Bradicardia, ondas J, fibrilación auricular y ventricular</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Hipoglucemia</td><td>Taquicardia, prolongación del QT (apartado 4.8)</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Neumotórax a tensión</td><td>Hipoxia y colapso circulatorio; AESP</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Taponamiento cardíaco</td><td>Taquicardia, bajo voltaje, AESP</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Tóxicos</td><td>Fármacos y drogas con efecto proarrítmico (apartados 4.6 y 4.7)</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Trombosis coronaria</td><td>Isquemia e infarto: FV, TV, bloqueos (apartado 4.5)</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Trombosis pulmonar</td><td>Taquicardia, fibrilación auricular, AESP</td></tr>
+                                    <tr><td><strong>T</strong></td><td>Traumatismo</td><td>Contusión miocárdica, hemorragia, hipoxia</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <p class="figura-caption"><strong>Tabla 4.1.</strong> Regla de las 6H y las 6T y su relación con las arritmias. Fuente: elaboración propia a partir de (8).</p>
 
-                        <h4>Actividad: empareja cada causa con su pista clínica</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 6 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="hipovolemia" onclick="manejarClicEmparejar(this)">Hipovolemia</button>
-                                <button class="reto-emparejar-item" data-par="hipoxia" onclick="manejarClicEmparejar(this)">Hipoxia</button>
-                                <button class="reto-emparejar-item" data-par="potasio" onclick="manejarClicEmparejar(this)">Hipo/hiperpotasemia</button>
-                                <button class="reto-emparejar-item" data-par="taponamiento" onclick="manejarClicEmparejar(this)">Taponamiento cardíaco</button>
-                                <button class="reto-emparejar-item" data-par="tep" onclick="manejarClicEmparejar(this)">Trombosis pulmonar (TEP)</button>
-                                <button class="reto-emparejar-item" data-par="toxicos" onclick="manejarClicEmparejar(this)">Tóxicos</button>
-                            </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="toxicos" onclick="manejarClicEmparejar(this)">Se investiga revisando la lista completa de medicamentos y posibles sobredosis</button>
-                                <button class="reto-emparejar-item" data-par="tep" onclick="manejarClicEmparejar(this)">Se sospecha con disnea súbita e hipotensión en paciente con factores de inmovilización</button>
-                                <button class="reto-emparejar-item" data-par="hipovolemia" onclick="manejarClicEmparejar(this)">Causa reversible más frecuente en shock hemorrágico o deshidratación severa</button>
-                                <button class="reto-emparejar-item" data-par="taponamiento" onclick="manejarClicEmparejar(this)">Se sospecha ante ruidos cardíacos velados, ingurgitación yugular e hipotensión</button>
-                                <button class="reto-emparejar-item" data-par="potasio" onclick="manejarClicEmparejar(this)">Alteración electrolítica más directamente ligada a arritmias ventriculares</button>
-                                <button class="reto-emparejar-item" data-par="hipoxia" onclick="manejarClicEmparejar(this)">Casi siempre presente cuando hay compromiso respiratorio asociado</button>
-                            </div>
+                        <h4>4.2. Hipoxia</h4>
+
+                        <h5>4.2.1. Mecanismo</h5>
+                        <p>El miocardio depende de un aporte continuo de oxígeno para mantener los gradientes iónicos que sostienen el potencial de membrana. La hipoxia altera este equilibrio de dos maneras. En una primera fase, la respuesta simpática a la hipoxemia aumenta la frecuencia cardíaca y la excitabilidad, lo que favorece la taquicardia sinusal, las extrasístoles y las taquiarritmias auriculares y ventriculares. Cuando la hipoxia es grave o se prolonga, la falta de energía deprime el automatismo y la conducción, y aparecen la bradicardia, los bloqueos y, finalmente, el paro cardíaco. La hipoxia figura, por ello, entre las causas reversibles que deben buscarse en todo paro (8), y la hipoxemia es un desencadenante reconocido de las arritmias ventriculares (9).</p>
+
+                        <h5>4.2.2. Situaciones clínicas</h5>
+                        <p>La hipoxia puede deberse a una obstrucción de la vía aérea, a una hipoventilación por sedantes u opioides, a una enfermedad pulmonar aguda o crónica, al edema pulmonar o a la embolia pulmonar. En la enfermedad pulmonar obstructiva crónica son frecuentes la taquicardia auricular multifocal y la fibrilación auricular, y la apnea obstructiva del sueño se asocia a la fibrilación auricular, por lo que su detección y tratamiento forman parte del control de los factores de riesgo (10). La bradicardia que aparece en un paciente con dificultad respiratoria es un signo de alarma, porque puede preceder al paro; la hipoxia debe corregirse antes de atribuir una bradicardia a otra causa (11).</p>
+
+                        <h5>4.2.3. Valoración</h5>
+                        <p>La valoración incluye la frecuencia y el patrón respiratorios, el esfuerzo, la coloración, el estado de conciencia y la saturación de oxígeno por pulsioximetría, interpretada con cautela cuando la perfusión es deficiente. En el paciente con arritmia e hipoxemia, la administración de oxígeno y el soporte de la ventilación forman parte de la atención inicial (8), y la gasometría arterial permite valorar, además de la oxigenación, la ventilación y el equilibrio ácido-base.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Aspecto</th><th>Descripción</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Fase inicial</strong></td><td>Respuesta simpática: taquicardia sinusal, extrasístoles, taquiarritmias (9)</td></tr>
+                                    <tr><td><strong>Hipoxia grave o prolongada</strong></td><td>Depresión del automatismo y de la conducción: bradicardia, bloqueos, paro (8)</td></tr>
+                                    <tr><td><strong>Causas frecuentes</strong></td><td>Obstrucción de la vía aérea, hipoventilación por fármacos, enfermedad pulmonar, edema y embolia pulmonar</td></tr>
+                                    <tr><td><strong>Situaciones asociadas</strong></td><td>EPOC: taquicardia auricular multifocal y FA; apnea del sueño: FA (10)</td></tr>
+                                    <tr><td><strong>Signo de alarma</strong></td><td>Bradicardia en el paciente con dificultad respiratoria (11)</td></tr>
+                                    <tr><td><strong>Valoración</strong></td><td>Frecuencia y esfuerzo respiratorios, conciencia, SpO₂, gasometría arterial</td></tr>
+                                    <tr><td><strong>Conducta inicial</strong></td><td>Oxígeno si hay hipoxemia y soporte de la ventilación (8)</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <p class="figura-caption"><strong>Tabla 4.2.</strong> Hipoxia como factor desencadenante. Fuente: elaboración propia a partir de (8-11).</p>
+
+                        <h4>4.3. Hipopotasemia</h4>
+
+                        <h5>4.3.1. Concepto y mecanismo</h5>
+                        <p>El potasio es el principal catión intracelular, y su gradiente entre el interior y el exterior de la célula determina el potencial de reposo y la repolarización del miocardio. Se considera hipopotasemia una concentración sérica inferior a 3,5 mmol/L. Al disminuir el potasio extracelular, la repolarización se prolonga y se hace heterogénea, aumenta el automatismo y aparecen posdespolarizaciones que pueden desencadenar latidos ectópicos. Estas alteraciones favorecen las extrasístoles, la taquicardia y la fibrilación ventriculares (9) y, en particular, las <em>torsades de pointes</em>, de las que la hipopotasemia es uno de los principales factores de riesgo (12). La hipopotasemia aumenta, además, la toxicidad de la digoxina.</p>
+
+                        <h5>4.3.2. Causas</h5>
+                        <p>Las causas más frecuentes en el paciente hospitalizado son los diuréticos de asa y tiazídicos, las pérdidas digestivas por vómitos, diarrea o sonda nasogástrica, y los desplazamientos del potasio hacia el interior de la célula producidos por la insulina, los agonistas beta-adrenérgicos o la alcalosis. La hipomagnesemia coexiste con frecuencia y dificulta la corrección del potasio, como se describe en el apartado 4.4.</p>
+
+                        <h5>4.3.3. Manifestaciones electrocardiográficas</h5>
+                        <p>El electrocardiograma muestra, de forma progresiva, el aplanamiento de la onda T, la depresión del segmento ST, la aparición de ondas U prominentes y la prolongación aparente del intervalo QT, que con frecuencia corresponde a un intervalo QU por la fusión de la onda T con la U. Estos cambios no siempre se correlacionan con la concentración sérica, por lo que el electrocardiograma no sustituye a la determinación de laboratorio.</p>
+
+                        <h5>4.3.4. Valoración</h5>
+                        <p>En el paciente con arritmia deben revisarse los resultados recientes de potasio, el uso de diuréticos y de digoxina y la presencia de pérdidas digestivas. En el paciente con <em>torsades de pointes</em> o con riesgo de presentarlas, se recomienda mantener el potasio en el rango normal alto, de 4,5 a 5 mmol/L (12). La hiperpotasemia, en el extremo opuesto, produce ondas T picudas, ensanchamiento del QRS, bloqueos y bradicardia, y en su forma grave puede desencadenar un paro cardíaco (8).</p>
+
+                        <h4>4.4. Hipomagnesemia</h4>
+
+                        <h5>4.4.1. Concepto y mecanismo</h5>
+                        <p>El magnesio participa en el funcionamiento de la bomba de sodio y potasio y regula el paso de calcio y de potasio a través de la membrana. Su déficit prolonga la repolarización y favorece las posdespolarizaciones tempranas, el mecanismo que desencadena las <em>torsades de pointes</em> (12). Por ello, la hipomagnesemia es un factor de riesgo de esta arritmia, y el magnesio intravenoso es eficaz para interrumpirla incluso cuando su concentración sérica es normal (12).</p>
+                        <p>El déficit de magnesio aumenta, además, la pérdida renal de potasio, de modo que la hipopotasemia asociada no se corrige mientras no se repone el magnesio. Ambas alteraciones, junto con la hipocalcemia, se presentan con frecuencia de forma simultánea.</p>
+
+                        <h5>4.4.2. Causas</h5>
+                        <p>Entre las causas más frecuentes se encuentran los diuréticos, el consumo crónico de alcohol, la malnutrición, las pérdidas digestivas por diarrea, el uso prolongado de inhibidores de la bomba de protones y algunos fármacos con toxicidad renal.</p>
+
+                        <h5>4.4.3. Valoración</h5>
+                        <p>La concentración sérica de magnesio refleja de forma imperfecta el contenido total del organismo, porque la mayor parte del ion es intracelular; una cifra normal no excluye un déficit. La hipomagnesemia debe sospecharse en el paciente con hipopotasemia resistente al tratamiento, con <em>torsades de pointes</em> o con factores de riesgo como el alcoholismo o el uso de diuréticos. Su valoración y corrección se realizan de forma conjunta con las del potasio.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Aspecto</th><th>Hipopotasemia</th><th>Hipomagnesemia</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Definición</strong></td><td>Potasio sérico &lt; 3,5 mmol/L</td><td>Magnesio sérico bajo; una cifra normal no excluye el déficit</td></tr>
+                                    <tr><td><strong>Mecanismo</strong></td><td>Repolarización prolongada y heterogénea; mayor automatismo</td><td>Posdespolarizaciones tempranas; pérdida renal de potasio</td></tr>
+                                    <tr><td><strong>Arritmias</strong></td><td>Extrasístoles, TV, FV, torsades (9,12)</td><td>Torsades de pointes (12)</td></tr>
+                                    <tr><td><strong>Signos en el ECG</strong></td><td>T aplanada, ST descendido, ondas U, QT (QU) prolongado</td><td>QT prolongado; con frecuencia asociada a hipopotasemia</td></tr>
+                                    <tr><td><strong>Causas frecuentes</strong></td><td>Diuréticos, vómitos, diarrea, insulina, agonistas beta, alcalosis</td><td>Diuréticos, alcohol, malnutrición, diarrea, inhibidores de la bomba de protones</td></tr>
+                                    <tr><td><strong>Interacción</strong></td><td>Aumenta la toxicidad de la digoxina</td><td>Impide corregir la hipopotasemia</td></tr>
+                                    <tr><td><strong>Objetivo con riesgo de torsades</strong></td><td>Potasio 4,5 a 5 mmol/L (12)</td><td>Corregir junto con el potasio (12)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.3.</strong> Hipopotasemia e hipomagnesemia como factores desencadenantes. Fuente: elaboración propia a partir de (9,12).</p>
+
+                        <h4>4.5. Infarto agudo de miocardio</h4>
+
+                        <h5>4.5.1. Mecanismo</h5>
+                        <p>La isquemia miocárdica aguda es la causa más frecuente de las arritmias ventriculares graves en el adulto (9) y corresponde, dentro de la regla de las H y las T, a la trombosis coronaria (8). La falta de flujo provoca en el músculo afectado una pérdida de potasio intracelular, acidosis y liberación de catecolaminas, que alteran la conducción y la repolarización de forma desigual entre el tejido isquémico y el sano. Esta heterogeneidad crea las condiciones para la reentrada y para el automatismo anormal. La afectación de las arterias que irrigan el nodo sinusal, el nodo auriculoventricular o el sistema His-Purkinje explica, por su parte, las bradiarritmias y los bloqueos.</p>
+
+                        <h5>4.5.2. Arritmias según el momento y la localización</h5>
+                        <p>El riesgo de fibrilación ventricular es máximo en las primeras horas tras el inicio de los síntomas, y una proporción importante de las muertes por infarto ocurre antes de la llegada al hospital (13). La taquicardia ventricular polimórfica con intervalo QT normal sugiere isquemia en curso, a diferencia de las <em>torsades de pointes</em>, que se asocian a un QT prolongado (8). Tras la reperfusión puede aparecer un ritmo idioventricular acelerado, generalmente bien tolerado. Las arritmias ventriculares sostenidas que aparecen más allá de las primeras 48 horas sugieren la existencia de un sustrato cicatricial y un mayor riesgo de muerte súbita (13).</p>
+                        <p>La localización del infarto orienta el tipo de bradiarritmia. En el infarto inferior, la isquemia del nodo auriculoventricular y el aumento del tono vagal producen bradicardia sinusal y bloqueos a nivel nodal, con escape de QRS estrecho, que suelen ser transitorios y responder a la atropina. En el infarto anterior extenso, el bloqueo se localiza por debajo del nodo, el escape tiene un QRS ancho y lento, y el pronóstico es peor, porque refleja una gran extensión de la necrosis (11). La fibrilación auricular es también frecuente en el infarto y se asocia a una evolución desfavorable (13).</p>
+
+                        <h5>4.5.3. Valoración</h5>
+                        <p>En todo paciente con arritmia debe interrogarse por el dolor torácico de características isquémicas, la disnea, la diaforesis y los síntomas equivalentes, que pueden ser atípicos en el adulto mayor, la mujer y el paciente diabético. El electrocardiograma de 12 derivaciones debe obtenerse e interpretarse en los 10 minutos siguientes al primer contacto en el paciente con sospecha de síndrome coronario agudo (13), y la determinación de troponina completa el diagnóstico. La elevación del segmento ST, el bloqueo de rama de nueva aparición y los cambios dinámicos del ST y de la onda T obligan a comunicar el hallazgo de inmediato.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Arritmia</th><th>Momento o contexto</th><th>Significado clínico</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Fibrilación ventricular</strong></td><td>Primeras horas</td><td>Principal causa de muerte precoz; desfibrilación inmediata (13)</td></tr>
+                                    <tr><td><strong>TV polimórfica con QT normal</strong></td><td>Isquemia en curso</td><td>Sugiere isquemia activa, no torsades (8)</td></tr>
+                                    <tr><td><strong>Ritmo idioventricular acelerado</strong></td><td>Tras la reperfusión</td><td>Generalmente benigno y autolimitado</td></tr>
+                                    <tr><td><strong>TV o FV después de 48 horas</strong></td><td>Fase tardía</td><td>Sustrato cicatricial; mayor riesgo de muerte súbita (13)</td></tr>
+                                    <tr><td><strong>Bradicardia y bloqueo nodal</strong></td><td>Infarto inferior</td><td>Escape estrecho; transitorio; responde a la atropina (11)</td></tr>
+                                    <tr><td><strong>Bloqueo infranodal</strong></td><td>Infarto anterior extenso</td><td>Escape ancho y lento; peor pronóstico; estimulación (11)</td></tr>
+                                    <tr><td><strong>Fibrilación auricular</strong></td><td>Cualquier fase</td><td>Asociada a una evolución desfavorable (13)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.4.</strong> Arritmias en el infarto agudo de miocardio. Fuente: elaboración propia a partir de (8,11,13).</p>
+
+                        <h4>4.6. Fármacos</h4>
+
+                        <h5>4.6.1. La proarritmia farmacológica</h5>
+                        <p>Numerosos fármacos de uso habitual pueden desencadenar arritmias, incluidos los propios antiarrítmicos. Este efecto, denominado <strong>proarritmia</strong>, se produce por tres mecanismos principales: la prolongación de la repolarización, que se refleja en el intervalo QT y predispone a las <em>torsades de pointes</em>; la depresión del automatismo y de la conducción, que produce bradicardia y bloqueos; y el bloqueo de los canales de sodio, que enlentece la conducción intraventricular y ensancha el QRS.</p>
+
+                        <h5>4.6.2. Fármacos que prolongan el QT</h5>
+                        <p>La prolongación del QT inducida por fármacos es la causa más frecuente de <em>torsades de pointes</em> en el hospital (12). Entre los fármacos implicados se encuentran algunos antiarrítmicos, como el sotalol, la amiodarona y la procainamida; antimicrobianos, como los macrólidos y las fluoroquinolonas; antipsicóticos, como el haloperidol; antieméticos, como el ondansetrón; y la metadona (12). El riesgo aumenta cuando coinciden varios factores: el sexo femenino, la edad avanzada, la bradicardia, la insuficiencia cardíaca, la hipopotasemia, la hipomagnesemia, la combinación de varios fármacos que prolongan el QT y la administración intravenosa rápida (12).</p>
+
+                        <h5>4.6.3. Fármacos que producen bradicardia</h5>
+                        <p>Los betabloqueadores, los bloqueadores de los canales de calcio no dihidropiridínicos, la digoxina, la amiodarona y la ivabradina deprimen el nodo sinusal o el auriculoventricular, y su combinación potencia este efecto. La bradicardia y los bloqueos de origen farmacológico se encuentran entre las causas reversibles que deben buscarse antes de atribuir la bradicardia a una enfermedad del sistema de conducción (11).</p>
+
+                        <h5>4.6.4. Toxicidad por digoxina</h5>
+                        <p>La digoxina merece una mención particular, porque su margen terapéutico es estrecho y su toxicidad aumenta con la insuficiencia renal, la hipopotasemia, la hipomagnesemia y las interacciones con fármacos como la amiodarona. Puede producir prácticamente cualquier arritmia, en especial las extrasístoles ventriculares, la taquicardia auricular con bloqueo, los ritmos de la unión, los bloqueos auriculoventriculares y la taquicardia ventricular bidireccional, que es muy sugestiva de esta intoxicación.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Efecto</th><th>Ejemplos</th><th>Arritmia o hallazgo</th><th>Factores que aumentan el riesgo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Prolongación del QT</strong></td><td>Sotalol, amiodarona, procainamida, macrólidos, fluoroquinolonas, haloperidol, ondansetrón, metadona (12)</td><td>Torsades de pointes</td><td>Mujer, edad avanzada, bradicardia, insuficiencia cardíaca, hipopotasemia, hipomagnesemia, combinación de fármacos (12)</td></tr>
+                                    <tr><td><strong>Depresión nodal</strong></td><td>Betabloqueadores, verapamilo, diltiazem, digoxina, amiodarona, ivabradina</td><td>Bradicardia y bloqueos (11)</td><td>Combinación de fármacos; edad avanzada</td></tr>
+                                    <tr><td><strong>Bloqueo de los canales de sodio</strong></td><td>Antiarrítmicos de clase I; antidepresivos tricíclicos en sobredosis</td><td>QRS ancho; taquicardia ventricular</td><td>Sobredosis; cardiopatía estructural</td></tr>
+                                    <tr><td><strong>Toxicidad digitálica</strong></td><td>Digoxina</td><td>Extrasístoles, taquicardia auricular con bloqueo, bloqueos, TV bidireccional</td><td>Insuficiencia renal, hipopotasemia, hipomagnesemia, amiodarona</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.5.</strong> Fármacos como factores desencadenantes de arritmias. Fuente: elaboración propia a partir de (11,12).</p>
+
+                        <h4>4.7. Drogas</h4>
+                        <p>El consumo de sustancias es un desencadenante frecuente de arritmias, en especial en las personas jóvenes sin cardiopatía conocida, y debe explorarse de forma sistemática y sin prejuicios durante la valoración.</p>
+
+                        <h5>4.7.1. Estimulantes</h5>
+                        <p>La cocaína produce una estimulación simpática intensa, vasoespasmo coronario e isquemia, y bloquea los canales de sodio, lo que puede ensanchar el QRS y prolongar el QT. Se asocia a taquicardia sinusal, taquiarritmias supraventriculares y arritmias ventriculares potencialmente mortales (9). Las anfetaminas y la metanfetamina comparten el efecto simpático y pueden producir taquiarritmias e isquemia. En el paciente con arritmia asociada al consumo de estimulantes, la valoración debe incluir la búsqueda de isquemia miocárdica.</p>
+
+                        <h5>4.7.2. Alcohol</h5>
+                        <p>El consumo de alcohol, tanto el excesivo puntual como el crónico, es un desencadenante reconocido de la fibrilación auricular, y la reducción o la abstinencia forman parte de la prevención de sus recurrencias (10). El consumo crónico se asocia, además, a la hipomagnesemia y a la hipopotasemia, que potencian el riesgo arrítmico, y a la miocardiopatía alcohólica.</p>
+
+                        <h5>4.7.3. Otras sustancias</h5>
+                        <p>Los opioides pueden producir bradicardia e hipoventilación, con la consiguiente hipoxia, y la metadona prolonga el QT (12). La cafeína en las cantidades habituales no se ha asociado de forma consistente a la fibrilación auricular (10), aunque el consumo elevado de bebidas energizantes puede desencadenar palpitaciones y taquicardia en personas susceptibles.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Sustancia</th><th>Mecanismo</th><th>Arritmias asociadas</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Cocaína</strong></td><td>Estimulación simpática, vasoespasmo e isquemia; bloqueo de canales de sodio</td><td>Taquicardia sinusal, TSV, TV y FV; QRS ancho (9)</td></tr>
+                                    <tr><td><strong>Anfetaminas y metanfetamina</strong></td><td>Estimulación simpática; isquemia</td><td>Taquiarritmias supraventriculares y ventriculares</td></tr>
+                                    <tr><td><strong>Alcohol</strong></td><td>Efecto tóxico directo; alteraciones electrolíticas</td><td>Fibrilación auricular (10)</td></tr>
+                                    <tr><td><strong>Opioides</strong></td><td>Depresión respiratoria; metadona: bloqueo de la repolarización</td><td>Bradicardia; torsades con la metadona (12)</td></tr>
+                                    <tr><td><strong>Cafeína y bebidas energizantes</strong></td><td>Estimulación simpática</td><td>Taquicardia y palpitaciones en personas susceptibles (10)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.6.</strong> Drogas como factores desencadenantes de arritmias. Fuente: elaboración propia a partir de (9,10,12).</p>
+
+                        <h4>4.8. Alteraciones endocrinas</h4>
+                        <p>Las hormonas tiroideas, las catecolaminas y la glucosa influyen de forma directa sobre el automatismo y la repolarización del miocardio. Por ello, varias alteraciones endocrinas se manifiestan como arritmias, y en ocasiones la arritmia es la primera manifestación de la enfermedad.</p>
+
+                        <h5>4.8.1. Hipertiroidismo</h5>
+                        <p>El exceso de hormona tiroidea aumenta la frecuencia de descarga del nodo sinusal y acorta el período refractario auricular. La taquicardia sinusal es la manifestación más frecuente, y el hipertiroidismo es un desencadenante reconocido de la fibrilación auricular, por lo que la función tiroidea debe evaluarse en el paciente con un primer episodio de esta arritmia (10). El tratamiento del trastorno tiroideo puede, por sí solo, restablecer el ritmo sinusal.</p>
+
+                        <h5>4.8.2. Hipotiroidismo</h5>
+                        <p>El déficit de hormona tiroidea produce bradicardia sinusal, bajo voltaje en el electrocardiograma y prolongación del QT. El hipotiroidismo figura entre las causas reversibles de bradicardia que deben descartarse antes de indicar un marcapasos definitivo (11).</p>
+
+                        <h5>4.8.3. Hipoglucemia</h5>
+                        <p>La hipoglucemia, la H añadida en la regla de las 6H, produce una descarga adrenérgica que se manifiesta por taquicardia, palpitaciones y diaforesis, y prolonga el intervalo QT, lo que puede favorecer arritmias ventriculares. En el paciente diabético tratado con insulina o con secretagogos, y en el paciente con alteración del estado de conciencia, la glucemia capilar debe formar parte de la valoración inicial, porque la hipoglucemia puede confundirse con un cuadro de origen cardíaco o neurológico.</p>
+
+                        <h5>4.8.4. Otras alteraciones</h5>
+                        <p>El feocromocitoma, por la liberación paroxística de catecolaminas, puede producir crisis de taquicardia e hipertensión. La insuficiencia suprarrenal y la cetoacidosis diabética pueden acompañarse de hiperpotasemia, y la corrección de la cetoacidosis con insulina puede, por el contrario, provocar hipopotasemia, de modo que el potasio debe vigilarse de forma estrecha durante su tratamiento.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Alteración</th><th>Arritmias o hallazgos</th><th>Valoración</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Hipertiroidismo</strong></td><td>Taquicardia sinusal; fibrilación auricular (10)</td><td>TSH y T4 libre en el primer episodio de FA (10)</td></tr>
+                                    <tr><td><strong>Hipotiroidismo</strong></td><td>Bradicardia sinusal, bajo voltaje, QT prolongado</td><td>Causa reversible de bradicardia (11)</td></tr>
+                                    <tr><td><strong>Hipoglucemia</strong></td><td>Taquicardia, palpitaciones, QT prolongado</td><td>Glucemia capilar en el diabético y ante alteración de la conciencia</td></tr>
+                                    <tr><td><strong>Feocromocitoma</strong></td><td>Crisis de taquicardia e hipertensión</td><td>Sospecha ante episodios paroxísticos</td></tr>
+                                    <tr><td><strong>Cetoacidosis diabética</strong></td><td>Hiperpotasemia al inicio; hipopotasemia con la insulina</td><td>Potasio seriado durante el tratamiento</td></tr>
+                                    <tr><td><strong>Insuficiencia suprarrenal</strong></td><td>Hiperpotasemia</td><td>Electrolitos y presión arterial</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.7.</strong> Alteraciones endocrinas como factores desencadenantes. Fuente: elaboración propia a partir de (10,11).</p>
+
+                        <h4>4.9. Síntesis para la valoración</h4>
+                        <p>La identificación de los factores desencadenantes no es un paso separado de la valoración, sino una parte de ella. Ante cualquier arritmia, el equipo de salud debe preguntarse qué la ha provocado y si ese factor puede corregirse, y buscar la respuesta en la anamnesis, la exploración, el electrocardiograma y las pruebas de laboratorio. Esta búsqueda no debe retrasar el tratamiento del paciente inestable, pero sí acompañarlo, dado que la corrección de la causa es con frecuencia la intervención que evita la recurrencia (8).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Factor</th><th>Pregunta o hallazgo</th><th>Prueba o dato que lo confirma</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Hipoxia</strong></td><td>¿Dificultad respiratoria, desaturación, sedación?</td><td>SpO₂, gasometría arterial</td></tr>
+                                    <tr><td><strong>Hipopotasemia</strong></td><td>¿Diuréticos, vómitos o diarrea? ¿Ondas U?</td><td>Potasio sérico</td></tr>
+                                    <tr><td><strong>Hipomagnesemia</strong></td><td>¿Alcohol, diuréticos, hipopotasemia refractaria?</td><td>Magnesio sérico</td></tr>
+                                    <tr><td><strong>Infarto agudo de miocardio</strong></td><td>¿Dolor torácico o equivalentes?</td><td>ECG de 12 derivaciones en 10 minutos; troponina (13)</td></tr>
+                                    <tr><td><strong>Fármacos</strong></td><td>¿Fármacos que prolongan el QT, deprimen el nodo o digoxina?</td><td>Conciliación de la medicación; QTc; digoxinemia</td></tr>
+                                    <tr><td><strong>Drogas</strong></td><td>¿Cocaína, estimulantes, alcohol, opioides?</td><td>Anamnesis; tóxicos en orina si está indicado</td></tr>
+                                    <tr><td><strong>Alteraciones endocrinas</strong></td><td>¿Signos tiroideos, diabetes, crisis adrenérgicas?</td><td>TSH y T4 libre; glucemia</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 4.8.</strong> Lista de verificación de los factores desencadenantes. Fuente: elaboración propia a partir de (8,10,12,13).</p>
                     </div>
 
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Monitorización Cardíaca</h3>
-                        <p>La monitorización electrocardiográfica es la herramienta que permite detectar una arritmia en tiempo real, pero exige comprender sus alcances y sus límites. La telemetría alerta que "algo cambió"; el ECG de 12 derivaciones responde "qué es exactamente" — ambas herramientas son complementarias, no intercambiables.</p>
 
-                        <ul>
-                            <li><strong>Telemetría / monitor de 3-5 derivaciones:</strong> vigilancia continua del ritmo; suficiente para detectar la mayoría de arritmias, pero limitada para valorar isquemia con precisión.</li>
-                            <li><strong>ECG de 12 derivaciones:</strong> estudio puntual y completo; indispensable para el diagnóstico definitivo y para descartar isquemia asociada.</li>
-                            <li><strong>Gestión de alarmas:</strong> configurar límites individualizados según la condición de cada paciente para evitar la "fatiga de alarmas".</li>
-                        </ul>
+                        <h4>5.1. Concepto</h4>
+                        <p>La monitorización cardíaca es el registro de la actividad eléctrica del corazón con el propósito de reconocer las arritmias, valorar su repercusión y vigilar la respuesta al tratamiento. En la práctica clínica se utilizan dos modalidades complementarias. El electrocardiograma continuo registra una o varias derivaciones de forma ininterrumpida y permite detectar en tiempo real los cambios del ritmo; su fortaleza es la vigilancia en el tiempo. El electrocardiograma de 12 derivaciones registra la actividad eléctrica desde doce perspectivas durante unos segundos; su fortaleza es el diagnóstico, porque permite precisar el origen de una arritmia, medir los intervalos y reconocer la isquemia.</p>
+                        <p>Ninguna de las dos modalidades sustituye a la otra. El monitor detecta que algo ha cambiado; el electrocardiograma de 12 derivaciones ayuda a precisar qué ha cambiado. Y ambos deben interpretarse siempre junto con la valoración clínica del paciente.</p>
 
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            Verifique la integridad de los cables y la calidad de la señal antes de confiar en una alarma, y obtenga un ECG de 12 derivaciones ante cualquier cambio sostenido del ritmo — no se conforme con un registro aislado del monitor de cabecera.
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Aspecto</th><th>ECG continuo</th><th>ECG de 12 derivaciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Propósito principal</strong></td><td>Vigilancia del ritmo en tiempo real</td><td>Diagnóstico del ritmo, de la isquemia y de los intervalos</td></tr>
+                                    <tr><td><strong>Derivaciones</strong></td><td>Una a varias, según el sistema</td><td>Doce simultáneas</td></tr>
+                                    <tr><td><strong>Duración</strong></td><td>Continua, durante horas o días</td><td>Unos segundos</td></tr>
+                                    <tr><td><strong>Fortalezas</strong></td><td>Detecta arritmias intermitentes y cambios del ritmo; alarmas</td><td>Localiza el origen de la arritmia y la isquemia; mide PR, QRS y QT</td></tr>
+                                    <tr><td><strong>Limitaciones</strong></td><td>Diagnóstico limitado; artefactos; fatiga de alarmas (14)</td><td>No detecta arritmias que no ocurren durante el registro</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <p class="figura-caption"><strong>Tabla 5.1.</strong> ECG continuo y ECG de 12 derivaciones. Fuente: elaboración propia a partir de (14).</p>
 
-                        <h4>Preguntas frecuentes</h4>
-                        <div class="acordeon">
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Un monitor de 3 derivaciones es suficiente para diagnosticar una arritmia?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>Permite detectar que hay una arritmia y seguir su evolución, pero el diagnóstico definitivo y la valoración de isquemia requieren un ECG de 12 derivaciones.</p>
-                                </div>
-                            </div>
-                            <div class="acordeon-item">
-                                <button class="acordeon-header" onclick="toggleAcordeon(this)">
-                                    ¿Qué hacer ante una alarma de "lead-off" (electrodo desconectado)?
-                                    <span class="icono-toggle" aria-hidden="true">+</span>
-                                </button>
-                                <div class="acordeon-body">
-                                    <p>Verificar primero al paciente y luego la integridad del electrodo antes de asumir que se trata de un artefacto — nunca ignorar la alarma sin confirmar la causa.</p>
-                                </div>
-                            </div>
+                        <h4>5.2. ECG continuo: indicaciones y objetivos</h4>
+
+                        <h5>5.2.1. Objetivos</h5>
+                        <p>Los estándares de práctica para la monitorización electrocardiográfica en el hospital atribuyen a la monitorización del ritmo cuatro objetivos: reconocer de inmediato el paro cardíaco para reducir el tiempo hasta la desfibrilación; identificar las condiciones que anuncian un deterioro, como las arritmias no sostenidas; facilitar el manejo de las arritmias; y diagnosticarlas o ayudar a identificar la causa de los síntomas (14). Estos estándares incluyen, además de la vigilancia de las arritmias, la monitorización de la isquemia mediante el segmento ST y la del intervalo QT en los pacientes con riesgo de <em>torsades de pointes</em> (14).</p>
+
+                        <h5>5.2.2. Indicaciones</h5>
+                        <p>La monitorización continua no está indicada en todos los pacientes hospitalizados. Su uso indiscriminado aumenta el número de alarmas sin beneficio y consume recursos, por lo que los estándares clasifican las indicaciones según el beneficio esperado (14). Entre los pacientes en los que está indicada se encuentran los supervivientes de un paro cardíaco, los pacientes con síndrome coronario agudo en su fase inicial, los que tienen arritmias de reciente aparición o potencialmente mortales, los portadores de un marcapasos temporal, los que reciben fármacos con riesgo de <em>torsades de pointes</em> y los que presentan alteraciones electrolíticas graves (14). La indicación debe revisarse de forma periódica y suspenderse cuando el paciente ya no la requiere.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Aspecto</th><th>Contenido</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Objetivos</strong></td><td>Reconocer el paro; anticipar el deterioro; facilitar el manejo; diagnosticar arritmias (14)</td></tr>
+                                    <tr><td><strong>Modalidades</strong></td><td>Arritmias, segmento ST e intervalo QT (14)</td></tr>
+                                    <tr><td><strong>Indicaciones principales</strong></td><td>Postparo; síndrome coronario agudo inicial; arritmias recientes o potencialmente mortales; marcapasos temporal; fármacos con riesgo de torsades; alteraciones electrolíticas graves (14)</td></tr>
+                                    <tr><td><strong>Uso racional</strong></td><td>Revisar la indicación periódicamente; suspender cuando ya no se requiera (14)</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <p class="figura-caption"><strong>Tabla 5.2.</strong> Objetivos e indicaciones del ECG continuo. Fuente: elaboración propia a partir de (14).</p>
+
+                        <h4>5.3. Técnica del ECG continuo</h4>
+
+                        <h5>5.3.1. Preparación de la piel y colocación de los electrodos</h5>
+                        <p>La calidad de la señal depende, en primer lugar, del contacto entre el electrodo y la piel. La piel debe estar limpia y seca; el vello abundante se recorta y la grasa se retira para disminuir la impedancia. Los electrodos se colocan sobre superficies planas, evitando las prominencias óseas y las zonas de mayor movimiento muscular, y se reemplazan de forma periódica, dado que su cambio diario reduce las falsas alarmas (14).</p>
+                        <p>Los sistemas de monitorización más utilizados emplean tres o cinco electrodos. En el sistema de tres electrodos, se colocan en la región infraclavicular derecha, en la región infraclavicular izquierda y en la parte inferior izquierda del tórax o del abdomen, y permiten registrar las derivaciones I, II y III. El sistema de cinco electrodos añade un electrodo en la parte inferior derecha, que actúa como referencia, y un electrodo torácico, que puede situarse en la posición de cualquier derivación precordial y permite registrar, además, una derivación precordial verdadera.</p>
+
+                        <h5>5.3.2. Selección de la derivación</h5>
+                        <p>La derivación se elige según lo que se desea vigilar. Para el diagnóstico de las arritmias, la derivación V1 es la más útil, porque permite reconocer la actividad auricular y distinguir con mayor facilidad el origen de las taquicardias de complejo ancho y el tipo de bloqueo de rama (14). La derivación II muestra con claridad la onda P y es útil para valorar la actividad auricular y la relación entre P y QRS. Cuando se monitoriza la isquemia, la derivación se selecciona según el territorio afectado, de acuerdo con el electrocardiograma de 12 derivaciones del propio paciente (14). En los sistemas que permiten dos derivaciones simultáneas, suele combinarse V1 con una derivación de los miembros.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Elemento</th><th>Recomendación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Piel</strong></td><td>Limpia y seca; recortar el vello; evitar prominencias óseas</td></tr>
+                                    <tr><td><strong>Cambio de electrodos</strong></td><td>Diario, para reducir las falsas alarmas (14)</td></tr>
+                                    <tr><td><strong>Sistema de tres electrodos</strong></td><td>Infraclavicular derecho, infraclavicular izquierdo e inferior izquierdo; derivaciones I, II y III</td></tr>
+                                    <tr><td><strong>Sistema de cinco electrodos</strong></td><td>Añade el electrodo inferior derecho y uno torácico; permite una derivación precordial</td></tr>
+                                    <tr><td><strong>Derivación V1</strong></td><td>De elección para el diagnóstico de las arritmias y de las taquicardias de complejo ancho (14)</td></tr>
+                                    <tr><td><strong>Derivación II</strong></td><td>Onda P y relación entre P y QRS</td></tr>
+                                    <tr><td><strong>Monitorización del ST</strong></td><td>Derivación según el territorio isquémico del paciente (14)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.3.</strong> Colocación de los electrodos y selección de la derivación. Fuente: elaboración propia a partir de (14).</p>
+
+                        <h4>5.4. Alarmas, artefactos y documentación</h4>
+
+                        <h5>5.4.1. Gestión de las alarmas</h5>
+                        <p>Los monitores generan un gran número de alarmas, muchas de ellas falsas o sin relevancia clínica. La exposición repetida a estas alarmas produce el fenómeno conocido como <strong>fatiga de alarmas</strong>, en el que el personal se desensibiliza y puede no responder a tiempo ante una alarma verdadera (14). Para prevenirlo, los límites de las alarmas deben ajustarse a la situación de cada paciente, las alarmas de las arritmias potencialmente mortales no deben desactivarse nunca, y toda alarma debe verificarse en el paciente antes de silenciarse (14).</p>
+
+                        <h5>5.4.2. Artefactos</h5>
+                        <p>Un artefacto es una señal que no procede de la actividad eléctrica del corazón. Sus causas más frecuentes son el movimiento del paciente, el temblor, el cepillado de dientes, los electrodos despegados o secos y la interferencia eléctrica de otros equipos. Algunos artefactos simulan arritmias graves, como la taquicardia o la fibrilación ventriculares, o una asistolia por desconexión. La regla esencial es valorar primero al paciente: un trazado de fibrilación ventricular en un paciente que conversa es un artefacto, y una línea plana con un paciente consciente indica una desconexión.</p>
+
+                        <h5>5.4.3. Documentación</h5>
+                        <p>Los parámetros de la monitorización y la tira de ritmo deben documentarse con una frecuencia establecida, al menos cada 8 a 12 horas, y ante cualquier cambio del ritmo (14). La documentación incluye la derivación registrada, la frecuencia, el ritmo, los intervalos PR, QRS y QT, y la conducta adoptada ante cualquier alteración.</p>
+
+                        <h4>5.5. Monitorización del intervalo QT</h4>
+
+                        <h5>5.5.1. Indicaciones</h5>
+                        <p>La monitorización del intervalo QT está indicada en los pacientes con riesgo de <em>torsades de pointes</em>: al iniciar un fármaco que prolonga el QT en un paciente con factores de riesgo, tras la sobredosis de un fármaco potencialmente proarrítmico, ante una bradiarritmia grave de nueva aparición y en presencia de una hipopotasemia o una hipomagnesemia graves (12).</p>
+
+                        <h5>5.5.2. Medición</h5>
+                        <p>El intervalo QT se mide desde el inicio del complejo QRS hasta el final de la onda T. Debe medirse siempre en la misma derivación, preferentemente aquella en la que el final de la onda T se define con mayor claridad, para que las mediciones sucesivas sean comparables (12). Dado que el QT se acorta al aumentar la frecuencia cardíaca, se corrige por la frecuencia para obtener el QTc. La fórmula de Bazett es la más utilizada, pero sobrecorrige el QT cuando la frecuencia es elevada y lo infracorrige cuando es baja, por lo que su interpretación en esos extremos requiere cautela (15).</p>
+
+                        <h5>5.5.3. Interpretación</h5>
+                        <p>Se considera prolongado un QTc igual o superior a 450 ms en el hombre y a 460 ms en la mujer (15). Un QTc superior a 500 ms, o un aumento de 60 ms o más con respecto al valor basal, se asocia a un riesgo elevado de <em>torsades de pointes</em> y obliga a actuar, por ejemplo, suspendiendo el fármaco responsable y corrigiendo los electrolitos (12).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Aspecto</th><th>Recomendación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Indicaciones</strong></td><td>Fármacos que prolongan el QT con factores de riesgo; sobredosis de fármacos proarrítmicos; bradiarritmia grave; hipopotasemia o hipomagnesemia graves (12)</td></tr>
+                                    <tr><td><strong>Medición</strong></td><td>Del inicio del QRS al final de la T; siempre en la misma derivación (12)</td></tr>
+                                    <tr><td><strong>Corrección</strong></td><td>QTc; Bazett con cautela en frecuencias altas o bajas (15)</td></tr>
+                                    <tr><td><strong>QTc prolongado</strong></td><td>≥ 450 ms en el hombre; ≥ 460 ms en la mujer (15)</td></tr>
+                                    <tr><td><strong>Riesgo elevado de torsades</strong></td><td>QTc &gt; 500 ms o aumento ≥ 60 ms respecto al basal (12)</td></tr>
+                                    <tr><td><strong>Conducta</strong></td><td>Comunicar; revisar y suspender fármacos; corregir potasio y magnesio (12)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.4.</strong> Monitorización del intervalo QT. Fuente: elaboración propia a partir de (12,15).</p>
+
+                        <h4>5.6. ECG de 12 derivaciones: indicaciones</h4>
+                        <p>El electrocardiograma de 12 derivaciones es la prueba fundamental para el diagnóstico de las arritmias. En la valoración del paciente con taquicardia o bradicardia, forma parte de la atención inicial junto con la monitorización, el acceso venoso y la oxigenación si hay hipoxemia; en el paciente estable debe obtenerse antes del tratamiento, y en el inestable no debe retrasarlo (8).</p>
+                        <p>Sus indicaciones en el contexto de las arritmias incluyen la documentación de toda arritmia nueva, la diferenciación de las taquicardias de complejo ancho y estrecho, la identificación de la actividad auricular, la búsqueda de isquemia, de preexcitación o de signos de alteraciones electrolíticas, la medición de los intervalos y la comprobación del resultado de cualquier intervención. Debe repetirse ante la aparición de síntomas, como el dolor torácico o las palpitaciones, y ante cualquier cambio del ritmo en el monitor.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Situación</th><th>Propósito</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Arritmia nueva</strong></td><td>Documentar y caracterizar el ritmo (8)</td></tr>
+                                    <tr><td><strong>Taquicardia</strong></td><td>Diferenciar complejo ancho y estrecho; identificar la actividad auricular (8)</td></tr>
+                                    <tr><td><strong>Bradicardia</strong></td><td>Identificar el tipo de bloqueo y la relación entre P y QRS (8)</td></tr>
+                                    <tr><td><strong>Dolor torácico o sospecha de isquemia</strong></td><td>Buscar cambios del ST y de la onda T</td></tr>
+                                    <tr><td><strong>Fármacos antiarrítmicos o que prolongan el QT</strong></td><td>Medir PR, QRS y QTc antes y después</td></tr>
+                                    <tr><td><strong>Alteraciones electrolíticas</strong></td><td>Buscar ondas T picudas, ondas U o QT prolongado</td></tr>
+                                    <tr><td><strong>Tras una intervención</strong></td><td>Documentar el ritmo resultante</td></tr>
+                                    <tr><td><strong>Síntomas o cambios en el monitor</strong></td><td>Comparar con el trazado previo</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.5.</strong> Indicaciones del ECG de 12 derivaciones en el paciente con arritmia. Fuente: elaboración propia a partir de (8).</p>
+
+                        <h4>5.7. Técnica de registro</h4>
+
+                        <h5>5.7.1. Preparación del paciente</h5>
+                        <p>El registro se realiza con el paciente en decúbito supino, relajado, con el tórax descubierto y respetando su privacidad. Se le explica el procedimiento y se le pide que permanezca quieto y respire con normalidad durante el registro. La piel se prepara de la misma manera que para la monitorización continua.</p>
+
+                        <h5>5.7.2. Colocación de los electrodos</h5>
+                        <p>Los cuatro electrodos de los miembros se colocan en los brazos y en las piernas. Su desplazamiento hacia el tronco, como se hace en la monitorización continua, modifica la amplitud y el eje de los complejos y puede simular o enmascarar alteraciones, por lo que, si se utiliza, debe quedar registrado (16). Los seis electrodos precordiales se colocan en posiciones anatómicas precisas, que se localizan palpando los espacios intercostales a partir del ángulo esternal (16). Su colocación incorrecta, en especial demasiado alta, es una de las causas más frecuentes de errores de interpretación.</p>
+                        <p>La ubicación de los seis electrodos precordiales (V1 a V6) se describió en el Módulo 01, Unidad 4, apartado 4.4, y no se repite aquí. La Tabla 5.6 recoge únicamente las derivaciones adicionales, que se registran cuando el electrocardiograma estándar no es suficiente.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Derivación</th><th>Ubicación</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>V4R (adicional)</strong></td><td>Quinto espacio intercostal, línea medioclavicular derecha; valora el ventrículo derecho</td></tr>
+                                    <tr><td><strong>V7 a V9 (adicionales)</strong></td><td>Mismo nivel horizontal que V6, en las líneas axilar posterior, escapular y paravertebral izquierdas; valoran la cara posterior</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.6.</strong> Derivaciones precordiales adicionales. Fuente: elaboración propia a partir de (16).</p>
+
+                        <h5>5.7.3. Parámetros del registro</h5>
+                        <p>El registro estándar se realiza a una velocidad de 25 mm/s y con una calibración de 10 mm/mV, que debe verificarse en la señal de calibración del trazado (16). Los filtros reducen el ruido, pero un filtro de alta frecuencia demasiado restrictivo distorsiona los complejos; en el adulto se recomienda un límite superior de al menos 150 Hz (16). El trazado debe identificarse con los datos del paciente, la fecha y la hora y, cuando corresponda, con la situación clínica en la que se obtuvo, como la presencia de dolor o la administración de un fármaco.</p>
+                        <p>Las derivaciones adicionales se registran cuando el electrocardiograma estándar no es suficiente: las derechas, en el infarto inferior, para valorar la afectación del ventrículo derecho, y las posteriores, ante la sospecha de un infarto de la cara posterior. Al registrarlas, deben señalarse en el trazado para evitar confusiones.</p>
+
+                        <h4>5.8. Errores frecuentes</h4>
+                        <p>Un electrocardiograma técnicamente defectuoso puede conducir a diagnósticos erróneos y a tratamientos innecesarios. Antes de interpretar cualquier trazado, debe comprobarse su calidad.</p>
+                        <p>La inversión de los electrodos de los brazos es el error más frecuente: produce ondas P y complejos QRS negativos en la derivación I y positivos en aVR, un patrón que puede confundirse con una dextrocardia, de la que se distingue porque la progresión de la onda R en las derivaciones precordiales es normal (16). La colocación de los electrodos precordiales en una posición demasiado alta puede simular un retraso de la conducción o un infarto antiguo. Los artefactos, como el temblor o el movimiento, pueden simular un flutter o una taquicardia ventricular, y la interferencia de la corriente eléctrica produce una oscilación regular y fina de la línea de base. Por último, una calibración distinta de la estándar altera la amplitud aparente de los complejos y puede llevar a diagnosticar o a pasar por alto la hipertrofia o el bajo voltaje.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Error</th><th>Efecto en el trazado</th><th>Prevención</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Inversión de los electrodos de los brazos</strong></td><td>P y QRS negativos en I; positivos en aVR; simula dextrocardia (16)</td><td>Verificar la colocación antes de registrar</td></tr>
+                                    <tr><td><strong>Electrodos precordiales demasiado altos</strong></td><td>Simula retraso de la conducción o infarto antiguo</td><td>Localizar los espacios intercostales desde el ángulo esternal (16)</td></tr>
+                                    <tr><td><strong>Electrodos de los miembros en el tronco</strong></td><td>Cambios de amplitud y de eje</td><td>Colocarlos en los miembros o documentar la modificación (16)</td></tr>
+                                    <tr><td><strong>Temblor o movimiento</strong></td><td>Simula flutter o taquicardia ventricular</td><td>Paciente relajado y abrigado; repetir el registro</td></tr>
+                                    <tr><td><strong>Interferencia eléctrica</strong></td><td>Oscilación regular y fina de la línea de base</td><td>Alejar o desconectar equipos; revisar los cables</td></tr>
+                                    <tr><td><strong>Calibración incorrecta</strong></td><td>Amplitud aparente alterada</td><td>Verificar 25 mm/s y 10 mm/mV (16)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.7.</strong> Errores frecuentes en el registro del ECG. Fuente: elaboración propia a partir de (16).</p>
+
+                        <h4>5.9. Lectura inicial y papel del equipo</h4>
+
+                        <h5>5.9.1. Lectura sistemática</h5>
+                        <p>La interpretación del electrocardiograma debe seguir siempre el mismo orden, de modo que ningún elemento se pase por alto: la frecuencia, el ritmo y su regularidad, la onda P, el intervalo PR, el complejo QRS, el segmento ST y la onda T, y el intervalo QTc. El trazado se compara, siempre que sea posible, con los registros previos del paciente, y su interpretación se integra con la situación clínica, porque un mismo trazado puede tener significados distintos según el estado del paciente (8).</p>
+
+                        <h5>5.9.2. Hallazgos que exigen una respuesta inmediata</h5>
+                        <p>El equipo de salud que obtiene el electrocardiograma o vigila el monitor debe reconocer los hallazgos que exigen una comunicación inmediata y una valoración del paciente: la taquicardia o la fibrilación ventriculares, la asistolia, la bradicardia o la taquicardia acompañadas de signos de inestabilidad, los bloqueos auriculoventriculares de alto grado, la elevación del segmento ST y la prolongación del QTc por encima de 500 ms (8,12).</p>
+
+                        <h5>5.9.3. Papel del equipo de salud</h5>
+                        <p>El profesional que realiza la monitorización o el registro es responsable de su calidad técnica, de la identificación correcta del trazado, de la verificación de los hallazgos en el paciente y de su comunicación oportuna. Esta responsabilidad no exige un diagnóstico definitivo, sino la capacidad de reconocer que un trazado es anormal o ha cambiado, y de actuar en consecuencia.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Elemento</th><th>Valor de referencia</th><th>Hallazgo que orienta a una alteración</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Frecuencia</strong></td><td>60 a 100 lpm</td><td>Taquicardia o bradicardia</td></tr>
+                                    <tr><td><strong>Ritmo</strong></td><td>Regular, sinusal</td><td>Irregularidad; ausencia de P; ondas f o F</td></tr>
+                                    <tr><td><strong>Onda P</strong></td><td>Positiva en II, seguida de QRS</td><td>Ausente, invertida o sin relación con el QRS</td></tr>
+                                    <tr><td><strong>Intervalo PR</strong></td><td>0,12 a 0,20 s</td><td>Largo: bloqueo AV; corto: preexcitación</td></tr>
+                                    <tr><td><strong>Complejo QRS</strong></td><td>&lt; 0,12 s</td><td>Ancho: origen ventricular, bloqueo de rama, fármacos, hiperpotasemia</td></tr>
+                                    <tr><td><strong>ST y onda T</strong></td><td>ST isoeléctrico; T concordante</td><td>Elevación o descenso del ST; T picuda o aplanada; ondas U</td></tr>
+                                    <tr><td><strong>QTc</strong></td><td>&lt; 450 ms (hombre); &lt; 460 ms (mujer)</td><td>&gt; 500 ms o aumento ≥ 60 ms: riesgo de torsades (12)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 5.8.</strong> Lectura sistemática del ECG y valores de referencia en el adulto. Fuente: elaboración propia a partir de (8,12,15).</p>
                     </div>
 
                     <!-- UNIDAD 6 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 6 · Método de Interpretación Inicial</h3>
-                        <p>Antes de nombrar una arritmia (Módulo 03), toda lectura de ECG sigue el mismo método sistemático, aplicado siempre en el mismo orden. Aplicar siempre el mismo orden evita omitir hallazgos y permite comunicar el trazado de forma estandarizada al equipo de salud.</p>
+                        <h3 class="unidad-titulo">Unidad 6 · Método de Interpretación</h3>
 
-                        <h4>Recorre el método, paso a paso</h4>
-                        <p>Haz clic en cada paso para ver qué preguntarte y una pista para interpretarlo.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'frecuencia')">1. Frecuencia</button>
-                                <button onclick="activarPasoStepper(this,'ritmo')">2. Ritmo</button>
-                                <button onclick="activarPasoStepper(this,'p')">3. Onda P</button>
-                                <button onclick="activarPasoStepper(this,'pr')">4. PR</button>
-                                <button onclick="activarPasoStepper(this,'qrs')">5. QRS</button>
-                                <button onclick="activarPasoStepper(this,'eje')">6. Eje</button>
-                            </div>
-                            <div class="stepper-panel activo" data-paso="frecuencia">
-                                <h5>1. Frecuencia</h5>
-                                <p><strong>Pregúntate:</strong> ¿es normal (60-100 lpm), bradicardia (&lt; 60 lpm) o taquicardia (&gt; 100 lpm)?</p>
-                                <p><strong>Pista:</strong> es el primer dato que orienta si hay tiempo para un análisis detallado o si se necesita actuar ya (enlaza directamente con el ABCDE de la Unidad 1).</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="ritmo">
-                                <h5>2. Ritmo</h5>
-                                <p><strong>Pregúntate:</strong> ¿es regular o irregular? Si es irregular, ¿de forma regular (con un patrón) o totalmente irregular?</p>
-                                <p><strong>Pista:</strong> un ritmo "irregularmente irregular" es, por sí solo, una pista diagnóstica que se retoma en el Módulo 03.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="p">
-                                <h5>3. Onda P</h5>
-                                <p><strong>Pregúntate:</strong> ¿está presente? ¿es normal, ausente o de morfología anormal? ¿precede a cada QRS?</p>
-                                <p><strong>Pista:</strong> confirma si el impulso se está originando donde debería — en el nodo SA (Módulo 01, Unidad 3).</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="pr">
-                                <h5>4. Intervalo PR</h5>
-                                <p><strong>Pregúntate:</strong> ¿es normal (0.12-0.20 seg), prolongado o variable?</p>
-                                <p><strong>Pista:</strong> un PR prolongado o variable orienta hacia un problema de conducción en el nodo AV.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="qrs">
-                                <h5>5. Complejo QRS</h5>
-                                <p><strong>Pregúntate:</strong> ¿es estrecho (&lt; 0.12 seg) o ancho?</p>
-                                <p><strong>Pista:</strong> estrecho sugiere origen supraventricular; ancho sugiere origen ventricular o un bloqueo de rama, hasta demostrar lo contrario.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="eje">
-                                <h5>6. Eje e intervalos</h5>
-                                <p><strong>Pregúntate:</strong> ¿el eje eléctrico es normal? ¿el intervalo QT está dentro de lo esperado cuando sea relevante revisarlo?</p>
-                                <p><strong>Pista:</strong> cierra el método — describir un ritmo usando siempre estos seis pasos, en este orden, es el puente directo hacia el Módulo 03: Diagnóstico.</p>
-                            </div>
-                        </div>
+                        <p>El electrocardiograma constituye una representación de la actividad eléctrica cardíaca y su interpretación requiere una lectura sistemática que permita integrar los diferentes componentes del trazado. Aunque determinados hallazgos pueden orientar rápidamente hacia una alteración, la valoración de un ECG no debe basarse en un único elemento, sino en el análisis ordenado de la frecuencia, la regularidad, la actividad auricular, la conducción auriculoventricular, la activación ventricular y la repolarización (17).</p>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Frecuencia → Ritmo → Onda P → PR → QRS → Eje/Intervalos: el mismo orden, siempre, para cualquier trazado.
+                        <p>La lectura sistemática permite reducir la posibilidad de omitir alteraciones y facilita que cada hallazgo sea interpretado dentro del conjunto del trazado. Por esta razón, antes de identificar un ritmo específico, es necesario establecer una secuencia de observación que pueda aplicarse de manera consistente a diferentes electrocardiogramas (17). Este principio es especialmente importante en la valoración de pacientes que pueden encontrarse asintomáticos, ya que un ECG puede revelar alteraciones eléctricas aun cuando no existan manifestaciones clínicas evidentes (17).</p>
+
+                        <p>En esta unidad se aprenderá, por tanto, una secuencia de interpretación. El propósito no es memorizar nuevamente las características de cada onda o intervalo —ya estudiadas en el módulo de fundamentos—, sino desarrollar un método de lectura que permita observar, describir y relacionar los hallazgos de forma ordenada.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Paso</th><th>Parámetro a analizar</th><th>¿Cómo se analiza?</th><th>¿Qué orienta?</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>1</strong></td><td>Frecuencia cardíaca</td><td>Calcular la frecuencia a partir del trazado, teniendo en cuenta la regularidad del ritmo.</td><td>Permite identificar si existe una frecuencia rápida, lenta o dentro del rango esperado.</td></tr>
+                                    <tr><td><strong>2</strong></td><td>Ritmo / Regularidad</td><td>Comparar la distancia entre los intervalos R–R a lo largo del trazado: ¿son regulares o irregulares?</td><td>Reconoce si el ritmo mantiene regularidad constante o presenta variaciones.</td></tr>
+                                    <tr><td><strong>3</strong></td><td>Onda P</td><td>¿La onda P está presente, tiene una morfología similar y aparece de forma consistente?</td><td>Ausencia, variación o relación anormal orienta hacia una alteración de la actividad auricular o de la conducción.</td></tr>
+                                    <tr><td><strong>4</strong></td><td>Intervalo PR</td><td>Medir desde el inicio de la onda P hasta el inicio del QRS. ¿El intervalo PR mantiene una duración de 0,12 a 0,20 segundos y una relación constante?</td><td>PR prolongado, corto o variable orienta hacia alteraciones de la conducción auriculoventricular.</td></tr>
+                                    <tr><td><strong>5</strong></td><td>Complejo QRS</td><td>¿El QRS es estrecho o ancho y mantiene una morfología similar?</td><td>Orienta sobre la activación ventricular y permite reconocer si la conducción ventricular sigue un patrón esperado o presenta alteraciones.</td></tr>
+                                    <tr><td><strong>6</strong></td><td>Segmento ST</td><td>¿El segmento ST se mantiene cercano a la línea de base o presenta desplazamientos?</td><td>La elevación o depresión del ST puede indicar alteraciones de la repolarización o isquemia que requieren correlación con el resto del ECG.</td></tr>
+                                    <tr><td><strong>7</strong></td><td>Onda T</td><td>¿La onda T presenta una morfología, dirección y apariencia esperadas?</td><td>Aporta información sobre la repolarización ventricular y debe interpretarse según la derivación.</td></tr>
+                                    <tr><td><strong>8</strong></td><td>Intervalo QT</td><td>Medir desde el inicio del QRS hasta el final de la onda T. ¿La duración del QT es adecuada para la frecuencia cardíaca?</td><td>Permite valorar la duración global de la despolarización y repolarización ventricular. Para su interpretación se considera el QT corregido (QTc).</td></tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <p class="figura-caption"><strong>Tabla 6.1.</strong> Secuencia sistemática para el análisis de los parámetros electrocardiográficos fundamentales. Elaboración propia a partir de (17).</p>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
                         <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo no requiere un recurso interactivo adicional — el simulador ECG completo se encuentra en el Módulo 03: Diagnóstico.</p>
-                    </div>
-
-                    <!-- CASO CLÍNICO -->
-                    <div class="modulo-caso-clinico">
-                        <h3>Caso clínico</h3>
-                        <div class="caso-clinico-grid">
-                            <div class="caso-clinico-campo">
-                                <h5>Motivo de consulta</h5>
-                                <p>Paciente de 68 años que refiere palpitaciones súbitas y mareo mientras caminaba por el pasillo del servicio.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Antecedentes</h5>
-                                <p>Hipertensión arterial, sin antecedentes cardíacos conocidos previos.</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Signos vitales</h5>
-                                <p>FC 148 lpm · TA 92/58 mmHg · SpO2 94% · Estado mental: alerta pero ansioso</p>
-                            </div>
-                            <div class="caso-clinico-campo">
-                                <h5>Valoración (ABCDE)</h5>
-                                <p>Vía aérea permeable, taquipnea leve, piel pálida y ligeramente diaforética, llenado capilar de 3 segundos.</p>
-                            </div>
-                        </div>
-                        <div class="caso-clinico-preguntas">
-                            <h4>Preguntas del caso</h4>
-                            <p>Con base en la valoración hemodinámica de la Unidad 3: ¿este paciente se clasifica como estable o inestable? ¿Qué factores desencadenantes (6H/6T) descartaría primero, y qué información adicional del monitor solicitaría antes de continuar hacia el Módulo 03?</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el recurso interactivo del módulo.
                         </div>
                     </div>
 
                     <!-- ACTIVIDAD DE APRENDIZAJE -->
                     <div class="modulo-actividad">
                         <h3>Actividad de aprendizaje</h3>
-                        <p class="actividad-enunciado">Según el método sistemático de interpretación inicial, ¿cuál es el primer parámetro que se debe evaluar en cualquier trazado de ECG?</p>
-                        <div class="actividad-opciones">
-                            <label class="actividad-opcion"><input type="radio" name="act-02" value="A"> A — El ancho del complejo QRS</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-02" value="B"> B — La frecuencia cardíaca</label>
-                            <label class="actividad-opcion"><input type="radio" name="act-02" value="C"> C — El eje eléctrico</label>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">📝</span>
+                            Espacio reservado para las preguntas de la actividad de aprendizaje.
                         </div>
-                        <button class="btn-verificar" onclick="verificarActividad(this)">Verificar respuesta</button>
-                    </div>
-
-                    <!-- RESUMEN -->
-                    <div class="modulo-resumen">
-                        <h3>Resumen</h3>
-                        <ul>
-                            <li>El ABCDE identifica en segundos si el paciente está estable o inestable, antes de analizar el ritmo en detalle.</li>
-                            <li>Palpitaciones, síncope, dolor torácico, disnea y mareo son las manifestaciones clínicas clave de una arritmia.</li>
-                            <li>La PAM y los signos de perfusión periférica definen el impacto hemodinámico real de la arritmia sobre el paciente.</li>
-                            <li>Las 6H y 6T son la lista sistemática de causas reversibles que debe descartarse ante toda arritmia.</li>
-                            <li>La telemetría detecta el cambio; el ECG de 12 derivaciones lo confirma y lo caracteriza.</li>
-                            <li>Frecuencia, ritmo, onda P, PR, QRS y eje/intervalos: el mismo método de lectura, siempre, en el mismo orden.</li>
-                        </ul>
-                    </div>
-
-                    <!-- AUTOEVALUACIÓN -->
-                    <div class="modulo-autoevaluacion">
-                        <h3>Autoevaluación</h3>
-                        <p class="autoevaluacion-meta">5 preguntas · Retroalimentación inmediata · Intentos ilimitados</p>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>1. ¿Cuál de los siguientes es un signo de inestabilidad hemodinámica?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-1"> Estado mental alterado</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-1"> Llenado capilar normal</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-1"> Piel tibia y rosada</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>2. La fórmula de la presión arterial media (PAM) es:</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-2"> TAS + TAD / 2</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-2"> TAD + 1/3 (TAS − TAD)</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-2"> TAS − TAD</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>3. ¿Cuál de las siguientes pertenece a las "6 T" de causas reversibles?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-3"> Hipoglicemia</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-3"> Taponamiento cardíaco</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-3"> Hipotermia</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>4. ¿Qué diferencia principal existe entre la telemetría y el ECG de 12 derivaciones?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-4"> Ninguna, son intercambiables</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-4"> La telemetría detecta el cambio; el de 12 derivaciones lo caracteriza</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-4"> El de 12 derivaciones es solo para uso ambulatorio</label>
-                            </div>
-                        </div>
-
-                        <div class="autoevaluacion-pregunta">
-                            <h5>5. En el método sistemático de interpretación, ¿qué se evalúa justo después del ritmo?</h5>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-5"> El complejo QRS</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-5"> La onda P</label>
-                                <label class="actividad-opcion"><input type="radio" name="eval-02-5"> El eje eléctrico</label>
-                            </div>
-                        </div>
-
-                        <button class="btn-enviar-eval" onclick="verificarAutoevaluacion(this)">Enviar respuestas</button>
                     </div>
 
                     <!-- BIBLIOGRAFÍA -->
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>American Heart Association. Aspectos destacados de las guías de la AHA para RCP y atención cardiovascular de emergencia (ACLS/BLS).</li>
-                            <li>Herdman TH, Kamitsuru S, editores. NANDA International: Diagnósticos enfermeros. Definiciones y clasificación.</li>
-                            <li>Moorhead S, Johnson M, Maas ML, Swanson E. Clasificación de Resultados de Enfermería (NOC).</li>
-                            <li>Bulechek GM, Butcher HK, Dochterman JM, Wagner CM. Clasificación de Intervenciones de Enfermería (NIC).</li>
+                            <li>Thim T, Krarup NH, Grove EL, Rohde CV, Løfgren B. Initial assessment and treatment with the Airway, Breathing, Circulation, Disability, Exposure (ABCDE) approach. Int J Gen Med. 2012;5:117-21. doi: 10.2147/IJGM.S28478.</li>
+                            <li>Moulton KP, Bhutta BS, Mullin JC. Evaluation of suspected cardiac arrhythmia. [actualizado 17 ago 2023]. En: StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing; 2023 ene-. Disponible en: https://www.ncbi.nlm.nih.gov/books/NBK585054/.</li>
+                            <li>Mirvis DM. Palpitations. En: Walker HK, Hall WD, Hurst JW, editores. Clinical methods: the history, physical, and laboratory examinations. 3ª ed. Boston: Butterworths; 1990. Capítulo 10. Disponible en: https://www.ncbi.nlm.nih.gov/books/NBK202/.</li>
+                            <li>Kapoor WN. Syncope. En: Walker HK, Hall WD, Hurst JW, editores. Clinical methods: the history, physical, and laboratory examinations. 3ª ed. Boston: Butterworths; 1990. Capítulo 12. Disponible en: https://www.ncbi.nlm.nih.gov/books/NBK224/.</li>
+                            <li>Soto JR. Dolor torácico. Rev Med Clin Las Condes. 2011;22(5):655-64. doi: 10.1016/S0716-8640(11)70478-3.</li>
+                            <li>Suha F, Modi P, Sharma S. Dyspnea. [actualizado 13 dic 2025]. En: StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing; 2025 ene-. Disponible en: https://www.ncbi.nlm.nih.gov/sites/books/NBK499965/.</li>
+                            <li>Zilberman A, Rogel S. Hemodynamic evaluation of common cardiac arrhythmias. Int J Cardiol. 1990;27(3):341-9. doi: 10.1016/0167-5273(90)90291-c.</li>
+                            <li>Wigginton JG, Agarwal S, Bartos JA, Coute RA, Drennan IR, Haamid A, et al. Part 9: Adult advanced life support: 2025 American Heart Association Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care. Circulation. 2025;152(16 Suppl 2):S538-77. doi: 10.1161/CIR.0000000000001376.</li>
+                            <li>Al-Khatib SM, Stevenson WG, Ackerman MJ, Bryant WJ, Callans DJ, Curtis AB, et al. 2017 AHA/ACC/HRS guideline for management of patients with ventricular arrhythmias and the prevention of sudden cardiac death. Circulation. 2018;138(13):e272-391. doi: 10.1161/CIR.0000000000000549.</li>
+                            <li>Joglar JA, Chung MK, Armbruster AL, Benjamin EJ, Chyou JY, Cronin EM, et al. 2023 ACC/AHA/ACCP/HRS guideline for the diagnosis and management of atrial fibrillation. Circulation. 2024;149(1):e1-156. doi: 10.1161/CIR.0000000000001193.</li>
+                            <li>Kusumoto FM, Schoenfeld MH, Barrett C, Edgerton JR, Ellenbogen KA, Gold MR, et al. 2018 ACC/AHA/HRS guideline on the evaluation and management of patients with bradycardia and cardiac conduction delay. Circulation. 2019;140(8):e382-482. doi: 10.1161/CIR.0000000000000628.</li>
+                            <li>Drew BJ, Ackerman MJ, Funk M, Gibler WB, Kligfield P, Menon V, et al. Prevention of torsade de pointes in hospital settings: a scientific statement from the American Heart Association and the American College of Cardiology Foundation. Circulation. 2010;121(8):1047-60. doi: 10.1161/CIRCULATIONAHA.109.192704.</li>
+                            <li>Byrne RA, Rossello X, Coughlan JJ, Barbato E, Berry C, Chieffo A, et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J. 2023;44(38):3720-826. doi: 10.1093/eurheartj/ehad191.</li>
+                            <li>Sandau KE, Funk M, Auerbach A, Barsness GW, Blum K, Cvach M, et al. Update to practice standards for electrocardiographic monitoring in hospital settings: a scientific statement from the American Heart Association. Circulation. 2017;136(19):e273-344. doi: 10.1161/CIR.0000000000000527.</li>
+                            <li>Rautaharju PM, Surawicz B, Gettes LS. AHA/ACCF/HRS recommendations for the standardization and interpretation of the electrocardiogram: part IV: the ST segment, T and U waves, and the QT interval. Circulation. 2009;119(10):e241-50. doi: 10.1161/CIRCULATIONAHA.108.191096.</li>
+                            <li>Kligfield P, Gettes LS, Bailey JJ, Childers R, Deal BJ, Hancock EW, et al. Recommendations for the standardization and interpretation of the electrocardiogram: part I: the electrocardiogram and its technology. Circulation. 2007;115(10):1306-24. doi: 10.1161/CIRCULATIONAHA.106.180200.</li>
+                            <li>Hampton JR. ECG fácil. 8ª ed. Barcelona: Elsevier España; 2014. ISBN 978-84-9022-685-8.</li>
                         </ol>
                     </div>
 
