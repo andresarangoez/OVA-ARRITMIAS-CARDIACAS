@@ -333,3 +333,12 @@
 @media (max-width: 640px) {
     .reto-emparejar { grid-template-columns: 1fr; }
 }
+
+/* Mini reto con banco de preguntas: solo se ve una, el botón rota entre
+   ellas. Se cualifica con .mini-reto para que las preguntas ocultas no
+   dependan del orden de las hojas. */
+.mini-reto .mini-reto-contador { margin: 0 0 10px 0; font-size: 0.78rem; font-weight: 600; color: var(--fucs-azul-oscuro); opacity: 0.7; }
+.mini-reto .mini-reto-pregunta { display: none; }
+.mini-reto .mini-reto-pregunta.activa { display: block; }
+.mini-reto .mini-reto-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.mini-reto .mini-reto-otra { background: transparent; color: var(--fucs-azul-oscuro); border: 1.5px solid var(--fucs-azul-oscuro); }

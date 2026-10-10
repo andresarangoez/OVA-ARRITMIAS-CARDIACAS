@@ -75,8 +75,15 @@ html {
     border-radius: 4px;
 }
 
-body { 
-    background-color: var(--bg-page); 
+/* El recorte horizontal va también en <html>, no solo en <body>. Con él solo
+   en <body>, el ancho de desplazamiento del documento se quedaba en 436 px
+   dentro de un móvil de 375, y los botones flotantes, que se posicionan con
+   right sobre ese ancho, caían fuera de la pantalla: el de la derecha
+   —índice y volver arriba— quedaba invisible en el teléfono. */
+html { overflow-x: hidden; }
+
+body {
+    background-color: var(--bg-page);
     color: var(--text-body); 
     font-family: var(--font-main); 
     margin: 0;

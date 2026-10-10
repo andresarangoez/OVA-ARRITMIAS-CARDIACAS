@@ -123,11 +123,17 @@
     //      </div>
     // La respuesta correcta vive en el HTML (data-correcta="true" en el
     // input correcto) — este código solo la lee, nunca la inventa.
+    // Si el reto trae un banco de preguntas (.mini-reto-pregunta), solo cuenta
+    // la que está a la vista: las demás conservan su marca de una ronda previa.
+    function preguntaActiva(contenedor) {
+        return contenedor.querySelector('.mini-reto-pregunta.activa') || contenedor;
+    }
+
     function verificarMiniReto(boton) {
         const contenedor = boton.closest('.mini-reto');
         if (!contenedor) return;
 
-        const seleccionada = contenedor.querySelector('input[type="radio"]:checked');
+        const seleccionada = preguntaActiva(contenedor).querySelector('input[type="radio"]:checked');
         const feedback = contenedor.querySelector('.mini-reto-feedback');
         if (!feedback) return;
 
@@ -144,16 +150,65 @@
         feedback.className = 'mini-reto-feedback ' + (esCorrecta ? 'correcto' : 'incorrecto');
     }
 
+    // Pasa a la siguiente pregunta del banco, en orden y en ciclo. No elige al
+    // azar: con pocas preguntas el azar repite y parece que el botón no hizo
+    // nada. Las preguntas y sus respuestas siguen viviendo en el HTML.
+    function cambiarMiniReto(boton) {
+        const contenedor = boton.closest('.mini-reto');
+        if (!contenedor) return;
+
+        const preguntas = contenedor.querySelectorAll('.mini-reto-pregunta');
+        if (preguntas.length < 2) return;
+
+        const siguiente = ((parseInt(contenedor.dataset.pregunta, 10) || 0) + 1) % preguntas.length;
+        contenedor.dataset.pregunta = siguiente;
+
+        preguntas.forEach(function (p, i) {
+            p.classList.toggle('activa', i === siguiente);
+            if (i === siguiente) {
+                p.querySelectorAll('input[type="radio"]').forEach(function (r) { r.checked = false; });
+            }
+        });
+
+        const feedback = contenedor.querySelector('.mini-reto-feedback');
+        if (feedback) { feedback.textContent = ''; feedback.className = 'mini-reto-feedback'; }
+        actualizarContador(contenedor);
+    }
+
+    function actualizarContador(contenedor) {
+        const contador = contenedor.querySelector('.mini-reto-contador');
+        const total = contenedor.querySelectorAll('.mini-reto-pregunta').length;
+        if (!contador || total < 2) return;
+        contador.textContent = 'Pregunta ' + ((parseInt(contenedor.dataset.pregunta, 10) || 0) + 1) +
+            ' de ' + total;
+    }
+
+    // Los módulos se inyectan con innerHTML, así que el contador se rellena
+    // desde el mismo observador que usan los demás widgets.
+    const observadorRetos = new MutationObserver(function (mutaciones) {
+        mutaciones.forEach(function (m) {
+            m.addedNodes.forEach(function (nodo) {
+                if (nodo.nodeType !== 1 || !nodo.querySelectorAll) return;
+                nodo.querySelectorAll('.mini-reto').forEach(actualizarContador);
+            });
+        });
+    });
+
+    const vistaModuloRetos = document.getElementById('vista-modulo');
+    if (vistaModuloRetos) observadorRetos.observe(vistaModuloRetos, { childList: true, subtree: true });
+
     // --- API PÚBLICA DEL NAMESPACE ---
     OVA.WidgetsAprendizaje.activarPasoStepper = activarPasoStepper;
     OVA.WidgetsAprendizaje.activarNodoDiagrama = activarNodoDiagrama;
     OVA.WidgetsAprendizaje.manejarClicEmparejar = manejarClicEmparejar;
     OVA.WidgetsAprendizaje.verificarMiniReto = verificarMiniReto;
+    OVA.WidgetsAprendizaje.cambiarMiniReto = cambiarMiniReto;
 
     // --- EXPOSICIÓN MÍNIMA PARA onclick="" EN EL HTML ---
     window.activarPasoStepper = activarPasoStepper;
     window.activarNodoDiagrama = activarNodoDiagrama;
     window.manejarClicEmparejar = manejarClicEmparejar;
     window.verificarMiniReto = verificarMiniReto;
+    window.cambiarMiniReto = cambiarMiniReto;
 
 })(window.OVA = window.OVA || {});

@@ -142,17 +142,8 @@
             if (encabezados.length === 0) return;
 
             const entradas = [];
-            let mayor = 0;
-            let menor = 0;
 
             encabezados.forEach((encabezado, i) => {
-                if (encabezado.tagName === 'H4') {
-                    mayor += 1;
-                    menor = 0;
-                } else {
-                    menor += 1;
-                }
-                const numero = menor > 0 ? (mayor + '.' + menor) : String(mayor);
                 const idEncabezado = 'unidad-' + indiceUnidad + '-sub-' + i;
                 encabezado.id = idEncabezado;
 
@@ -164,16 +155,30 @@
                 }
                 const textoOriginal = encabezado.dataset.textoOriginal;
 
+                // El número lo pone el encabezado, no este índice. Los módulos
+                // traen la numeración del documento de contenidos («4.1.
+                // Concepto y enfoque…»), que es la que el estudiante ve en el
+                // PDF y la que citan los demás módulos; contar aquí otra vez
+                // producía un doble número («1. 4.1. Concepto…»). Un
+                // encabezado sin número —una actividad, un widget— se queda
+                // sin él en lugar de inventarse uno que no existe en el
+                // documento.
+                const propio = textoOriginal.match(/^(\d+(?:\.\d+)*)\.?\s+(\S.*)$/);
+                const numero = propio ? propio[1] : '';
+                const texto = propio ? propio[2] : textoOriginal;
+
                 encabezado.innerHTML = '';
-                const numeroSpan = document.createElement('span');
-                numeroSpan.className = 'numero-encabezado';
-                numeroSpan.textContent = numero + '.';
-                encabezado.appendChild(numeroSpan);
-                encabezado.appendChild(document.createTextNode(' ' + textoOriginal));
+                if (numero) {
+                    const numeroSpan = document.createElement('span');
+                    numeroSpan.className = 'numero-encabezado';
+                    numeroSpan.textContent = numero + '.';
+                    encabezado.appendChild(numeroSpan);
+                }
+                encabezado.appendChild(document.createTextNode(numero ? ' ' + texto : texto));
 
                 entradas.push({
                     numero,
-                    texto: textoOriginal,
+                    texto,
                     id: idEncabezado,
                     nivel: encabezado.tagName === 'H4' ? 1 : 2
                 });
@@ -242,7 +247,7 @@
 
             const link = document.createElement('a');
             link.href = '#' + entrada.id;
-            link.textContent = entrada.numero + '. ' + entrada.texto;
+            link.textContent = entrada.numero ? entrada.numero + '. ' + entrada.texto : entrada.texto;
             link.onclick = (evento) => {
                 evento.preventDefault();
                 const destino = document.getElementById(entrada.id);
