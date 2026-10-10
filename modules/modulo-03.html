@@ -1049,11 +1049,13 @@
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
-                        <h3>Recurso interactivo</h3>
-                        <div class="espacio-reservado">
-                            <span class="icono" aria-hidden="true">🧩</span>
-                            Espacio reservado para el simulador de ECG del módulo.
-                        </div>
+                        <h3>Simulador de ECG con acciones clínicas</h3>
+                        <p class="recurso-encuadre">Este módulo trata de <strong>reconocer el ritmo</strong>. Recorre el selector sin mirar su nombre, describe primero el trazado —regularidad, onda P, anchura del QRS, relación P-QRS— y comprueba después si coincide con lo que has leído en las unidades anteriores. Los signos vitales del monitor te dicen qué consecuencia tiene ese ritmo sobre el paciente, que es el paso siguiente: el Módulo 05 retoma este mismo simulador para decidir el tratamiento.</p>
+                        <!-- El simulador no se copia aquí: js/05-modulo.js traslada a este
+                             anclaje el único #simulador-wrapper que vive en index.html, y lo
+                             devuelve a su sitio al salir. Así los módulos 03, 05 y 06
+                             comparten una sola instancia, con su estado y su registro. -->
+                        <div data-anclaje-simulador></div>
                     </div>
 
                     <!-- ACTIVIDAD DE APRENDIZAJE -->

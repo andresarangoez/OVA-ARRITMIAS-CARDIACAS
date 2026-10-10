@@ -203,6 +203,13 @@
 .modulo-recurso-interactivo h3 { color: var(--fucs-azul-profundo); margin: 0 0 8px 0; }
 .placeholder-nota { color: var(--text-muted); font-size: 0.88rem; font-style: italic; margin: 0; }
 
+/* Encuadre del recurso interactivo: para qué sirve el simulador EN ESTE
+   módulo. No va en cursiva como .placeholder-nota —no es una nota provisional
+   sino parte del contenido— y mantiene el tope de línea legible aunque el
+   bloque ocupe todo el ancho. */
+.recurso-encuadre { margin: 0 0 20px; max-width: 80ch; line-height: 1.6; color: var(--text-body); }
+.modulo-recurso-interactivo [data-anclaje-simulador] { margin-top: 4px; }
+
 /* --- CASO CLÍNICO --- */
 .modulo-caso-clinico { margin-top: 44px; padding-top: 32px; border-top: 3px solid var(--fucs-azul-profundo); }
 .modulo-caso-clinico > h3 { color: var(--fucs-azul-profundo); font-size: 1.15rem; margin-bottom: 18px; }

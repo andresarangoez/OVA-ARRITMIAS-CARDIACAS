@@ -64,6 +64,15 @@
         // ligados al containing block que crea su animación fadeIn.
         document.body.classList.add('modo-modulo');
 
+        // El simulador se traslada al apartado de recurso interactivo del
+        // módulo mientras se está dentro (iniciarModulo, en 05-modulo.js).
+        // Hay que devolverlo a su sitio AQUÍ, antes de que
+        // cargarContenidoModulo() reemplace el innerHTML del contenedor:
+        // si siguiera dentro, se lo llevaría por delante.
+        if (OVA.ModuloUI && typeof OVA.ModuloUI.devolverSimuladorASuSitio === 'function') {
+            OVA.ModuloUI.devolverSimuladorASuSitio();
+        }
+
         const todosLosContenidos = document.querySelectorAll('[id^="contenido-modulo-"]');
         todosLosContenidos.forEach(div => {
             div.style.display = 'none';

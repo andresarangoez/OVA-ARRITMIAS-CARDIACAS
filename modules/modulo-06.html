@@ -163,8 +163,13 @@
 
                     <!-- RECURSO INTERACTIVO -->
                     <div class="modulo-recurso-interactivo">
-                        <h3>Recurso interactivo</h3>
-                        <p class="placeholder-nota">Este módulo comparte el simulador ECG interactivo del Módulo 03 — úsalo para recorrer distintos ritmos mientras resuelves los casos progresivos de la Unidad 1.</p>
+                        <h3>Simulador de ECG con acciones clínicas</h3>
+                        <p class="recurso-encuadre">Es el mismo simulador de los módulos 03 y 05, y aquí sirve para <strong>cerrar el ciclo</strong>: cambia el ritmo en cada etapa del caso clínico de la Unidad 1, valora, decide e interviene, y comprueba en el registro si la conducta era la indicada. Úsalo también para repasar antes de la autoevaluación.</p>
+                        <!-- El simulador no se copia aquí: js/05-modulo.js traslada a este
+                             anclaje el único #simulador-wrapper que vive en index.html, y lo
+                             devuelve a su sitio al salir. Así los módulos 03, 05 y 06
+                             comparten una sola instancia, con su estado y su registro. -->
+                        <div data-anclaje-simulador></div>
                     </div>
 
                     <!-- CASO CLÍNICO -->

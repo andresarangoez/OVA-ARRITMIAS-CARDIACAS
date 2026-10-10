@@ -35,12 +35,51 @@ function iniciarModulo(idModulo) {
     const simulador = document.getElementById('simulador-wrapper');
     if (simulador && OVA.Navegacion && OVA.Navegacion.MODULOS_CON_SIMULADOR.includes(idModulo)) {
         simulador.style.display = 'block';
+        colocarSimuladorEnSuSitio(contenedor, simulador);
     }
 
     // Llevar el scroll al tope absoluto de la página, donde se ve el
     // encabezado global de la OVA (Facultad de Enfermería · Universidad FUCS)
     // — no solo la barra del módulo, y mucho menos el contenido de la Unidad 1.
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- UBICACIÓN DEL SIMULADOR DENTRO DEL MÓDULO ---
+// El simulador vive en index.html, fuera del HTML de los módulos, por una
+// razón que sigue siendo buena: hay uno solo, con su motor, su estado y su
+// registro, y los módulos 03, 05 y 06 lo comparten sin duplicar una línea.
+// Lo que estaba mal era DÓNDE aparecía: como hermano de .pedagogy-container,
+// quedaba al final de todo, después incluso de la bibliografía, y el
+// estudiante llegaba a él cuando ya había terminado el módulo.
+//
+// Cada módulo tiene ahora un <div data-anclaje-simulador> en su apartado de
+// recurso interactivo, con un párrafo que explica para qué sirve el simulador
+// EN ESE módulo (reconocer el ritmo en el 03, decidir el tratamiento en el
+// 05, cerrar el ciclo en el 06). Al entrar al desarrollo, el nodo se traslada
+// allí; al salir, vuelve a su sitio.
+//
+// Trasladar y no clonar es deliberado: un clon duplicaría el canvas, el bucle
+// de animación y los id, y el estudiante perdería el registro clínico al
+// cambiar de módulo.
+function colocarSimuladorEnSuSitio(contenedor, simulador) {
+    const anclaje = contenedor.querySelector('[data-anclaje-simulador]');
+    if (!anclaje || anclaje.contains(simulador)) return;
+    anclaje.appendChild(simulador);
+}
+
+// Devuelve el simulador a index.html, como último hijo de #vista-modulo, que
+// es donde estaba al cargar la página.
+//
+// Esto NO es opcional ni cosmético: cargarContenidoModulo() (03-navegacion.js)
+// reemplaza el innerHTML del contenedor del módulo en cada visita, incluso
+// cuando el HTML viene de la caché. Si el simulador siguiera dentro, se iría
+// por delante con él —canvas, bucle y todo— y no habría forma de recuperarlo
+// sin recargar la página. Por eso se llama ANTES de tocar ese innerHTML.
+function devolverSimuladorASuSitio() {
+    const simulador = document.getElementById('simulador-wrapper');
+    const vista = document.getElementById('vista-modulo');
+    if (!simulador || !vista) return;
+    if (simulador.parentElement !== vista) vista.appendChild(simulador);
 }
 
 // Se invoca desde abrirModulo() en 03-navegacion.js cada vez que el
@@ -204,6 +243,7 @@ function verificarAutoevaluacion(boton) {
 
     // --- API PÚBLICA DEL NAMESPACE ---
     OVA.ModuloUI.iniciarModulo = iniciarModulo;
+    OVA.ModuloUI.devolverSimuladorASuSitio = devolverSimuladorASuSitio;
     OVA.ModuloUI.reiniciarEstadoModulo = reiniciarEstadoModulo;
     OVA.ModuloUI.toggleAcordeon = toggleAcordeon;
     OVA.ModuloUI.verificarActividad = verificarActividad;
