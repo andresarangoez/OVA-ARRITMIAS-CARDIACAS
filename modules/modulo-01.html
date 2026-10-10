@@ -600,10 +600,14 @@
                             </table>
                         </div>
 
-                        <div class="espacio-reservado">
-                            <span class="icono" aria-hidden="true">🎬</span>
-                            Espacio reservado para animación: diagrama de Wiggers simplificado, mostrando presión ventricular, apertura/cierre de válvulas y su correlación con el trazado del ECG a lo largo de un mismo ciclo cardíaco.
-                        </div>
+                        <h4>Diagrama de Wiggers</h4>
+                        <p>Todo lo anterior —las presiones, el volumen, las válvulas y el ECG— ocurre a la vez. El diagrama de Wiggers es la forma habitual de verlo: las cuatro curvas sobre un mismo eje de tiempo, de modo que cualquier instante del ciclo puede leerse en vertical. Mueve el cursor por el ciclo, o salta a una fase, y comprueba en la columna de la derecha qué valor tiene cada variable y qué válvula está abierta en ese momento.</p>
+                        <!-- Lo construye js/28-diagrama-wiggers.js a partir de la fisiología de
+                             js/27-ciclo-cardiaco-datos.js, la misma que usa el diagrama de
+                             fases de la Unidad 3. Los módulos se inyectan con innerHTML, así
+                             que el widget se monta solo con un MutationObserver. -->
+                        <div class="wg-diagrama"></div>
+                        <p class="figura-caption"><strong>Simulador 2.</strong> Diagrama de Wiggers. Ciclo de 0,8 s a 75 lpm. Las curvas se calculan a partir de valores fisiológicos de referencia del adulto sano: presión sistólica de 120 mmHg y diastólica de 80, volumen telediastólico de 120 mL y telesistólico de 50. Creación propia.</p>
                     </div>
 
                     <!-- UNIDAD 4 -->
