@@ -384,18 +384,61 @@
                     </div>
                 </div>
 
-                <div class="monitor-frame">
-                    <div class="canvas-container">
-                        <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
-                    </div>
-                </div>
+                <!-- MONITOR MULTIPARAMÉTRICO
+                     Antes eran dos bloques separados: el trazado en su marco y,
+                     debajo, cinco tarjetas blancas con las cifras. Se leían como
+                     dos cosas distintas. Ahora son un solo dispositivo: la misma
+                     carcasa oscura contiene la barra de identificación, el
+                     trazado y la columna de parámetros, como en un monitor de
+                     cabecera. Los id de las cifras no cambian (val-fc, val-ta,
+                     val-spo2, val-fr, val-temp), así que actualizarMonitor() en
+                     js/04-simulador.js sigue escribiendo donde escribía. -->
+                <div class="monitor-clinico" data-estado="estable" role="group" aria-label="Monitor multiparamétrico del paciente simulado">
 
-                <div class="vitals-panel">
-                    <div class="vital-box fc"><div class="label">FC (LPM)</div><div class="value" id="val-fc">75</div></div>
-                    <div class="vital-box ta"><div class="label">TA (mmHg) / PAM</div><div class="value small-text" id="val-ta">120/80 (93)</div></div>
-                    <div class="vital-box spo2"><div class="label">SpO2 (%)</div><div class="value" id="val-spo2">98</div></div>
-                    <div class="vital-box fr"><div class="label">FR (RPM)</div><div class="value" id="val-fr">16</div></div>
-                    <div class="vital-box temp"><div class="label">T° (°C)</div><div class="value" id="val-temp">36.5</div></div>
+                    <div class="monitor-barra">
+                        <span class="monitor-paciente">Paciente simulado</span>
+                        <span class="monitor-ritmo" id="monitor-ritmo">Ritmo sinusal</span>
+                        <span class="monitor-estado" id="monitor-estado">Estable</span>
+                    </div>
+
+                    <div class="monitor-pantalla">
+                        <div class="monitor-trazado">
+                            <span class="monitor-derivacion" aria-hidden="true">II</span>
+                            <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
+                        </div>
+
+                        <!-- La jerarquía la marcan el tamaño y el color, como en
+                             un monitor real: la frecuencia manda, la presión va
+                             debajo con su PAM entre paréntesis, y el resto en un
+                             cuerpo menor. -->
+                        <div class="monitor-parametros">
+                            <div class="monitor-param fc">
+                                <span class="monitor-param-rotulo">FC</span>
+                                <span class="monitor-param-valor" id="val-fc">75</span>
+                                <span class="monitor-param-unidad">lpm</span>
+                            </div>
+                            <div class="monitor-param ta">
+                                <span class="monitor-param-rotulo">PA</span>
+                                <span class="monitor-param-valor" id="val-ta">120/80</span>
+                                <span class="monitor-param-unidad">mmHg · PAM <span id="val-pam">93</span></span>
+                            </div>
+                            <div class="monitor-param spo2">
+                                <span class="monitor-param-rotulo">SpO₂</span>
+                                <span class="monitor-param-valor" id="val-spo2">98</span>
+                                <span class="monitor-param-unidad">%</span>
+                            </div>
+                            <div class="monitor-param fr">
+                                <span class="monitor-param-rotulo">FR</span>
+                                <span class="monitor-param-valor" id="val-fr">16</span>
+                                <span class="monitor-param-unidad">rpm</span>
+                            </div>
+                            <div class="monitor-param temp">
+                                <span class="monitor-param-rotulo">T</span>
+                                <span class="monitor-param-valor" id="val-temp">36.5</span>
+                                <span class="monitor-param-unidad">°C</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bottom-row">
