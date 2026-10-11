@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eje cardiaco y desplazamiento del ECG</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Paleta institucional FUCS (tomada de OVA/css/01-variables.css) */
+:root{
+  --azul:#092755;      /* Azul Fundadores */
+  --azul2:#0A3E7C;     /* Azul Humano */
+  --dorado:#F8C680;    /* Dorado Tradición */
+  --amarillo:#FBD785;  /* Amarillo Colonial */
+  --gris:#C6C7C8;      /* Gris San José */
+  --niebla:#E8E8E8;    /* Niebla Capital */
+  --bg:#F3F5F8; --txt:#333333; --mut:#6b7280;
+  --ok:#27ae60; --bad:#e74c3c; --info:#3498db;
+  --font:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:500 15px/1.5 var(--font)}
+button,input,select{font-family:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 16px 40px}
+header{background:var(--azul);color:#fff;border-radius:18px;padding:18px 22px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(9,39,85,.18);border-bottom:4px solid var(--dorado)}
+header .kick{font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--dorado);text-transform:uppercase}
+h1{margin:4px 0 2px;font-size:26px;font-weight:800;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--dorado);font-weight:600}
+header p{margin:0;color:#d6e0f0}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--gris);border-radius:18px;padding:14px 16px;box-shadow:0 10px 30px rgba(9,39,85,.08)}
+.card.dark{background:var(--azul);border-color:var(--azul);color:#fff}
+.tabs{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid rgba(255,255,255,.25);background:transparent;color:#cfd9ea;padding:7px 12px;border-radius:8px;
+  font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.tab.on{background:var(--dorado);color:var(--azul);border-color:var(--dorado)}
+#stage{width:100%;height:auto;display:block;max-height:76vh}
+.cap{min-height:96px;padding:8px 2px 0}
+.cap .step{font-weight:800;font-size:11px;color:var(--dorado);letter-spacing:.12em}
+.cap h2{margin:2px 0 4px;font-size:21px;font-weight:800}
+.cap p{margin:0;color:#dbe4f3}
+.pos{color:#4fe3a5;font-weight:700}.neg{color:#ff8a80;font-weight:700}.zero{color:#aebbd3;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.chip{appearance:none;border:1px solid var(--gris);background:#fff;color:var(--azul2);min-width:44px;padding:6px 10px;border-radius:8px;
+  font-weight:800;font-size:13px;cursor:pointer}
+.chip.on{background:var(--azul);color:var(--dorado);border-color:var(--azul)}
+label.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--mut);margin:14px 0 4px;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+label.lab b{color:var(--azul);font-size:15px;letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--azul2);height:22px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{appearance:none;border:1px solid var(--gris);background:#fff;color:var(--azul);padding:7px 12px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px}
+.btn:hover{border-color:var(--azul2);background:var(--bg)}
+.btn.gold{background:var(--azul);color:var(--dorado);border-color:var(--azul)}
+select{background:#fff;color:var(--azul);border:1px solid var(--gris);border-radius:8px;padding:7px 8px;font-weight:700;font-size:13px}
+.pill{display:inline-block;padding:3px 12px;border-radius:999px;font-weight:800;font-size:13px}
+.pill.ok{background:rgba(39,174,96,.12);color:#176b3a;border:1px solid rgba(39,174,96,.4)}
+.pill.warn{background:rgba(251,215,133,.45);color:#7a5a05;border:1px solid var(--dorado)}
+.pill.bad{background:rgba(231,76,60,.12);color:#99463c;border:1px solid rgba(231,76,60,.4)}
+.note{color:var(--mut);font-size:13px;margin:6px 0 0}
+table.pol{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+table.pol td,table.pol th{border:1px solid var(--gris);padding:5px 4px;text-align:center}
+table.pol th{color:var(--azul);background:var(--niebla);font-weight:700}
+.checks{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:12px;font-size:13px;color:var(--txt)}
+.checks input{accent-color:var(--azul2)}
+.strips{margin-top:14px}
+.strips h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.strips h3 b{color:var(--azul)}
+#main{width:100%;height:230px;display:block;border-radius:10px;background:var(--azul);border:1px solid var(--azul)}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+@media (max-width:640px){.mini{grid-template-columns:repeat(2,1fr)}}
+.mini canvas{width:100%;height:118px;display:block;border-radius:8px;background:var(--azul);border:2px solid var(--azul);cursor:pointer}
+.mini canvas.sel{border-color:var(--dorado)}
+footer{margin-top:16px;color:var(--mut);font-size:12px}
+.lead{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Eje cardiaco y desplazamiento del ECG</h1>
+</header>
+
+<div class="grid">
+  <section class="card dark">
+    <div class="tabs">
+      <button class="tab on" data-plane="F">Plano frontal · derivaciones de los miembros</button>
+      <button class="tab" data-plane="H">Plano horizontal · derivaciones precordiales</button>
+    </div>
+    <svg id="stage" viewBox="0 0 560 580" role="img" aria-label="Corazón con vector eléctrico y derivaciones"></svg>
+    <div class="cap" id="cap" aria-live="polite"></div>
+  </section>
+
+  <aside class="card">
+    <label class="lab" style="margin-top:0">Fase del latido <span>clic = ir a la fase</span></label>
+    <div class="chips" id="chips"></div>
+
+    <div class="row">
+      <button class="btn gold" id="play">⏸ Pausa</button>
+      <select id="speed" aria-label="Velocidad">
+        <option value="0.1">Muy lento ×0,1</option>
+        <option value="0.2" selected>Cámara lenta ×0,2</option>
+        <option value="0.5">Lento ×0,5</option>
+        <option value="1">Tiempo real ×1</option>
+      </select>
+    </div>
+    <label class="lab">Posición en el latido <b id="tlab">0 ms</b></label>
+    <input type="range" id="scrub" min="0" max="800" step="1" value="0">
+
+    <label class="lab">Eje del QRS (plano frontal) <b id="alab">+60°</b></label>
+    <input type="range" id="axis" min="-180" max="180" step="1" value="60">
+    <div class="row" style="margin-top:6px">
+      <button class="btn" data-axis="60">Normal +60°</button>
+      <button class="btn" data-axis="-45">Desv. izquierda −45°</button>
+      <button class="btn" data-axis="120">Desv. derecha +120°</button>
+      <button class="btn" data-axis="-120">Extremo −120°</button>
+    </div>
+    <div style="margin-top:10px"><span class="pill ok" id="cls">Eje normal</span></div>
+    <p class="note" id="clsnote"></p>
+
+    <label class="lab">Rotación horizontal (transición) <b id="hlab">−10°</b></label>
+    <input type="range" id="hrot" min="-90" max="30" step="1" value="-10">
+    <div class="row" style="margin-top:6px">
+      <button class="btn" data-h="10">Antihoraria (V2)</button>
+      <button class="btn" data-h="-10">Normal (V3–V4)</button>
+      <button class="btn" data-h="-45">Horaria (V5)</button>
+    </div>
+    <p class="note" id="trans"></p>
+
+    <div class="checks">
+      <label><input type="checkbox" id="chShadow" checked> Mostrar sombra (proyección)</label>
+      <label><input type="checkbox" id="chLoop" checked> Lazo vectorial</label>
+      <label><input type="checkbox" id="chRot" checked> Girar corazón con el eje</label>
+    </div>
+
+    <table class="pol" id="pol"></table>
+    <p class="note" id="rule"></p>
+  </aside>
+</div>
+
+<section class="card strips">
+  <h3>Derivación seleccionada: <b id="leadname">DII</b> · 1 cuadro grande = 0,2 s · 0,5 mV</h3>
+  <canvas id="main"></canvas>
+  <div class="mini" id="mini"></div>
+</section>
+
+<footer>Modelo didáctico: el ECG de cada derivación se calcula como la proyección del vector cardiaco instantáneo (suma de gaussianas P, q, R, s, T) sobre el eje de esa derivación. Inspirado en la animación de referencia (@rezashahnazar). No sustituye la lectura clínica de un ECG real.</footer>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const D2R = Math.PI/180;
+const PERIOD = 0.8;                       // s por latido (75 lpm)
+const N = 400;                            // muestras por latido
+
+/* ---------- Derivaciones ---------- */
+const LIMB = [
+  {id:'I',  lab:'DI',  a:0},   {id:'II', lab:'DII', a:60},  {id:'III',lab:'DIII',a:120},
+  {id:'aVR',lab:'aVR', a:-150},{id:'aVL',lab:'aVL', a:-30}, {id:'aVF',lab:'aVF', a:90}
+];
+const CHEST = [
+  {id:'V1',lab:'V1',a:112},{id:'V2',lab:'V2',a:95},{id:'V3',lab:'V3',a:78},
+  {id:'V4',lab:'V4',a:60}, {id:'V5',lab:'V5',a:30},{id:'V6',lab:'V6',a:2}
+];
+
+/* ---------- Estado ---------- */
+const S = {plane:'F', A:60, H:-10, leadF:'II', leadH:'V1', playing:true, speed:0.2, t:0.0,
+           shadow:true, loop:true, rot:true};
+const lead = () => S.plane==='F' ? S.leadF : S.leadH;
+const leadsOf = p => p==='F' ? LIMB : CHEST;
+const leadObj = id => LIMB.concat(CHEST).find(l=>l.id===id);
+
+/* ---------- Modelo: vector cardiaco = suma de ondas gaussianas ---------- */
+function waves(){
+  const A=S.A, H=S.H;
+  return [
+    {k:'P', t:.090, s:.022, m:.15, f:50,     h:30    },
+    {k:'q', t:.220, s:.006, m:.18, f:A+160,  h:H+155 },
+    {k:'R', t:.238, s:.011, m:1.20,f:A,      h:H     },
+    {k:'s', t:.262, s:.008, m:.40, f:A-140,  h:H-50  },
+    {k:'T', t:.440, s:.045, m:.40, f:A-10,   h:H+60  }
+  ];
+}
+let W = waves();
+function vecAt(plane,t){
+  let x=0,y=0;
+  for(const w of W){
+    const g=Math.exp(-0.5*((t-w.t)/w.s)**2);
+    const a=(plane==='F'?w.f:w.h)*D2R;
+    x+=w.m*g*Math.cos(a); y+=w.m*g*Math.sin(a);
+  }
+  return [x,y];
+}
+const PHASES = [
+  {k:'P', a:.04, b:.14},{k:'PR',a:.14,b:.21},{k:'q',a:.21,b:.228},{k:'R',a:.228,b:.252},
+  {k:'s',a:.252,b:.275},{k:'ST',a:.275,b:.34},{k:'T',a:.34,b:.56}
+];
+const phaseAt = t => (PHASES.find(p=>t>=p.a && t<p.b) || {k:'TP',a:.56,b:.84});
+
+/* ---------- Trazos precalculados ---------- */
+let TR = {}, NET = {}, LOOP = {F:[],H:[]};
+function recalc(){
+  W = waves();
+  TR = {};
+  for(const l of LIMB.concat(CHEST)){
+    const plane = LIMB.includes(l)?'F':'H';
+    const u=[Math.cos(l.a*D2R),Math.sin(l.a*D2R)];
+    const arr=new Float32Array(N);
+    for(let i=0;i<N;i++){ const v=vecAt(plane,i/N*PERIOD); arr[i]=v[0]*u[0]+v[1]*u[1]; }
+    TR[l.id]=arr;
+  }
+  // polaridad neta del QRS
+  NET={};
+  const i0=Math.floor(.205/PERIOD*N), i1=Math.ceil(.285/PERIOD*N);
+  for(const id in TR){ let s=0; for(let i=i0;i<i1;i++) s+=TR[id][i]; NET[id]=s/(i1-i0); }
+  // lazo vectorial
+  for(const p of ['F','H']){
+    LOOP[p]=[]; for(let i=0;i<N;i+=2) LOOP[p].push(vecAt(p,i/N*PERIOD));
+  }
+  updateStaticText();
+  drawLoopPaths();
+}
+
+/* ---------- SVG ---------- */
+const svg=$('#stage');
+const C={x:280,y:292};
+function el(tag,attrs,parent){
+  const e=document.createElementNS(NS,tag);
+  for(const k in (attrs||{})) e.setAttribute(k,attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+function arcPath(cx,cy,r,a0,a1){
+  const p=a=>[cx+r*Math.cos(a*D2R), cy-r*Math.sin(a*D2R)];
+  const [x0,y0]=p(a0),[x1,y1]=p(a1);
+  const large=(((a1-a0)%360+360)%360)>180?1:0;
+  return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${large} 0 ${x1.toFixed(2)},${y1.toFixed(2)}`;
+}
+const REST='#1f4f8f';
+function mix(c0,c1,k){
+  const a=[parseInt(c0.slice(1,3),16),parseInt(c0.slice(3,5),16),parseInt(c0.slice(5,7),16)];
+  const b=[parseInt(c1.slice(1,3),16),parseInt(c1.slice(3,5),16),parseInt(c1.slice(5,7),16)];
+  return 'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')+')';
+}
+// regiones: [inicio despolarización, fin, inicio repolarización, fin]
+const REG={RA:[.04,.085,.26,.30],LA:[.065,.12,.26,.30],SEP:[.212,.222,.395,.43],
+           RV:[.22,.245,.37,.40],LVL:[.222,.25,.36,.40],LVB:[.248,.272,.42,.46]};
+const ss=x=>{x=Math.min(1,Math.max(0,x));return x*x*(3-2*x);};
+function regLevel(name,t){
+  const r=REG[name];
+  const on=ss((t-r[0])/(r[1]-r[0])), off=ss((t-r[2])/(r[3]-r[2]));
+  return {lvl:on*(1-off), glow: on>0.98 ? 4*off*(1-off) : 0};
+}
+const parts=[]; // {reg, fill:[els], stroke:[els], glow:[els]}
+function wall(parent,d,w,reg){
+  const base=el('path',{d,fill:'none','stroke-width':w,'stroke-linecap':'round',stroke:REST},parent);
+  const glow=el('path',{d,fill:'none','stroke-width':Math.max(3,w*.35),'stroke-linecap':'round',stroke:'#5fb4ff',opacity:0},parent);
+  parts.push({reg,stroke:[base],glow:[glow]});
+}
+function blob(parent,tag,attrs,reg){
+  const e=el(tag,Object.assign({fill:REST,stroke:'#4a78b8','stroke-width':1.5},attrs),parent);
+  parts.push({reg,fill:[e],glow:[]});
+}
+
+/* defs: punta de flecha no usada (se dibuja con polígono) */
+/* --- Plano frontal --- */
+const gF=el('g',{id:'gF'},svg);
+el('circle',{cx:C.x,cy:C.y,r:205,fill:'none',stroke:'#2a4c80','stroke-width':1.5},gF);
+el('circle',{cx:C.x,cy:C.y,r:100,fill:'none',stroke:'#244575','stroke-width':1,'stroke-dasharray':'2 6'},gF);
+for(let a=0;a<360;a+=30){
+  const r0=205,r1=a%90===0?216:211;
+  el('line',{x1:C.x+r0*Math.cos(a*D2R),y1:C.y+r0*Math.sin(a*D2R),x2:C.x+r1*Math.cos(a*D2R),y2:C.y+r1*Math.sin(a*D2R),stroke:'#3a6199'},gF);
+}
+const loopF=el('path',{fill:'none',stroke:'#F8C680',opacity:.35,'stroke-width':1.2,'stroke-dasharray':'3 4'},gF);
+const leadEls={};
+function buildLeads(parent,list,planeKey){
+  for(const l of list){
+    const g=el('g',{class:'lead','data-id':l.id},parent);
+    let px,py,lx,ly;
+    if(planeKey==='F'){
+      const R=205, c=Math.cos(l.a*D2R), s=Math.sin(l.a*D2R);
+      px=C.x+R*c; py=C.y+R*s; lx=C.x+(R+27)*c; ly=C.y+(R+27)*s+4;
+      el('line',{x1:C.x-R*c,y1:C.y-R*s,x2:px,y2:py,stroke:'#3a6199','stroke-dasharray':'4 5','stroke-width':1.2},g);
+    } else {
+      const c=Math.cos(l.a*D2R), s=Math.sin(l.a*D2R), rx=205, ry=150;
+      const r=1/Math.sqrt((c/rx)**2+(s/ry)**2);
+      px=C.x+r*c; py=C.y-r*s; lx=C.x+(r+24)*c; ly=C.y-(r+24)*s+4;
+      el('line',{x1:C.x,y1:C.y,x2:px,y2:py,stroke:'#3a6199','stroke-dasharray':'4 5','stroke-width':1.2},g);
+    }
+    const ring=el('circle',{cx:px,cy:py,r:9,fill:'#06193a',stroke:'#fff','stroke-width':1.4},g);
+    el('path',{d:`M${px-4},${py}H${px+4}M${px},${py-4}V${py+4}`,stroke:'#fff','stroke-width':1.4},g);
+    const t=el('text',{x:lx,y:ly,'text-anchor':'middle',fill:'#dbe4f3','font-size':13,'font-weight':600,'font-family':'Raleway,sans-serif'},g);
+    t.textContent=l.lab;
+    el('circle',{cx:px,cy:py,r:20,fill:'transparent'},g);
+    leadEls[l.id]={g,ring,t,px,py};
+    g.addEventListener('click',()=>selectLead(l.id));
+  }
+}
+buildLeads(gF,LIMB,'F');
+
+/* corazón frontal (ápex hacia abajo en coordenadas locales) */
+const heartF=el('g',{},gF);
+const hF=el('g',{},heartF);
+el('path',{d:'M-6,-52 C60,-48 76,20 0,94 C-56,40 -64,-30 -6,-52 Z',fill:'#061a3d',stroke:'#3a6199','stroke-width':1.5},hF);
+blob(hF,'ellipse',{cx:-38,cy:-76,rx:27,ry:22},'RA');
+blob(hF,'ellipse',{cx:18,cy:-82,rx:29,ry:21},'LA');
+wall(hF,'M-8,-52 C-66,-38 -54,38 -3,92',9,'RV');
+wall(hF,'M0,-50 C5,0 4,50 0,92',12,'SEP');
+wall(hF,'M64,-8 C68,35 42,68 2,94',16,'LVL');
+wall(hF,'M8,-52 C44,-50 62,-34 64,-8',16,'LVB');
+const hisF=el('path',{d:'M-2,-50 L-1,40',stroke:'#fff','stroke-width':1.6,opacity:.25,'stroke-linecap':'round'},hF);
+const saF=el('circle',{cx:-52,cy:-86,r:5,fill:'#0e2e5e',stroke:'#fff','stroke-width':1.2},hF);
+const avF=el('circle',{cx:-3,cy:-52,r:5,fill:'#0e2e5e',stroke:'#fff','stroke-width':1.2},hF);
+
+/* sombra + flecha frontal */
+const shF=el('g',{},gF);
+const dropF=el('line',{stroke:'#dbe4f3','stroke-dasharray':'3 4','stroke-width':1.2},shF);
+const projF=el('line',{'stroke-width':7,'stroke-linecap':'round'},shF);
+const arrF=el('g',{},gF);
+const arrFl=el('line',{stroke:'#FBD785','stroke-width':4,'stroke-linecap':'round'},arrF);
+const arrFh=el('polygon',{fill:'#FBD785'},arrF);
+
+/* --- Plano horizontal --- */
+const gH=el('g',{id:'gH',style:'display:none'},svg);
+el('ellipse',{cx:C.x,cy:C.y,rx:205,ry:150,fill:'rgba(10,62,124,.35)',stroke:'#3a6199','stroke-width':1.5},gH);
+[['FRENTE',C.x,C.y-178],['ESPALDA',C.x,C.y+192]].forEach(a=>{
+  const t=el('text',{x:a[1],y:a[2],'text-anchor':'middle',fill:'#8aa2c8','font-size':11,'font-family':'Raleway,sans-serif','letter-spacing':2},gH);t.textContent=a[0];});
+[['D',C.x-232],['I',C.x+232]].forEach(a=>{
+  const t=el('text',{x:a[1],y:C.y+4,'text-anchor':'middle',fill:'#8aa2c8','font-size':12,'font-family':'Raleway,sans-serif'},gH);t.textContent=a[0];});
+const loopH=el('path',{fill:'none',stroke:'#F8C680',opacity:.35,'stroke-width':1.2,'stroke-dasharray':'3 4'},gH);
+buildLeads(gH,CHEST,'H');
+const heartH=el('g',{transform:`translate(${C.x-14},${C.y-12}) scale(1.8)`},gH);
+blob(heartH,'circle',{cx:-24,cy:62,r:15},'RA');
+blob(heartH,'circle',{cx:26,cy:64,r:15},'LA');
+el('circle',{cx:14,cy:8,r:30,fill:'#061a3d'},heartH);
+el('path',{d:arcPath(14,8,44,100,250),fill:'none',stroke:'#061a3d','stroke-width':16},heartH);
+wall(heartH,arcPath(14,8,52,100,250),8,'RV');
+wall(heartH,arcPath(14,8,30,105,255),15,'SEP');
+wall(heartH,arcPath(14,8,30,-50,105),15,'LVL');
+wall(heartH,arcPath(14,8,30,255,310),15,'LVB');
+const shH=el('g',{},gH);
+const dropH=el('line',{stroke:'#dbe4f3','stroke-dasharray':'3 4','stroke-width':1.2},shH);
+const projH=el('line',{'stroke-width':7,'stroke-linecap':'round'},shH);
+const arrH=el('g',{},gH);
+const arrHl=el('line',{stroke:'#FBD785','stroke-width':4,'stroke-linecap':'round'},arrH);
+const arrHh=el('polygon',{fill:'#FBD785'},arrH);
+
+/* lazo vectorial */
+const KF=120, KH=92;
+function drawLoopPaths(){
+  loopF.setAttribute('d','M'+LOOP.F.map(v=>(C.x+KF*v[0]).toFixed(1)+','+(C.y+KF*v[1]).toFixed(1)).join(' L'));
+  loopH.setAttribute('d','M'+LOOP.H.map(v=>(C.x+KH*v[0]).toFixed(1)+','+(C.y-KH*v[1]).toFixed(1)).join(' L'));
+}
+
+/* flecha: línea + punta */
+function setArrow(line,head,x0,y0,x1,y1){
+  const dx=x1-x0, dy=y1-y0, L=Math.hypot(dx,dy);
+  if(L<4){line.setAttribute('opacity',0);head.setAttribute('opacity',0);return;}
+  line.setAttribute('opacity',1);head.setAttribute('opacity',1);
+  const ux=dx/L, uy=dy/L, h=Math.min(16,L*.6), w=7;
+  const bx=x1-ux*h, by=y1-uy*h;
+  line.setAttribute('x1',x0);line.setAttribute('y1',y0);line.setAttribute('x2',bx);line.setAttribute('y2',by);
+  head.setAttribute('points',`${x1},${y1} ${bx-uy*w},${by+ux*w} ${bx+uy*w},${by-ux*w}`);
+}
+
+/* ---------- Tiras (canvas) ---------- */
+const mainCv=$('#main');
+const miniWrap=$('#mini');
+let miniCv=[];
+function buildMini(){
+  miniWrap.innerHTML=''; miniCv=[];
+  for(const l of leadsOf(S.plane)){
+    const c=document.createElement('canvas'); c.dataset.id=l.id; c.title='Clic para seleccionar '+l.lab;
+    c.addEventListener('click',()=>selectLead(l.id));
+    miniWrap.appendChild(c); miniCv.push({c,l});
+  }
+  sizeAll();
+}
+function sizeCanvas(cv){
+  const r=cv.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+  cv._w=r.width; cv._h=r.height; cv._dpr=dpr;
+  cv.width=Math.max(1,Math.round(r.width*dpr)); cv.height=Math.max(1,Math.round(r.height*dpr));
+}
+function sizeAll(){ sizeCanvas(mainCv); miniCv.forEach(m=>sizeCanvas(m.c)); }
+window.addEventListener('resize',sizeAll);
+
+function drawStrip(cv,arr,t,o){
+  const ctx=cv.getContext('2d'), w=cv._w, h=cv._h;
+  ctx.setTransform(cv._dpr,0,0,cv._dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const base=h*o.base, ppm=h*o.ppm, X=tt=>tt/PERIOD*w;
+  // rejilla
+  ctx.lineWidth=1;
+  for(let i=0;i<=20;i++){
+    const x=Math.round(X(i*.04))+.5;
+    ctx.strokeStyle=i%5===0?'rgba(255,255,255,.10)':'rgba(255,255,255,.04)';
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();
+  }
+  for(let k=-12;k<=12;k++){
+    const y=Math.round(base-k*.1*ppm)+.5; if(y<0||y>h) continue;
+    ctx.strokeStyle=k%5===0?'rgba(255,255,255,.10)':'rgba(255,255,255,.04)';
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+  }
+  ctx.strokeStyle='rgba(255,255,255,.14)';
+  ctx.beginPath();ctx.moveTo(0,base);ctx.lineTo(w,base);ctx.stroke();
+  const Y=v=>base-v*ppm;
+  // fantasma del latido completo
+  ctx.beginPath();
+  for(let i=0;i<N;i++){const x=i/N*w, y=Y(arr[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+  ctx.strokeStyle='rgba(180,195,230,.14)';ctx.lineWidth=1.5;ctx.stroke();
+  // trazo hasta el instante actual, coloreado por polaridad
+  const n=Math.min(N-1,Math.floor(t/PERIOD*N));
+  const pos=new Path2D(), neg=new Path2D(), zer=new Path2D();
+  for(let i=1;i<=n;i++){
+    const v=arr[i], p=v>.035?pos:(v<-.035?neg:zer);
+    p.moveTo((i-1)/N*w,Y(arr[i-1])); p.lineTo(i/N*w,Y(v));
+  }
+  ctx.lineWidth=o.lw; ctx.lineJoin='round'; ctx.lineCap='round';
+  ctx.strokeStyle='#9fb3d1'; ctx.stroke(zer);
+  ctx.strokeStyle='#4fe3a5'; ctx.stroke(pos);
+  ctx.strokeStyle='#ff6b6b'; ctx.stroke(neg);
+  // punto actual
+  const cx=t/PERIOD*w, cy=Y(arr[n]);
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,o.lw+1.5,0,7);ctx.fill();
+  // etiquetas de onda
+  if(o.labels){
+    ctx.font='700 12px Raleway,sans-serif'; ctx.textAlign='center';
+    for(const p of PHASES){
+      if(t<p.a) continue;
+      const cur=t>=p.a&&t<p.b;
+      ctx.fillStyle=cur?'#F8C680':'#6f7c9b';
+      ctx.fillText(p.k,X((p.a+p.b)/2),h-10);
+    }
+  }
+  ctx.font='800 12px Raleway,sans-serif'; ctx.textAlign='left';
+  ctx.fillStyle=o.sel?'#F8C680':'#dbe4f3';
+  ctx.fillText(o.name,8,16);
+  if(o.net){
+    ctx.textAlign='right'; ctx.fillStyle=o.net.c; ctx.fillText(o.net.s,w-8,16);
+  }
+}
+
+/* ---------- Texto ---------- */
+const DESC={
+  P:{t:'El nodo SA dispara',
+     F:'Las aurículas se despolarizan hacia abajo y a la izquierda: el vector apunta hacia DII.',
+     H:'Las aurículas se despolarizan hacia la izquierda: P pequeña (a veces bifásica en V1) y positiva en V5–V6.'},
+  PR:{t:'El nodo AV retiene',
+     F:'≈0,1 s. Demasiado poco tejido para dejar traza: segmento PR plano.',
+     H:'≈0,1 s. Demasiado poco tejido para dejar traza: segmento PR plano.'},
+  q:{t:'El tabique va primero',
+     F:'Despolarización septal de izquierda a derecha: el vector se aleja de DII.',
+     H:'El tabique se activa de izquierda a derecha: hacia V1 (r pequeña) y lejos de V6 (q pequeña).'},
+  R:{t:'Los ventrículos disparan',
+     F:'El VI, grueso, gana: flecha grande en la dirección del eje del QRS.',
+     H:'El VI domina: la flecha se aleja de V1 (S profunda) y va hacia V6 (R alta).'},
+  s:{t:'La base va al final',
+     F:'Las porciones basales giran el vector hacia arriba, alejándolo de DII.',
+     H:'Las porciones posterobasales terminan la despolarización: s terminal en V5–V6.'},
+  ST:{t:'Todo despolarizado',
+     F:'Sin diferencia entre células: sin flecha → segmento ST isoeléctrico.',
+     H:'Sin diferencia entre células: sin flecha → segmento ST isoeléctrico.'},
+  T:{t:'La recuperación corre al revés',
+     F:'Repolarización de fuera hacia dentro, con carga opuesta: la flecha sigue apuntando al mismo lado → T positiva.',
+     H:'Repolarización de fuera hacia dentro, con carga opuesta: la flecha sigue apuntando a la izquierda → T positiva en V2–V6.'},
+  TP:{t:'Reposo eléctrico',
+     F:'Corazón en reposo: línea de base (segmento TP).',
+     H:'Corazón en reposo: línea de base (segmento TP).'}
+};
+const capEl=$('#cap');
+let lastCapKey='';
+function updateCaption(ph,v){
+  const L=leadObj(lead());
+  const u=[Math.cos(L.a*D2R),Math.sin(L.a*D2R)];
+  const p=v[0]*u[0]+v[1]*u[1];
+  const mag=Math.hypot(v[0],v[1]);
+  let pol;
+  if(mag<.03) pol='<span class="zero">Sin vector → línea isoeléctrica.</span>';
+  else if(Math.abs(p)<.05) pol=`<span class="zero">En ${L.lab}: la flecha es perpendicular → casi sin sombra.</span>`;
+  else if(p>0) pol=`<span class="pos">En ${L.lab}: hacia la derivación → deflexión positiva.</span>`;
+  else pol=`<span class="neg">En ${L.lab}: se aleja de la derivación → deflexión negativa.</span>`;
+  const idx=PHASES.findIndex(x=>x.k===ph.k);
+  const d=DESC[ph.k];
+  const html=`<div class="step">${idx>=0?`${idx+1} / 7 · ${ph.k}`:'TP'}</div><h2>${d.t}</h2><p>${d[S.plane]} ${pol}</p>`;
+  const key=ph.k+'|'+S.plane+'|'+L.id+'|'+(mag<.03?0:Math.abs(p)<.05?1:p>0?2:3);
+  if(key!==lastCapKey){capEl.innerHTML=html;lastCapKey=key;}
+}
+function classify(a){
+  if(a>=-30&&a<=90) return ['Eje normal','ok','Entre −30° y +90°: DI y aVF positivas (o DII positiva).'];
+  if(a<-30&&a>=-90) return ['Desviación izquierda','warn','−30° a −90°: se ve en hipertrofia del VI, hemibloqueo anterior izquierdo, infarto inferior, obesidad/embarazo.'];
+  if(a>90&&a<=180) return ['Desviación derecha','warn','+90° a +180°: se ve en hipertrofia del VD, EPOC, TEP, hemibloqueo posterior, dextrocardia/lateral-infarto.'];
+  return ['Desviación extrema (tierra de nadie)','bad','−90° a ±180°: eje indeterminado; considerar taquicardia ventricular, hiperpotasemia, mala colocación de electrodos.'];
+}
+function netBadge(id){
+  const arr=Object.keys(NET).filter(k=>(LIMB.some(l=>l.id===k))===(S.plane==='F'));
+  const mx=Math.max(...arr.map(k=>Math.abs(NET[k])));
+  const v=NET[id];
+  if(Math.abs(v)<Math.max(.05,mx*.12)) return {s:'±',c:'#aebbd3',w:'isobifásica'};
+  return v>0?{s:'+',c:'#4fe3a5',w:'positiva'}:{s:'−',c:'#ff6b6b',w:'negativa'};
+}
+function updateStaticText(){
+  $('#alab').textContent=(S.A>0?'+':S.A<0?'−':'')+Math.abs(S.A)+'°';
+  $('#hlab').textContent=(S.H>0?'+':S.H<0?'−':'')+Math.abs(S.H)+'°';
+  const [name,cls,note]=classify(S.A);
+  const pill=$('#cls'); pill.textContent=name; pill.className='pill '+cls;
+  $('#clsnote').textContent=note;
+  // tabla de polaridad del QRS (plano activo)
+  const L=leadsOf(S.plane);
+  $('#pol').innerHTML='<tr><th>QRS neto</th>'+L.map(l=>`<th>${l.lab}</th>`).join('')+'</tr><tr><td>signo</td>'+
+    L.map(l=>{const b=netBadge(l.id);return `<td style="color:${b.c};font-weight:700">${b.s}</td>`;}).join('')+'</tr>';
+  // regla rápida / transición
+  const bi=netBadge('I').s, bf=netBadge('aVF').s;
+  const quad = bi==='+'&&bf==='+' ? 'DI + / aVF + → eje normal (0° a +90°)'
+             : bi==='+'&&bf==='−' ? 'DI + / aVF − → izquierda (si DII también − : desviación izquierda patológica)'
+             : bi==='−'&&bf==='+' ? 'DI − / aVF + → desviación derecha'
+             : bi==='−'&&bf==='−' ? 'DI − / aVF − → eje extremo (tierra de nadie)'
+             : 'Alguna es isobifásica → el eje es perpendicular a esa derivación (±90°)';
+  $('#rule').textContent='Regla rápida de cuadrantes: '+quad+'.';
+  // transición: primera precordial (V1→V6) con QRS neto positivo
+  const tr=CHEST.find(l=>NET[l.id]>0.02);
+  $('#trans').textContent='Transición (R = S): '+(tr?(tr.lab+' (primera precordial con QRS positivo)'):'ninguna positiva')+
+     '. Normal: V3–V4.';
+}
+
+/* ---------- Interacción ---------- */
+function selectLead(id){
+  if(LIMB.some(l=>l.id===id)) S.leadF=id; else S.leadH=id;
+  if(LIMB.some(l=>l.id===id)&&S.plane!=='F') setPlane('F');
+  if(CHEST.some(l=>l.id===id)&&S.plane!=='H') setPlane('H');
+  lastCapKey='';
+}
+function setPlane(p){
+  S.plane=p;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.plane===p));
+  gF.style.display=p==='F'?'':'none'; gH.style.display=p==='H'?'':'none';
+  buildMini(); updateStaticText(); lastCapKey='';
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setPlane(b.dataset.plane)));
+const chipsEl=$('#chips');
+PHASES.forEach(p=>{
+  const b=document.createElement('button'); b.className='chip'; b.textContent=p.k; b.dataset.k=p.k;
+  b.title=p.k;
+  b.addEventListener('click',()=>{ S.t=(p.k==='R'||p.k==='q'||p.k==='s')?(p.a+p.b)/2:(p.a+p.b)/2; setPlaying(false); });
+  chipsEl.appendChild(b);
+});
+function setPlaying(v){
+  S.playing=v; $('#play').textContent=v?'⏸ Pausa':'▶ Reproducir';
+  $('#play').classList.toggle('gold',v);
+}
+$('#play').addEventListener('click',()=>setPlaying(!S.playing));
+$('#speed').addEventListener('change',e=>S.speed=parseFloat(e.target.value));
+$('#scrub').addEventListener('input',e=>{S.t=parseFloat(e.target.value)/1000;setPlaying(false);});
+$('#axis').addEventListener('input',e=>{S.A=parseInt(e.target.value,10);recalc();});
+$('#hrot').addEventListener('input',e=>{S.H=parseInt(e.target.value,10);recalc();});
+document.querySelectorAll('[data-axis]').forEach(b=>b.addEventListener('click',()=>{
+  S.A=parseInt(b.dataset.axis,10); $('#axis').value=S.A; recalc();}));
+document.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{
+  S.H=parseInt(b.dataset.h,10); $('#hrot').value=S.H; setPlane('H'); recalc();}));
+$('#chShadow').addEventListener('change',e=>S.shadow=e.target.checked);
+$('#chLoop').addEventListener('change',e=>S.loop=e.target.checked);
+$('#chRot').addEventListener('change',e=>S.rot=e.target.checked);
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&!/INPUT|SELECT|BUTTON/.test(document.activeElement.tagName)){e.preventDefault();setPlaying(!S.playing);}
+});
+
+/* ---------- Render ---------- */
+function setLeadStyles(){
+  const cur=lead();
+  for(const id in leadEls){
+    const e=leadEls[id]; const on=id===cur;
+    e.ring.setAttribute('stroke',on?'#F8C680':'#aebbd3');
+    e.ring.setAttribute('fill',on?'#5a4520':'#06193a');
+    e.t.setAttribute('fill',on?'#F8C680':'#dbe4f3');
+  }
+}
+function render(){
+  const t=S.t, ph=phaseAt(t), P=S.plane;
+  const v=vecAt(P,t);
+  // regiones
+  for(const p of parts){
+    const r=regLevel(p.reg,t);
+    const col=mix(REST,'#F8C680',r.lvl);
+    if(p.fill) p.fill.forEach(e=>e.setAttribute('fill',col));
+    if(p.stroke) p.stroke.forEach(e=>e.setAttribute('stroke',col));
+    p.glow.forEach(e=>e.setAttribute('opacity',(r.glow*.95).toFixed(2)));
+  }
+  // sistema de conducción
+  const sa=ss((t-.02)/.02)*(1-ss((t-.1)/.03));
+  saF.setAttribute('fill',mix('#0e2e5e','#F8C680',sa));
+  const av=ss((t-.115)/.02)*(1-ss((t-.215)/.01));
+  avF.setAttribute('fill',mix('#0e2e5e','#F8C680',av));
+  hisF.setAttribute('opacity',(.2+.8*ss((t-.21)/.01)*(1-ss((t-.27)/.02))).toFixed(2));
+  // orientación del corazón frontal
+  const rotDeg=(S.rot?S.A:60)-90;
+  heartF.setAttribute('transform',`translate(${C.x} ${C.y}) rotate(${rotDeg}) scale(1.4)`);
+  loopF.style.display=(S.loop&&P==='F')?'':'none';
+  loopH.style.display=(S.loop&&P==='H')?'':'none';
+
+  // flecha y sombra
+  const L=leadObj(lead());
+  const u=[Math.cos(L.a*D2R),Math.sin(L.a*D2R)];
+  const K=P==='F'?KF:KH, sgn=P==='F'?1:-1;
+  const tipX=C.x+K*v[0], tipY=C.y+sgn*K*v[1];
+  const proj=v[0]*u[0]+v[1]*u[1];
+  const projX=C.x+K*proj*u[0], projY=C.y+sgn*K*proj*u[1];
+  const [arr,arrh,drop,pj]=P==='F'?[arrFl,arrFh,dropF,projF]:[arrHl,arrHh,dropH,projH];
+  setArrow(arr,arrh,C.x,C.y,tipX,tipY);
+  const showSh=S.shadow&&Math.hypot(v[0],v[1])>.03;
+  [drop,pj].forEach(e=>e.style.display=showSh?'':'none');
+  if(showSh){
+    drop.setAttribute('x1',tipX);drop.setAttribute('y1',tipY);drop.setAttribute('x2',projX);drop.setAttribute('y2',projY);
+    pj.setAttribute('x1',C.x);pj.setAttribute('y1',C.y);pj.setAttribute('x2',projX);pj.setAttribute('y2',projY);
+    pj.setAttribute('stroke',proj>=0?'#4fe3a5':'#ff6b6b');
+    pj.setAttribute('opacity',Math.abs(proj)<.03?0:.9);
+  }
+  setLeadStyles();
+
+  // tiras
+  const cur=lead();
+  const netOf=id=>{const b=netBadge(id);return {s:'QRS '+b.s,c:b.c};};
+  drawStrip(mainCv,TR[cur],t,{base:.62,ppm:.30,lw:2.6,labels:true,name:L.lab,sel:true,net:netOf(cur)});
+  for(const m of miniCv){
+    drawStrip(m.c,TR[m.l.id],t,{base:.6,ppm:.27,lw:1.8,labels:false,name:m.l.lab,sel:m.l.id===cur,net:netOf(m.l.id)});
+    m.c.classList.toggle('sel',m.l.id===cur);
+  }
+  $('#leadname').textContent=L.lab;
+
+  // panel
+  chipsEl.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.k===ph.k));
+  $('#tlab').textContent=Math.round(t*1000)+' ms';
+  if(document.activeElement!==$('#scrub')) $('#scrub').value=Math.round(t*1000);
+  updateCaption(ph,v);
+}
+let last=performance.now();
+function frame(ts){
+  const dt=Math.min(.1,(ts-last)/1000); last=ts;
+  if(S.playing) S.t=(S.t+dt*S.speed)%PERIOD;
+  render();
+  requestAnimationFrame(frame);
+}
+buildMini();
+recalc();
+requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

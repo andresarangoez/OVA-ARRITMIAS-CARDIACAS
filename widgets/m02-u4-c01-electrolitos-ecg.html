@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alteraciones del ECG por electrolitos</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Paleta institucional FUCS */
+:root{
+  --azul:#092755; --azul2:#0A3E7C; --dorado:#F8C680; --amarillo:#FBD785;
+  --gris:#C6C7C8; --niebla:#E8E8E8; --bg:#F3F5F8; --txt:#333333; --mut:#6b7280;
+  --font:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --c:#27ae60;               /* color de estado (se actualiza por JS) */
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:500 15px/1.5 var(--font)}
+button,input,select{font-family:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 40px}
+header{background:var(--azul);color:#fff;border-radius:18px;padding:16px 22px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(9,39,85,.18);border-bottom:4px solid var(--dorado)}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid var(--gris);background:#fff;color:var(--azul2);padding:9px 16px;border-radius:10px;
+  font-weight:800;font-size:14px;cursor:pointer}
+.tab.on{background:var(--azul);color:var(--dorado);border-color:var(--azul)}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px}
+@media (max-width:920px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--gris);border-radius:18px;padding:16px 18px;box-shadow:0 10px 30px rgba(9,39,85,.08)}
+.ecgcard{background:color-mix(in srgb,var(--c) 7%,#fff);transition:background .3s}
+.gauge{display:flex;justify-content:center}
+#gauge{width:230px;height:230px;display:block}
+#ecg{width:100%;height:270px;display:block}
+.state{border-left:6px solid var(--c);transition:border-color .3s}
+.state h2{margin:0 0 8px;font-size:24px;font-weight:800;color:var(--c)}
+.state h4{margin:12px 0 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+.state p{margin:0}
+.state ol{margin:0;padding-left:22px}
+.state li{margin:2px 0;font-weight:700;color:var(--azul)}
+label.lab{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--mut);margin:0 0 4px;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+label.lab b{color:var(--azul);font-size:16px;letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--azul2);height:24px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{appearance:none;border:1px solid var(--gris);background:#fff;color:var(--azul2);padding:6px 10px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer}
+.chip.on{background:var(--azul);color:var(--dorado);border-color:var(--azul)}
+.btn{appearance:none;border:1px solid var(--azul);background:var(--azul);color:var(--dorado);padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:800;font-size:14px}
+.btn.alt{background:#fff;color:var(--azul)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.note{color:var(--mut);font-size:12.5px;margin-top:14px}
+.right{display:flex;flex-direction:column;gap:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Alteraciones del ECG por electrolitos</h1></header>
+
+<div class="tabs" id="tabs">
+  <button class="tab on" data-ion="K">Potasio · K⁺</button>
+  <button class="tab" data-ion="Ca">Calcio · Ca²⁺</button>
+  <button class="tab" data-ion="Mg">Magnesio · Mg²⁺</button>
+  <button class="tab" data-ion="Na">Sodio · Na⁺</button>
+</div>
+
+<div class="grid">
+  <section class="card ecgcard">
+    <div class="gauge"><svg id="gauge" viewBox="0 0 240 240" role="img" aria-label="Medidor de concentración"></svg></div>
+    <canvas id="ecg"></canvas>
+  </section>
+
+  <div class="right">
+    <section class="card state" id="state" aria-live="polite"></section>
+    <section class="card">
+      <label class="lab"><span id="slabel">Potasio sérico</span><b id="sval">4,2 mEq/L</b></label>
+      <input type="range" id="slider" aria-label="Concentración">
+      <div class="chips" id="chips"></div>
+      <div class="row">
+        <button class="btn" id="run">▶ Recorrer de bajo a alto</button>
+        <button class="btn alt" id="reset">Valor normal</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<p class="note">Valores ilustrativos de un modelo didáctico. El ECG no sustituye el examen de sangre. La morfología real varía entre pacientes y con la velocidad de cambio del electrolito. Los cambios del sodio en el ECG son pocos y poco específicos: su gravedad es sobre todo neurológica. Las alteraciones suelen coexistir (p. ej. hipomagnesemia con hipopotasemia e hipocalcemia).</p>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ---------- Modelos ---------- */
+const MODELS = {
+  K: {
+    sym:'K', name:'Potasio sérico', unit:'mEq/L', min:2.0, max:9.5, step:0.1, normal:4.2, dec:1, runFrom:2.8, runTo:9.0,
+    presets:[2.8,3.8,4.8,5.9,6.9,7.9,8.8,9.0],
+    keys:[2.0,2.8,3.8,4.8,5.9,6.9,7.9,8.8,9.0],
+    p:{ pAmp:[.10,.12,.15,.15,.10,.07,.015,0,0],
+        prX: [0,0,0,0,.01,.03,.05,.05,.05],
+        qw:  [1,1,1,1,1,1,1.8,3.0,3.5],
+        tAmp:[.04,.06,.30,.32,.60,.85,.80,.50,.30],
+        tSig:[.06,.06,.05,.045,.036,.03,.034,.05,.06],
+        uAmp:[.30,.20,.03,0,0,0,0,0,0],
+        st:  [.16,.10,0,0,0,0,0,0,0],
+        w:   [0,0,0,0,0,0,0,.8,1],
+        stX: [0,0,0,0,0,0,0,0,0] },
+    scale:[[2.0,'#3a86c8'],[3.5,'#3a86c8'],[4.2,'#27ae60'],[5.0,'#27ae60'],[5.9,'#c98a2b'],[7.0,'#c0392b'],[9.5,'#c0392b']],
+    state(v){
+      if(v<3.5) return {k:'lo',badge:'BAJO',title:'Hipopotasemia',
+        causes:'Diuréticos, vómitos, diarrea, insulina.',
+        eff:['Onda T achatada','Onda U prominente','Depresión del ST']};
+      if(v<=5.0) return {k:'ok',badge:'NORMAL',title:'Potasio normal',
+        causes:'Nivel normal en sangre.',
+        eff:['Onda P normal','QRS normal','Onda T normal']};
+      if(v<7.0) return {k:'hi',badge:'ALTO',title:'Hiperpotasemia',
+        causes:'Insuficiencia renal, inhibidores de la ECA, diuréticos ahorradores de potasio.',
+        eff:['Onda T alta y picuda','Onda P achatada','PR prolongado']};
+      if(v<8.5) return {k:'danger',badge:'PELIGRO',title:'Hiperpotasemia',
+        causes:'Insuficiencia renal, inhibidores de la ECA, diuréticos ahorradores de potasio.',
+        eff:['Onda T alta y picuda','Onda P achatada o ausente','QRS ensanchado']};
+      return {k:'danger',badge:'PELIGRO',title:'Hiperpotasemia',
+        causes:'Insuficiencia renal, inhibidores de la ECA, diuréticos ahorradores de potasio.',
+        eff:['Onda sinusoidal']};
+    },
+    qt:false
+  },
+  Ca: {
+    sym:'Ca', name:'Calcio sérico total', unit:'mg/dL', min:5.0, max:17.0, step:0.1, normal:9.5, dec:1, runFrom:5.5, runTo:16.0,
+    presets:[5.5,7.0,8.0,9.5,11.0,12.5,14.0,16.0],
+    keys:[5.0,6.5,8.0,9.5,11.5,13.0,15.0,17.0],
+    p:{ pAmp:[.15,.15,.15,.15,.15,.14,.12,.10],
+        prX: [0,0,0,0,0,.01,.03,.05],
+        qw:  [1.1,1,1,1,1,1,1.3,1.8],
+        tAmp:[.28,.30,.30,.30,.30,.28,.20,.10],
+        tSig:[.045,.045,.045,.045,.04,.035,.035,.035],
+        uAmp:[0,0,0,0,0,0,0,0],
+        st:  [0,0,0,0,0,0,0,0],
+        w:   [0,0,0,0,0,0,0,0],
+        stX: [.15,.10,.03,0,-.04,-.10,-.14,-.15] },
+    scale:[[5.0,'#3a86c8'],[8.5,'#3a86c8'],[9.2,'#27ae60'],[10.2,'#27ae60'],[11.0,'#c98a2b'],[13.0,'#c0392b'],[17.0,'#c0392b']],
+    state(v){
+      if(v<8.5) return {k:'lo',badge:'BAJO',title:'Hipocalcemia',
+        causes:'Hipoparatiroidismo, déficit de vitamina D, insuficiencia renal, pancreatitis aguda, hipomagnesemia.',
+        eff:['Segmento ST alargado','QT prolongado','Riesgo de arritmias ventriculares (torsades de pointes)']};
+      if(v<=10.5) return {k:'ok',badge:'NORMAL',title:'Calcio normal',
+        causes:'Nivel normal en sangre.',
+        eff:['Segmento ST normal','QT normal','Onda T normal']};
+      if(v<13) return {k:'hi',badge:'ALTO',title:'Hipercalcemia',
+        causes:'Hiperparatiroidismo primario, neoplasias, exceso de vitamina D, tiazidas, inmovilización.',
+        eff:['Segmento ST acortado','QT acortado','Onda T casi inmediata tras el QRS']};
+      return {k:'danger',badge:'PELIGRO',title:'Hipercalcemia grave',
+        causes:'Hiperparatiroidismo primario, neoplasias, exceso de vitamina D, tiazidas, inmovilización.',
+        eff:['QT muy acortado','PR y QRS prolongados','Bradicardia y bloqueos; riesgo de arritmias']};
+    },
+    qt:true
+  }
+,
+  Mg: {
+    sym:'Mg', name:'Magnesio sérico', unit:'mg/dL', min:0.5, max:12.0, step:0.1, normal:2.0, dec:1,
+    runFrom:0.8, runTo:11.0,
+    presets:[0.8,1.2,1.8,2.4,3.5,5.5,8.0,11.0],
+    keys:[0.5,1.0,1.5,2.0,3.0,5.0,8.0,12.0],
+    p:{ pAmp:[.12,.14,.15,.15,.15,.12,.07,.03],
+        prX: [.01,.01,0,0,0,.02,.05,.07],
+        qw:  [1.2,1.1,1,1,1,1.2,1.7,2.4],
+        tAmp:[.10,.20,.30,.30,.32,.35,.30,.15],
+        tSig:[.06,.05,.045,.045,.045,.04,.04,.05],
+        uAmp:[.20,.10,0,0,0,0,0,0],
+        st:  [.10,.05,0,0,0,0,0,0],
+        w:   [0,0,0,0,0,0,0,0],
+        stX: [.10,.05,.02,0,0,.02,.05,.08] },
+    scale:[[0.5,'#3a86c8'],[1.4,'#3a86c8'],[1.8,'#27ae60'],[2.4,'#27ae60'],[5.0,'#c98a2b'],[9.0,'#c0392b'],[12.0,'#c0392b']],
+    state(v){
+      if(v<1.5) return {k:'lo',badge:'BAJO',title:'Hipomagnesemia',
+        causes:'Diuréticos de asa y tiazidas, alcoholismo, diarrea crónica, inhibidores de la bomba de protones, desnutrición.',
+        eff:['QT prolongado','Onda T aplanada y onda U','Depresión del ST','Riesgo de torsades de pointes (suele coexistir con hipopotasemia)']};
+      if(v<=2.5) return {k:'ok',badge:'NORMAL',title:'Magnesio normal',
+        causes:'Nivel normal en sangre.',
+        eff:['PR normal','QRS normal','QT normal']};
+      if(v<5.0) return {k:'hi',badge:'ALTO',title:'Hipermagnesemia leve',
+        causes:'Insuficiencia renal, antiácidos y laxantes con magnesio, sulfato de magnesio (preeclampsia).',
+        eff:['Habitualmente sin cambios en el ECG','Clínica: náuseas, rubor, disminución de reflejos']};
+      if(v<10.0) return {k:'hi',badge:'ALTO',title:'Hipermagnesemia moderada',
+        causes:'Insuficiencia renal, antiácidos y laxantes con magnesio, sulfato de magnesio (preeclampsia).',
+        eff:['PR prolongado','QRS ensanchado','QT prolongado','Bradicardia e hipotensión']};
+      return {k:'danger',badge:'PELIGRO',title:'Hipermagnesemia grave',
+        causes:'Insuficiencia renal, antiácidos y laxantes con magnesio, sulfato de magnesio (preeclampsia).',
+        eff:['Bloqueo AV de alto grado','Paro cardiaco','Depresión respiratoria y coma']};
+    },
+    qt:true
+  },
+  Na: {
+    sym:'Na', name:'Sodio sérico', unit:'mEq/L', min:110, max:170, step:1, normal:140, dec:0,
+    runFrom:112, runTo:168,
+    presets:[112,120,130,140,150,160,168],
+    keys:[110,120,130,135,145,155,165,170],
+    p:{ pAmp:[.15,.15,.15,.15,.15,.15,.15,.15],
+        prX: [0,0,0,0,0,0,.01,.02],
+        qw:  [1.5,1.3,1.1,1,1,1.1,1.2,1.3],
+        tAmp:[.18,.24,.30,.30,.30,.28,.25,.20],
+        tSig:[.045,.045,.045,.045,.045,.045,.045,.045],
+        uAmp:[0,0,0,0,0,0,0,0],
+        st:  [-.12,-.06,0,0,0,0,0,0],
+        w:   [0,0,0,0,0,0,0,0],
+        stX: [.03,.02,0,0,0,0,0,0] },
+    scale:[[110,'#3a86c8'],[130,'#3a86c8'],[137,'#27ae60'],[145,'#27ae60'],[155,'#c98a2b'],[165,'#c0392b'],[170,'#c0392b']],
+    state(v){
+      if(v<120) return {k:'danger',badge:'PELIGRO',title:'Hiponatremia grave',
+        causes:'SIADH, diuréticos tiazídicos, insuficiencia cardiaca, cirrosis, polidipsia, insuficiencia suprarrenal.',
+        eff:['QRS ensanchado','Elevación del ST en V1–V2 (patrón tipo Brugada)','Bradicardia','Predominan los síntomas neurológicos (edema cerebral)']};
+      if(v<135) return {k:'lo',badge:'BAJO',title:'Hiponatremia',
+        causes:'SIADH, diuréticos tiazídicos, insuficiencia cardiaca, cirrosis, polidipsia, insuficiencia suprarrenal.',
+        eff:['Habitualmente sin cambios específicos en el ECG','En grados avanzados: T aplanada y QRS algo ancho']};
+      if(v<=145) return {k:'ok',badge:'NORMAL',title:'Sodio normal',
+        causes:'Nivel normal en sangre.',
+        eff:['ECG sin alteraciones atribuibles al sodio']};
+      if(v<160) return {k:'hi',badge:'ALTO',title:'Hipernatremia',
+        causes:'Deshidratación, diabetes insípida, pérdida de agua libre, aporte excesivo de sodio.',
+        eff:['Cambios en el ECG poco específicos','Predominan los síntomas neurológicos: sed, irritabilidad, confusión']};
+      return {k:'danger',badge:'PELIGRO',title:'Hipernatremia grave',
+        causes:'Deshidratación, diabetes insípida, pérdida de agua libre, aporte excesivo de sodio.',
+        eff:['QRS algo ensanchado','Puede aparecer ensanchamiento del PR','Predominan convulsiones, coma y lesión neurológica']};
+    },
+    qt:false
+  }
+};
+const STATE_COLOR={lo:'#3a86c8',ok:'#27ae60',hi:'#b8761f',danger:'#c0392b'};
+
+let ion='K', M=MODELS.K, value=4.2;
+
+/* ---------- Utilidades ---------- */
+function interp(keys,vals,x){
+  if(x<=keys[0]) return vals[0];
+  for(let i=1;i<keys.length;i++) if(x<=keys[i]){
+    const f=(x-keys[i-1])/(keys[i]-keys[i-1]); return vals[i-1]+(vals[i]-vals[i-1])*f;
+  }
+  return vals[vals.length-1];
+}
+const hex=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+function scaleColor(sc,v){
+  if(v<=sc[0][0]) return sc[0][1];
+  for(let i=1;i<sc.length;i++) if(v<=sc[i][0]){
+    const f=(v-sc[i-1][0])/(sc[i][0]-sc[i-1][0]);
+    const a=hex(sc[i-1][1]), b=hex(sc[i][1]);
+    return 'rgb('+a.map((x,j)=>Math.round(x+(b[j]-x)*f)).join(',')+')';
+  }
+  return sc[sc.length-1][1];
+}
+const fmt=v=>v.toFixed(M.dec===undefined?1:M.dec).replace('.',',');
+
+/* ---------- Forma de onda ---------- */
+const N=600;
+let P={}, ARR=new Float32Array(N), LAB=[];
+const g=(t,c,s,a)=>a*Math.exp(-.5*((t-c)/s)**2);
+function params(){
+  P={}; for(const k in M.p) P[k]=interp(M.keys,M.p[k],value);
+  P.tc=.32; P.tP=.16-P.prX;
+  P.tT=.60+(P.qw-1)*.035+P.stX;
+  P.tQ=P.tc-.025*P.qw; P.tS=P.tc+.028*P.qw;
+}
+function beat(t){
+  const y=
+    g(t,P.tP,.03,P.pAmp)
+   +g(t,P.tQ,.008*P.qw,-.12)
+   +g(t,P.tc,.012*P.qw,1.0)
+   +g(t,P.tS,.009*P.qw,-.28)
+   +g(t,P.tT,P.tSig,P.tAmp)
+   +g(t,.80,.04,P.uAmp)
+   -g(t,P.tT-.13,.07,P.st);
+  const s=.85*Math.cos(2*Math.PI*(t-.5));
+  return y*(1-P.w)+s*P.w;
+}
+function rebuild(){
+  params();
+  for(let i=0;i<N;i++) ARR[i]=beat(i/(N-1));
+  const at=t=>ARR[Math.round(t*(N-1))];
+  const fadeQ=Math.max(0,1-P.w*1.5);
+  LAB=[
+    {t:P.tP, s:'P', up:true,  o:Math.min(1,P.pAmp/.09)},
+    {t:P.tQ, s:'Q', up:false, o:fadeQ},
+    {t:P.tc, s:'R', up:true,  o:fadeQ},
+    {t:P.tS, s:'S', up:false, o:fadeQ},
+    {t:P.tT, s:'T', up:true,  o:Math.min(1,P.tAmp/.2)*(1-P.w*.9)},
+    {t:.80,  s:'U', up:true,  o:Math.min(1,P.uAmp/.1)*(1-P.w)}
+  ].filter(l=>l.o>.05).map(l=>Object.assign(l,{y:at(Math.min(.999,l.t))}));
+}
+
+/* ---------- Medidor circular ---------- */
+const gauge=$('#gauge');
+const A0=120, SPAN=300, TICKS=54;
+const tickEls=[]; let ptr, numEl, symEl, unitEl, badgeEl;
+function pol(r,deg){const a=deg*Math.PI/180;return [120+r*Math.cos(a),120+r*Math.sin(a)];}
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||gauge).appendChild(e);return e;}
+function buildGauge(){
+  gauge.innerHTML=''; tickEls.length=0;
+  for(let i=0;i<TICKS;i++){
+    const f=i/(TICKS-1), deg=A0+SPAN*f;
+    const [x0,y0]=pol(86,deg),[x1,y1]=pol(100,deg);
+    const e=mk('line',{x1:x0,y1:y0,x2:x1,y2:y1,'stroke-width':4,'stroke-linecap':'round',
+      stroke:scaleColor(M.scale,M.min+(M.max-M.min)*f)});
+    tickEls.push(e);
+  }
+  ptr=mk('polygon',{fill:'#092755'});
+  symEl=mk('text',{x:58,y:90,'font-size':15,'font-weight':800,fill:'#6b7280'});
+  numEl=mk('text',{x:120,y:132,'text-anchor':'middle','font-size':50,'font-weight':800});
+  unitEl=mk('text',{x:92,y:158,'font-size':12,'font-weight':600,fill:'#6b7280'});
+  badgeEl=mk('text',{x:150,y:158,'font-size':12,'font-weight':800});
+  symEl.textContent=M.sym; unitEl.textContent=M.unit;
+}
+function updateGauge(col,badge){
+  const f=(value-M.min)/(M.max-M.min), deg=A0+SPAN*f;
+  tickEls.forEach((e,i)=>e.setAttribute('opacity',i/(TICKS-1)<=f+.001?1:.22));
+  const [tx,ty]=pol(106,deg),[bx,by]=pol(120,deg-3.2),[cx,cy]=pol(120,deg+3.2);
+  ptr.setAttribute('points',`${tx},${ty} ${bx},${by} ${cx},${cy}`);
+  numEl.textContent=fmt(value); numEl.setAttribute('fill',col);
+  badgeEl.textContent=badge; badgeEl.setAttribute('fill',col);
+}
+
+/* ---------- ECG canvas ---------- */
+const cv=$('#ecg');
+function sizeCv(){
+  const r=cv.getBoundingClientRect(), d=Math.min(devicePixelRatio||1,2);
+  cv._w=r.width; cv._h=r.height; cv._d=d; cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d);
+}
+addEventListener('resize',sizeCv);
+function drawEcg(sweep,col){
+  const ctx=cv.getContext('2d'), w=cv._w, h=cv._h;
+  ctx.setTransform(cv._d,0,0,cv._d,0,0); ctx.clearRect(0,0,w,h);
+  const base=h*.70, ppm=h*.50, X=t=>t*w, Y=v=>base-v*ppm;
+  // rejilla suave
+  ctx.lineWidth=1;
+  for(let i=0;i<=25;i++){const x=Math.round(i*w/25)+.5;ctx.strokeStyle=i%5?'rgba(9,39,85,.04)':'rgba(9,39,85,.09)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let k=-6;k<=8;k++){const y=Math.round(base-k*.1*ppm*2)+.5;ctx.strokeStyle=k%5?'rgba(9,39,85,.04)':'rgba(9,39,85,.09)';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  ctx.strokeStyle='rgba(9,39,85,.18)';ctx.beginPath();ctx.moveTo(0,base);ctx.lineTo(w,base);ctx.stroke();
+  const n=Math.min(N-1,Math.floor(sweep*(N-1)));
+  // QT (calcio)
+  if(M.qt){
+    const x0=X(P.tQ-.01), x1=X(P.tT+2.4*P.tSig), yb=h-26;
+    ctx.strokeStyle='#092755';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(x0,yb-6);ctx.lineTo(x0,yb+6);ctx.moveTo(x0,yb);ctx.lineTo(x1,yb);ctx.moveTo(x1,yb-6);ctx.lineTo(x1,yb+6);ctx.stroke();
+    ctx.fillStyle='#092755';ctx.font='800 13px Raleway,sans-serif';ctx.textAlign='center';
+    ctx.fillText('QT',(x0+x1)/2,yb-9);
+  }
+  // fantasma + trazo
+  ctx.beginPath();
+  for(let i=0;i<N;i++){i?ctx.lineTo(X(i/(N-1)),Y(ARR[i])):ctx.moveTo(X(0),Y(ARR[0]));}
+  ctx.strokeStyle='rgba(9,39,85,.10)';ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){i?ctx.lineTo(X(i/(N-1)),Y(ARR[i])):ctx.moveTo(X(0),Y(ARR[0]));}
+  ctx.strokeStyle=col;ctx.lineWidth=3.2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
+  ctx.fillStyle='#111';ctx.beginPath();ctx.arc(X(n/(N-1)),Y(ARR[n]),4.5,0,7);ctx.fill();
+  // etiquetas
+  ctx.font='800 14px Raleway,sans-serif';ctx.textAlign='center';
+  for(const l of LAB){
+    if(l.t>sweep+.005) continue;
+    ctx.globalAlpha=l.o;ctx.fillStyle='#092755';
+    ctx.fillText(l.s,X(l.t),l.up?Y(l.y)-12:Y(l.y)+22);
+  }
+  ctx.globalAlpha=1;
+}
+
+/* ---------- Estado / panel ---------- */
+let lastKey='';
+function updatePanel(){
+  const st=M.state(value), col=STATE_COLOR[st.k];
+  document.documentElement.style.setProperty('--c',col);
+  updateGauge(col,st.badge);
+  const key=ion+'|'+st.k+'|'+st.title+'|'+st.eff.join('|');
+  if(key!==lastKey){
+    lastKey=key;
+    $('#state').innerHTML=`<h2>${st.title}</h2><h4>Causas</h4><p>${st.causes}</p><h4>Alteraciones en el ECG</h4><ol>${st.eff.map(e=>`<li>${e}</li>`).join('')}</ol>`;
+  }
+  $('#sval').textContent=fmt(value)+' '+M.unit;
+  $('#slider').value=value;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',Math.abs(parseFloat(c.dataset.v)-value)<.051));
+  return col;
+}
+function setValue(v){
+  value=Math.min(M.max,Math.max(M.min,Math.round(v*10)/10));
+  rebuild(); if(!running) sweepT=0; curCol=updatePanel();
+}
+function setIon(k){
+  ion=k; M=MODELS[k]; lastKey='';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.ion===k));
+  const s=$('#slider'); s.min=M.min; s.max=M.max; s.step=M.step;
+  $('#slabel').textContent=M.name;
+  const ch=$('#chips'); ch.innerHTML='';
+  M.presets.forEach(v=>{const b=document.createElement('button');b.className='chip';b.dataset.v=v;b.textContent=fmt(v);
+    b.addEventListener('click',()=>{stopRun();setValue(v);});ch.appendChild(b);});
+  buildGauge(); setValue(M.normal); sizeCv();
+}
+
+/* ---------- Eventos ---------- */
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{stopRun();setIon(b.dataset.ion);}));
+$('#slider').addEventListener('input',e=>{stopRun();setValue(parseFloat(e.target.value));});
+$('#reset').addEventListener('click',()=>{stopRun();setValue(M.normal);});
+let running=false;
+function stopRun(){running=false;$('#run').textContent='▶ Recorrer de bajo a alto';}
+$('#run').addEventListener('click',()=>{
+  if(running){stopRun();return;}
+  running=true; $('#run').textContent='⏸ Detener';
+  setValue(M.runFrom);
+});
+
+/* ---------- Bucle ---------- */
+let sweepT=0, curCol='#27ae60', last=performance.now(), acc=0;
+function frame(ts){
+  const dt=Math.min(.1,(ts-last)/1000); last=ts;
+  if(running){
+    const end=M.runTo, rate=(M.max-M.min)/22;
+    acc+=dt*rate;
+    const st=M.step; if(acc>=st){const steps=Math.floor(acc/st);acc-=steps*st;
+      const nv=value+steps*st; if(nv>=end){setValue(end);stopRun();} else setValue(nv);}
+  }
+  sweepT+=dt/2.4;
+  const sw=Math.min(1,sweepT); if(sweepT>3.2) sweepT=0;
+  drawEcg(sw,curCol);
+  requestAnimationFrame(frame);
+}
+setIon('K');
+requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
