@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Taquicardia y función cardíaca</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: barra fija de FC; cuatro páginas (taquicardia, vía 1, vía 2, consecuencias) con paginador. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1d38; --muted:#5d6a80; --line:#e1e6ee; --navy:#16305e; --navy-ink:#ffffff;
+  --v1:#2457b8; --v1-bg:#e8f0fd; --v1-on:#c9dcfb;
+  --v2:#c98a00; --v2-bg:#fff6dc; --v2-on:#ffe39a;
+  --alert:#c62828; --alert-bg:#fdeaea; --ok:#2e9e5b;
+  --font:"Raleway",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f; --navy-ink:#ffffff;
+  --v1:#7fa9f2; --v1-bg:#13233f; --v1-on:#1f3d6e; --v2:#ffc94a; --v2-bg:#2e240b; --v2-on:#5a4312;
+  --alert:#ff7a7a; --alert-bg:#3a1719; --ok:#5fd08c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f; --navy-ink:#ffffff;
+  --v1:#7fa9f2; --v1-bg:#13233f; --v1-on:#1f3d6e; --v2:#ffc94a; --v2-bg:#2e240b; --v2-on:#5a4312;
+  --alert:#ff7a7a; --alert-bg:#3a1719; --ok:#5fd08c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:lining-nums;font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 30px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:16px}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+h1{font-weight:700;font-size:1.4rem;line-height:1.25;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--v1);outline-offset:2px}
+
+/* Control */
+.ctrl{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;gap:14px}
+.hrrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.hr{display:grid;line-height:1}
+.hr b{font-size:2.6rem;font-weight:800;font-variant-numeric:lining-nums tabular-nums;color:var(--navy)}
+:root[data-theme="dark"] .hr b{color:var(--v1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hr b{color:var(--v1)}}
+.hr span{font-size:.78rem;color:var(--muted);font-weight:600;margin-top:4px}
+input[type=range]{width:100%;accent-color:var(--navy)}
+.ticks{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:2px}
+.opts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.seg{display:inline-flex;background:var(--bg);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:none;border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:.8rem;cursor:pointer}
+/* ciclo */
+.cycle{display:grid;gap:6px}
+.cyclabel{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);font-weight:600}
+.cbar{display:flex;height:16px;border-radius:6px;overflow:hidden;background:var(--line)}
+.cbar .sys{background:var(--navy);transition:width .25s}
+.cbar .dia{background:var(--v1-on);transition:width .25s;border-left:2px solid var(--surface)}
+.readouts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ro{background:var(--bg);border-radius:10px;padding:8px 10px;min-width:0}
+.ro dt{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ro dd{margin:0;font-weight:700;font-size:1.05rem;font-variant-numeric:lining-nums tabular-nums}
+.ro dd small{font-weight:500;color:var(--muted);font-size:.75rem}
+.ro.bad dd{color:var(--alert)}
+.o2{display:grid;gap:4px}
+.o2row{display:grid;grid-template-columns:72px minmax(0,1fr) 46px;gap:8px;align-items:center;font-size:.78rem;font-weight:600;color:var(--muted)}
+.o2row .tr{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.o2row .tr i{display:block;height:100%;border-radius:4px;transition:width .25s}
+.o2row .sup i{background:var(--v1)} .o2row .dem i{background:var(--v2)}
+.o2row span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:640px){.readouts{grid-template-columns:repeat(2,minmax(0,1fr))}.hr b{font-size:2.1rem}}
+
+/* Flujograma */
+.flow{display:grid;gap:0;justify-items:center}
+.node{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px;text-align:center;cursor:pointer;width:100%;transition:background .25s,border-color .25s,transform .15s,box-shadow .25s,opacity .25s}
+.node b{display:block;font-weight:700;font-size:.9rem;line-height:1.25}
+.node small{display:block;font-size:.76rem;color:var(--muted);margin-top:2px}
+.node:hover{transform:translateY(-1px)}
+.node.sel{box-shadow:0 0 0 3px var(--ink)}
+.node.dim{opacity:.55}
+.n-top{max-width:300px;background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.n-top small{color:color-mix(in srgb,var(--navy-ink) 75%,transparent)}
+.n-top b{font-size:1.05rem;letter-spacing:.04em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;width:100%}
+.col{display:grid;justify-items:center;align-content:start}
+.v1 .node{border-color:color-mix(in srgb,var(--v1) 40%,var(--line));background:var(--v1-bg)}
+.v1 .node.on{background:var(--v1-on);border-color:var(--v1)}
+.v2 .node{border-color:color-mix(in srgb,var(--v2) 45%,var(--line));background:var(--v2-bg)}
+.v2 .node.on{background:var(--v2-on);border-color:var(--v2)}
+.node .arr{font-weight:800}
+.v1 .node.on .arr{color:var(--v1)} .v2 .node.on .arr{color:var(--v2)}
+.pill{border-radius:999px;padding:5px 14px;font-weight:700;font-size:.8rem;letter-spacing:.03em}
+.v1 .pill{background:var(--v1);color:var(--surface)} .v2 .pill{background:var(--v2);color:#1f1600}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.arrow{width:2px;height:22px;background:var(--line);position:relative;transition:background .25s}
+.arrow::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top:7px solid var(--line);border-bottom:0;transition:border-color .25s}
+.v1 .arrow.on{background:var(--v1)} .v1 .arrow.on::after{border-top-color:var(--v1)}
+.v2 .arrow.on{background:var(--v2)} .v2 .arrow.on::after{border-top-color:var(--v2)}
+.arrow.on{background-image:linear-gradient(to bottom,transparent 50%,rgba(255,255,255,.55) 50%);background-size:2px 8px;animation:flow .6s linear infinite}
+@keyframes flow{to{background-position:0 8px}}
+.split{width:min(100%,560px);height:22px;border:2px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;margin-top:0;transition:border-color .25s}
+.split.on{border-color:var(--ink)}
+.stem{width:2px;height:14px;background:var(--line)}
+.stem.on{background:var(--ink)}
+.merge{width:min(100%,560px);height:22px;border:2px solid var(--line);border-top:0;border-radius:0 0 10px 10px;transition:border-color .25s}
+.merge.on{border-color:var(--alert)}
+.mstem{width:2px;height:16px;background:var(--line)}
+.mstem.on{background:var(--alert)}
+.n-out{max-width:440px;border:2px solid var(--v2);background:var(--navy);color:var(--navy-ink)}
+.n-out small{color:color-mix(in srgb,var(--navy-ink) 80%,transparent)}
+.n-out.on{border-color:var(--alert);box-shadow:0 0 0 4px var(--alert-bg)}
+.n-out.on b{color:#ffd0d0}
+.n-end{max-width:360px;border:1.5px dashed var(--muted);background:var(--bg)}
+.n-end.on{border-color:var(--alert);background:var(--alert-bg)}
+.dash{width:2px;height:20px;background-image:linear-gradient(to bottom,var(--muted) 50%,transparent 50%);background-size:2px 6px}
+@media (max-width:640px){.cols{grid-template-columns:1fr;gap:6px}.split,.merge{display:none}.col{width:100%}}
+
+/* Explicación */
+.explain{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-height:92px;display:grid;gap:4px}
+.explain h2{font-size:1rem;font-weight:700;margin:0}
+.explain p{margin:0;max-width:72ch;font-size:.95rem}
+.explain .now{font-size:.85rem;color:var(--muted)}
+.explain .now b{color:var(--ink)}
+.note{font-size:.78rem;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Páginas */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;counter-reset:s}
+.steps button{border:0;background:none;text-align:left;cursor:pointer;padding:0;display:grid;gap:6px;min-width:0}
+.steps button::before{content:"";height:5px;border-radius:3px;background:var(--line);transition:background .25s}
+.steps button[aria-current="step"]::before,.steps button.done::before{background:var(--navy)}
+:root[data-theme="dark"] .steps button[aria-current="step"]::before,:root[data-theme="dark"] .steps button.done::before{background:var(--v1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .steps button[aria-current="step"]::before,:root:not([data-theme="light"]) .steps button.done::before{background:var(--v1)}}
+.steps span{font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps button[aria-current="step"] span{color:var(--ink)}
+.bar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+.bar .hr b{font-size:2rem}
+@media (max-width:640px){.bar{grid-template-columns:auto minmax(0,1fr)}.bar .seg{grid-column:1/-1;justify-self:start}}
+.page{display:grid;gap:16px}
+.page[hidden]{display:none!important}
+.ph{display:grid;gap:4px}
+.ph h2{font-size:1.2rem;font-weight:700;margin:0}
+.ph p{margin:0;color:var(--muted);max-width:70ch}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:720px){.two{grid-template-columns:1fr}}
+.chain{display:grid;justify-items:center}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.big{display:grid;gap:4px}
+.pager{display:flex;justify-content:space-between;gap:10px}
+.pbtn{font-weight:700;border-radius:10px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.pbtn.pri{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.pbtn:disabled{opacity:.35;cursor:default}
+.ways{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.way{border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left;border:1.5px solid var(--line);display:grid;gap:2px}
+.way b{font-size:.92rem} .way small{color:var(--muted);font-size:.8rem}
+.way.w1{background:var(--v1-bg);border-color:color-mix(in srgb,var(--v1) 45%,var(--line))}
+.way.w2{background:var(--v2-bg);border-color:color-mix(in srgb,var(--v2) 50%,var(--line))}
+.status{font-size:.85rem;font-weight:700}
+.status.bad{color:var(--alert)} .status.ok{color:var(--ok)}
+.explain{min-height:0}
+.solo{display:grid;justify-items:center}
+.solo .node{max-width:420px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Unidad 1 · Consecuencias sobre la función cardíaca</p>
+    <h1>¿Cómo compromete la taquicardia la función cardíaca?</h1>
+  </header>
+
+  <nav class="steps" id="steps" aria-label="Páginas">
+    <button data-p="0"><span>1. Taquicardia</span></button>
+    <button data-p="1"><span>2. Llenado ventricular</span></button>
+    <button data-p="2"><span>3. Balance de oxígeno</span></button>
+    <button data-p="3"><span>4. Consecuencias</span></button>
+  </nav>
+
+  <section class="bar" aria-label="Frecuencia cardíaca">
+    <div class="hr" aria-live="polite"><b id="hrv">75</b><span>lpm</span></div>
+    <div>
+      <input type="range" id="hr" min="50" max="200" step="1" value="75" aria-label="Frecuencia cardíaca">
+      <div class="ticks"><span>50</span><span>100</span><span>150</span><span>200</span></div>
+    </div>
+    <div class="seg" id="heart" aria-label="Condición del corazón">
+      <button data-v="sano" aria-pressed="true">Corazón sano</button><button data-v="cardio" aria-pressed="false">Con cardiopatía</button>
+    </div>
+  </section>
+
+  <!-- Página 1 -->
+  <section class="page" data-page="0">
+    <div class="ph"><h2>Todo empieza por el tiempo</h2><p>Sube la frecuencia y observa qué parte del ciclo cardíaco se pierde.</p></div>
+    <div class="card">
+      <div class="presets" aria-label="Valores de ejemplo"><button data-hr="75">Reposo · 75</button><button data-hr="130">130 lpm</button><button data-hr="180">180 lpm</button></div>
+      <div class="cycle">
+        <div class="cyclabel"><span>Ciclo cardíaco: <span class="v-rr"></span></span><span><span style="color:var(--navy)">■</span> Sístole &nbsp;<span style="color:var(--v1)">■</span> Diástole</span></div>
+        <div class="cbar" aria-hidden="true"><i class="sys"></i><i class="dia"></i></div>
+      </div>
+      <dl class="readouts">
+        <div class="ro"><dt>Ciclo</dt><dd class="v-rr"></dd></div>
+        <div class="ro"><dt>Sístole</dt><dd class="v-sys"></dd></div>
+        <div class="ro r-dia"><dt>Diástole</dt><dd class="v-dia"></dd></div>
+        <div class="ro"><dt>Diástole del ciclo</dt><dd class="v-diap"></dd></div>
+      </dl>
+    </div>
+    <div class="solo">
+      <button class="node n-top" data-n="taq"><b>TAQUICARDIA</b><small>↑ Frecuencia cardíaca</small></button>
+      <div class="stem s-tq"></div>
+      <div class="ways" style="width:min(100%,560px)">
+        <button class="way w1" data-go="1"><b>Vía 1 · Llenado ventricular</b><small>Ver página 2 →</small></button>
+        <button class="way w2" data-go="2"><b>Vía 2 · Balance de oxígeno</b><small>Ver página 3 →</small></button>
+      </div>
+    </div>
+    <div class="explain"><h2 class="eh"></h2><p class="ep"></p><p class="now en"></p></div>
+  </section>
+
+  <!-- Página 2 -->
+  <section class="page" data-page="1" hidden>
+    <div class="ph"><h2>Vía 1 · Llenado ventricular</h2><p>Menos diástole significa menos sangre en el ventrículo. Toca cada recuadro.</p></div>
+    <div class="two">
+      <div class="chain v1">
+        <span class="pill">VÍA 1 · Llenado ventricular</span>
+        <div class="arrow" data-a="dia"></div>
+        <button class="node" data-n="dia"><b>Acortamiento de la diástole</b><small>Menor tiempo de llenado</small></button>
+        <div class="arrow" data-a="lle"></div>
+        <button class="node" data-n="lle"><b><span class="arr">↓</span> Llenado ventricular</b><small>↓ Precarga</small></button>
+        <div class="arrow" data-a="vs"></div>
+        <button class="node" data-n="vs"><b><span class="arr">↓</span> Volumen sistólico</b></button>
+        <div class="arrow" data-a="gc"></div>
+        <button class="node" data-n="gc"><b><span class="arr">↓</span> Gasto cardíaco</b><small>GC = FC × VS</small></button>
+      </div>
+      <div class="card">
+        <dl class="readouts" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div class="ro r-dia"><dt>Diástole</dt><dd class="v-dia"></dd></div>
+          <div class="ro r-lle"><dt>Llenado</dt><dd class="v-fill"></dd></div>
+          <div class="ro r-vs"><dt>Volumen sistólico</dt><dd class="v-vs"></dd></div>
+          <div class="ro r-gc"><dt>Gasto cardíaco</dt><dd class="v-gc"></dd></div>
+        </dl>
+        <div class="explain" style="border:0;padding:0"><h2 class="eh"></h2><p class="ep"></p><p class="now en"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Página 3 -->
+  <section class="page" data-page="2" hidden>
+    <div class="ph"><h2>Vía 2 · Balance de oxígeno</h2><p>El miocardio necesita más oxígeno justo cuando recibe menos. Toca cada recuadro.</p></div>
+    <div class="two">
+      <div class="chain v2">
+        <span class="pill">VÍA 2 · Balance de oxígeno</span>
+        <div class="arrow" data-a="per"></div>
+        <div class="pair">
+          <button class="node" data-n="per"><b><span class="arr">↓</span> Perfusión coronaria</b><small>↓ Aporte de oxígeno</small></button>
+          <button class="node" data-n="con"><b><span class="arr">↑</span> Consumo miocárdico</b><small>↑ Demanda de oxígeno</small></button>
+        </div>
+        <div class="arrow" data-a="des"></div>
+        <button class="node" data-n="des"><b>Desequilibrio oferta / demanda</b><small>de oxígeno miocárdico</small></button>
+        <div class="arrow" data-a="isq"></div>
+        <button class="node" data-n="isq"><b>Isquemia miocárdica</b></button>
+        <div class="arrow" data-a="ctr"></div>
+        <button class="node" data-n="ctr"><b><span class="arr">↓</span> Contractilidad</b><small>Disfunción ventricular</small></button>
+      </div>
+      <div class="card">
+        <div class="o2">
+          <div class="o2row"><span>Aporte O₂</span><span class="tr sup"><i class="b-sup"></i></span><span class="v-sup"></span></div>
+          <div class="o2row"><span>Demanda O₂</span><span class="tr dem"><i class="b-dem"></i></span><span class="v-dem"></span></div>
+        </div>
+        <dl class="readouts" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div class="ro r-dia"><dt>Diástole</dt><dd class="v-dia"></dd></div>
+          <div class="ro r-des"><dt>Demanda / aporte</dt><dd class="v-ratio"></dd></div>
+        </dl>
+        <div class="explain" style="border:0;padding:0"><h2 class="eh"></h2><p class="ep"></p><p class="now en"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Página 4 -->
+  <section class="page" data-page="3" hidden>
+    <div class="ph"><h2>Consecuencias</h2><p>Las dos vías convergen. ¿Qué pasa si la taquicardia se mantiene en el tiempo?</p></div>
+    <div class="ways">
+      <button class="way w1" data-go="1"><b>Vía 1 · Llenado</b><span class="status st1"></span></button>
+      <button class="way w2" data-go="2"><b>Vía 2 · Oxígeno</b><span class="status st2"></span></button>
+    </div>
+    <div class="solo">
+      <div class="mstem"></div>
+      <button class="node n-out" data-n="comp"><b>COMPROMISO DE LA FUNCIÓN CARDÍACA</b><small>Hipotensión · Hipoperfusión tisular · Insuficiencia cardíaca</small></button>
+      <div class="dash"></div>
+      <div class="seg" id="dur" aria-label="Duración" style="margin:6px 0">
+        <button data-v="min" aria-pressed="true">Dura minutos</button><button data-v="sem" aria-pressed="false">Dura semanas</button>
+      </div>
+      <button class="node n-end" data-n="mio"><b>Si la taquicardia se sostiene</b><small>Miocardiopatía inducida por taquicardia</small></button>
+    </div>
+    <div class="explain"><h2 class="eh"></h2><p class="ep"></p><p class="now en"></p></div>
+  </section>
+
+  <div class="pager">
+    <button class="pbtn" id="prev">‹ Anterior</button>
+    <button class="pbtn pri" id="next">Siguiente ›</button>
+  </div>
+  <p class="note">Los valores salen de un modelo didáctico simplificado, no de mediciones de un paciente.</p>
+</div>
+
+<script>
+const T={
+ taq:["Taquicardia","Frecuencia cardíaca mayor de 100 lpm. Cada ciclo dura menos (60 / FC), y esa pérdida de tiempo no se reparte por igual entre sístole y diástole."],
+ dia:["Acortamiento de la diástole","Al acelerarse el corazón, la sístole se acorta poco y la diástole se acorta mucho. Es el punto de partida de las dos vías."],
+ lle:["↓ Llenado ventricular","Con menos tiempo, entra menos sangre de la aurícula al ventrículo. Baja la precarga y, por la ley de Frank–Starling, la fuerza de la siguiente contracción."],
+ vs:["↓ Volumen sistólico","Un ventrículo menos lleno expulsa menos sangre en cada latido."],
+ gc:["↓ Gasto cardíaco","GC = FC × VS. Al principio el aumento de la FC compensa la caída del VS y el gasto sube. Cuando el VS cae demasiado, el gasto empieza a bajar."],
+ per:["↓ Perfusión coronaria","El ventrículo izquierdo recibe su flujo coronario sobre todo en diástole. Menos diástole significa menos aporte de oxígeno al miocardio."],
+ con:["↑ Consumo miocárdico","Cada latido consume oxígeno. Más latidos por minuto aumentan la demanda de oxígeno del miocardio."],
+ des:["Desequilibrio oferta / demanda","La demanda sube mientras el aporte cae. La brecha es mayor si hay enfermedad coronaria, anemia o hipertrofia."],
+ isq:["Isquemia miocárdica","El miocardio no recibe el oxígeno que necesita. Puede manifestarse como angina o cambios del ST, aun sin enfermedad coronaria si la taquicardia es muy rápida."],
+ ctr:["↓ Contractilidad","El miocardio isquémico se contrae peor. La disfunción ventricular reduce aún más el volumen sistólico."],
+ comp:["Compromiso de la función cardíaca","Las dos vías convergen: cae el gasto y la perfusión de los órganos. Aparecen hipotensión, hipoperfusión tisular e insuficiencia cardíaca."],
+ mio:["Miocardiopatía inducida por taquicardia","Una taquicardia sostenida durante semanas o meses dilata el ventrículo y deprime su función. Suele ser reversible si la frecuencia se normaliza."]
+};
+function model(hr,heart){
+  const rr=60/hr, sys=Math.max(.16,.36-.001*hr), dia=rr-sys;
+  const tau=heart==="sano"?.15:.22, ivr=.08;
+  const fill=x=>1-Math.exp(-Math.max(0,x-ivr)/tau);
+  const svMax=heart==="sano"?75:60;
+  const sv=svMax*fill(dia)/fill(60/70-Math.max(.16,.36-.07));
+  const co=hr*sv/1000;
+  const dem=hr/70, sup=(dia*hr/60)/((60/70-(.36-.07))*70/60);
+  const ratio=dem/sup;
+  return{rr,sys,dia,sv,co,dem,sup,ratio,fillF:fill(dia)/fill(60/70-.29)};
+}
+
+const st={hr:75,heart:"sano",dur:"min",page:0,sel:["taq","dia","per","comp"]};
+const $=id=>document.getElementById(id);
+const $$=(sel,root=document)=>[...root.querySelectorAll(sel)];
+const fmt=(x,d=1)=>x.toFixed(d).replace(".",",");
+const setAll=(cls,html)=>$$("."+cls).forEach(e=>e.innerHTML=html);
+const pages=$$(".page");
+function update(){
+  const m=model(st.hr,st.heart),base=model(70,st.heart),sano=st.heart==="sano",tq=st.hr>100;
+  $("hrv").textContent=st.hr;$("hr").value=st.hr;
+  setAll("v-rr",Math.round(m.rr*1000)+" ms");setAll("v-sys",Math.round(m.sys*1000)+" ms");
+  setAll("v-dia",Math.round(m.dia*1000)+" ms");setAll("v-diap",Math.round(m.dia/m.rr*100)+" %");
+  setAll("v-fill",Math.round(Math.min(1,m.fillF)*100)+" % <small>del basal</small>");
+  setAll("v-vs",Math.round(m.sv)+" ml");setAll("v-gc",fmt(m.co)+" l/min");setAll("v-ratio",fmt(m.ratio)+" <small>× basal</small>");
+  setAll("v-sup",Math.round(m.sup*100)+" %");setAll("v-dem",Math.round(m.dem*100)+" %");
+  $$(".sys").forEach(e=>e.style.width=(m.sys/m.rr*100)+"%");$$(".dia").forEach(e=>e.style.width=(m.dia/m.rr*100)+"%");
+  $$(".b-sup").forEach(e=>e.style.width=Math.min(1,m.sup/1.4)*100+"%");$$(".b-dem").forEach(e=>e.style.width=Math.min(1,m.dem/3.2)*100+"%");
+  const th=sano?{des:2.4,isq:3.3,ctr:3.9}:{des:1.5,isq:2.0,ctr:2.5};
+  const on={taq:tq,dia:tq,lle:tq&&m.fillF<.9,vs:tq&&m.sv<base.sv*.85,gc:tq&&m.co<base.co,
+    per:tq,con:tq,des:tq&&m.ratio>=th.des,isq:tq&&m.ratio>=th.isq,ctr:tq&&m.ratio>=th.ctr};
+  on.comp=on.gc||on.ctr;on.mio=tq&&st.dur==="sem";
+  const sel=st.sel[st.page];
+  $$("[data-n]").forEach(n=>{const k=n.dataset.n;n.classList.toggle("on",!!on[k]);n.classList.toggle("dim",k!=="taq"&&!on[k]&&tq);n.classList.toggle("sel",k===sel)});
+  $$("[data-a]").forEach(a=>a.classList.toggle("on",!!on[a.dataset.a]));
+  $$(".s-tq").forEach(e=>e.classList.toggle("on",tq));$$(".mstem").forEach(e=>e.classList.toggle("on",on.comp));
+  [["r-dia",tq],["r-lle",on.lle],["r-vs",on.vs],["r-gc",on.gc],["r-des",on.des]].forEach(([c,v])=>$$("."+c).forEach(e=>e.classList.toggle("bad",v)));
+  const s1=on.gc?["Gasto cardíaco por debajo del basal","bad"]:tq?["Gasto conservado: la FC compensa","ok"]:["Sin taquicardia","ok"];
+  const s2=on.ctr?["Isquemia con caída de la contractilidad","bad"]:on.isq?["Isquemia miocárdica","bad"]:on.des?["Desequilibrio de oxígeno","bad"]:["Balance aceptable","ok"];
+  $$(".st1").forEach(e=>{e.textContent=s1[0];e.className="status st1 "+s1[1]});$$(".st2").forEach(e=>{e.textContent=s2[0];e.className="status st2 "+s2[1]});
+  // Explicación de la página visible
+  const pg=pages[st.page],[h,p]=T[sel];
+  pg.querySelector(".eh").textContent=h;pg.querySelector(".ep").textContent=p;
+  let now;
+  if(!tq)now=`<b>A ${st.hr} lpm no hay taquicardia.</b> Sube la frecuencia por encima de 100 lpm para ver los cambios.`;
+  else if(st.page===0)now=`<b>A ${st.hr} lpm</b> la diástole ocupa ${Math.round(m.dia/m.rr*100)} % del ciclo (en reposo, cerca de 66 %).`;
+  else if(st.page===1)now=`<b>A ${st.hr} lpm${sano?"":", con cardiopatía"}:</b> ${on.gc?"el volumen sistólico cayó tanto que el gasto ya está por debajo del basal.":on.vs?"el volumen sistólico cae, pero la FC alta todavía sostiene el gasto.":"el llenado empieza a reducirse."}`;
+  else if(st.page===2)now=`<b>A ${st.hr} lpm${sano?"":", con cardiopatía"}:</b> la demanda es ${fmt(m.ratio)} veces la del reposo frente al aporte. ${on.ctr?"La isquemia ya reduce la contractilidad.":on.isq?"Hay isquemia miocárdica.":on.des?"Hay desequilibrio, aún sin isquemia.":"El miocardio todavía tolera el aumento."}${sano?" Prueba con cardiopatía.":""}`;
+  else now=on.comp?`<b>A ${st.hr} lpm${sano?"":", con cardiopatía"}:</b> la función cardíaca está comprometida.`:`<b>A ${st.hr} lpm${sano?"":", con cardiopatía"}:</b> el corazón aún compensa. Sube la frecuencia o elige cardiopatía.`;
+  pg.querySelector(".en").innerHTML=now;
+}
+function show(i){
+  st.page=Math.max(0,Math.min(pages.length-1,i));
+  pages.forEach((p,j)=>p.hidden=j!==st.page);
+  $$("#steps button").forEach((b,j)=>{b.toggleAttribute("aria-current",false);if(j===st.page)b.setAttribute("aria-current","step");b.classList.toggle("done",j<st.page)});
+  $("prev").disabled=st.page===0;
+  $("next").textContent=st.page===pages.length-1?"Volver al inicio":"Siguiente ›";
+  update();
+}
+$("hr").oninput=e=>{st.hr=+e.target.value;update()};
+$$("[data-hr]").forEach(b=>b.onclick=()=>{st.hr=+b.dataset.hr;update()});
+[["heart","heart"],["dur","dur"]].forEach(([id,k])=>$$("button",$(id)).forEach(b=>b.onclick=()=>{st[k]=b.dataset.v;$$("button",$(id)).forEach(x=>x.setAttribute("aria-pressed",x===b));update()}));
+$$("[data-n]").forEach(n=>n.onclick=()=>{st.sel[st.page]=n.dataset.n;update()});
+$$("[data-go]").forEach(b=>b.onclick=()=>show(+b.dataset.go));
+$$("#steps button").forEach(b=>b.onclick=()=>show(+b.dataset.p));
+$("prev").onclick=()=>show(st.page-1);
+$("next").onclick=()=>show(st.page===pages.length-1?0:st.page+1);
+show(0);
+</script>
+
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

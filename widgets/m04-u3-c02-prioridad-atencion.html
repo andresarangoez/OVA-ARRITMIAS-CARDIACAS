@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Prioridad de atención</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: tres páginas (recorrer pregunta a pregunta, mapa completo, casos con ECG) con barra de progreso y paginador. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1d38; --muted:#5d6a80; --line:#dfe4ec; --navy:#16305e; --navy-ink:#fff;
+  --p1:#c0392b; --p1-bg:#fdecea; --p1-b:#ec9d95;
+  --p2:#a86a00; --p2-bg:#fff5df; --p2-b:#ebc169;
+  --p3:#2457b8; --p3-bg:#e8f0fd; --p3-b:#9dbbef;
+  --p4:#1f7a52; --p4-bg:#e8f6ef; --p4-b:#8fd0ad;
+  --paper:#fff7f7; --gminor:#f7d2d2; --gmajor:#eaa5a5; --trace:#1a1a24;
+  --font:"Raleway",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --p1:#ff7a7a; --p1-bg:#36171a; --p1-b:#8a3a3a; --p2:#ffc94a; --p2-bg:#2e240b; --p2-b:#8a6a1f;
+  --p3:#7fa9f2; --p3-bg:#13233f; --p3-b:#2f4f86; --p4:#5fd08c; --p4-bg:#10291d; --p4-b:#2d6b4a;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --p1:#ff7a7a; --p1-bg:#36171a; --p1-b:#8a3a3a; --p2:#ffc94a; --p2-bg:#2e240b; --p2-b:#8a6a1f;
+  --p3:#7fa9f2; --p3-bg:#13233f; --p3-b:#2f4f86; --p4:#5fd08c; --p4-bg:#10291d; --p4-b:#2d6b4a;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:lining-nums;font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 30px}
+.wrap{max-width:860px;margin:0 auto;display:grid;gap:16px}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+h1{font-weight:700;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+[hidden]{display:none!important}
+.lead{margin:0;color:var(--muted);max-width:70ch}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.steps button{border:0;background:none;text-align:left;cursor:pointer;padding:0;display:grid;gap:6px;min-width:0}
+.steps button::before{content:"";height:5px;border-radius:3px;background:var(--line)}
+.steps button[aria-current="step"]::before,.steps button.done::before{background:var(--navy)}
+.steps span{font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps button[aria-current="step"] span{color:var(--ink)}
+.page{display:grid;gap:14px}
+.pager{display:flex;justify-content:space-between;gap:10px}
+.pbtn{font-weight:700;border-radius:10px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.pbtn.pri{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.pbtn:disabled{opacity:.35;cursor:default}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;min-width:0}
+.note{font-size:.85rem;color:var(--muted);margin:0;border-left:3px solid var(--line);padding-left:10px}
+/* Recorrer */
+.trail{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:28px}
+.trail span{font-size:.8rem;font-weight:600;background:var(--bg);border-radius:999px;padding:3px 10px}
+.trail span b{font-weight:800}
+.trail i{color:var(--muted);font-style:normal;font-size:.8rem}
+.qnum{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.qbig{font-size:1.6rem;font-weight:800;margin:0;line-height:1.2;text-wrap:balance}
+.qhelp{margin:0;color:var(--muted);font-size:.92rem;max-width:62ch}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yn button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;font-weight:800;font-size:1.05rem;cursor:pointer}
+.yn button:hover{border-color:var(--navy)}
+.res{border-radius:14px;padding:18px;border:2px solid;display:grid;gap:4px}
+.res b{font-size:1.25rem;font-weight:800}
+.res p{margin:0}
+.pr1{background:var(--p1-bg);border-color:var(--p1-b)} .pr1 b{color:var(--p1)}
+.pr2{background:var(--p2-bg);border-color:var(--p2-b)} .pr2 b{color:var(--p2)}
+.pr3{background:var(--p3-bg);border-color:var(--p3-b)} .pr3 b{color:var(--p3)}
+.pr4{background:var(--p4-bg);border-color:var(--p4-b)} .pr4 b{color:var(--p4)}
+.restart{border:0;background:none;color:var(--muted);font-weight:700;cursor:pointer;justify-self:start;padding:0}
+/* Mapa */
+.map{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);gap:0 0;align-items:center}
+.mq{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;text-align:center;font-weight:700;cursor:pointer;transition:opacity .2s,border-color .2s}
+.mr{border-radius:10px;padding:10px 12px;text-align:center;border:1.5px solid;cursor:pointer;transition:opacity .2s}
+.mr b{display:block;font-size:.9rem}
+.mr small{display:block;font-size:.78rem;color:var(--ink)}
+.hl{display:grid;grid-template-rows:auto;align-items:center;justify-items:center;font-size:.72rem;font-weight:700;color:var(--muted);position:relative;height:100%}
+.hl::before{content:"";position:absolute;left:4px;right:4px;top:50%;height:2px;background:var(--line)}
+.hl span{position:relative;top:-12px}
+.vl{height:30px;display:grid;justify-items:center;font-size:.72rem;font-weight:700;color:var(--muted);position:relative}
+.vl::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--line)}
+.vl span{position:relative;left:18px;top:6px}
+.map .dim{opacity:.35}
+.map .on{border-color:var(--navy)}
+.hl.on::before,.vl.on::before{background:var(--navy)}
+.mapnote{font-size:.85rem;margin:0;min-height:1.5em}
+@media (max-width:560px){.map{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr)}.mq{font-size:.82rem;padding:9px}.mr b{font-size:.8rem}.mr small{font-size:.7rem}}
+/* Casos */
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;cursor:pointer}
+.cases button[aria-current="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.cases button.ok::after{content:" ✓"}
+.strip{display:block;width:100%;height:auto;border-radius:8px;background:var(--paper)}
+.strip .tr{fill:none;stroke:var(--trace);stroke-width:.32;stroke-linejoin:round;stroke-linecap:round}
+.strip.draw .tr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.strip .gmin{fill:none;stroke:var(--gminor);stroke-width:.07}
+.strip .gmaj{fill:none;stroke:var(--gmajor);stroke-width:.16}
+.strip .lbl{fill:var(--trace);font-family:var(--font);font-weight:700;font-size:2.4px;opacity:.7}
+.vitals{display:flex;flex-wrap:wrap;gap:6px}
+.vitals span{background:var(--bg);border-radius:8px;padding:4px 10px;font-size:.85rem;font-weight:600}
+.cfb{font-size:.92rem;margin:0}
+.good{color:var(--p4);font-weight:800} .bad{color:var(--p1);font-weight:800}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.strip.draw .tr{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Estratificación del riesgo · Prioridad de atención</p>
+    <h1>La prioridad de atención se define en cuatro preguntas sucesivas</h1>
+  </header>
+
+  <nav class="steps" id="steps" aria-label="Páginas">
+    <button data-p="0"><span>1. Recorrer</span></button>
+    <button data-p="1"><span>2. Mapa completo</span></button>
+    <button data-p="2"><span>3. Casos con ECG</span></button>
+  </nav>
+
+  <section class="page" data-page="0">
+    <p class="lead">Responde una pregunta a la vez. Cada "sí" detiene el recorrido y asigna la prioridad; cada "no" lleva a la siguiente pregunta.</p>
+    <div class="panel" id="walk" aria-live="polite"></div>
+  </section>
+
+  <section class="page" data-page="1" hidden>
+    <p class="lead">El árbol completo. Toca una prioridad para ver el camino que lleva a ella.</p>
+    <div class="panel">
+      <div class="map" id="map"></div>
+      <p class="mapnote" id="mapnote"></p>
+    </div>
+    <p class="note">En la fibrilación auricular o el flúter, en cualquier prioridad: estimar el riesgo tromboembólico.</p>
+  </section>
+
+  <section class="page" data-page="2" hidden>
+    <p class="lead">Aplica las cuatro preguntas a cada paciente. Lee el trazo y los datos clínicos antes de responder.</p>
+    <div class="cases" id="cases"></div>
+    <div class="panel" id="case" aria-live="polite"></div>
+  </section>
+
+  <div class="pager"><button class="pbtn" id="prev">‹ Anterior</button><button class="pbtn pri" id="next">Siguiente ›</button></div>
+</div>
+
+<script>
+/* ---------- ECG esquemático ---------- */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(id,dur){
+  const R=rng(id.length*53+id.charCodeAt(0)),C=[];let X=null,hr="";
+  const add=(c,a,w)=>C.push([c,a,w]);
+  const P=(t,a=.15,w=.022)=>add(t,a,w);
+  const N=(q,rr=.8,qw=1)=>{add(q-.025,-.08,.008*qw);add(q,1.1,.011*qw);add(q+.028*qw,-.28,.01*qw);add(q+Math.min(.32,.17+.17*rr),.28,.045)};
+  const V=q=>{add(q,1.0,.032);add(q+.075,-.7,.032);add(q+.32,-.38,.06)};
+  const PX=(q,k)=>{add(q-.045,.38*k,.032);add(q,1.0,.02);add(q+.06,-.35,.028);add(q+.28,-.3,.06)};
+  const sinus=(q,rr,pr=.16)=>{P(q-pr);N(q,rr)};
+  switch(id){
+   case"ts":{let q=.3;while(q<dur+.4){sinus(q,.5,.15);q+=.5}hr="120";break}
+   case"bs":{let q=.5;while(q<dur+.4){sinus(q,1.3);q+=1.3}hr="46";break}
+   case"esa":{let q=.4,i=0;while(q<dur+.4){if(i===2||i===5){P(q-.13,.1,.018);N(q,.6);q+=.95}else{sinus(q,.85);q+=(i===1||i===4)?.55:.85}i++}hr="≈75";break}
+   case"esv":{let q=.4,i=0;while(q<dur+.4){if(i===2||i===6){V(q);q+=1.2}else{sinus(q,.85);q+=(i===1||i===5)?.5:.85}i++}hr="≈75";break}
+   case"b1":{let q=.5;while(q<dur+.4){sinus(q,.85,.32);q+=.85}hr="70";break}
+   case"m1":{let p=.2,k=0;const pr=[.18,.27,.33];while(p<dur+.4){P(p);const c=k%4;if(c<3)N(p+pr[c],.78);p+=.78;k++}hr="≈58";break}
+   case"reen":{let q=.25;while(q<dur+.4){N(q,.33);add(q+.045,-.12,.01);q+=.33}hr="182";break}
+   case"fv":{const r=R,ph=[r()*6,r()*6,r()*6,r()*6];X=t=>(.42+.22*Math.sin(2*Math.PI*.45*t))*(.55*Math.sin(2*Math.PI*4.3*t+ph[0])+.35*Math.sin(2*Math.PI*5.6*t+ph[1])+.25*Math.sin(2*Math.PI*3.2*t+ph[2])+.15*Math.sin(2*Math.PI*7.1*t+ph[3]));hr="—";break}
+   case"tvsp":{let q=.2;while(q<dur+.4){V(q);q+=.27}hr="222";break}
+   case"fa":{let q=.3;while(q<dur+.4){const rr=.4+R()*.38;N(q,rr);q+=rr}const ph=[R()*6,R()*6,R()*6];X=t=>.05*Math.sin(2*Math.PI*6.3*t+ph[0])+.035*Math.sin(2*Math.PI*8.4*t+ph[1])+.03*Math.sin(2*Math.PI*4.6*t+ph[2]);break}
+   case"asis":{hr="0";break}
+   case"aesp":{let q=.6;while(q<dur+.4){P(q-.16,.1);N(q,1.25,1.3);q+=1.25}hr="48";break}
+   case"tvs":{let q=.25;while(q<dur+.4){V(q);q+=.35}let p=.5;while(p<dur+.4){P(p,.1);p+=.8}hr="171";break}
+   case"tvp":{const s0=.3;X=t=>{const u=t-s0;if(u<0)return 0;const env=1.1*Math.sin(Math.PI*u/2.6)*(u<.15?u/.15:1);return env*Math.sin(2*Math.PI*3.8*u)};hr="≈230";break}
+   case"fap":{let q=.25;while(q<dur+.4){const rr=.22+R()*.3;PX(q,.6+R()*.9);q+=rr}const ph=[R()*6,R()*6];X=t=>.04*Math.sin(2*Math.PI*6.3*t+ph[0])+.03*Math.sin(2*Math.PI*8.4*t+ph[1]);hr="≈220";break}
+   case"m2":{let p=.2,k=0;while(p<dur+.4){P(p);if(k%3!==2)N(p+.18,.78);p+=.78;k++}hr="≈51";break}
+   case"bavz":{let p=.2,k=0;while(p<dur+.4){P(p);if(k%3===0)N(p+.2,1.8);p+=.6;k++}hr="≈33";break}
+   case"b3":{let p=.25;while(p<dur+.4){P(p);p+=.68}let q=.9;while(q<dur+.4){V(q);q+=1.6}hr="≈38";break}
+   case"pau":{[.4,1.2,2.0].forEach(q=>sinus(q,.8));sinus(5.6,.8);hr="pausa 3,6 s";break}
+  }
+  const wander=R()*6;
+  return t=>{let s=.025*Math.sin(2*Math.PI*.22*t+wander);for(const[c,a,w]of C){const x=(t-c)/w;if(x>-5&&x<5)s+=a*Math.exp(-x*x/2)}if(X)s+=X(t);return s};
+}
+function ecg(id,{dur=6,H=28}={}){
+  const v=build(id,dur),W=dur*25,base=H*.6;let d="";
+  for(let i=0;i<=dur*250;i++){const t=i/250,y=Math.max(.6,Math.min(H-.6,base-v(t)*10));d+=(i?"L":"M")+(t*25).toFixed(2)+" "+y.toFixed(2)}
+  let gmin="",gmaj="";for(let x=0;x<=W;x++)(x%5?(gmin+=`M${x} 0V${H}`):(gmaj+=`M${x} 0V${H}`));for(let y=0;y<=H;y++)(y%5?(gmin+=`M0 ${y}H${W}`):(gmaj+=`M0 ${y}H${W}`));
+  return`<svg class="strip draw" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trazo de ECG esquemático"><path class="gmin" d="${gmin}"/><path class="gmaj" d="${gmaj}"/><text class="lbl" x="1.2" y="3.4">DII</text><path class="tr" pathLength="1" d="${d}"/></svg>`;
+}
+
+const $=id=>document.getElementById(id);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const Q=[
+ {t:"¿Tiene pulso?",stop:"no",pr:"1a",help:"Comprueba la respuesta del paciente y el pulso central."},
+ {t:"¿Signos de inestabilidad?",stop:"si",pr:"1b",help:"Hipotensión, alteración de la conciencia, dolor torácico, signos de shock o insuficiencia cardíaca aguda."},
+ {t:"¿Arritmia letal o signos de alarma?",stop:"si",pr:"2",help:"Por ejemplo, TV sostenida, FA preexcitada, Mobitz II, bloqueo completo, QT largo o síncope."},
+ {t:"¿Produce síntomas?",stop:"si",pr:"3",help:"Palpitaciones, mareo, disnea, fatiga o intolerancia al esfuerzo."}
+];
+const PR={
+ "1a":{c:1,n:"Prioridad 1 · inmediata",d:"RCP y desfibrilación si procede"},
+ "1b":{c:1,n:"Prioridad 1 · inmediata",d:"Terapia inmediata si la arritmia es la causa"},
+ "2":{c:2,n:"Prioridad 2 · urgente",d:"Monitorización continua y valoración médica"},
+ "3":{c:3,n:"Prioridad 3 · prioritaria",d:"Valoración ordenada y tratamiento de la causa"},
+ "4":{c:4,n:"Prioridad 4 · programada",d:"Vigilancia, estudio de la causa y prevención"}
+};
+const YN={si:"Sí",no:"No"};
+const resHTML=k=>`<div class="res pr${PR[k].c}"><b>${PR[k].n}</b><p>${PR[k].d}</p></div>`;
+const pathTo=k=>{const a=[];for(let i=0;i<Q.length;i++){const q=Q[i];if(q.pr===k){a.push(q.stop);return a}a.push(q.stop==="no"?"si":"no")}return a};
+
+/* ---------- 1. Recorrer ---------- */
+const w={i:0,ans:[]};
+function walk(){
+  const trail=w.ans.map((a,i)=>`<span>${Q[i].t} <b>${YN[a]}</b></span>`).join("<i>›</i>");
+  let end=null;w.ans.forEach((a,i)=>{if(!end&&a===Q[i].stop)end=Q[i].pr});if(!end&&w.ans.length===Q.length)end="4";
+  if(end){$("walk").innerHTML=`<div class="trail">${trail}</div>${resHTML(end)}<button class="restart" id="rs">↺ Empezar de nuevo</button>`;$("rs").onclick=()=>{w.ans=[];walk()};return}
+  const q=Q[w.ans.length];
+  $("walk").innerHTML=`<div class="trail">${trail||'<span style="background:none;color:var(--muted);padding:0">Pregunta inicial</span>'}</div>
+    <p class="qnum">Pregunta ${w.ans.length+1} de 4</p><p class="qbig">${q.t}</p><p class="qhelp">${q.help}</p>
+    <div class="yn"><button data-a="si">Sí</button><button data-a="no">No</button></div>
+    ${w.ans.length?'<button class="restart" id="bk">‹ Pregunta anterior</button>':""}`;
+  $$("[data-a]",$("walk")).forEach(b=>b.onclick=()=>{w.ans.push(b.dataset.a);walk()});
+  if($("bk"))$("bk").onclick=()=>{w.ans.pop();walk()};
+}
+walk();
+
+/* ---------- 2. Mapa ---------- */
+let mapSel=null;
+function renderMap(){
+  const path=mapSel?pathTo(mapSel):null;
+  let h="";
+  Q.forEach((q,i)=>{
+    const reached=!path||i<path.length, stopHere=path&&i===path.length-1&&mapSel!=="4";
+    const side=q.stop;
+    h+=`<div class="mq ${path?(reached?"on":"dim"):""}">${q.t}</div>
+      <div class="hl ${stopHere?"on":""}"><span>${YN[side].toLowerCase()}</span></div>
+      <div class="mr pr${PR[q.pr].c} ${path&&mapSel!==q.pr?"dim":""}" data-pr="${q.pr}"><b>${PR[q.pr].n}</b><small>${PR[q.pr].d}</small></div>`;
+    const cont=side==="no"?"sí":"no", goesOn=path&&i<path.length-1||(mapSel==="4"&&path&&i<Q.length);
+    h+=`<div class="vl ${goesOn?"on":""}"><span>${cont}</span></div><span></span><span></span>`;
+  });
+  h+=`<div class="mr pr4 ${path&&mapSel!=="4"?"dim":""}" data-pr="4"><b>${PR["4"].n}</b><small>${PR["4"].d}</small></div><span></span><span></span>`;
+  $("map").innerHTML=h;
+  $$("[data-pr]",$("map")).forEach(b=>b.onclick=()=>{mapSel=mapSel===b.dataset.pr?null:b.dataset.pr;renderMap()});
+  $("mapnote").innerHTML=mapSel?`<b>Camino:</b> ${pathTo(mapSel).map((a,i)=>`${Q[i].t} ${YN[a].toLowerCase()}`).join(" → ")} → <b>${PR[mapSel].n}</b>`:"Toca una prioridad para ver su camino.";
+}
+renderMap();
+
+/* ---------- 3. Casos ---------- */
+const CASES=[
+ {n:"Paciente que no responde",d:"Mujer de 58 años encontrada en el pasillo. No responde y no se palpa pulso carotídeo.",v:["Sin pulso","No respira con normalidad"],e:"fv",pr:"1a",why:["Sin pulso: es un paro cardíaco y no hace falta seguir preguntando."]},
+ {n:"TV con hipotensión",d:"Hombre de 66 años con infarto previo. Está pálido, sudoroso y confuso.",v:["Pulso débil","PAS 78 mmHg","FC 170 lpm","Confuso"],e:"tvs",pr:"1b",why:["Tiene pulso, aunque débil.","Hipotensión y confusión son signos de inestabilidad."]},
+ {n:"Bloqueo Mobitz II",d:"Hombre de 72 años, asintomático, en monitorización tras una cirugía.",v:["Pulso presente","PAS 124 mmHg","FC 52 lpm","Alerta"],e:"m2",pr:"2",why:["Tiene pulso.","Está estable: presión y conciencia conservadas.","El Mobitz II es un bloqueo infranodal: arritmia potencialmente letal."]},
+ {n:"Fibrilación auricular",d:"Mujer de 70 años con palpitaciones desde ayer; tranquila y bien perfundida.",v:["Pulso irregular","PAS 132 mmHg","FC ≈ 100 lpm","Alerta"],e:"fa",pr:"3",af:true,why:["Tiene pulso.","Está estable.","No es una arritmia letal ni hay signos de alarma.","Las palpitaciones son síntomas."]},
+ {n:"Taquicardia por reentrada",d:"Mujer de 28 años con palpitaciones de inicio súbito; bien perfundida.",v:["Pulso presente","PAS 116 mmHg","FC 182 lpm","Alerta"],e:"reen",pr:"3",why:["Tiene pulso.","Está estable pese a la frecuencia alta.","En el corazón sano la reentrada no es una arritmia letal.","Tiene palpitaciones."]},
+ {n:"Extrasístoles ventriculares",d:"Hombre de 35 años sin cardiopatía; hallazgo en un ECG de control.",v:["Pulso presente","PAS 120 mmHg","FC 75 lpm","Asintomático"],e:"esv",pr:"4",why:["Tiene pulso.","Está estable.","Extrasístoles aisladas sin cardiopatía: no son letales.","No produce síntomas."]}
+];
+const cs={i:0,step:0,ok:new Set(),errs:0};
+function renderCaseList(){$("cases").innerHTML=CASES.map((c,i)=>`<button data-c="${i}" aria-current="${i===cs.i}" class="${cs.ok.has(i)?"ok":""}">${c.n}</button>`).join("");
+  $$("[data-c]").forEach(b=>b.onclick=()=>openCase(+b.dataset.c))}
+function openCase(i){cs.i=i;cs.step=0;cs.errs=0;renderCaseList();
+  const c=CASES[i];
+  $("case").innerHTML=`<div><b style="font-size:1.05rem">${c.n}</b><p class="lead" style="margin-top:2px">${c.d}</p></div>
+    ${ecg(c.e)}<div class="vitals">${c.v.map(x=>`<span>${x}</span>`).join("")}</div><div id="cq"></div>`;
+  caseStep()}
+function caseStep(){
+  const c=CASES[cs.i],path=pathTo(c.pr);
+  if(cs.step>=path.length){cs.ok.add(cs.i);renderCaseList();
+    $("cq").innerHTML=`${resHTML(c.pr)}${c.af?'<p class="note" style="margin-top:10px">Es una fibrilación auricular: además, estimar el riesgo tromboembólico.</p>':""}
+      <p class="cfb" style="margin-top:10px">${cs.errs?`Llegaste con ${cs.errs} ${cs.errs===1?"corrección":"correcciones"}.`:"Recorrido sin errores."}</p>
+      ${cs.i<CASES.length-1?'<div style="margin-top:10px"><button class="pbtn pri" id="nc">Siguiente caso ›</button></div>':""}`;
+    if($("nc"))$("nc").onclick=()=>openCase(cs.i+1);return}
+  const q=Q[cs.step],right=path[cs.step];
+  $("cq").innerHTML=`<p class="qnum">Pregunta ${cs.step+1}</p><p class="qbig" style="font-size:1.3rem">${q.t}</p>
+    <div class="yn"><button data-a="si">Sí</button><button data-a="no">No</button></div><div id="cf"></div>`;
+  $$("[data-a]",$("cq")).forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.a===right;if(!ok)cs.errs++;
+    $$("[data-a]",$("cq")).forEach(x=>x.disabled=true);
+    $("cf").innerHTML=`<p class="cfb" style="margin-top:10px"><span class="${ok?"good":"bad"}">${ok?"Correcto.":`La respuesta es "${YN[right]}".`}</span> ${c.why[cs.step]}</p>
+      <div style="margin-top:8px"><button class="pbtn pri" id="go">Continuar ›</button></div>`;
+    $("go").onclick=()=>{cs.step++;caseStep()};$("go").focus()});
+}
+renderCaseList();openCase(0);
+
+/* ---------- Páginas ---------- */
+const pages=$$(".page");let cur=0;
+function show(i){cur=Math.max(0,Math.min(pages.length-1,i));pages.forEach((p,j)=>p.hidden=j!==cur);
+  $$("#steps button").forEach((b,j)=>{b.removeAttribute("aria-current");if(j===cur)b.setAttribute("aria-current","step");b.classList.toggle("done",j<cur)});
+  $("prev").disabled=cur===0;$("next").textContent=cur===pages.length-1?"Volver al inicio":"Siguiente ›";
+  if(cur===2)openCase(cs.i);window.scrollTo({top:0,behavior:"smooth"})}
+$$("#steps button").forEach(b=>b.onclick=()=>show(+b.dataset.p));
+$("prev").onclick=()=>show(cur-1);$("next").onclick=()=>show(cur===pages.length-1?0:cur+1);
+show(0);
+</script>
+
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

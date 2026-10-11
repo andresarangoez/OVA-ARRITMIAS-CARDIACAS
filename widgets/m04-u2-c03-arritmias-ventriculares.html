@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espectro de arritmias ventriculares</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: encabezado académico, pestañas; espectro de gravedad clicable + monitor ECG oscuro + ficha; tabla comparativa; reconocimiento de trazos; referencias */
+:root{
+  --bg:#ffffff;--ink:#1b2433;--muted:#535d6d;--line:#d6dce6;--soft:#f5f7fb;
+  --blue:#1d4f9c;--blue-soft:#e7eef9;--yellow:#e0a800;--yellow-soft:#fdf5d8;--yellow-ink:#7a5a00;
+  --ok:#2e7d4f;--ok-soft:#e8f5ec;--risk:#b3362f;--risk-soft:#fbeaea;
+  --mon:#0c1220;--trace:#7ee2a8;
+  --font:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:32px 48px}
+#va-app{max-width:960px;margin:0 auto;display:grid;gap:22px}
+#va-app header{display:grid;gap:10px}
+#va-app p{margin:0}
+#va-app button{font-family:var(--font);cursor:pointer}
+#va-app button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.meta{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+#va-app h1{font-size:clamp(22px,3vw,29px);font-weight:800;line-height:1.25;margin:0;text-wrap:balance}
+.abstract{color:var(--muted);max-width:74ch;text-align:justify;hyphens:auto}
+.lead{color:var(--muted);font-size:15px;max-width:74ch}
+/* Pestañas */
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs [role="tab"]{border:none;border-bottom:3px solid transparent;background:none;color:var(--muted);padding:12px 14px 10px;white-space:nowrap;font-size:14px;font-weight:600;display:flex;gap:7px;align-items:center}
+.tabs [role="tab"] span{font-size:11px;font-weight:800;width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:var(--soft)}
+.tabs [role="tab"]:hover{color:var(--blue)}
+.tabs [aria-selected="true"]{color:var(--blue);border-bottom-color:var(--yellow)}
+.tabs [aria-selected="true"] span{background:var(--blue);color:#fff}
+.tp{display:grid;gap:16px;animation:fade .25s ease-out}
+.tp[hidden]{display:none}
+@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* Espectro */
+.spec{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.spec{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.spec{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{border:1.5px solid;border-radius:6px;padding:10px 6px;text-align:center;font-size:13.5px;line-height:1.3;background:var(--bg);color:var(--ink);display:grid;gap:2px;align-content:center;min-height:68px;transition:transform .15s,box-shadow .15s}
+.card b{font-weight:700}
+.card span{color:var(--muted);font-size:12.5px}
+.card.lo{border-color:#5aa877;background:var(--ok-soft)}
+.card.md{border-color:#e6b84a;background:var(--yellow-soft)}
+.card.hi{border-color:#d46a63;background:var(--risk-soft)}
+.card:hover{transform:translateY(-2px)}
+.card[aria-pressed="true"]{box-shadow:0 0 0 3px var(--blue);transform:translateY(-2px)}
+.axis{display:grid;gap:4px}
+.axis .bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#5aa877,#e6b84a,#d46a63);position:relative}
+.axis .bar::after{content:"";position:absolute;right:-2px;top:-5px;border-left:10px solid #d46a63;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.axis .lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.toggle{display:flex;gap:12px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:4px;background:var(--soft);font-size:14px;cursor:pointer}
+.toggle input{width:20px;height:20px;accent-color:var(--blue);flex:none}
+.toggle b{color:var(--blue)}
+/* Ficha */
+.detail{border:1px solid var(--line);border-radius:6px;overflow:hidden;display:grid}
+.mon{background:var(--mon)}
+.mbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;padding:8px 14px;font-size:13px;color:rgba(255,255,255,.7)}
+.mbar b{color:#f2c94c}
+.mbar .rate{color:var(--trace);font-weight:700;font-variant-numeric:tabular-nums}
+.mstrip{overflow-x:auto}
+.mstrip svg{display:block;width:100%;min-width:520px;height:auto}
+.dbody{padding:14px 16px;display:grid;gap:12px}
+.dhead{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.dhead h3{margin:0;font-size:19px;color:var(--blue)}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:12px;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:2px;text-transform:uppercase}
+.pill.lo{background:var(--ok-soft);color:var(--ok)}
+.pill.md{background:var(--yellow-soft);color:var(--yellow-ink)}
+.pill.hi{background:var(--risk-soft);color:var(--risk)}
+.dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:14.5px;margin:0}
+.dl dt{font-weight:700;color:var(--blue)}
+.dl dd{margin:0;min-width:0}
+.dl .sh{background:var(--yellow-soft);padding:4px 8px;border-radius:2px}
+.dl .sh[hidden],.dl dt[hidden]{display:none}
+@media (max-width:560px){.dl{grid-template-columns:1fr}.dl dd{margin-bottom:6px}}
+.riskrow{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.meter{height:10px;border-radius:5px;background:linear-gradient(90deg,#5aa877,#e6b84a,#d46a63);position:relative}
+.meter i{position:absolute;top:-4px;width:4px;height:18px;background:var(--ink);border-radius:2px;margin-left:-2px;transition:left .4s}
+/* Tabla */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:14px}
+caption{caption-side:top;text-align:left;font-size:13.5px;color:var(--muted);padding:0 0 8px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{background:var(--blue);color:#fff;font-weight:700}
+tbody th{font-weight:700;white-space:nowrap;border-left:4px solid}
+tbody th.lo{border-left-color:#5aa877}tbody th.md{border-left-color:#e6b84a}tbody th.hi{border-left-color:#d46a63}
+tr:last-child td,tr:last-child th{border-bottom:none}
+/* Quiz */
+.quiz{border:1px solid var(--line);border-radius:6px;overflow:hidden;display:grid}
+.qhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;padding:10px 16px;background:var(--soft);border-bottom:1px solid var(--line);font-size:13px;font-weight:700;color:var(--muted)}
+.qbar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:1 1 160px;max-width:260px}
+.qbar i{display:block;height:100%;background:var(--yellow);transition:width .3s}
+.qbody{padding:16px;display:grid;gap:12px}
+.qopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:8px}
+.qopts button,.qnext{font-size:13.5px;font-weight:600;border-radius:4px;padding:8px 12px;border:1.5px solid var(--blue);background:var(--bg);color:var(--blue);text-align:left}
+.qopts button:hover{background:var(--blue-soft)}
+.qopts button.ok{background:var(--blue);color:#fff}
+.qopts button.bad{background:var(--yellow-soft);border-color:var(--yellow);color:var(--yellow-ink)}
+.qfb{font-size:14.5px;padding:10px 14px;border-left:3px solid var(--blue);background:var(--blue-soft)}
+.qfb.bad{border-left-color:var(--yellow);background:var(--yellow-soft)}
+.qfb[hidden],.qnext[hidden],.qmon[hidden]{display:none}
+.qmon{border-radius:4px;overflow:hidden;background:var(--mon)}
+.refs{font-size:14px;color:var(--muted);padding-left:20px;margin:0;display:grid;gap:8px}
+.note{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+@media (prefers-reduced-motion:reduce){.tp{animation:none}.card{transition:none}.meter i{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="va-app">
+  <header>
+    <span class="meta">Electrofisiología clínica · Arritmias ventriculares</span>
+    <h1>La gravedad aumenta desde las extrasístoles hasta la fibrilación ventricular</h1>
+    <p class="abstract">Las arritmias ventriculares constituyen un espectro continuo que va desde latidos prematuros aislados, habitualmente benignos, hasta la fibrilación ventricular, causa principal de muerte súbita. La cardiopatía estructural y la disfunción ventricular aumentan el riesgo asociado a cualquiera de ellas.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button role="tab" id="vt-esp" aria-controls="vp-esp" aria-selected="true" tabindex="0"><span>1</span>Espectro</button>
+    <button role="tab" id="vt-tab" aria-controls="vp-tab" aria-selected="false" tabindex="-1"><span>2</span>Comparación</button>
+    <button role="tab" id="vt-quiz" aria-controls="vp-quiz" aria-selected="false" tabindex="-1"><span>3</span>Reconocimiento</button>
+    <button role="tab" id="vt-ref" aria-controls="vp-ref" aria-selected="false" tabindex="-1"><span>4</span>Referencias</button>
+  </nav>
+
+  <!-- 1 Espectro -->
+  <section class="tp" id="vp-esp" role="tabpanel" aria-labelledby="vt-esp">
+    <p class="lead">Seleccione cada arritmia para visualizar su trazo en el monitor y consultar sus características. Active la opción inferior para observar cómo cambia el riesgo en presencia de cardiopatía estructural.</p>
+    <div class="spec" id="spec"></div>
+    <div class="axis"><div class="bar"></div><div class="lbl"><span>Menor gravedad</span><span>Mayor gravedad</span></div></div>
+    <label class="toggle"><input type="checkbox" id="struct"><span><b>Cardiopatía estructural o disfunción ventricular.</b> Aumenta el riesgo de cualquiera de estas arritmias.</span></label>
+    <div class="detail" aria-live="polite">
+      <div class="mon">
+        <div class="mbar"><span>Derivación II · simulación</span><b id="mName"></b><span class="rate" id="mRate"></span></div>
+        <div class="mstrip" id="mStrip"></div>
+      </div>
+      <div class="dbody">
+        <div class="dhead"><h3 id="dT"></h3><div class="pills"><span class="pill" id="pSev"></span><span class="pill" id="pPulse"></span></div></div>
+        <dl class="dl">
+          <dt>Definición</dt><dd id="dDef"></dd>
+          <dt>Criterio ECG</dt><dd id="dEcg"></dd>
+          <dt>Repercusión</dt><dd id="dHem"></dd>
+          <dt>Abordaje inicial</dt><dd id="dMan"></dd>
+          <dt id="shT" hidden>Con cardiopatía</dt><dd class="sh" id="dSh" hidden></dd>
+        </dl>
+        <div class="riskrow"><span>Riesgo de muerte súbita (representación relativa)</span><div class="meter"><i id="meter"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 Comparación -->
+  <section class="tp" id="vp-tab" role="tabpanel" aria-labelledby="vt-tab" hidden>
+    <div class="tablewrap">
+      <table>
+        <caption><b>Tabla 1.</b> Características comparativas de las arritmias ventriculares.</caption>
+        <thead><tr><th>Arritmia</th><th>Frecuencia</th><th>QRS y duración</th><th>Pulso</th><th>Abordaje inicial</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3 Reconocimiento -->
+  <section class="tp" id="vp-quiz" role="tabpanel" aria-labelledby="vt-quiz" hidden>
+    <p class="lead">Observe cada trazo e identifique la arritmia. Recibirá retroalimentación inmediata.</p>
+    <div class="quiz">
+      <div class="qhead"><span id="qProg"></span><span class="qbar"><i id="qBar"></i></span><span id="qScore"></span></div>
+      <div class="qbody">
+        <div class="qmon" id="qMon"></div>
+        <div class="qopts" id="qOpts"></div>
+        <div class="qfb" id="qFb" hidden></div>
+        <div><button class="qnext" id="qNext" hidden></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Referencias -->
+  <section class="tp" id="vp-ref" role="tabpanel" aria-labelledby="vt-ref" hidden>
+    <ol class="refs">
+      <li>Zeppenfeld K, Tfelt-Hansen J, de Riva M, et al. 2022 ESC Guidelines for the management of patients with ventricular arrhythmias and the prevention of sudden cardiac death. <i>Eur Heart J.</i> 2022;43(40):3997-4126.</li>
+      <li>Al-Khatib SM, Stevenson WG, Ackerman MJ, et al. 2017 AHA/ACC/HRS Guideline for Management of Patients With Ventricular Arrhythmias and the Prevention of Sudden Cardiac Death. <i>Circulation.</i> 2018;138(13):e272-e391.</li>
+    </ol>
+    <p class="note">Material de apoyo docente. Los trazos son esquemáticos y no tienen valor diagnóstico. Para el manejo de la parada cardíaca, siga el algoritmo vigente de soporte vital cardiovascular avanzado. Verifique los datos bibliográficos en la fuente original antes de citarlos.</p>
+  </section>
+</div>
+
+<script>
+(()=>{
+const root=document.getElementById("va-app");
+const $=id=>root.querySelector("#"+id);
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Señales ECG ---------- */
+const g=(t,m,s,a)=>a*Math.exp(-((t-m)**2)/(2*s*s));
+const N=dt=>g(dt,-.17,.025,.15)+g(dt,-.012,.007,-.1)+g(dt,0,.009,1)+g(dt,.02,.009,-.25)+g(dt,.26,.05,.25);
+const NL=dt=>g(dt,-.17,.025,.15)+g(dt,-.012,.007,-.1)+g(dt,0,.009,1)+g(dt,.02,.009,-.25)+g(dt,.48,.08,.3);
+const W=dt=>g(dt,0,.04,1)+g(dt,.08,.045,-.5)+g(dt,.3,.07,-.32);
+const sum=(list)=>t=>{let v=0;for(const [tt,f,a] of list){const dt=t-tt;if(dt>-.35&&dt<.8)v+=f(dt)*(a??1);}return v;};
+const RH={
+  ev:{d:6.5,f:sum([[.3,N],[1.15,N],[2.0,N],[2.55,W],[3.7,N],[4.55,N],[5.15,W],[6.3,N]]),m:[[2.55,"Extrasístole"],[5.15,"Extrasístole"]],rate:"FC 70 lpm"},
+  riva:{d:6.5,f:sum([[.3,N],[1.15,N],...[1.9,2.7,3.5,4.3,5.1,5.9].map(t=>[t,W])]),m:[[1.9,"Inicio del ritmo idioventricular"]],rate:"FC 75 lpm"},
+  tvns:{d:6.5,f:sum([[.3,N],[1.15,N],[2.0,N],...[2.55,2.9,3.25,3.6,3.95,4.3].map(t=>[t,W]),[5.2,N],[6.05,N]]),m:[[2.55,"Salva de 6 latidos"]],rate:"FC 170 lpm en la salva"},
+  tvms:{d:6.5,f:t=>{let v=0;for(let k=0;k<20;k++){const dt=t-(.2+k*.35);if(dt>-.3&&dt<.6)v+=W(dt)*1.05;}return v;},m:[[.2,"QRS ancho y uniforme"]],rate:"FC 170 lpm"},
+  tvp:{d:6.5,f:t=>{let v=NL(t-.3);if(t>.95){const k=Math.round((t-.95)/.22);const tt=.95+k*.22,dt=t-tt;const env=Math.sin(2*Math.PI*(tt-.95)/3.1+.35);v+=(g(dt,0,.035,1)+g(dt,.07,.04,-.6))*(env*1.15);}return v;},m:[[.3,"QT prolongado"],[.95,"Inicio de torsades"]],rate:"FC 270 lpm"},
+  fv:{d:6.5,f:t=>{const e=.6+.4*Math.sin(2*Math.PI*.35*t+1);return e*(.42*Math.sin(2*Math.PI*5.2*t+.8*Math.sin(1.7*t))+.26*Math.sin(2*Math.PI*7.6*t+1.3)+.16*Math.sin(2*Math.PI*3.1*t+2.1)+.08*Math.sin(2*Math.PI*11.3*t));},m:[[.2,"Sin complejos QRS identificables"]],rate:"FC no medible"}
+};
+let sweepN=0;
+function strip(key,sweep){
+  const r=RH[key],Wd=600,H=120,px=Wd/r.d,base=74,sc=44;
+  let d="";for(let x=0;x<=Wd;x+=1.25){const v=r.f(x/px);d+=(x?"L":"M")+x.toFixed(1)+" "+(base-v*sc).toFixed(1);}
+  let grid="";for(let i=0;i<=r.d*5;i++){const x=i*px/5;grid+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="${i%5?'#162238':'#22324f'}"/>`;}
+  for(let j=0;j<=H;j+=px/5)grid+=`<line x1="0" y1="${j}" x2="${Wd}" y2="${j}" stroke="#162238"/>`;
+  let mk="";r.m.forEach(([t,l],n)=>{const x=t*px;mk+=`<line x1="${x}" y1="14" x2="${x}" y2="${H-8}" stroke="#f2c94c" stroke-width="1.5" stroke-dasharray="3 3"/><text x="${x+4}" y="${24+n*15}" font-size="10.5" font-weight="700" fill="#f2c94c" font-family="Raleway,sans-serif">${l}</text>`;});
+  const id="va-sw"+(++sweepN);
+  const clip=sweep?` clip-path="url(#${id})"`:"";
+  const defs=sweep?`<defs><clipPath id="${id}"><rect class="swR" x="0" y="0" width="0" height="${H}"/></clipPath></defs><line class="swL" x1="0" y1="0" x2="0" y2="${H}" stroke="#7ee2a8" stroke-opacity=".5" stroke-width="2"/>`:"";
+  return `<svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Trazo esquemático">${defs}${grid}${mk}<path d="${d}" fill="none" stroke="#7ee2a8" stroke-width="2" stroke-linejoin="round"${clip}/></svg>`;
+}
+
+/* ---------- Datos ---------- */
+const A=[
+  {k:"ev",c:"lo",t:"Extrasístoles",s:"ventriculares",pulse:"Con pulso",r:[8,25],
+   def:"Latidos prematuros originados en el miocardio ventricular, por debajo de la bifurcación del haz de His.",
+   ecg:"QRS prematuro y ancho (≥ 120 ms) sin onda P precedente, con onda T opuesta y pausa compensadora completa.",
+   hem:"Habitualmente sin repercusión; pueden producir palpitaciones. Una carga elevada y persistente puede inducir disfunción ventricular.",
+   man:"Corregir desencadenantes (electrolitos, estimulantes, isquemia). Betabloqueador si son sintomáticas; ablación si la carga es alta.",
+   sh:"Su frecuencia y complejidad pueden indicar un sustrato arritmogénico; requieren evaluación con ecocardiograma y estudio del sustrato.",
+   freq:"Ritmo de base",qrs:"Ancho, aislado"},
+  {k:"riva",c:"lo",t:"Ritmo",s:"idioventricular",pulse:"Con pulso",r:[10,20],
+   def:"Ritmo ectópico ventricular; en su forma acelerada tiene una frecuencia de 50 a 110 lpm, similar a la del ritmo sinusal.",
+   ecg:"QRS anchos y regulares a 50-110 lpm, con posible disociación AV y latidos de fusión al inicio o al final.",
+   hem:"Generalmente bien tolerado y autolimitado.",
+   man:"No suele requerir antiarrítmicos. Es frecuente tras la reperfusión coronaria; vigilar y tratar la causa.",
+   sh:"En el contexto de un infarto, es un marcador de reperfusión más que de riesgo arrítmico.",
+   freq:"50-110 lpm",qrs:"Ancho, regular"},
+  {k:"tvns",c:"md",t:"TV no",s:"sostenida",pulse:"Con pulso",r:[30,60],
+   def:"Tres o más latidos ventriculares consecutivos a más de 100 lpm, con duración inferior a 30 segundos y sin compromiso hemodinámico.",
+   ecg:"Salva de QRS anchos a más de 100 lpm que termina de forma espontánea.",
+   hem:"Suele ser asintomática o producir palpitaciones breves.",
+   man:"Buscar cardiopatía estructural y causas reversibles. Betabloqueador si hay síntomas.",
+   sh:"Es un marcador de riesgo de muerte súbita; contribuye a la estratificación del riesgo y a la decisión de implantar un DAI.",
+   freq:"> 100 lpm",qrs:"Ancho, < 30 s"},
+  {k:"tvms",c:"md",t:"TV monomórfica",s:"sostenida",pulse:"Con o sin pulso",r:[60,85],
+   def:"Taquicardia ventricular con QRS de morfología uniforme que dura más de 30 segundos o requiere terminación por inestabilidad.",
+   ecg:"QRS anchos, regulares e idénticos, a más de 100 lpm; disociación AV, latidos de captura o de fusión.",
+   hem:"Variable: desde bien tolerada hasta hipotensión, síncope o paro cardíaco.",
+   man:"Inestable con pulso: cardioversión sincronizada. Estable: antiarrítmico (amiodarona o procainamida) y evaluación especializada. Sin pulso: desfibrilación.",
+   sh:"Suele deberse a reentrada en una cicatriz; requiere evaluar DAI y ablación del sustrato.",
+   freq:"> 100 lpm",qrs:"Ancho, uniforme, > 30 s"},
+  {k:"tvp",c:"hi",t:"TV polimórfica",s:"y torsades",pulse:"Con frecuencia sin pulso",r:[80,92],
+   def:"Taquicardia ventricular con QRS de morfología cambiante. La torsades de pointes es la forma asociada a QT prolongado.",
+   ecg:"QRS de amplitud y eje variables; en las torsades, los complejos giran alrededor de la línea de base.",
+   hem:"Con frecuencia produce síncope y puede degenerar en fibrilación ventricular.",
+   man:"Inestable o sin pulso: desfibrilación. Torsades: sulfato de magnesio, suspender fármacos que prolongan el QT, corregir el potasio. Con QT normal: tratar la isquemia.",
+   sh:"Con QT normal sugiere isquemia aguda; en la miocardiopatía avanzada tiene alto riesgo de degenerar en FV.",
+   freq:"150-300 lpm",qrs:"Ancho, variable"},
+  {k:"fv",c:"hi",t:"Fibrilación",s:"ventricular",pulse:"Sin pulso",r:[100,100],
+   def:"Actividad eléctrica ventricular caótica y desorganizada, sin contracción efectiva.",
+   ecg:"Ondulaciones irregulares de amplitud y frecuencia variables, sin complejos QRS ni ondas T identificables.",
+   hem:"Paro cardíaco: pérdida inmediata de pulso y de conciencia.",
+   man:"Reanimación cardiopulmonar de alta calidad y desfibrilación inmediata, según el algoritmo de soporte vital avanzado.",
+   sh:"La cardiopatía estructural es el principal sustrato de la muerte súbita por FV; los supervivientes son candidatos a DAI.",
+   freq:"No medible",qrs:"Ausente"}
+];
+const SEV={lo:"Menor gravedad",md:"Gravedad intermedia",hi:"Mayor gravedad"};
+
+/* ---------- Espectro ---------- */
+const spec=$("spec"),cards=[];
+let cur=0,anim=null;
+A.forEach((a,i)=>{
+  const b=document.createElement("button");b.className="card "+a.c;b.setAttribute("aria-pressed","false");
+  b.innerHTML=`<b>${a.t}</b><span>${a.s}</span>`;b.addEventListener("click",()=>show(i));spec.appendChild(b);cards.push(b);
+});
+function show(i){
+  cur=i;const a=A[i],st=$("struct").checked;
+  cards.forEach((c,j)=>c.setAttribute("aria-pressed",j===i));
+  $("dT").textContent=`${a.t} ${a.s}`;
+  const ps=$("pSev");ps.className="pill "+a.c;ps.textContent=SEV[a.c];
+  const pp=$("pPulse");pp.className="pill "+(a.k==="fv"?"hi":a.c==="hi"?"hi":a.c==="md"?"md":"lo");pp.textContent=a.pulse;
+  $("dDef").textContent=a.def;$("dEcg").textContent=a.ecg;$("dHem").textContent=a.hem;$("dMan").textContent=a.man;
+  $("dSh").textContent=a.sh;$("dSh").hidden=!st;$("shT").hidden=!st;
+  $("meter").style.left=a.r[st?1:0]+"%";
+  $("mName").textContent=`${a.t} ${a.s}`;$("mRate").textContent=RH[a.k].rate;
+  $("mStrip").innerHTML=strip(a.k,!reduce);
+  cancelAnimationFrame(anim);
+  if(reduce)return;
+  const sR=$("mStrip").querySelector(".swR"),sL=$("mStrip").querySelector(".swL"),dur=RH[a.k].d*1000,t0=performance.now();
+  const run=t=>{const x=((t-t0)%dur)/dur*600;sR.setAttribute("width",x);sL.setAttribute("x1",x);sL.setAttribute("x2",x);anim=requestAnimationFrame(run);};
+  anim=requestAnimationFrame(run);
+}
+$("struct").addEventListener("change",()=>{const a=A[cur],st=$("struct").checked;$("dSh").hidden=!st;$("shT").hidden=!st;$("meter").style.left=a.r[st?1:0]+"%";});
+show(0);
+
+/* ---------- Tabla ---------- */
+$("tbody").innerHTML=A.map(a=>`<tr><th class="${a.c}" scope="row">${a.t} ${a.s}</th><td>${a.freq}</td><td>${a.qrs}</td><td>${a.pulse}</td><td>${a.man}</td></tr>`).join("");
+
+/* ---------- Reconocimiento ---------- */
+const qOpts=$("qOpts"),qFb=$("qFb"),qNext=$("qNext");
+A.forEach(a=>{const b=document.createElement("button");b.dataset.k=a.k;b.textContent=`${a.t} ${a.s}`;qOpts.appendChild(b);});
+let order=[],qi=0,score=0,answered=false,done=false;
+function shuffle(x){for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;}
+function qStart(){order=shuffle(A.map((_,i)=>i));qi=0;score=0;done=false;qShow();}
+function qShow(){
+  answered=false;const a=A[order[qi]];
+  // trazo sin marcas para no revelar la respuesta
+  const keep=RH[a.k].m;RH[a.k].m=[];$("qMon").innerHTML=strip(a.k,false);RH[a.k].m=keep;
+  $("qMon").hidden=false;qOpts.style.display="";
+  $("qProg").textContent=`Trazo ${qi+1} de ${A.length}`;$("qScore").textContent=`Aciertos: ${score}`;$("qBar").style.width=(qi/A.length*100)+"%";
+  qOpts.querySelectorAll("button").forEach(b=>{b.className="";b.disabled=false;});
+  qFb.hidden=true;qNext.hidden=true;
+}
+qOpts.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||answered)return;answered=true;
+  const a=A[order[qi]],ok=b.dataset.k===a.k;if(ok)score++;
+  qOpts.querySelectorAll("button").forEach(x=>{x.disabled=true;if(x.dataset.k===a.k)x.className="ok";else if(x===b)x.className="bad";});
+  qFb.className="qfb"+(ok?"":" bad");qFb.innerHTML=(ok?"<b>Correcto.</b> ":`<b>Incorrecto.</b> Se trata de ${a.t.toLowerCase()} ${a.s}. `)+a.ecg;qFb.hidden=false;
+  $("qScore").textContent=`Aciertos: ${score}`;$("qBar").style.width=((qi+1)/A.length*100)+"%";
+  qNext.textContent=qi<A.length-1?"Siguiente trazo →":"Ver resultado";qNext.hidden=false;
+});
+qNext.addEventListener("click",()=>{
+  if(done){qStart();return;}
+  if(qi<A.length-1){qi++;qShow();return;}
+  done=true;const pct=Math.round(score/A.length*100);
+  $("qMon").hidden=true;qOpts.style.display="none";
+  qFb.className="qfb"+(pct>=70?"":" bad");
+  qFb.innerHTML=`<b>Resultado: ${score} de ${A.length} (${pct} %).</b> `+(pct>=70?"Reconoce adecuadamente los patrones del espectro ventricular.":"Se recomienda repasar los trazos en la pestaña Espectro.");
+  qFb.hidden=false;qNext.textContent="Reiniciar";
+});
+qStart();
+
+/* ---------- Pestañas ---------- */
+const TABS=[...root.querySelectorAll('[role="tab"]')];
+function openTab(i,focus){TABS.forEach((t,j)=>{const on=i===j;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on;if(on&&focus)t.focus();});}
+TABS.forEach((t,i)=>{
+  t.addEventListener("click",()=>openTab(i));
+  t.addEventListener("keydown",e=>{let j=null;if(e.key==="ArrowRight")j=(i+1)%TABS.length;if(e.key==="ArrowLeft")j=(i-1+TABS.length)%TABS.length;if(j!==null){e.preventDefault();openTab(j,true);}});
+});
+})();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

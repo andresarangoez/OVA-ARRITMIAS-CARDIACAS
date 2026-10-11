@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>QRS y regularidad</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: página 1 matriz 2×2; página 2 detalle del cuadrante con trazo y calibradores; pestaña Practicar con clasificación en dos pasos. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1d38; --muted:#5d6a80; --line:#e1e6ee; --navy:#16305e; --navy-ink:#fff;
+  --q1:#ffffff; --q1b:#cfd6e2; --q3:#fff8e6; --q3b:#e9b949; --q4:#fdeeee; --q4b:#e07a7a;
+  --amber:#b07800; --red:#c0392b; --ok:#1d7a4a; --bad:#c0392b; --cal:#1f6fb8;
+  --paper:#fff7f7; --gminor:#f7d2d2; --gmajor:#eaa5a5; --trace:#1a1a24;
+  --font:"Raleway",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --q1:#131e33; --q1b:#33415c; --q3:#2c230c; --q3b:#b8902f; --q4:#33181a; --q4b:#b55a5a;
+  --amber:#ffc94a; --red:#ff7a7a; --ok:#5fd08c; --bad:#ff7a7a; --cal:#7db6f0;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --q1:#131e33; --q1b:#33415c; --q3:#2c230c; --q3b:#b8902f; --q4:#33181a; --q4b:#b55a5a;
+  --amber:#ffc94a; --red:#ff7a7a; --ok:#5fd08c; --bad:#ff7a7a; --cal:#7db6f0;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:lining-nums;font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 30px}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:16px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+h1{font-weight:700;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--cal);outline-offset:2px}
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px}
+.tabs button{font-size:.88rem;font-weight:600;background:none;border:0;border-radius:7px;padding:6px 14px;cursor:pointer;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--navy);color:var(--navy-ink)}
+[hidden]{display:none!important}
+.lead{margin:0;color:var(--muted);max-width:68ch}
+/* Matriz */
+.matrix{display:grid;grid-template-columns:110px repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.colh{font-weight:700;text-align:center;padding:4px;border-radius:8px;cursor:pointer;border:0;background:none}
+.rowh{font-weight:700;align-self:center;border:0;background:none;text-align:left;cursor:pointer;padding:4px;border-radius:8px}
+.rowh small,.colh small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+.colh[aria-pressed="true"],.rowh[aria-pressed="true"]{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--cal)}
+.quad{border-radius:12px;border:1.5px solid var(--q1b);background:var(--q1);padding:14px 16px;text-align:left;cursor:pointer;display:grid;gap:6px;align-content:start;transition:transform .15s,opacity .2s,box-shadow .2s;min-width:0}
+.quad:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,29,56,.08)}
+.quad h3{margin:0;font-size:1rem;font-weight:700}
+.quad ul{margin:0;padding:0;list-style:none;display:grid;gap:2px;font-size:.9rem}
+.quad .go{font-size:.78rem;font-weight:600;color:var(--cal)}
+.quad.q3{background:var(--q3);border-color:var(--q3b)} .quad.q3 h3{color:var(--amber)}
+.quad.q4{background:var(--q4);border-color:var(--q4b)} .quad.q4 h3{color:var(--red)}
+.quad.fade{opacity:.35}
+@media (max-width:620px){.matrix{grid-template-columns:76px repeat(2,minmax(0,1fr));gap:6px}.quad{padding:10px}.quad ul{font-size:.8rem}.quad h3{font-size:.88rem}}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+/* Detalle */
+.back{border:0;background:none;color:var(--cal);font-weight:700;cursor:pointer;padding:0;justify-self:start}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dh h2{margin:0;font-size:1.25rem;font-weight:700}
+.tag{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;border:1.5px solid var(--q1b);background:var(--q1)}
+.tag.q3{border-color:var(--q3b);background:var(--q3);color:var(--amber)} .tag.q4{border-color:var(--q4b);background:var(--q4);color:var(--red)}
+.qnote{margin:0;max-width:70ch;font-size:.95rem}
+.atabs{display:flex;gap:6px;flex-wrap:wrap}
+.atabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-size:.85rem;font-weight:600;cursor:pointer}
+.atabs button[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px;min-width:0}
+.strip{display:block;width:100%;height:auto;border-radius:8px;background:var(--paper)}
+.strip .tr{fill:none;stroke:var(--trace);stroke-width:.32;stroke-linejoin:round;stroke-linecap:round}
+.strip.draw .tr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.strip .gmin{fill:none;stroke:var(--gminor);stroke-width:.07}
+.strip .gmaj{fill:none;stroke:var(--gmajor);stroke-width:.16}
+.strip .lbl{fill:var(--trace);font-family:var(--font);font-weight:700;font-size:2.4px;opacity:.7}
+.cal{opacity:0;transition:opacity .4s}
+.cal.show{opacity:1}
+.cal line,.cal path{stroke:var(--cal);stroke-width:.25;fill:none}
+.cal text{fill:var(--cal);font-family:var(--font);font-weight:700;font-size:2.3px}
+.cal .qb path{stroke:var(--bad);stroke-width:.3} .cal .qb text{fill:var(--bad)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--surface)}
+.chk[aria-pressed="true"]{color:var(--ink);border-color:var(--cal)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.facts div{background:var(--bg);border-radius:8px;padding:8px 10px;min-width:0}
+.facts dt{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.facts dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+@media (max-width:520px){.facts{grid-template-columns:1fr 1fr}}
+.clue{margin:0;font-size:.95rem}
+.pager{display:flex;justify-content:space-between;gap:8px}
+.pbtn{font-weight:700;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.pbtn.pri{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+/* Práctica */
+.qtop{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:var(--muted)}
+.prog{height:5px;background:var(--line);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--navy);transition:width .3s}
+.ask{font-weight:700;margin:0;font-size:1.05rem}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ans button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;font-weight:700;cursor:pointer}
+.ans button small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+.ans button:disabled{cursor:default}
+.ans .right{border-color:var(--ok)} .ans .wrong{border-color:var(--bad);opacity:.75}
+.fb{background:var(--bg);border-radius:10px;padding:12px 14px;display:grid;gap:6px}
+.fb strong.good{color:var(--ok)} .fb strong.bad{color:var(--bad)}
+.mini{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;max-width:240px}
+.mini i{height:22px;border-radius:5px;border:1.5px solid var(--q1b);background:var(--q1)}
+.mini i.q3{border-color:var(--q3b);background:var(--q3)} .mini i.q4{border-color:var(--q4b);background:var(--q4)}
+.mini i.hit{outline:3px solid var(--cal);outline-offset:1px}
+.note{font-size:.78rem;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.strip.draw .tr{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <div><p class="eyebrow">Unidad 2 · Clasificación clínica</p><h1>El QRS y la regularidad orientan el origen de la taquicardia</h1></div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="t1" aria-selected="true">Matriz</button>
+      <button role="tab" id="t2" aria-selected="false">Practicar</button>
+    </div>
+  </div>
+
+  <section id="pMatrix">
+    <div style="display:grid;gap:14px">
+      <p class="lead">Dos preguntas sobre el trazo bastan para ubicar la taquicardia: ¿el QRS es estrecho o ancho? ¿el ritmo es regular o irregular? Toca un encabezado para resaltar una fila o columna, o un cuadro para ver sus trazos.</p>
+      <div class="matrix" id="matrix"></div>
+    </div>
+  </section>
+
+  <section id="pDetail" hidden>
+    <div style="display:grid;gap:14px">
+      <button class="back" id="back">‹ Volver a la matriz</button>
+      <div class="dh"><h2 id="dTitle"></h2><span class="tag" id="dTag"></span></div>
+      <p class="qnote" id="dNote"></p>
+      <div class="atabs" id="dTabs" role="tablist"></div>
+      <div class="card">
+        <div id="dStrip"></div>
+        <div class="tools">
+          <button class="chk" id="tRR" aria-pressed="true">Medir R–R</button>
+          <button class="chk" id="tQRS" aria-pressed="true">Medir QRS</button>
+          <button class="chk" id="tAgain">Volver a trazar</button>
+        </div>
+        <dl class="facts" id="dFacts"></dl>
+        <p class="clue" id="dClue"></p>
+      </div>
+      <div class="pager"><button class="pbtn" id="qPrev">‹ Cuadro anterior</button><button class="pbtn pri" id="qNext">Cuadro siguiente ›</button></div>
+    </div>
+  </section>
+
+  <section id="pPractice" hidden>
+    <div class="card" id="quiz"></div>
+  </section>
+
+  <p class="note">Trazos esquemáticos con fines docentes: DII, 25 mm/s, 10 mm/mV. QRS estrecho &lt; 0,12 s (3 cuadros pequeños); ancho ≥ 0,12 s.</p>
+</div>
+
+<script>
+/* ---------- Contenido ---------- */
+const QUADS=[
+ {id:"nr",cls:"q1",qrs:"e",reg:"r",t:"Supraventricular regular",note:"El impulso baja por el sistema de conducción normal y el ritmo es constante. El origen está por encima de la bifurcación del haz de His.",items:["st","at","trin","fl"]},
+ {id:"ni",cls:"q1",qrs:"e",reg:"i",t:"Supraventricular irregular",note:"QRS estrecho con intervalos R–R que cambian. La irregularidad viene de las aurículas o de una conducción AV variable.",items:["fa","flv","tam"]},
+ {id:"ar",cls:"q3",qrs:"a",reg:"r",t:"Tratar como TV",note:"Ante una taquicardia regular de QRS ancho se asume TV hasta demostrar lo contrario: es la causa más frecuente y la más peligrosa.",items:["tv","svtb","pre"]},
+ {id:"ai",cls:"q4",qrs:"a",reg:"i",t:"Alto riesgo",note:"QRS ancho e irregular. Estos ritmos pueden alcanzar frecuencias ventriculares muy altas o degenerar en fibrilación ventricular.",items:["fabb","fap","tdp"]}
+];
+const ITEMS={
+ st:{n:"Taquicardia sinusal",short:"Taquicardia sinusal y auricular",clue:"Una P sinusal antes de cada QRS. La frecuencia sube y baja de forma progresiva."},
+ at:{n:"Taquicardia auricular",clue:"Una P de forma distinta a la sinusal antes de cada QRS. El foco es auricular."},
+ trin:{n:"Reentrada intranodal o AV",clue:"Sin P visible o con P retrógrada justo después del QRS. Empieza y termina de forma súbita."},
+ fl:{n:"Flúter con conducción fija",clue:"Ondas F en dientes de sierra. Con conducción 2:1 constante la frecuencia ronda 150 lpm."},
+ fa:{n:"Fibrilación auricular",clue:"No hay ondas P y los R–R cambian sin ningún patrón."},
+ flv:{n:"Flúter con conducción variable",clue:"Ondas F en sierra, pero el nodo AV deja pasar 2:1, 3:1 o 4:1, y los R–R cambian."},
+ tam:{n:"Taquicardia auricular multifocal",clue:"Al menos tres formas distintas de onda P, con PR y R–R variables."},
+ tv:{n:"TV monomórfica",clue:"QRS anchos idénticos entre sí. Las P, si se ven, no guardan relación con los QRS."},
+ svtb:{n:"TSV con bloqueo de rama",clue:"Taquicardia supraventricular cuyo QRS es ancho porque una de las ramas no conduce."},
+ pre:{n:"TSV con preexcitación",clue:"El impulso baja por la vía accesoria: QRS ancho con onda delta al inicio."},
+ fabb:{n:"FA con bloqueo de rama",clue:"Irregularmente irregular, con QRS ancho de forma constante."},
+ fap:{n:"FA preexcitada",clue:"Muy rápida e irregular. Los QRS son anchos y cambian de forma de un latido a otro."},
+ tdp:{n:"TV polimórfica y torsades de pointes",clue:"QRS que cambian de amplitud y giran alrededor de la línea de base."}
+};
+QUADS.forEach(q=>q.items.forEach(i=>ITEMS[i].q=q.id));
+
+/* ---------- ECG ---------- */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(id,dur,seed){
+  const R=rng(seed),C=[],B=[];let X=null,noCal=false;
+  const add=(c,a,w)=>C.push([c,a,w]);
+  const P=(t,a=.15,w=.022)=>add(t,a,w);
+  const N=(q,rr)=>{add(q-.025,-.08,.008);add(q,1.1,.011);add(q+.028,-.28,.01);add(q+Math.min(.3,.17+.17*rr),.28,.045);B.push({t:q,w:.08})};
+  const V=q=>{add(q,1.0,.032);add(q+.075,-.7,.032);add(q+.32,-.38,.06);B.push({t:q,w:.16})};
+  const BB=(q,rr)=>{add(q-.02,-.06,.008);add(q,1.0,.012);add(q+.055,-.42,.026);add(q+Math.min(.3,.18+.16*rr),-.18,.05);B.push({t:q,w:.13})};
+  const PX=(q,k=1)=>{add(q-.045,.38*k,.032);add(q,1.0,.02);add(q+.06,-.35,.028);add(q+.28,-.3,.06);B.push({t:q,w:.14+.02*(k-1)})};
+  const f=()=>{const ph=[R()*6,R()*6,R()*6];return t=>.05*Math.sin(2*Math.PI*6.3*t+ph[0])+.035*Math.sin(2*Math.PI*8.4*t+ph[1])+.03*Math.sin(2*Math.PI*4.6*t+ph[2])};
+  const saw=t=>{const p=((t*5)%1+1)%1;return p<.72?.1-.32*(p/.72):-.22+.32*((p-.72)/.28)};
+  switch(id){
+   case"st":{let q=.3;while(q<dur+.4){const rr=.5+R()*.015;P(q-.15);N(q,rr);q+=rr}break}
+   case"at":{let q=.3;while(q<dur+.4){P(q-.13,-.14);N(q,.4);q+=.4}break}
+   case"trin":{let q=.25;while(q<dur+.4){N(q,.33);add(q+.045,-.12,.01);q+=.33}break}
+   case"fl":{let q=.36;while(q<dur+.4){N(q,.4);q+=.4}X=saw;break}
+   case"fa":{let q=.3;while(q<dur+.4){const rr=.36+R()*.5;N(q,rr);q+=rr}X=f();break}
+   case"flv":{let q=.36;const seq=[2,3,2,4,2,2,3,4,2,3,2,4];let i=0;while(q<dur+.4){N(q,.5);q+=seq[i++%seq.length]*.2}X=saw;break}
+   case"tam":{let q=.35;const sh=[[.15,.022],[-.12,.02],[.24,.014],[.08,.035]];while(q<dur+.4){const s=sh[Math.floor(R()*4)],pr=.11+R()*.09;P(q-pr,s[0],s[1]);const rr=.4+R()*.24;N(q,rr);q+=rr}break}
+   case"tv":{let q=.25;while(q<dur+.4){V(q);q+=.35}let p=.5;while(p<dur+.4){P(p,.1);p+=.8}break}
+   case"svtb":{let q=.25;while(q<dur+.4){BB(q,.36);q+=.36}break}
+   case"pre":{let q=.25;while(q<dur+.4){PX(q);q+=.34}break}
+   case"fabb":{let q=.3;while(q<dur+.4){const rr=.36+R()*.5;BB(q,rr);q+=rr}X=f();break}
+   case"fap":{let q=.25;while(q<dur+.4){const rr=.22+R()*.3;PX(q,.6+R()*.9);q+=rr}X=f();break}
+   case"tdp":{noCal=true;const s0=.3;X=t=>{const u=t-s0;if(u<0)return 0;const env=1.1*Math.sin(Math.PI*u/2.6)*(u<.15?u/.15:1);return env*Math.sin(2*Math.PI*3.8*u)};
+     for(let u=.066;u<dur;u+=1/3.8)B.push({t:s0+u,w:.16});break}
+  }
+  const wander=R()*6;
+  const v=t=>{let s=.025*Math.sin(2*Math.PI*.22*t+wander);for(const[c,a,w]of C){const x=(t-c)/w;if(x>-5&&x<5)s+=a*Math.exp(-x*x/2)}if(X)s+=X(t);return s};
+  return{v,B:B.filter(b=>b.t>0&&b.t<dur),noCal};
+}
+const msF=x=>Math.round(x*1000)+" ms";
+const sF=x=>x.toFixed(2).replace(".",",")+" s";
+function strip(id,{dur=6,H=32,seed=1,draw=true,rr=true,qrs=true}={}){
+  const {v,B,noCal}=build(id,dur,seed),W=dur*25,base=H*.6;let d="";
+  for(let i=0;i<=dur*250;i++){const t=i/250,y=Math.max(.6,Math.min(H-.6,base-v(t)*10));d+=(i?"L":"M")+(t*25).toFixed(2)+" "+y.toFixed(2)}
+  let gmin="",gmaj="";for(let x=0;x<=W;x++)(x%5?(gmin+=`M${x} 0V${H}`):(gmaj+=`M${x} 0V${H}`));for(let y=0;y<=H;y++)(y%5?(gmin+=`M0 ${y}H${W}`):(gmaj+=`M0 ${y}H${W}`));
+  let cal="",qb="";const rrs=[];
+  if(!noCal){
+    for(let i=1;i<B.length;i++){const a=B[i-1].t*25,b=B[i].t*25,r=B[i].t-B[i-1].t;rrs.push(r);
+      cal+=`<line x1="${a}" y1="2.2" x2="${a}" y2="4.6"/><line x1="${b}" y1="2.2" x2="${b}" y2="4.6"/><line x1="${a}" y1="3.4" x2="${b}" y2="3.4"/>`+
+        ((b-a)>8?`<text x="${(a+b)/2}" y="6.9" text-anchor="middle">${Math.round(r*1000)}</text>`:"");}
+    const k=B[Math.min(1,B.length-1)];if(k){const x1=(k.t-k.w/2-.01)*25,x2=(k.t+k.w/2-.01)*25,y=H-3.2;
+      qb=`<g class="qb"><path d="M${x1} ${y-1}V${y}H${x2}V${y-1}"/><text x="${x2+1}" y="${y+.8}">QRS ${sF(k.w)}</text></g>`}
+  }
+  const svg=`<svg class="strip${draw?" draw":""}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trazo de ECG esquemático">
+   <path class="gmin" d="${gmin}"/><path class="gmaj" d="${gmaj}"/><text class="lbl" x="1.2" y="${H-1.4}">DII</text>
+   <path class="tr" pathLength="1" d="${d}"/>
+   <g class="cal rrc${rr?"":" off"}">${cal}</g><g class="cal qrc${qrs?"":" off"}">${qb}</g></svg>`;
+  const mean=rrs.length?rrs.reduce((a,b)=>a+b,0)/rrs.length:0,sd=rrs.length?Math.sqrt(rrs.reduce((a,b)=>a+(b-mean)**2,0)/rrs.length):0;
+  return{svg,w:B.length?B[Math.min(1,B.length-1)].w:.16,hr:mean?Math.round(60/mean):null,var:mean?Math.round(sd*1000):null,
+    rmin:rrs.length?Math.min(...rrs):0,rmax:rrs.length?Math.max(...rrs):0,noCal};
+}
+function revealCal(root,ms=2400){const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>root.querySelectorAll(".cal:not(.off)").forEach(g=>g.classList.add("show")),reduce?0:ms)}
+
+/* ---------- Navegación ---------- */
+const $=id=>document.getElementById(id);
+const st={hl:null,q:0,item:0,rr:true,qrs:true,seed:1};
+function tab(i){$("t1").setAttribute("aria-selected",i===0);$("t2").setAttribute("aria-selected",i===1);
+  $("pMatrix").hidden=i!==0;$("pDetail").hidden=true;$("pPractice").hidden=i!==1;if(i===1&&!qz.order)startQuiz()}
+$("t1").onclick=()=>tab(0);$("t2").onclick=()=>tab(1);
+
+/* ---------- Matriz ---------- */
+function renderMatrix(){
+  const m=$("matrix");const hb=(k,lbl,sub,cls)=>`<button class="${cls}" data-h="${k}" aria-pressed="${st.hl===k}">${lbl}${sub?`<small>${sub}</small>`:""}</button>`;
+  const quad=q=>`<button class="quad ${q.cls}${st.hl&&!(st.hl===q.qrs||st.hl===q.reg)?" fade":""}" data-q="${QUADS.indexOf(q)}"><h3>${q.t}</h3><ul>${q.items.map(i=>`<li>${ITEMS[i].short||ITEMS[i].n}</li>`).join("")}</ul><span class="go">Ver trazos ›</span></button>`;
+  m.innerHTML=`<span></span>${hb("r","Regular","","colh")}${hb("i","Irregular","","colh")}
+    ${hb("e","QRS estrecho","&lt; 0,12 s","rowh")}${quad(QUADS[0])}${quad(QUADS[1])}
+    ${hb("a","QRS ancho","≥ 0,12 s","rowh")}${quad(QUADS[2])}${quad(QUADS[3])}`;
+  m.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{st.hl=st.hl===b.dataset.h?null:b.dataset.h;renderMatrix()});
+  m.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>openQuad(+b.dataset.q,0));
+}
+renderMatrix();
+
+/* ---------- Detalle ---------- */
+function openQuad(qi,ii){
+  st.q=(qi+4)%4;st.item=ii;const q=QUADS[st.q];
+  $("pMatrix").hidden=true;$("pDetail").hidden=false;
+  $("dTitle").textContent=q.t;$("dTag").className="tag "+q.cls;
+  $("dTag").textContent=(q.qrs==="e"?"QRS estrecho":"QRS ancho")+" · "+(q.reg==="r"?"regular":"irregular");
+  $("dNote").textContent=q.note;
+  $("dTabs").innerHTML=q.items.map((i,k)=>`<button role="tab" data-i="${k}" aria-selected="${k===ii}">${ITEMS[i].n}</button>`).join("");
+  $("dTabs").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>openQuad(st.q,+b.dataset.i));
+  renderItem();window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderItem(){
+  const id=QUADS[st.q].items[st.item],it=ITEMS[id];
+  const S=strip(id,{seed:id.length*31+7,rr:st.rr,qrs:st.qrs});
+  $("dStrip").innerHTML=S.svg;revealCal($("dStrip"));
+  $("dFacts").innerHTML=S.noCal?`<div><dt>QRS</dt><dd>Ancho, cambiante</dd></div><div><dt>Ritmo</dt><dd>Irregular</dd></div><div><dt>Frecuencia</dt><dd>≈ 230 lpm</dd></div>`:
+   `<div><dt>QRS</dt><dd>${sF(S.w)} · ${S.w<.12?"estrecho":"ancho"}</dd></div><div><dt>R–R</dt><dd>${S.var<=20?"Regular":"Irregular"} <small style="font-weight:500;color:var(--muted)">(${msF(S.rmin)}–${msF(S.rmax)})</small></dd></div><div><dt>Frecuencia</dt><dd>≈ ${S.hr} lpm</dd></div>`;
+  $("dClue").textContent=it.clue;
+}
+$("back").onclick=()=>{$("pDetail").hidden=true;$("pMatrix").hidden=false};
+$("qPrev").onclick=()=>openQuad(st.q-1,0);$("qNext").onclick=()=>openQuad(st.q+1,0);
+$("tRR").onclick=()=>{st.rr=!st.rr;$("tRR").setAttribute("aria-pressed",st.rr);document.querySelectorAll("#dStrip .rrc").forEach(g=>{g.classList.toggle("off",!st.rr);g.classList.toggle("show",st.rr)})};
+$("tQRS").onclick=()=>{st.qrs=!st.qrs;$("tQRS").setAttribute("aria-pressed",st.qrs);document.querySelectorAll("#dStrip .qrc").forEach(g=>{g.classList.toggle("off",!st.qrs);g.classList.toggle("show",st.qrs)})};
+$("tAgain").onclick=renderItem;
+
+/* ---------- Práctica ---------- */
+const qz={};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function startQuiz(){qz.order=shuffle(Object.keys(ITEMS));qz.i=0;qz.score=0;ask()}
+function ask(){
+  const n=qz.order.length;
+  if(qz.i>=n){$("quiz").innerHTML=`<p class="ask">${qz.score} de ${n} trazos bien clasificados</p>
+    <p class="lead">${qz.score>=11?"Excelente: ya ubicas cualquier taquicardia en la matriz.":"Repasa los cuadros en la matriz y vuelve a intentarlo."}</p><div><button class="pbtn pri" id="again">Intentar de nuevo</button></div>`;$("again").onclick=startQuiz;return}
+  const id=qz.order[qz.i],q=QUADS.find(x=>x.id===ITEMS[id].q);qz.cur={id,q,step:0,ok:true,seed:Math.floor(Math.random()*999)+3};
+  const S=strip(id,{seed:qz.cur.seed,rr:false,qrs:false});
+  $("quiz").innerHTML=`<div class="prog"><i style="width:${qz.i/n*100}%"></i></div>
+    <div class="qtop"><span>Trazo ${qz.i+1} de ${n}</span><span>Aciertos ${qz.score}</span></div>
+    <div id="qs">${S.svg}</div><div id="qa"></div>`;
+  step();
+}
+function step(){
+  const c=qz.cur;
+  const Q=c.step===0?{t:"Paso 1. ¿Cómo es el QRS?",o:[["e","Estrecho","< 0,12 s"],["a","Ancho","≥ 0,12 s"]],ans:c.q.qrs,cal:"qrc"}:
+    {t:"Paso 2. ¿Cómo es el ritmo?",o:[["r","Regular","R–R constantes"],["i","Irregular","R–R que cambian"]],ans:c.q.reg,cal:"rrc"};
+  $("qa").innerHTML=`<p class="ask">${Q.t}</p><div class="ans">${Q.o.map(([k,l,s])=>`<button data-k="${k}">${l}<small>${s}</small></button>`).join("")}</div><div id="qf"></div>`;
+  $("qa").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.k===Q.ans;if(!ok)c.ok=false;
+    $("qa").querySelectorAll("[data-k]").forEach(x=>{x.disabled=true;if(x.dataset.k===Q.ans)x.classList.add("right")});if(!ok)b.classList.add("wrong");
+    const g=$("qs").querySelector("."+Q.cal);g.classList.remove("off");g.classList.add("show");
+    if(c.step===0){$("qf").innerHTML=`<p class="lead" style="margin-top:8px"><b class="${ok?"":"bad"}" style="color:var(--${ok?"ok":"bad"})">${ok?"Bien.":"Mira el calibrador rojo."}</b> ${Q.ans==="e"?"El QRS dura menos de 3 cuadros pequeños.":"El QRS dura 3 cuadros pequeños o más."}</p><div style="margin-top:8px"><button class="pbtn pri" id="cont">Siguiente paso ›</button></div>`;
+      $("cont").onclick=()=>{c.step=1;step()};$("cont").focus();}
+    else{if(c.ok)qz.score++;const it=ITEMS[c.id];
+      $("qf").innerHTML=`<div class="fb" style="margin-top:10px"><strong class="${c.ok?"good":"bad"}">${c.ok?"Clasificación correcta.":"Revisa la clasificación."}</strong>
+        <div class="mini" aria-hidden="true">${QUADS.map(x=>`<i class="${x.cls}${x===c.q?" hit":""}"></i>`).join("")}</div>
+        <span><b>${c.q.t}:</b> ${it.n}. ${it.clue}</span></div>
+        <div style="margin-top:10px"><button class="pbtn pri" id="nx">${qz.i+1<qz.order.length?"Siguiente trazo ›":"Ver resultado"}</button></div>`;
+      $("nx").onclick=()=>{qz.i++;ask()};$("nx").focus();}
+  });
+}
+</script>
+
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
