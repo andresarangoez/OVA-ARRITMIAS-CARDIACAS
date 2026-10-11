@@ -118,6 +118,35 @@
    arriba, que es el orden de lectura que corresponde. */
 .figura-fila.imagen-izquierda { grid-template-columns: 1fr 1.1fr; }
 
+/* --- TABLA ENVUELTA POR SU TEXTO ---
+   Las tablas de criterios del Módulo 03 tienen tres o cuatro filas y el texto
+   que las acompaña, seis párrafos: en dos columnas de rejilla, la columna de
+   la tabla terminaba enseguida y quedaba media pantalla en blanco debajo de
+   ella mientras el texto seguía bajando por su carril.
+   Con la tabla flotando, el texto la rodea y, en cuanto la tabla termina,
+   recupera el ancho completo. No hay hueco posible. */
+.figura-fila.tabla-envuelta { display: block; }
+.figura-fila.tabla-envuelta > .tabla-scroll {
+    float: left;
+    /* fit-content y no un porcentaje: la tabla ocupa lo que necesita y ni un
+       píxel más, así que el texto empieza justo a su lado. El tope evita que
+       una tabla ancha deje al texto en una columna inservible. */
+    width: fit-content;
+    max-width: min(52%, 460px);
+    margin: 0 26px 16px 0;
+}
+/* El bloque tiene que envolver a su flotante: sin esto, una tabla más alta que
+   su texto se derramaría sobre el apartado siguiente. */
+.figura-fila.tabla-envuelta::after { content: ''; display: block; clear: both; }
+
+@media (max-width: 780px) {
+    /* Con el ancho de un móvil, la tabla y el texto a su lado no caben: la
+       tabla pasa a ocupar todo el ancho y el texto va debajo. */
+    .figura-fila.tabla-envuelta > .tabla-scroll {
+        float: none; width: 100%; max-width: 100%; margin: 0 0 16px 0;
+    }
+}
+
 /* --- FIGURA / IMAGEN ---
    Misma tarjeta visual que .corazon-estructuras (fondo, radio y sombra
    suaves). Clicable (.zoom-imagen, hacerZoom() en js/10-componentes.js)
@@ -151,7 +180,14 @@
 .tarjeta-informativa { background: rgba(251, 215, 133, 0.14); border-radius: var(--bento-radius-md); border-left: 4px solid var(--fucs-dorado); padding: 18px 20px; margin: 20px 0; }
 .tarjeta-informativa h4 { margin: 0 0 6px 0; color: var(--fucs-azul-profundo); font-size: 0.95rem; }
 .tarjeta-informativa p { margin: 4px 0; font-size: 0.88rem; color: var(--text-body); }
-.tarjeta-informativa .etiqueta { font-weight: 700; color: var(--fucs-azul-oscuro); }
+/* --- ETIQUETA QUE ABRE UN PÁRRAFO ---
+   «Frecuencia:», «Onda P:», «Intervalo PR:»... Son el nombre del criterio que
+   el párrafo describe, y leídos en seguido no se distinguen de la frase. En
+   negrilla, el apartado se recorre de un vistazo buscando el criterio que
+   interesa, que es como se lee una descripción de trazado.
+   Estaba definida solo dentro de .tarjeta-informativa, así que las 134 del
+   resto del OVA —118 de ellas en el Módulo 03— salían sin ningún realce. */
+.etiqueta { font-weight: 700; color: var(--fucs-azul-oscuro); }
 
 /* --- TABLA COMPARATIVA ---
    Toda tabla va envuelta en .tabla-scroll. En el móvil una tabla de tres o
