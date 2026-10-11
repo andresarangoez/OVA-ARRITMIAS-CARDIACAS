@@ -5,6 +5,10 @@
 
 #tablero-farmacos {
     width: 100%;
+    /* El proyecto no fija box-sizing global: sin esto, los 44 px de relleno se
+       sumaban al 100% y el tablero sobresalía por los dos lados respecto del
+       monitor y de los paneles de arriba. */
+    box-sizing: border-box;
     background: #ffffff;
     border: 1px solid var(--fucs-gris);
     border-top: 4px solid var(--fucs-dorado);

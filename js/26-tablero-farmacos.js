@@ -468,12 +468,41 @@
         });
     }
 
+    // El tablero arranca plegado y lo abre un botón del panel de acciones
+    // clínicas. Con el tablero desplegado de entrada, la respuesta del
+    // ejercicio de intervenciones está escrita en la misma pantalla en que se
+    // pregunta: basta con leer cuál es el fármaco de la bradicardia. Abrirlo es
+    // una decisión del estudiante, y además queda registrada en su recorrido.
+    function conectarBoton(raiz) {
+        const boton = document.getElementById('btn-tablero');
+        if (!boton || boton.dataset.conectado === 'true') return;
+        boton.dataset.conectado = 'true';
+
+        const texto = boton.querySelector('.btn-tablero-texto');
+
+        boton.addEventListener('click', function () {
+            const abierto = raiz.hidden;
+            raiz.hidden = !abierto;
+            boton.setAttribute('aria-expanded', String(abierto));
+            boton.classList.toggle('abierto', abierto);
+            if (texto) {
+                texto.textContent = abierto
+                    ? 'Ocultar el tablero de fármacos'
+                    : 'Consultar el tablero de fármacos';
+            }
+            if (abierto) raiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
     function montar() {
         const raiz = document.getElementById('tablero-farmacos');
-        if (!raiz || raiz.dataset.montado === 'true') return;
-        raiz.dataset.montado = 'true';
-        construir(raiz);
-        activar(raiz);
+        if (!raiz) return;
+        if (raiz.dataset.montado !== 'true') {
+            raiz.dataset.montado = 'true';
+            construir(raiz);
+            activar(raiz);
+        }
+        conectarBoton(raiz);
     }
 
     // El tablero vive en index.html, junto al simulador, no dentro del HTML de

@@ -60,7 +60,84 @@
         // solo las opciones válidas delataría la respuesta. El estudiante elige
         // y el registro le explica después si acertó.
     }
-    
+
+    // --- EFECTO DE LA INTERVENCIÓN SOBRE EL MONITOR ---
+    //
+    // Hasta ahora una intervención solo podía reorganizar el ritmo (resuelveA)
+    // o no hacer nada visible: se administraba atropina a una bradicardia y las
+    // cifras se quedaban quietas. El qué cambia y cuánto lo declara el catálogo
+    // de MotorClinico.Intervenciones; aquí solo se aplica, se vuelve a
+    // clasificar al paciente y se destaca lo que se movió.
+    //
+    // Los límites no son cosmética: una presión diastólica no puede alcanzar a
+    // la sistólica, y una saturación no pasa de 100.
+    const LIMITES = {
+        fc:   { min: 20, max: 250 },
+        sis:  { min: 50, max: 240 },
+        dia:  { min: 25, max: 150 },
+        spo2: { min: 50, max: 100 },
+        fr:   { min: 6,  max: 50 }
+    };
+
+    function acotar(campo, valor) {
+        const l = LIMITES[campo];
+        return Math.max(l.min, Math.min(l.max, Math.round(valor)));
+    }
+
+    function aplicarEfectos(efectos) {
+        if (!efectos) return false;
+
+        // En un ritmo sin pulso no hay cifras que mover: el monitor muestra
+        // guiones y subirle la presión a un paciente en paro sería mentirle al
+        // estudiante. Lo que cambia la situación ahí es la reanimación, es
+        // decir, el ritmo, y de eso se encarga resuelveA.
+        if (!estado.datos.pulso) return false;
+
+        const cambiados = [];
+        ['fc', 'sis', 'dia', 'spo2', 'fr'].forEach(function (campo) {
+            if (typeof efectos[campo] !== 'number' || !efectos[campo]) return;
+            const antes = hmd_actual[campo];
+            if (!antes) return;
+            const despues = acotar(campo, antes + efectos[campo]);
+            if (despues === antes) return;
+            hmd_actual[campo] = despues;
+            cambiados.push(campo);
+        });
+
+        if (!cambiados.length) return false;
+
+        // La diastólica no puede alcanzar a la sistólica.
+        if (hmd_actual.dia >= hmd_actual.sis) hmd_actual.dia = hmd_actual.sis - 20;
+        hmd_actual.pam = Math.round((hmd_actual.sis + 2 * hmd_actual.dia) / 3);
+
+        // El paciente se reclasifica con las cifras nuevas: una intervención
+        // puede sacarlo de la inestabilidad, y una equivocada meterlo en ella.
+        hmd_actual.estadoClinico = MotorClinico.Hemodinamico
+            .clasificarEstadoClinico(hmd_actual, estado.ritmo);
+
+        actualizarMonitor();
+        destacarParametros(cambiados);
+        return true;
+    }
+
+    // Un parpadeo sobre el parámetro que acaba de moverse: sin él, el cambio
+    // de una cifra en una pantalla llena de cifras pasa desapercibido.
+    const PARAM_DE_CAMPO = { fc: 'fc', sis: 'ta', dia: 'ta', spo2: 'spo2', fr: 'fr' };
+    function destacarParametros(campos) {
+        const vistos = {};
+        campos.forEach(function (campo) {
+            const clase = PARAM_DE_CAMPO[campo];
+            if (!clase || vistos[clase]) return;
+            vistos[clase] = true;
+            const nodo = document.querySelector('.monitor-param.' + clase);
+            if (!nodo) return;
+            nodo.classList.remove('cambiado');
+            void nodo.offsetWidth;   // reinicia la animación si se repite
+            nodo.classList.add('cambiado');
+            setTimeout(function () { nodo.classList.remove('cambiado'); }, 2000);
+        });
+    }
+
     function cambiarRitmo(nuevoRitmo) {
         estado.ritmo = nuevoRitmo;
         estado.datos = RITMOS_DB[nuevoRitmo];
@@ -101,7 +178,69 @@
     };
 
     const btnAplicar = document.getElementById('btn-aplicar-intervencion');
+    const bandeja = document.getElementById('intervenciones-bandeja');
+    const detalle = document.getElementById('intervencion-detalle');
+
+    // --- BANDEJA DE INTERVENCIONES ---
+    //
+    // Las fichas salen del catálogo del motor, no de una lista escrita en el
+    // HTML. Cuando estaban escritas a mano faltaban dos fármacos de la Unidad 2
+    // del Módulo 05 —metoprolol y sulfato de magnesio— y no se veía ninguna
+    // dosis: eran dos listas en paralelo que ya habían divergido.
+    //
+    // La dosis va a la vista desde el principio y no delata nada: saber que la
+    // atropina se pone 1 mg IV no dice si la atropina es lo que este ritmo
+    // necesita, que es lo que se está preguntando.
+    const GRUPOS = [
+        { tipo: 'medicamento',  rotulo: 'Medicamentos' },
+        { tipo: 'procedimiento', rotulo: 'Procedimientos' }
+    ];
+
+    function escapar(texto) {
+        return String(texto).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+    }
+
+    function construirBandeja() {
+        const catalogo = MotorClinico.Intervenciones.CATALOGO;
+        bandeja.innerHTML = GRUPOS.map(function (grupo) {
+            const fichas = Object.keys(catalogo).filter(function (clave) {
+                return catalogo[clave].tipo === grupo.tipo;
+            }).map(function (clave) {
+                const i = catalogo[clave];
+                return '<label class="intervencion-item" data-clave="' + clave + '">'
+                     + '<input type="radio" name="intervencion" value="' + clave + '">'
+                     + '<span class="intervencion-ficha">'
+                     + '<span class="intervencion-nombre">' + escapar(i.nombre) + '</span>'
+                     + '<span class="intervencion-dosis">' + escapar(i.dosis) + '</span>'
+                     + '</span>'
+                     + '<span class="intervencion-marca" aria-hidden="true"></span>'
+                     + '</label>';
+            }).join('');
+
+            return '<div class="intervenciones-grupo">'
+                 + '<h4>' + grupo.rotulo + '</h4>'
+                 + '<div class="intervenciones-grid">' + fichas + '</div>'
+                 + '</div>';
+        }).join('');
+    }
+
+    construirBandeja();
+
     const opcionesIntervencion = Array.from(document.querySelectorAll('input[name="intervencion"]'));
+
+    // Lo que se va a administrar, antes de administrarlo: clase farmacológica y
+    // pauta. No dice si está indicado —eso es lo que el estudiante tiene que
+    // decidir— sino qué es lo que tiene en la mano.
+    function mostrarDetalle(clave) {
+        if (!clave) { detalle.hidden = true; detalle.innerHTML = ''; return; }
+        const i = MotorClinico.Intervenciones.CATALOGO[clave];
+        detalle.innerHTML =
+              '<span class="intervencion-detalle-clase">' + escapar(i.clase) + '</span>'
+            + '<span class="intervencion-detalle-pauta"><strong>Pauta:</strong> ' + escapar(i.dosis) + '</span>';
+        detalle.hidden = false;
+    }
 
     function intervencionSeleccionada() {
         return opcionesIntervencion.find(opcion => opcion.checked) || null;
@@ -113,6 +252,7 @@
         btnAplicar.innerText = seleccion
             ? `Aplicar ${MotorClinico.Intervenciones.CATALOGO[seleccion.value].nombre}`
             : 'Seleccione una intervención';
+        mostrarDetalle(seleccion ? seleccion.value : null);
     }
 
     // Se llama también desde cambiarRitmo(): cada ritmo nuevo es un escenario
@@ -175,6 +315,17 @@
 
         item.classList.remove('ok', 'medio', 'mal');
         item.classList.add(veredicto.marca);
+
+        // La respuesta del paciente en el monitor. Va antes de la posible
+        // reorganización del ritmo porque es inmediata: las cifras se mueven
+        // mientras el estudiante todavía está leyendo el veredicto.
+        if (aplicarEfectos(resultado.efectos)) {
+            const e = resultado.efectos;
+            registrarLog(
+                `📈 ${e.resumen} FC ${hmd_actual.fc} lpm · PA ${hmd_actual.sis}/${hmd_actual.dia} · SpO₂ ${hmd_actual.spo2}%`,
+                veredicto.clase === 'alert' ? 'warning' : 'action'
+            );
+        }
 
         // Solo las intervenciones capaces de reorganizar el ritmo abren la
         // segunda fase (la respuesta del paciente). El oxígeno, por ejemplo,
