@@ -582,6 +582,11 @@ let W=0,H=150,dpr=1,x=0,lastY=null;
 const PXS=110,reduceM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 function size(){
   dpr=window.devicePixelRatio||1;W=cv.clientWidth;
+  // Dentro del OVA el modulo se carga con display:none hasta que el estudiante
+  // pulsa «Comenzar», asi que al cargar el lienzo mide cero: dibujar entonces
+  // aborta el resto del guion y el monitor se queda en blanco para siempre.
+  // Se espera a tener ancho; el ResizeObserver de mas abajo vuelve a llamar.
+  if(!W) return;
   cv.width=W*dpr;cv.height=H*dpr;grid.width=cv.width;grid.height=cv.height;
   const gc=grid.getContext("2d");gc.scale(dpr,dpr);
   gc.fillStyle="#ffffff";gc.fillRect(0,0,W,H);
@@ -596,6 +601,7 @@ function sample(dt){
   return beat.f(bt);
 }
 function advance(px){
+  if(!W) return;
   for(let i=0;i<px;i++){
     const v=sample(1/PXS);
     const y=H*.62-v*H*.42;
@@ -616,6 +622,13 @@ function loop(t){
 }
 size();
 addEventListener("resize",()=>{if(cv.clientWidth!==W)size();});
+// El marco pasa de cero a su ancho real cuando el estudiante pulsa «Comenzar»,
+// y ese cambio no avisa dentro del iframe: no dispara «resize» y el
+// ResizeObserver de un marco oculto puede no llegar a correr. Mientras no haya
+// ancho se mira cada medio segundo, y en cuanto lo hay se deja de mirar.
+function sizeSiHaceFalta(){if(cv.clientWidth&&cv.clientWidth!==W)size();}
+const esperandoAncho=setInterval(()=>{sizeSiHaceFalta();if(W)clearInterval(esperandoAncho);},500);
+addEventListener("message",e=>{if(e.data&&e.data.ova==="medir")sizeSiHaceFalta();});
 if(reduceM){
   const redraw=()=>{size();advance(W);};
   const sm=setMode;setMode=k=>{sm(k);redraw();};
