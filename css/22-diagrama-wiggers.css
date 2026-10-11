@@ -44,13 +44,24 @@
 /* El diagrama manda en ancho; la lectura ocupa una columna fija a la derecha,
    como el panel de un monitor. Por debajo de 1000 px pasa a una sola columna:
    con menos de eso, el eje de tiempo deja de ser legible. */
+/* Dos columnas y dos filas: el diagrama arriba a la izquierda, su explicación
+   justo debajo, y la columna de lectura ocupando toda la columna derecha. Con
+   la explicación dentro de la lectura, esa columna de 290 px se estiraba muy
+   por debajo del trazado y quedaba la caja en blanco bajo él. */
 .wg-cuerpo {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 290px;
-    gap: 18px;
+    grid-template-areas:
+        "lienzo lectura"
+        "ecg    lectura";
+    grid-template-rows: auto 1fr;
+    gap: 16px 18px;
     align-items: start;
 }
-.wg-lienzo { min-width: 0; }
+.wg-lienzo  { grid-area: lienzo; min-width: 0; }
+.wg-lectura { grid-area: lectura; }
+/* No «.wg-ecg»: ese nombre ya es el del trazado del ECG dentro del SVG. */
+.wg-nota-ecg { grid-area: ecg; }
 .wg-svg { display: block; width: 100%; height: auto; }
 
 /* --- BANDAS DE FASE --- */
@@ -147,11 +158,27 @@
 .wg-valvula-nombre { color: var(--fucs-azul-oscuro); font-weight: 600; }
 .wg-valvula-estado { font-weight: 700; }
 
-.wg-lectura-ecg { margin: 0 0 10px; font-size: 0.8rem; color: var(--text-body); }
-.wg-lectura-detalle { margin: 0; font-size: 0.82rem; line-height: 1.55; color: var(--text-body); }
+/* --- CORRESPONDENCIA CON EL ECG (bajo el diagrama) --- */
+.wg-nota-ecg {
+    background: var(--fucs-niebla);
+    border-left: 3px solid var(--fucs-azul-profundo);
+    border-radius: var(--bento-radius-md);
+    padding: 12px 16px 14px;
+}
+.wg-lectura-ecg { margin: 0 0 8px; font-size: 0.82rem; color: var(--text-body); }
+.wg-lectura-ecg strong { color: var(--fucs-azul-profundo); }
+.wg-lectura-detalle { margin: 0; font-size: 0.84rem; line-height: 1.6; color: var(--text-body); max-width: 78ch; }
 
 @media (max-width: 1000px) {
-    .wg-cuerpo { grid-template-columns: 1fr; }
+    /* En una sola columna se conserva el orden de lectura: el diagrama, los
+       datos del momento y, al final, la correspondencia con el ECG. Las áreas
+       hay que redeclararlas: «lectura» seguiría pidiendo una segunda columna
+       que ya no existe. */
+    .wg-cuerpo {
+        grid-template-columns: 1fr;
+        grid-template-areas: "lienzo" "lectura" "ecg";
+        grid-template-rows: auto;
+    }
     .wg-valvulas-lista { grid-template-columns: repeat(4, 1fr); }
 }
 

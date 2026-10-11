@@ -296,8 +296,12 @@ function pintarLectura(raiz, t, fase) {
         fase.periodo === 'sistole' ? 'Sístole ventricular' : 'Diástole ventricular';
     panel.querySelector('[data-campo="periodo"]').dataset.periodo = fase.periodo;
     panel.querySelector('[data-campo="tiempo"]').textContent = t.toFixed(2).replace('.', ',') + ' s';
-    panel.querySelector('[data-campo="ecg"]').textContent = fase.ecg;
-    panel.querySelector('[data-campo="detalle"]').textContent = fase.detalle;
+
+    // El ECG y su explicación ya no viven dentro de la columna de lectura,
+    // sino en el bloque que va debajo del diagrama: se buscan desde la raíz.
+    const bloqueEcg = raiz.querySelector('.wg-nota-ecg');
+    bloqueEcg.querySelector('[data-campo="ecg"]').textContent = fase.ecg;
+    bloqueEcg.querySelector('[data-campo="detalle"]').textContent = fase.detalle;
 
     panel.querySelector('[data-campo="presionVI"]').textContent = val('presionVI') + ' mmHg';
     panel.querySelector('[data-campo="presionAorta"]').textContent = val('presionAorta') + ' mmHg';
@@ -386,9 +390,16 @@ function plantilla(px) {
       + '      <div><dt>Volumen ventricular</dt><dd data-campo="volumen"></dd></div>'
       + '    </dl>'
       + '    <ul class="wg-valvulas-lista">' + valvulas + '</ul>'
+      + '  </aside>'
+      // La correspondencia con el ECG y su explicación van debajo del
+      // diagrama, no dentro de la columna de lectura. Son los dos textos
+      // largos de cada momento del ciclo: en una columna de 290 px estiraban
+      // la lectura muy por debajo del trazado y dejaban en blanco la caja del
+      // simulador justo bajo él.
+      + '  <div class="wg-nota-ecg">'
       + '    <p class="wg-lectura-ecg"><strong>En el ECG:</strong> <span data-campo="ecg"></span></p>'
       + '    <p class="wg-lectura-detalle" data-campo="detalle"></p>'
-      + '  </aside>'
+      + '  </div>'
       + '</div>';
 }
 

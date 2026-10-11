@@ -14,6 +14,39 @@
     // por red en visitas posteriores dentro de la misma sesión.
     const cacheModulos = {};
 
+    // Pide un módulo y comprueba que llegó entero.
+    //
+    // Una descarga cortada a medias no siempre lanza un error: el navegador
+    // entrega lo que alcanzó a llegar, el decodificador deja un U+FFFD donde
+    // se partió un carácter de varios bytes, y el analizador de HTML cierra
+    // solo las etiquetas que quedaron abiertas. El resultado es un módulo que
+    // parece completo salvo por el final —una tabla a la que le faltan filas,
+    // una unidad que se corta— y que, al guardarse en caché, se queda así el
+    // resto de la sesión. Ya ocurrió con la Unidad 6 del Módulo 01.
+    //
+    // La comprobación de tamaño no da falsos positivos con compresión: si la
+    // respuesta viene comprimida, Content-Length es el tamaño comprimido y lo
+    // recibido es mayor, nunca menor.
+    async function pedirModulo(src) {
+        const respuesta = await fetch(src);
+        if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+
+        const html = await respuesta.text();
+
+        const declarado = Number(respuesta.headers.get('Content-Length'));
+        if (declarado) {
+            const recibido = new TextEncoder().encode(html).byteLength;
+            if (recibido < declarado) {
+                throw new Error('respuesta incompleta: ' + recibido + ' de ' + declarado + ' bytes');
+            }
+        }
+        if (html.indexOf('�') !== -1) {
+            throw new Error('el contenido llegó con caracteres rotos');
+        }
+
+        return html;
+    }
+
     async function cargarContenidoModulo(idModulo, contenedor) {
         if (cacheModulos[idModulo]) {
             contenedor.innerHTML = cacheModulos[idModulo];
@@ -29,9 +62,15 @@
         contenedor.innerHTML = '<div class="modulo-cargando">Cargando contenido del módulo…</div>';
 
         try {
-            const respuesta = await fetch(src);
-            if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-            const html = await respuesta.text();
+            // Dos intentos: una descarga cortada no es un error del servidor
+            // ni de la red que vuelva a fallar necesariamente al repetirla.
+            let html;
+            try {
+                html = await pedirModulo(src);
+            } catch (primerIntento) {
+                console.warn('Reintentando la carga del módulo ' + idModulo + ':', primerIntento.message);
+                html = await pedirModulo(src);
+            }
             cacheModulos[idModulo] = html;
             contenedor.innerHTML = html;
             return true;
