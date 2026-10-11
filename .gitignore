@@ -1,0 +1,6 @@
+# Esqueletos de habilidades instalados con `npx skills add`. Son herramientas
+# de trabajo local, no parte del OVA: GitHub Pages publica la raíz del
+# repositorio y no tiene por qué servirlas.
+.agents/
+.claude/
+skills-lock.json
