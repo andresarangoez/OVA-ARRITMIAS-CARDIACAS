@@ -1039,12 +1039,14 @@
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 7 · Algoritmo Diagnóstico</h3>
 
-                        <p>El algoritmo diagnóstico de la AHA ordena la clasificación de las arritmias según la frecuencia cardíaca y la anchura del complejo QRS, y se trabaja sobre el simulador de ECG.</p>
-
-                        <div class="espacio-reservado">
-                            <span class="icono" aria-hidden="true">🧩</span>
-                            Espacio reservado para el algoritmo diagnóstico de la AHA y el simulador de ECG.
-                        </div>
+                        <p>El algoritmo diagnóstico de la AHA ordena la clasificación de las arritmias según la frecuencia cardíaca y la anchura del complejo QRS. Esas dos preguntas, en ese orden, separan ya la mayor parte de los ritmos; la regularidad y la actividad auricular terminan de decidir cuál es.</p>
+                        <p>En los casos que siguen vas a recorrer el algoritmo paso a paso sobre un trazado real. Cada respuesta descarta ritmos, y verás cuántos quedan en pie. Al final tendrás que nombrar el ritmo y, sobre todo, <strong>decir en qué hallazgo te apoyas</strong>: con cuatro candidatos se puede acertar el nombre por eliminación y seguir sin saber por qué.</p>
+                        <!-- Lo construye js/32-casos-progresivos.js. Las tiras las dibuja
+                             OVA.TiraECG con el motor matemático del OVA. Es la continuación
+                             del recurso del Módulo 02, donde el trazado se describe sin
+                             nombrarlo; aquí se nombra y se defiende. -->
+                        <div class="cp-casos"></div>
+                        <p class="figura-caption"><strong>Simulador 1.</strong> Casos progresivos con el algoritmo diagnóstico. Siete casos de dificultad creciente, con trazados generados por el motor de ECG del OVA. Creación propia.</p>
                     </div>
 
                     <!-- RECURSO INTERACTIVO -->
