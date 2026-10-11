@@ -16,14 +16,13 @@
                     <div class="modulo-objetivos">
                         <h3>Objetivos de aprendizaje</h3>
                         <ul>
-                            <li>Explicar los mecanismos fisiopatológicos que originan una arritmia.</li>
-                            <li>Clasificar clínicamente una arritmia ya diagnosticada según su origen y frecuencia.</li>
-                            <li>Estratificar el riesgo del paciente según su estabilidad hemodinámica y signos de alarma.</li>
-                            <li>Relacionar cada familia de arritmias con su algoritmo AHA/ESC correspondiente.</li>
-                            <li>Priorizar el siguiente paso clínico en escenarios de tiempo crítico.</li>
+                            <li>Explicar los mecanismos fisiopatológicos que originan una arritmia: la alteración en la formación del impulso, la alteración en su conducción, la reentrada y la actividad desencadenada. <strong>→ Unidad 1</strong></li>
+                            <li>Clasificar las arritmias, según la frecuencia y el origen del impulso, en bradiarritmias y taquiarritmias y, dentro de estas, en supraventriculares y ventriculares. <strong>→ Unidad 2</strong></li>
+                            <li>Estratificar el riesgo del paciente con arritmia a partir de la estabilidad hemodinámica, los signos de alarma y el riesgo de muerte súbita. <strong>→ Unidad 3</strong></li>
+                            <li>Situar el caso en los algoritmos de bradicardia, taquicardia con pulso y taquicardia sin pulso. <strong>→ Unidad 4</strong></li>
+                            <li>Fundamentar la decisión sobre el paso siguiente del cuidado en situaciones clínicas simuladas. <strong>→ Unidad 5</strong></li>
                         </ul>
                     </div>
-
 
                         </div>
 
@@ -33,7 +32,7 @@
                                 <p class="bienvenida-dato-rotulo">Tiempo estimado</p>
                                 <!-- La clase modulo-meta la lee js/13-shell-indice.js para
                                      calcular el tiempo restante del módulo. -->
-                                <p class="bienvenida-dato-valor modulo-meta">45 minutos</p>
+                                <p class="bienvenida-dato-valor modulo-meta">120 minutos</p>
                             </div>
                             <div class="bienvenida-dato">
                                 <span class="bienvenida-dato-icono" data-icono="unidades" aria-hidden="true"></span>
@@ -48,9 +47,9 @@
                     </div>
 
                     <div class="modulo-introduccion">
-                    <h3>Introducción</h3>
-                    <p>El Módulo 03 respondió la pregunta "¿qué arritmia es?". Este módulo responde dos preguntas distintas: "¿por qué ocurrió?" y "¿qué riesgo representa para este paciente?" — el puente indispensable entre reconocer el ritmo y decidir qué hacer con él (Módulo 05).</p>
-                    <p>Aquí no se trata solo de nombrar el ritmo, sino de priorizar: en un escenario de tiempo crítico, ¿qué va primero?</p>
+                    <h3>Competencia del módulo</h3>
+                    <p>Al finalizar este módulo, el estudiante explicará por qué se produjo la arritmia que ha identificado y qué riesgo representa para el paciente, relacionando el mecanismo fisiopatológico que la origina con su clasificación clínica y con el grado de compromiso hemodinámico que genera.</p>
+                    <p>Este módulo es el puente entre reconocer un electrocardiograma y decidir el tratamiento: no pide todavía ejecutar la intervención, sino justificar la decisión que la precede. Su propósito es que el estudiante pueda estratificar el riesgo del paciente con arritmia, situar el caso en el algoritmo que le corresponde y anticipar el paso siguiente, de modo que en el módulo de intervención el tratamiento sea la consecuencia de un razonamiento y no la aplicación memorizada de un protocolo.</p>
                     </div>
 
                     <div class="modulo-comenzar-wrap">
@@ -61,146 +60,430 @@
                 <!-- ============ DESARROLLO DEL MÓDULO ============ -->
                 <div class="modulo-desarrollo" style="display: none;">
 
-
                     <!-- UNIDAD 1 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 1 · Fisiopatología de las Arritmias</h3>
-                        <p>Toda arritmia se origina por uno de cuatro mecanismos eléctricos básicos. Identificar cuál está en juego orienta directamente el tipo de tratamiento que probablemente funcione — el mecanismo no es un dato académico, predice qué tratamiento tiene mayor probabilidad de funcionar.</p>
 
-                        <h4>Explora los 4 mecanismos</h4>
-                        <p>Haz clic en cada uno para ver qué es y qué implica para el tratamiento.</p>
-                        <div class="stepper-fases">
-                            <div class="stepper-nav">
-                                <button class="activo" onclick="activarPasoStepper(this,'formacion')">Formación del impulso</button>
-                                <button onclick="activarPasoStepper(this,'conduccion')">Conducción</button>
-                                <button onclick="activarPasoStepper(this,'reentrada')">Reentrada</button>
-                                <button onclick="activarPasoStepper(this,'desencadenada')">Desencadenada</button>
-                            </div>
-                            <div class="stepper-panel activo" data-paso="formacion">
-                                <h5>Alteración de la formación del impulso</h5>
-                                <p><strong>Qué es:</strong> un marcapasos (sinusal o ectópico) descarga demasiado rápido, demasiado lento, o aparece un marcapasos anómalo donde no debería.</p>
-                                <p><strong>Qué implica:</strong> tiende a responder mejor a corregir la causa de fondo que a la terapia eléctrica.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="conduccion">
-                                <h5>Alteración de la conducción</h5>
-                                <p><strong>Qué es:</strong> el impulso se retrasa o se bloquea en su camino normal (ej. bloqueos AV, Módulo 03 Unidad 2).</p>
-                                <p><strong>Qué implica:</strong> el tratamiento depende del grado del bloqueo — desde observación hasta marcapasos.</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="reentrada">
-                                <h5>Reentrada</h5>
-                                <p><strong>Qué es:</strong> un impulso queda "atrapado" circulando en un circuito eléctrico cerrado, reactivando tejido que ya debería estar en período refractario. Es el mecanismo más frecuente detrás de taquicardias paroxísticas.</p>
-                                <p><strong>Qué implica:</strong> suele responder bien a cardioversión o maniobras que interrumpan el circuito (ej. adenosina en TSVP).</p>
-                            </div>
-                            <div class="stepper-panel" data-paso="desencadenada">
-                                <h5>Actividad desencadenada (pospotenciales)</h5>
-                                <p><strong>Qué es:</strong> despolarizaciones anómalas que ocurren durante o inmediatamente después de la repolarización normal, capaces de iniciar un latido adicional.</p>
-                                <p><strong>Qué implica:</strong> con frecuencia relacionada con toxicidad medicamentosa o alteraciones electrolíticas — corregir la causa suele ser la clave.</p>
-                            </div>
+                        <h4>1.1. Alteraciones de la formación del impulso</h4>
+
+                        <h5>1.1.1. Alteraciones del automatismo normal</h5>
+                        <p>El automatismo normal puede aumentar por catecolaminas, fiebre, hipovolemia o hipertiroidismo, y producir taquicardia sinusal, o disminuir por tono vagal, fármacos o enfermedad del nodo sinusal, y producir bradicardia o pausas. Cuando el nodo sinusal falla, un ritmo de escape de la unión o ventricular evita la asistolia (1).</p>
+
+                        <h5>1.1.2. Automatismo anormal</h5>
+                        <p>El automatismo anormal aparece en células que normalmente no lo poseen, como las del músculo auricular o ventricular, cuando se despolarizan de forma parcial, por ejemplo por isquemia. A diferencia del automatismo normal, este foco es poco sensible a la supresión por sobreestimulación. El ritmo idioventricular acelerado de la reperfusión coronaria y algunas taquicardias auriculares focales son ejemplos de este mecanismo (2,3).</p>
+
+                        <h5>1.1.3. Rasgos clínicos de las arritmias automáticas</h5>
+                        <p>Las arritmias automáticas suelen iniciarse y terminar de forma gradual, no se inducen ni se interrumpen con estimulación eléctrica programada y, como el foco permanece activo, pueden reaparecer inmediatamente después de una cardioversión eléctrica (2).</p>
+
+                        <p>La Tabla 1.1 resume las alteraciones de la formación del impulso.</p>
+                        <p>La Tabla 1.2 resume las alteraciones de la conducción y sus consecuencias.</p>
+                        <p>La Tabla 1.3 relaciona las principales arritmias con su mecanismo y con la implicación clínica que se deriva de él.</p>
+                        <p>La Tabla 2.1 resume las principales arritmias supraventriculares y su potencial de complicaciones.</p>
+                        <p>La Tabla 3.1 presenta los componentes de la escala CHA₂DS₂-VASc y su puntuación.</p>
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Mecanismo</th><th>Descripción</th><th>Factores que lo favorecen</th><th>Ejemplos</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Automatismo normal aumentado</strong></td><td>Aceleración de la fase 4 en el nodo sinusal (2)</td><td>Catecolaminas, fiebre, hipovolemia, hipertiroidismo, dolor</td><td>Taquicardia sinusal</td></tr>
+                                    <tr><td><strong>Automatismo normal disminuido</strong></td><td>Enlentecimiento de la fase 4 (1)</td><td>Tono vagal, fármacos, enfermedad del nodo sinusal, hipotermia</td><td>Bradicardia sinusal, pausas</td></tr>
+                                    <tr><td><strong>Ritmos de escape</strong></td><td>Marcapasos subsidiarios que toman el control (3)</td><td>Fallo del nodo sinusal o bloqueo</td><td>Ritmo de la unión, ritmo idioventricular</td></tr>
+                                    <tr><td><strong>Automatismo anormal</strong></td><td>Actividad espontánea en células parcialmente despolarizadas (2,3)</td><td>Isquemia, reperfusión, alteraciones electrolíticas</td><td>Ritmo idioventricular acelerado, taquicardia auricular focal</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 1.1.</strong> Alteraciones en la formación del impulso eléctrico. Fuente: elaboración propia a partir de (1-3).</p>
+
+                        <h4>1.2. Alteraciones de la conducción</h4>
+                        <p>La fibrosis, la isquemia, la hiperpotasemia, el tono vagal o los fármacos pueden enlentecer o interrumpir la conducción, y la localización del bloqueo condiciona su pronóstico, más favorable en el nodo auriculoventricular y más grave por debajo de él (1).</p>
+
+                        <h5>1.2.1. La conducción como sustrato de las taquiarritmias</h5>
+                        <p>Las alteraciones de la conducción también son sustrato de taquiarritmias. El bloqueo unidireccional y la conducción lenta son condiciones necesarias para la reentrada, y las vías accesorias, conexiones auriculoventriculares anormales que evitan el retraso nodal, producen la preexcitación ventricular y las taquicardias por reentrada auriculoventricular (4).</p>
+                        <p>Cuando un impulso alcanza una rama del haz de His antes de que esta recupere su excitabilidad, se conduce con un bloqueo de rama funcional, denominado <span class="tooltip" data-tooltip="Conducción con bloqueo de rama funcional por llegar el impulso antes de que la rama recupere su excitabilidad. Es la razón por la que una taquicardia supraventricular puede verse con QRS ancho.">aberrancia</span>; por ello, una taquicardia supraventricular puede presentarse con un QRS ancho (4).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Alteración</th><th>Mecanismo</th><th>Consecuencia</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Bloqueo sinoauricular</strong></td><td>Fallo de la salida del impulso sinusal (1)</td><td>Pausas, bradicardia</td></tr>
+                                    <tr><td><strong>Bloqueo AV nodal</strong></td><td>Retraso o interrupción en el nodo (1)</td><td>Bradicardia; escape de QRS estrecho, generalmente estable</td></tr>
+                                    <tr><td><strong>Bloqueo AV infranodal</strong></td><td>Interrupción en el His o en sus ramas (1)</td><td>Escape de QRS ancho, lento e inestable</td></tr>
+                                    <tr><td><strong>Bloqueo de rama</strong></td><td>Retraso en una rama del haz de His</td><td>QRS ancho; asincronía ventricular</td></tr>
+                                    <tr><td><strong>Bloqueo unidireccional y conducción lenta</strong></td><td>Propagación en una sola dirección por una zona lenta</td><td>Sustrato de la reentrada (apartado 1.3)</td></tr>
+                                    <tr><td><strong>Vía accesoria</strong></td><td>Conexión auriculoventricular anormal (4)</td><td>Preexcitación; taquicardia por reentrada AV</td></tr>
+                                    <tr><td><strong>Aberrancia</strong></td><td>Bloqueo de rama funcional a frecuencias altas</td><td>Taquicardia supraventricular con QRS ancho</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 1.2.</strong> Alteraciones de la conducción y sus consecuencias. Fuente: elaboración propia a partir de (1,4).</p>
+
+                        <h4>1.3. Reentrada</h4>
+
+                        <h5>1.3.1. Concepto</h5>
+                        <p>La reentrada es el mecanismo más frecuente de las taquiarritmias clínicas. En condiciones normales, cada impulso se extingue tras activar el corazón porque encuentra tejido refractario; en la reentrada, el impulso recorre un circuito y vuelve a encontrar tejido excitable, que reactiva de forma repetida hasta generar una taquicardia sostenida (2,3).</p>
+
+                        <h5>1.3.2. Condiciones para la reentrada</h5>
+                        <p>Para que se forme un circuito de reentrada deben coincidir tres condiciones: dos vías de conducción con propiedades eléctricas distintas, unidas en sus extremos; un bloqueo unidireccional en una de ellas; y una conducción suficientemente lenta por la otra, que permita que el tejido bloqueado recupere su excitabilidad antes de que el impulso regrese. Por ello, los factores que enlentecen la conducción o acortan el período refractario favorecen la reentrada (2,3).</p>
+
+                        <p>La Figura 1.1 representa estas tres condiciones en un circuito esquemático.</p>
+                        <div class="espacio-reservado" data-codigo="1">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 1.1. Condiciones para la formación de un circuito de reentrada. Fuente: elaboración propia a partir de (2,3) — espacio reservado para el código 1 (HTML).
+                        </div>
+
+                        <h5>1.3.3. Inicio y terminación</h5>
+                        <p>La reentrada suele iniciarse con un latido prematuro que encuentra una de las vías aún refractaria y se conduce solo por la otra. Termina cuando se interrumpe el circuito: por un estímulo que ocupa el tejido excitable, por una descarga eléctrica que despolariza todo el tejido o por un fármaco que bloquea una de sus partes, como ocurre con la adenosina o las maniobras vagales cuando el nodo auriculoventricular forma parte del circuito (2,4).</p>
+
+                        <h5>1.3.4. Tipos de reentrada</h5>
+                        <p>La reentrada es <strong>anatómica</strong> cuando el circuito rodea un obstáculo fijo y <strong>funcional</strong> cuando se forma por diferencias en las propiedades eléctricas del tejido (2,3). Son ejemplos de reentrada anatómica el flúter auricular típico, la taquicardia por reentrada intranodal, la taquicardia por reentrada auriculoventricular (4) y la taquicardia ventricular monomórfica asociada a la cicatriz de un infarto (5). La reentrada funcional, con múltiples ondas o rotores, contribuye al mantenimiento de la fibrilación auricular y de la fibrilación ventricular (3).</p>
+
+                        <h4>1.4. Actividad desencadenada</h4>
+
+                        <h5>1.4.1. Concepto</h5>
+                        <p>La actividad desencadenada se origina en oscilaciones del potencial de membrana, denominadas <span class="tooltip" data-tooltip="Oscilaciones del potencial de membrana que aparecen durante o después de la repolarización y dependen de un potencial de acción previo.">posdespolarizaciones</span>, que aparecen durante o después de la repolarización y dependen de un potencial de acción previo. Si alcanzan el umbral, generan nuevos potenciales de acción que pueden producir una salva o una taquicardia (2,3).</p>
+
+                        <h5>1.4.2. Posdespolarizaciones tempranas</h5>
+                        <p>Aparecen durante las fases 2 o 3, cuando el potencial de acción se prolonga y se reactivan los canales de calcio. Las favorecen las situaciones que prolongan el intervalo QT: la bradicardia y las pausas, la hipopotasemia, la hipomagnesemia, los fármacos que bloquean los canales de potasio y el síndrome de QT largo congénito. Son el mecanismo desencadenante de las <em>torsades de pointes</em>, que suelen iniciarse tras una secuencia de ciclo corto, pausa y latido siguiente; por ello, la aceleración de la frecuencia cardíaca y el magnesio previenen su recurrencia (6).</p>
+
+                        <h5>1.4.3. Posdespolarizaciones tardías</h5>
+                        <p>Aparecen durante la fase 4, una vez completada la repolarización, por sobrecarga de calcio intracelular (2,3). Las favorecen la toxicidad por digoxina, el exceso de catecolaminas, la isquemia y la reperfusión, y la insuficiencia cardíaca; a diferencia de las tempranas, aumentan con la frecuencia cardíaca. Explican las arritmias de la toxicidad digitálica, algunas taquicardias ventriculares idiopáticas del tracto de salida y la taquicardia ventricular polimórfica catecolaminérgica (2,5).</p>
+
+                        <p>La Figura 1.2 muestra el momento del potencial de acción en el que aparece cada tipo de posdespolarización.</p>
+                        <iframe class="widget-ova" src="widgets/m04-u1-c01-posdespolarizaciones.html" title="Posdespolarizaciones tempranas y tardías" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 1.2.</strong> Posdespolarizaciones tempranas y tardías sobre el potencial de acción. Fuente: elaboración propia a partir de (2,3,6).</p>
+
+                        <h4>1.5. Relación entre los mecanismos fisiopatológicos y el origen de las arritmias</h4>
+
+                        <h5>1.5.1. Sustrato, desencadenante y modulador</h5>
+                        <p>Una arritmia clínica rara vez depende de un único mecanismo. Intervienen un <strong>sustrato</strong>, que la hace posible (cicatriz, vía accesoria o fibrosis auricular); un <strong>desencadenante</strong>, que la inicia (una extrasístole por automatismo o por actividad desencadenada); y los <strong>moduladores</strong>, que facilitan su interacción (sistema nervioso autónomo, isquemia o alteraciones electrolíticas) (2,3). Así, una extrasístole aislada es inofensiva en un corazón sano, pero puede iniciar una taquicardia ventricular sostenida en un paciente con cicatriz de infarto (5).</p>
+
+                        <p>La Figura 1.3 representa la interacción de estos tres elementos.</p>
+                        <iframe class="widget-ova" src="widgets/m04-u1-c02-sustrato-desencadenante.html" title="Sustrato, desencadenante y moduladores" loading="lazy"></iframe>
+                        <p class="widget-ova-pie"><strong>Figura 1.3.</strong> Interacción entre sustrato, desencadenante y moduladores en el origen de las arritmias. Fuente: elaboración propia a partir de (2,3).</p>
+
+                        <p>La fibrilación auricular ilustra esta combinación: los latidos ectópicos originados sobre todo en las venas pulmonares actúan como desencadenantes, y la fibrosis y el remodelado auricular, como sustrato. La propia fibrilación favorece el remodelado, lo que explica su tendencia a progresar de formas paroxísticas a persistentes (7).</p>
+
+                        <h5>1.5.2. Del mecanismo a la clínica</h5>
+                        <p>El mecanismo determina varias características clínicas: las arritmias por reentrada se inician y terminan de forma súbita y responden a la cardioversión eléctrica; las automáticas comienzan y terminan de forma gradual y tienden a reaparecer tras la descarga; y las debidas a actividad desencadenada dependen de la frecuencia, del intervalo QT, de los electrolitos o de las catecolaminas. Reconocer el mecanismo más probable orienta la búsqueda de la causa y anticipa la respuesta al tratamiento (2).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Arritmia</th><th>Mecanismo principal</th><th>Implicación clínica</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Taquicardia sinusal</strong></td><td>Automatismo normal aumentado</td><td>Tratar la causa; no responde a la cardioversión</td></tr>
+                                    <tr><td><strong>Taquicardia auricular focal</strong></td><td>Automatismo anormal o actividad desencadenada (2)</td><td>Inicio y fin graduales; puede recurrir tras la cardioversión</td></tr>
+                                    <tr><td><strong>Fibrilación auricular</strong></td><td>Desencadenantes en las venas pulmonares y reentrada en un sustrato auricular (7)</td><td>Tiende a progresar; control de factores de riesgo</td></tr>
+                                    <tr><td><strong>Flúter auricular típico</strong></td><td>Macrorreentrada alrededor del anillo tricúspide (2)</td><td>Responde a la cardioversión; ablación del istmo</td></tr>
+                                    <tr><td><strong>Taquicardia por reentrada intranodal</strong></td><td>Reentrada en dos vías nodales (4)</td><td>Inicio y fin súbitos; termina con maniobras vagales o adenosina</td></tr>
+                                    <tr><td><strong>Taquicardia por reentrada AV</strong></td><td>Reentrada por una vía accesoria (4)</td><td>Termina al bloquear el nodo AV</td></tr>
+                                    <tr><td><strong>Ritmo idioventricular acelerado</strong></td><td>Automatismo anormal</td><td>Frecuente tras la reperfusión; generalmente benigno</td></tr>
+                                    <tr><td><strong>TV monomórfica posinfarto</strong></td><td>Reentrada en una cicatriz (5)</td><td>Riesgo de muerte súbita; responde a la cardioversión</td></tr>
+                                    <tr><td><strong>Torsades de pointes</strong></td><td>Posdespolarizaciones tempranas (6)</td><td>Magnesio; corregir QT y electrolitos</td></tr>
+                                    <tr><td><strong>Arritmias digitálicas</strong></td><td>Posdespolarizaciones tardías (2)</td><td>Suspender la digoxina; corregir el potasio</td></tr>
+                                    <tr><td><strong>Fibrilación ventricular</strong></td><td>Reentrada funcional múltiple (3)</td><td>Desfibrilación inmediata</td></tr>
+                                    <tr><td><strong>Bloqueos AV</strong></td><td>Alteración de la conducción (1)</td><td>Valorar el nivel del bloqueo y la estimulación</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 1.3.</strong> Mecanismo de las principales arritmias e implicación clínica. Fuente: elaboración propia a partir de (1-7).</p>
+
+                        <div class="espacio-reservado" data-codigo="4">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el código 4 (HTML).
+                        </div>
+
+                        <h4>1.6. Consecuencias fisiopatológicas de las arritmias sobre la función cardíaca</h4>
+                        <p>La repercusión hemodinámica de las arritmias se explica por varios mecanismos. En las taquiarritmias, el acortamiento de la diástole reduce el llenado ventricular y la perfusión coronaria, mientras aumenta el consumo miocárdico de oxígeno; en las bradiarritmias, el gasto cardíaco cae cuando el volumen sistólico ya no compensa la baja frecuencia (1); y la pérdida de la contracción auricular o la asincronía ventricular reducen la eficiencia de la contracción. A largo plazo, la taquicardia sostenida puede causar una miocardiopatía inducida por taquicardia, y la estasis auricular de la fibrilación auricular, tromboembolia (7). La fibrilación ventricular y la taquicardia ventricular sin pulso suprimen el gasto cardíaco y constituyen la principal causa de muerte súbita cardíaca (5).</p>
+
+                        <p>La Figura 1.4 resume las dos vías por las que la taquicardia compromete la función cardíaca.</p>
+                        <div class="espacio-reservado" data-codigo="5">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 1.4. Consecuencias hemodinámicas de la taquicardia. Fuente: elaboración propia a partir de (7) — espacio reservado para el código 5 (HTML).
                         </div>
                     </div>
 
                     <!-- UNIDAD 2 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 2 · Clasificación Clínica</h3>
-                        <p>Una vez identificado el ritmo específico (Módulo 03), clasificarlo dentro de categorías más amplias ayuda a decidir qué algoritmo de manejo aplica. Esta clasificación de cuatro categorías es exactamente la que organiza los algoritmos de la AHA: bradicardia, taquicardia de complejo estrecho y taquicardia de complejo ancho tienen árboles de decisión distintos.</p>
+                        <h3 class="unidad-titulo">Unidad 2 · Clasificación Clínica de las Arritmias</h3>
 
-                        <ul>
-                            <li><strong>Bradiarritmias:</strong> frecuencia &lt; 60 lpm — sinusal o por bloqueo de la conducción AV.</li>
-                            <li><strong>Taquiarritmias:</strong> frecuencia &gt; 100 lpm, divididas a su vez en:</li>
-                            <li><strong>Supraventriculares:</strong> origen por encima del haz de His, QRS estrecho.</li>
-                            <li><strong>Ventriculares:</strong> origen en el miocardio ventricular o sistema de conducción distal, QRS ancho.</li>
-                        </ul>
+                        <h4>2.1. Clasificación clínica de las bradiarritmias</h4>
 
-                        <div class="tarjeta-informativa">
-                            <h4>De la Unidad 1 a la Unidad 2</h4>
-                            <p><span class="etiqueta">Definición:</span> El mecanismo (Unidad 1) explica el "por qué"; la clasificación clínica (Unidad 2) organiza el "qué hacer".</p>
-                            <p><span class="etiqueta">Importancia clínica:</span> Ambas son necesarias — el mecanismo sin clasificación no lleva a un algoritmo; la clasificación sin mecanismo no explica por qué el tratamiento funciona o falla.</p>
+                        <h5>2.1.1. Concepto</h5>
+                        <p>La bradicardia se define por una frecuencia cardíaca inferior a 50 latidos por minuto. Por sí sola no implica enfermedad: la bradicardia sinusal es frecuente durante el sueño y en personas con buena condición física. Su relevancia clínica la determinan los síntomas y los signos de hipoperfusión (1,8).</p>
+
+                        <h5>2.1.2. Clasificación según el sitio de la alteración</h5>
+                        <p>Las bradiarritmias se agrupan, según el sitio de la alteración, en disfunción del nodo sinusal y trastornos de la conducción auriculoventricular (1).</p>
+                        <p>La disfunción del nodo sinusal comprende la bradicardia sinusal, las pausas y el paro sinusal, el bloqueo sinoauricular, el síndrome de bradicardia-taquicardia, en el que alternan períodos de bradicardia con episodios de taquiarritmias auriculares, y la <span class="tooltip" data-tooltip="Incapacidad de aumentar la frecuencia cardíaca en respuesta al esfuerzo.">incompetencia cronotrópica</span>. Las pausas prolongadas en vigilia, en especial las superiores a 3 segundos, se consideran anormales (1).</p>
+
+                        <h5>2.1.3. Relevancia clínica según el nivel del bloqueo</h5>
+                        <p>El nivel anatómico del bloqueo determina su pronóstico. Los bloqueos nodales, como el de primer grado y el Mobitz I, suelen ser benignos, se asocian a un tono vagal aumentado o a fármacos y tienen escapes relativamente rápidos. Los infranodales, como el Mobitz II, el bloqueo avanzado y la mayoría de los bloqueos completos con QRS ancho, tienden a progresar, se acompañan de escapes lentos e inestables y, si no se deben a una causa reversible, requieren estimulación cardíaca permanente aunque el paciente esté asintomático (1).</p>
+
+                        <p>La Figura 2.1 presenta la clasificación de las bradiarritmias según el sitio de la alteración.</p>
+                        <div class="espacio-reservado" data-codigo="6">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 2.1. Clasificación de las bradiarritmias según el sitio de la alteración. Fuente: elaboración propia a partir de (1) — espacio reservado para el código 6 (HTML).
                         </div>
 
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">Un paciente presenta un ritmo con frecuencia cardíaca de 160 lpm y complejo QRS ancho (&gt; 0.12 seg). Según la clasificación clínica, ¿cómo se categoriza?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-2"> Bradiarritmia</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-2"> Taquiarritmia supraventricular</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-2" data-correcta="true"> Taquiarritmia ventricular</label>
-                            </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
+                        <h4>2.2. Clasificación clínica de las taquiarritmias</h4>
+
+                        <h5>2.2.1. Concepto</h5>
+                        <p>Se considera taquicardia una frecuencia cardíaca superior a 100 latidos por minuto. La frecuencia tampoco define por sí sola la gravedad: las taquicardias inferiores a 150 latidos por minuto rara vez producen inestabilidad, salvo que exista disfunción ventricular, y la taquicardia sinusal suele ser una respuesta fisiológica a otra condición (8).</p>
+
+                        <h5>2.2.2. Aproximación práctica: QRS y regularidad</h5>
+                        <p>En la cabecera del paciente, la clasificación más útil combina la duración del QRS y la regularidad, que se valoran en el monitor en pocos segundos y orientan el algoritmo de la taquiarritmia con pulso (8). Un QRS estrecho indica activación ventricular por el sistema de conducción normal y, por tanto, origen supraventricular. Un QRS ancho puede corresponder a una taquicardia ventricular o a una supraventricular con aberrancia o preexcitación; como la taquicardia ventricular es la causa más frecuente y la más peligrosa, <strong>toda taquicardia de complejo ancho debe considerarse ventricular mientras no se demuestre lo contrario</strong> (5,8).</p>
+
+                        <p>La Figura 2.2 organiza las taquiarritmias según estos dos criterios.</p>
+                        <div class="espacio-reservado" data-codigo="7">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 2.2. Clasificación de las taquiarritmias según la duración del QRS y la regularidad. Fuente: elaboración propia a partir de (4,5,8) — espacio reservado para el código 7 (HTML).
+                        </div>
+
+                        <h4>2.3. Arritmias supraventriculares: relevancia clínica y potencial de complicaciones</h4>
+
+                        <h5>2.3.1. Concepto</h5>
+                        <p>Las arritmias supraventriculares se originan en las aurículas o en la unión auriculoventricular, o requieren de ellas para mantenerse. En general tienen mejor pronóstico que las ventriculares, aunque algunas se asocian a complicaciones graves como la embolia, la insuficiencia cardíaca o, en situaciones particulares, la muerte súbita (4).</p>
+
+                        <h5>2.3.2. Complicaciones y situaciones de mayor riesgo</h5>
+                        <p>Las complicaciones más relevantes derivan de la fibrilación y del flúter auriculares, que se asocian a embolia sistémica, en especial ictus, insuficiencia cardíaca, deterioro cognitivo y mayor mortalidad (7). Además, aumentan la gravedad la fibrilación auricular preexcitada, que puede conducir impulsos muy rápidos a los ventrículos y degenerar en fibrilación ventricular (4,7); las frecuencias muy elevadas en pacientes con cardiopatía estructural, estenosis valvular o disfunción ventricular; y las taquicardias sostenidas durante semanas, que pueden causar una miocardiopatía inducida por taquicardia (7).</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Arritmia</th><th>Características</th><th>Potencial de complicaciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Extrasístoles auriculares</strong></td><td>Latidos prematuros aislados</td><td>Bajo; pueden desencadenar otras arritmias</td></tr>
+                                    <tr><td><strong>Taquicardia sinusal</strong></td><td>Respuesta a un estímulo</td><td>Depende de la causa subyacente</td></tr>
+                                    <tr><td><strong>Reentrada intranodal</strong></td><td>La TSV paroxística más frecuente (4)</td><td>Bajo en el corazón sano; síntomas y, a veces, inestabilidad</td></tr>
+                                    <tr><td><strong>Reentrada auriculoventricular</strong></td><td>Utiliza una vía accesoria (4)</td><td>Riesgo de FA preexcitada</td></tr>
+                                    <tr><td><strong>Taquicardia auricular focal o multifocal</strong></td><td>Asociada a enfermedad pulmonar y metabólica</td><td>Depende de la causa y de la frecuencia</td></tr>
+                                    <tr><td><strong>Fibrilación auricular</strong></td><td>Arritmia sostenida más frecuente (7)</td><td>Ictus y embolia, insuficiencia cardíaca, mortalidad (7)</td></tr>
+                                    <tr><td><strong>Flúter auricular</strong></td><td>Macrorreentrada auricular</td><td>Embolia; frecuencias muy altas si conduce 1:1</td></tr>
+                                    <tr><td><strong>FA preexcitada</strong></td><td>FA con conducción por una vía accesoria</td><td>Riesgo de fibrilación ventricular (4,7)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 2.1.</strong> Arritmias supraventriculares: relevancia clínica y complicaciones. Fuente: elaboración propia a partir de (4,7).</p>
+
+                        <h4>2.4. Arritmias ventriculares: repercusión clínica y potencial de gravedad</h4>
+
+                        <h5>2.4.1. Concepto</h5>
+                        <p>Las arritmias ventriculares se originan por debajo de la bifurcación del haz de His y abarcan desde extrasístoles aisladas sin significado pronóstico hasta la fibrilación ventricular, principal causa de muerte súbita cardíaca. Su gravedad depende del tipo de arritmia, de su repercusión hemodinámica y, sobre todo, de la presencia de cardiopatía estructural y del estado de la función ventricular (5).</p>
+
+                        <h5>2.4.2. Factores que aumentan la gravedad</h5>
+                        <p>La presencia de cardiopatía estructural, en especial de una fracción de eyección reducida, el síncope, sobre todo durante el esfuerzo, los antecedentes familiares de muerte súbita en personas jóvenes y la morfología polimórfica aumentan el riesgo de las arritmias ventriculares (5).</p>
+
+                        <p>La Figura 2.3 ordena las arritmias ventriculares según su potencial de gravedad.</p>
+                        <div class="espacio-reservado" data-codigo="8">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 2.3. Espectro de gravedad de las arritmias ventriculares. Fuente: elaboración propia a partir de (5,6) — espacio reservado para el código 8 (HTML).
+                        </div>
+
+                        <h4>2.5. Clasificación de las arritmias según su repercusión clínica</h4>
+
+                        <h5>2.5.1. Fundamento</h5>
+                        <p>Las clasificaciones anteriores describen la arritmia; la clasificación según la repercusión clínica describe al paciente y determina la urgencia de la intervención, porque una misma arritmia puede ser un hallazgo incidental en un paciente y una emergencia en otro. Los algoritmos de la bradicardia y de la taquiarritmia con pulso se organizan en torno a la presencia o ausencia de compromiso cardiopulmonar (8).</p>
+
+                        <h5>2.5.2. Niveles de repercusión</h5>
+                        <p>Pueden distinguirse cuatro niveles. En el primero, la arritmia es <strong>asintomática</strong> y se detecta de forma incidental en el monitor o en un electrocardiograma. En el segundo, la arritmia es <strong>sintomática pero estable</strong>: el paciente refiere palpitaciones, mareo leve o malestar, pero conserva una perfusión adecuada. En el tercero, la arritmia produce <strong>inestabilidad hemodinámica</strong>, que se reconoce por la hipotensión, la alteración aguda del estado mental, los signos de shock, la molestia torácica isquémica o la insuficiencia cardíaca aguda (8). En el cuarto, la arritmia produce un <strong>paro cardíaco</strong>, con ausencia de pulso.</p>
+
+                        <p>La Figura 2.4 representa los cuatro niveles de repercusión y la prioridad de actuación que corresponde a cada uno.</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🖼️</span>
+                            Figura 2.4. Niveles de repercusión clínica de las arritmias. Fuente: elaboración propia a partir de (8) — espacio reservado para la figura.
+                        </div>
+
+                        <h4>2.6. Diferenciación entre arritmias de menor riesgo y arritmias potencialmente letales</h4>
+
+                        <h5>2.6.1. Criterios de riesgo</h5>
+                        <p>La distinción entre una arritmia de menor riesgo y una potencialmente letal no depende solo del tipo de arritmia, sino de la combinación de varios elementos: la repercusión hemodinámica, la presencia de cardiopatía estructural y la función ventricular, el nivel del bloqueo en las bradiarritmias, la anchura y la morfología del QRS en las taquiarritmias, el intervalo QT, y los antecedentes del paciente, como el síncope o la muerte súbita en familiares jóvenes (1,5).</p>
+
+                        <h5>2.6.2. Arritmias de menor riesgo</h5>
+                        <p>Son arritmias de menor riesgo, en ausencia de cardiopatía y de síntomas relevantes, la taquicardia y la bradicardia sinusales con causa identificada, las extrasístoles auriculares y ventriculares aisladas, el bloqueo auriculoventricular de primer grado, el bloqueo Mobitz I y las taquicardias por reentrada en el corazón sano (1,4,5). Su manejo se centra en la búsqueda de la causa, el alivio de los síntomas y la vigilancia.</p>
+
+                        <h5>2.6.3. Arritmias potencialmente letales</h5>
+                        <p>Son potencialmente letales la fibrilación ventricular, la taquicardia ventricular sin pulso, la asistolia y la actividad eléctrica sin pulso, que constituyen paros cardíacos; la taquicardia ventricular sostenida y la polimórfica, incluidas las <em>torsades de pointes</em>; la fibrilación auricular preexcitada; y las bradiarritmias por bloqueo infranodal, como el Mobitz II, el bloqueo avanzado y el completo, y las pausas prolongadas con síncope (1,4-6). Su reconocimiento exige una respuesta inmediata del equipo de salud.</p>
+
+                        <div class="espacio-reservado" data-codigo="9">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Espacio reservado para el código 9 (HTML).
                         </div>
                     </div>
 
                     <!-- UNIDAD 3 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 3 · Estratificación del Riesgo</h3>
-                        <p>El mismo ritmo puede representar un riesgo completamente distinto según el paciente que lo presente. Estratificar el riesgo es lo que convierte un diagnóstico en un plan de acción priorizado. Dos pacientes con el mismo ritmo (por ejemplo, TV monomórfica) pueden requerir manejos radicalmente distintos: uno estable permite tiempo para evaluar y tratar farmacológicamente; uno inestable exige cardioversión inmediata.</p>
 
-                        <ul>
-                            <li><strong>Estabilidad hemodinámica:</strong> criterio central (ver Módulo 02, Unidad 3) — un paciente inestable siempre tiene prioridad absoluta.</li>
-                            <li><strong>Signos de alarma:</strong> dolor torácico, disnea súbita, hipotensión, estado mental alterado, signos de choque.</li>
-                            <li><strong>Riesgo de muerte súbita cardíaca:</strong> especialmente relevante en taquicardias ventriculares, QT prolongado y antecedentes de cardiopatía estructural.</li>
-                        </ul>
+                        <h4>3.1. Determinación de la estabilidad hemodinámica</h4>
 
-                        <div class="key-box danger">
-                            <span class="alert-text">🚨 Alerta Clínica:</span> La estratificación de riesgo se repite en cada contacto con el paciente — un paciente estable puede volverse inestable en minutos.
+                        <h5>3.1.1. La pregunta central</h5>
+                        <p>La primera decisión ante cualquier arritmia con pulso es si el paciente está estable o inestable, porque de ello depende la velocidad de la intervención: el paciente inestable requiere una terapia inmediata, mientras que en el estable puede completarse una valoración ordenada antes de decidir el tratamiento (8).</p>
+
+                        <h5>3.1.2. Signos de inestabilidad</h5>
+                        <p>Se considera que la arritmia produce compromiso cardiopulmonar cuando se acompaña de alguno de estos cinco signos: hipotensión, alteración aguda del estado mental, signos de shock, molestia torácica isquémica o insuficiencia cardíaca aguda (8). Cada uno refleja un fallo de la perfusión en un órgano distinto: la circulación sistémica, el cerebro, los tejidos periféricos, el miocardio y el pulmón.</p>
+
+                        <h5>3.1.3. La arritmia como causa o como consecuencia</h5>
+                        <p>La presencia de uno de estos signos no basta para atribuirlo a la arritmia; debe valorarse si la frecuencia es apropiada para la situación clínica. Una taquicardia sinusal de 130 latidos por minuto en un paciente con hemorragia o sepsis es una respuesta compensadora, y su tratamiento es el de la causa. Las taquicardias inferiores a 150 latidos por minuto rara vez causan por sí mismas la inestabilidad, salvo que exista disfunción ventricular, y las bradicardias suelen producir síntomas por debajo de 50 latidos por minuto (8).</p>
+
+                        <p>La Figura 3.1 representa los cinco signos de inestabilidad y el órgano cuya hipoperfusión refleja cada uno.</p>
+                        <div class="espacio-reservado" data-codigo="10">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 3.1. Signos de inestabilidad hemodinámica en el paciente con arritmia. Fuente: elaboración propia a partir de (8) — espacio reservado para el código 10 (HTML).
+                        </div>
+
+                        <h4>3.2. Identificación de signos de alarma y deterioro clínico</h4>
+
+                        <h5>3.2.1. El deterioro como proceso</h5>
+                        <p>El paro cardíaco intrahospitalario suele ir precedido de horas de deterioro progresivo de los signos vitales y del estado del paciente. Reconocer ese deterioro a tiempo permite intervenir antes de que sea irreversible; por ello, las guías vigentes recomiendan los sistemas de alerta temprana y los equipos de respuesta rápida como parte de la prevención del paro cardíaco (8).</p>
+
+                        <h5>3.2.2. Escalas de alerta temprana</h5>
+                        <p>Las escalas de alerta temprana puntúan cada signo vital según su desviación de la normalidad. La escala NEWS2 valora la frecuencia respiratoria, la saturación de oxígeno, el uso de oxígeno suplementario, la presión arterial sistólica, la frecuencia cardíaca, el nivel de conciencia y la temperatura; la frecuencia cardíaca puntúa tanto si es baja como si es alta y alcanza la puntuación máxima por debajo de 41 o por encima de 130 latidos por minuto (9).</p>
+                        <p>Una puntuación total de 5 o 6, o de 3 en un solo parámetro, exige una valoración urgente por un profesional competente, y una puntuación de 7 o más, una respuesta de emergencia con activación del equipo de respuesta rápida o de cuidados críticos. Cada institución define en su protocolo la escala que utiliza y la respuesta que corresponde a cada nivel (9).</p>
+
+                        <h4>3.3. Evaluación del riesgo de compromiso de la perfusión tisular</h4>
+
+                        <h5>3.3.1. Perfusión y presión arterial</h5>
+                        <p>Una presión arterial normal no garantiza una perfusión adecuada, porque la vasoconstricción compensadora puede mantenerla a expensas del flujo tisular. El consenso sobre el shock circulatorio define la hipotensión como una presión arterial sistólica inferior a 90 mmHg, una presión arterial media inferior a 65 mmHg o un descenso de 40 mmHg o más respecto al valor basal, advierte que <strong>el shock puede existir sin hipotensión</strong> y propone valorar la perfusión mediante la piel, la diuresis, el estado mental y el lactato (10).</p>
+
+                        <h5>3.3.2. Factores que aumentan el riesgo de hipoperfusión</h5>
+                        <p>La misma arritmia compromete la perfusión con mayor facilidad cuando la reserva cardíaca es limitada: disfunción ventricular, estenosis aórtica o mitral, miocardiopatía hipertrófica, hipovolemia, anemia, sepsis, edad avanzada o enfermedad coronaria. En estos pacientes, frecuencias que otras personas tolerarían pueden producir hipotensión o isquemia.</p>
+
+                        <p>La Figura 3.2 representa las tres ventanas clínicas de la perfusión.</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">🖼️</span>
+                            Figura 3.2. Ventanas clínicas para la valoración de la perfusión tisular. Fuente: elaboración propia a partir de (10) — espacio reservado para la figura.
+                        </div>
+
+                        <h4>3.4. Identificación de arritmias asociadas con paro cardíaco y muerte súbita</h4>
+
+                        <h5>3.4.1. La muerte súbita cardíaca</h5>
+                        <p>La muerte súbita cardíaca es la que se produce de forma inesperada por una causa cardíaca, generalmente por una fibrilación ventricular o una taquicardia ventricular que degenera en ella (5). Su prevención depende de reconocer a tiempo las arritmias que la preceden y los pacientes con mayor riesgo de presentarlas.</p>
+
+                        <h5>3.4.2. Arritmias con riesgo inmediato</h5>
+                        <p>Algunas arritmias producen por sí mismas un paro cardíaco o pueden degenerar en él en minutos: la fibrilación ventricular, la taquicardia ventricular sin pulso, la taquicardia ventricular sostenida, la taquicardia ventricular polimórfica y las <em>torsades de pointes</em> (5,6). Entre las bradiarritmias, el bloqueo auriculoventricular de alto grado y el completo con escape ventricular lento pueden producir síncope o asistolia (1). Entre las supraventriculares, la fibrilación auricular preexcitada puede degenerar en fibrilación ventricular (4).</p>
+
+                        <h5>3.4.3. Pacientes con mayor riesgo de muerte súbita</h5>
+                        <p>El riesgo de muerte súbita aumenta en los pacientes con cardiopatía estructural, en especial con una fracción de eyección del ventrículo izquierdo reducida, igual o inferior al 35 %; en los supervivientes de un paro cardíaco o de una taquicardia ventricular sostenida; en los pacientes con síncope inexplicado, sobre todo si ocurre durante el esfuerzo; y en los portadores de miocardiopatías o de canalopatías hereditarias, como el síndrome de QT largo, el síndrome de Brugada o la miocardiopatía hipertrófica (5). Los antecedentes familiares de muerte súbita en personas jóvenes deben hacer sospechar una enfermedad hereditaria (5).</p>
+                        <p>En el electrocardiograma, deben considerarse señales de riesgo el QTc superior a 500 ms (6), la preexcitación ventricular (4), los bloqueos de alto grado y los trastornos de la conducción de nueva aparición (1), y las salvas de taquicardia ventricular en un paciente con cardiopatía (5).</p>
+
+                        <h4>3.5. Estratificación del riesgo tromboembólico en la fibrilación auricular</h4>
+
+                        <h5>3.5.1. Fundamento</h5>
+                        <p>En la fibrilación auricular, la pérdida de la contracción auricular favorece la estasis sanguínea en la orejuela izquierda y la formación de trombos. El ictus asociado suele ser extenso y discapacitante, pero puede prevenirse en gran medida con la anticoagulación. La decisión de anticoagular no depende del patrón de la arritmia (paroxística, persistente o permanente) ni de que se haya restablecido el ritmo sinusal, sino del riesgo tromboembólico del paciente; el flúter auricular se valora con los mismos criterios (7).</p>
+
+                        <h5>3.5.2. Escalas de riesgo</h5>
+                        <p>El riesgo se estima con escalas que suman los factores clínicos asociados al ictus. La guía estadounidense de 2023 utiliza la escala CHA₂DS₂-VASc y recomienda la anticoagulación con una puntuación de 2 o más en los hombres y de 3 o más en las mujeres (7). La guía europea de 2024 utiliza la escala CHA₂DS₂-VA, que no incluye el sexo femenino como factor de riesgo, y recomienda la anticoagulación con una puntuación de 2 o más y su consideración con una puntuación de 1 (11). En ambas, la puntuación de 0, o de 1 en la mujer según la escala estadounidense, corresponde a un riesgo bajo.</p>
+
+                        <div class="tabla-scroll">
+                            <table class="tabla-comparativa">
+                                <thead>
+                                    <tr><th>Letra</th><th>Factor de riesgo</th><th>Puntos</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>C</strong></td><td>Insuficiencia cardíaca o disfunción ventricular izquierda</td><td>1</td></tr>
+                                    <tr><td><strong>H</strong></td><td>Hipertensión arterial</td><td>1</td></tr>
+                                    <tr><td><strong>A₂</strong></td><td>Edad de 75 años o más</td><td>2</td></tr>
+                                    <tr><td><strong>D</strong></td><td>Diabetes mellitus</td><td>1</td></tr>
+                                    <tr><td><strong>S₂</strong></td><td>Ictus, accidente isquémico transitorio o tromboembolia previos</td><td>2</td></tr>
+                                    <tr><td><strong>V</strong></td><td>Enfermedad vascular (infarto previo, enfermedad arterial periférica, placa aórtica)</td><td>1</td></tr>
+                                    <tr><td><strong>A</strong></td><td>Edad de 65 a 74 años</td><td>1</td></tr>
+                                    <tr><td><strong>Sc</strong></td><td>Sexo femenino (no se incluye en la escala CHA₂DS₂-VA)</td><td>1</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figura-caption"><strong>Tabla 3.1.</strong> Componentes de la escala CHA₂DS₂-VASc. Fuente: elaboración propia a partir de (7,11).</p>
+
+                        <h4>3.6. Integración de los factores clínicos para establecer prioridades de atención</h4>
+
+                        <h5>3.6.1. Un razonamiento secuencial</h5>
+                        <p>Los elementos estudiados en esta unidad no se valoran de forma aislada, sino en una secuencia que va de lo más urgente a lo menos urgente. La primera pregunta es si el paciente tiene pulso; la segunda, si está hemodinámicamente estable (8); la tercera, si la arritmia es potencialmente letal o existen signos de alarma y de deterioro (5,9); y la cuarta, si produce síntomas. La respuesta a estas preguntas define la prioridad de atención. A ella se añade, en la fibrilación auricular, la estimación del riesgo tromboembólico, que no modifica la urgencia inmediata, pero sí el plan de cuidados (7).</p>
+
+                        <h5>3.6.2. Niveles de prioridad</h5>
+                        <p>La <strong>prioridad 1</strong> corresponde al paciente sin pulso o inestable, que requiere reanimación o terapia inmediata. La <strong>prioridad 2</strong> corresponde al paciente estable con una arritmia potencialmente letal, con signos de alarma o con una puntuación de alerta temprana elevada, que requiere monitorización continua, valoración médica urgente y la preparación de la intervención. La <strong>prioridad 3</strong> corresponde al paciente sintomático pero estable con una arritmia de menor riesgo, en quien puede completarse una valoración ordenada. La <strong>prioridad 4</strong> corresponde al paciente asintomático con una arritmia de menor riesgo, en quien se planifican la vigilancia, el estudio de la causa y la prevención.</p>
+
+                        <div class="perla-clinica">
+                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
+                            La prioridad no es fija: debe revalorarse con cada cambio del paciente, del ritmo o de los signos vitales, y la aparición de cualquier signo de inestabilidad traslada al paciente de inmediato a la prioridad 1.
+                        </div>
+
+                        <p>La Figura 3.3 representa la secuencia de decisiones que conduce a la prioridad de atención.</p>
+                        <div class="espacio-reservado" data-codigo="11">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 3.3. Secuencia de decisiones para establecer la prioridad de atención. Fuente: elaboración propia a partir de (5,7-9) — espacio reservado para el código 11 (HTML).
                         </div>
                     </div>
 
                     <!-- UNIDAD 4 -->
                     <div class="modulo-unidad">
-                        <h3 class="unidad-titulo">Unidad 4 · Algoritmos AHA/ESC</h3>
-                        <p>Los algoritmos de la AHA traducen la clasificación clínica y la estratificación de riesgo en una secuencia de decisiones estandarizada. Ningún algoritmo reemplaza el juicio clínico, pero estandarizar la secuencia de decisiones reduce errores bajo presión y facilita la coordinación del equipo durante una emergencia.</p>
+                        <h3 class="unidad-titulo">Unidad 4 · Algoritmos AHA y ESC</h3>
 
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Los tres algoritmos comparten la misma primera pregunta: ¿el paciente está estable o inestable?
+                        <h4>4.1. Selección del algoritmo según la presentación clínica</h4>
+
+                        <h5>4.1.1. Dos preguntas iniciales</h5>
+                        <p>La elección del algoritmo depende de dos preguntas, que se responden en segundos. La primera es si el paciente tiene pulso: si no lo tiene, se aplica el algoritmo del paro cardíaco (8). La segunda, en el paciente con pulso, es si la frecuencia es lenta o rápida: la bradicardia, habitualmente con una frecuencia inferior a 50 latidos por minuto, conduce al algoritmo de la bradicardia con pulso (12), y la taquicardia, generalmente con una frecuencia de 150 latidos por minuto o más cuando es la causa de los síntomas, al de la taquiarritmia con pulso (13).</p>
+
+                        <h5>4.1.2. Situaciones especiales</h5>
+                        <p>Algunas presentaciones no se ajustan por completo a estos algoritmos y requieren un razonamiento específico: las <em>torsades de pointes</em>, la fibrilación auricular preexcitada y las arritmias secundarias a intoxicaciones o a alteraciones electrolíticas graves, en las que la identificación del mecanismo o de la causa orienta la conducta (8).</p>
+
+                        <p>La Figura 4.1 representa la selección del algoritmo según la presentación clínica.</p>
+                        <div class="espacio-reservado" data-codigo="12">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 4.1. Selección del algoritmo según la presentación clínica. Fuente: elaboración propia a partir de (8,12-14) — espacio reservado para el código 12 (HTML).
                         </div>
 
-                        <h4>Actividad: empareja cada algoritmo con su criterio de bifurcación</h4>
-                        <div class="reto-emparejar">
-                            <p class="reto-emparejar-progreso">0 de 3 emparejados</p>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="bradicardia" onclick="manejarClicEmparejar(this)">Algoritmo de bradicardia</button>
-                                <button class="reto-emparejar-item" data-par="taquicardia" onclick="manejarClicEmparejar(this)">Algoritmo de taquicardia con pulso</button>
-                                <button class="reto-emparejar-item" data-par="paro" onclick="manejarClicEmparejar(this)">Algoritmo de paro sin pulso</button>
-                            </div>
-                            <div class="reto-emparejar-columna">
-                                <button class="reto-emparejar-item" data-par="paro" onclick="manejarClicEmparejar(this)">Se bifurca según el ritmo sea desfibrilable o no desfibrilable</button>
-                                <button class="reto-emparejar-item" data-par="bradicardia" onclick="manejarClicEmparejar(this)">Evalúa síntomas/inestabilidad; prioriza atropina, marcapasos transcutáneo o infusiones cronotrópicas</button>
-                                <button class="reto-emparejar-item" data-par="taquicardia" onclick="manejarClicEmparejar(this)">Se bifurca según estabilidad y según el ancho del QRS</button>
-                            </div>
+                        <h4>4.2. Abordaje de la bradicardia sintomática</h4>
+
+                        <h5>4.2.1. Criterio central: la repercusión clínica</h5>
+                        <p>En la bradicardia, la frecuencia no es el criterio que decide la intervención, sino sus consecuencias. Si no hay compromiso cardiopulmonar, el paciente se vigila, se obtiene un electrocardiograma de 12 derivaciones y se buscan las causas, como la isquemia, los fármacos, la hipoxia o las alteraciones electrolíticas. Si existe compromiso, se inicia el tratamiento (12).</p>
+
+                        <h5>4.2.2. Diferencias entre las recomendaciones AHA y ESC</h5>
+                        <p>Ambas fuentes coinciden en que la presencia de compromiso cardiopulmonar define la necesidad de intervenir. Difieren en la secuencia ante la falta de respuesta inicial: la AHA contempla la estimulación transcutánea o los fármacos cronotrópicos como opciones equivalentes y considera razonable la estimulación transvenosa en la bradicardia refractaria (8,12), mientras que la ESC prioriza la estimulación transvenosa temporal y reserva la transcutánea como puente (15).</p>
+
+                        <h5>4.2.3. Criterios que orientan la conducta</h5>
+                        <p>El nivel del bloqueo es el criterio más importante para anticipar la respuesta: en los bloqueos nodales suele obtenerse respuesta a las medidas iniciales, mientras que en los infranodales, como el Mobitz II o el bloqueo completo con QRS ancho, es improbable y debe anticiparse la necesidad de estimulación (12,15). La sospecha de una causa reversible, como la intoxicación por betabloqueadores, calcioantagonistas o digoxina, o la hiperpotasemia, orienta hacia su corrección (8).</p>
+
+                        <h4>4.3. Abordaje de la taquicardia con pulso</h4>
+
+                        <h5>4.3.1. El paciente inestable</h5>
+                        <p>Cuando la taquicardia produce compromiso cardiopulmonar y es su causa, el algoritmo conduce directamente a la terapia eléctrica, sin necesidad de precisar antes el tipo de arritmia; ambas guías coinciden en este punto (13,16,17).</p>
+
+                        <h5>4.3.2. El paciente estable: taquicardia de complejo estrecho</h5>
+                        <p>En el paciente estable, la duración del QRS y la regularidad definen la rama del algoritmo. La taquicardia regular de complejo estrecho corresponde con frecuencia a una reentrada que depende del nodo auriculoventricular, por lo que las medidas que lo bloquean de forma transitoria tienen valor diagnóstico y terapéutico; ambas guías coinciden en esta secuencia, aunque la ESC destaca la mayor eficacia de la maniobra de Valsalva modificada (13,16).</p>
+                        <p>La taquicardia irregular de complejo estrecho corresponde, por lo general, a una fibrilación auricular, en la que la planeación incluye decidir entre el control de la frecuencia y el del ritmo y estimar el riesgo tromboembólico (7,11). Existe aquí una diferencia relevante: antes de la cardioversión, la guía estadounidense exige anticoagulación previa o la exclusión de trombos cuando la duración es de 48 horas o más (7), mientras que la europea de 2024 lo exige a partir de las 24 horas (11).</p>
+
+                        <h5>4.3.3. El paciente estable: taquicardia de complejo ancho</h5>
+                        <p>La taquicardia regular de complejo ancho debe considerarse ventricular mientras no se demuestre lo contrario. En el paciente estable, la AHA propone iniciar con antiarrítmicos intravenosos y reservar la cardioversión para el fracaso farmacológico (8,13), mientras que la ESC recomienda la cardioversión como primera línea si el riesgo de la sedación es bajo (17).</p>
+                        <p>La taquicardia irregular de complejo ancho obliga a sospechar una fibrilación auricular preexcitada, en la que están contraindicados los bloqueadores del nodo auriculoventricular (16), o una taquicardia ventricular polimórfica, en la que debe medirse el QT para identificar su mecanismo (8).</p>
+
+                        <p>La Figura 4.2 sintetiza el abordaje de la taquicardia con pulso.</p>
+                        <div class="espacio-reservado" data-codigo="13">
+                            <span class="icono" aria-hidden="true">🧩</span>
+                            Figura 4.2. Abordaje de la taquicardia con pulso según la estabilidad y el QRS. Fuente: elaboración propia a partir de (7,8,11,13,16,17) — espacio reservado para el código 13 (HTML).
                         </div>
+
+                        <h4>4.4. Reconocimiento de los escenarios de paro cardíaco</h4>
+
+                        <h5>4.4.1. Las dos vías del algoritmo</h5>
+                        <p>Tras la primera comprobación del ritmo, el algoritmo del paro cardíaco se divide en dos vías: la de los ritmos <strong>desfibrilables</strong>, fibrilación ventricular y taquicardia ventricular sin pulso, y la de los <strong>no desfibrilables</strong>, asistolia y actividad eléctrica sin pulso, en la que la descarga no está indicada y adquiere especial importancia la búsqueda de causas reversibles (8,14). Como el ritmo puede cambiar entre comprobaciones, su reconocimiento debe repetirse en cada ciclo.</p>
+
+                        <h4>4.5. Integración de las recomendaciones AHA y ESC</h4>
+
+                        <h5>4.5.1. Coincidencias y diferencias</h5>
+                        <p>Las recomendaciones de la AHA y de la ESC coinciden en lo esencial: la estabilidad hemodinámica decide la urgencia, la terapia eléctrica es el tratamiento del paciente inestable, y la búsqueda de la causa forma parte de toda atención. Sus diferencias se concentran en aspectos concretos del paciente estable, como el lugar de la cardioversión en la taquicardia ventricular bien tolerada, el umbral de duración de la fibrilación auricular que exige anticoagulación antes de la cardioversión, la escala de riesgo tromboembólico o la preferencia por la estimulación transvenosa en la bradicardia refractaria (7,8,11,15,17). Conocer ambas permite al equipo de salud comprender el fundamento de los protocolos institucionales, que suelen adoptar una de ellas o combinarlas.</p>
                     </div>
 
                     <!-- UNIDAD 5 -->
                     <div class="modulo-unidad">
                         <h3 class="unidad-titulo">Unidad 5 · Toma de Decisiones Clínicas</h3>
-                        <p>Esta unidad integra todo lo anterior en la pregunta central de la planeación: frente a este paciente, con este ritmo y este riesgo, ¿qué va primero? Esta forma de pensar es la que se pondrá en práctica de forma activa en el Módulo 05 (Intervención), donde estas prioridades se traducen en acciones concretas.</p>
-
-                        <ul>
-                            <li><strong>Priorización por tiempo:</strong> en escenarios críticos, cada decisión debe tener una meta medible y acotada en el tiempo (ej. "estabilizar la frecuencia en menos de 10 minutos").</li>
-                            <li><strong>Establecer metas de cuidado:</strong> no basta con "tratar la arritmia" — la meta debe ser específica, medible y con un plazo definido.</li>
-                            <li><strong>Reevaluación constante:</strong> la prioridad puede cambiar en cualquier momento si el estado del paciente cambia.</li>
-                        </ul>
-
-                        <div class="perla-clinica">
-                            <span class="perla-clinica-titulo">🩺 Perla clínica</span>
-                            Ante varias prioridades simultáneas, resuelve siempre primero la amenaza a la vida inmediata (ABCDE, Módulo 02).
-                        </div>
-
-                        <div class="mini-reto">
-                            <span class="mini-reto-titulo">🎯 Mini reto</span>
-                            <p class="mini-reto-enunciado">¿Cuál de las siguientes es una meta de cuidado correctamente formulada?</p>
-                            <div class="actividad-opciones">
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-5"> "Tratar la arritmia del paciente"</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-5" data-correcta="true"> "Reducir la frecuencia cardíaca a menos de 100 lpm en los próximos 10 minutos"</label>
-                                <label class="actividad-opcion"><input type="radio" name="mr-04-5"> "Administrar el medicamento antiarrítmico indicado"</label>
-                            </div>
-                            <button class="btn-accion" onclick="verificarMiniReto(this)">Comprobar</button>
-                            <p class="mini-reto-feedback"></p>
-                        </div>
-
-                        <div class="key-box">
-                            <strong>💡 Concepto Clave:</strong> Planear no es predecir el futuro — es decidir, con la información disponible ahora, cuál es el siguiente paso correcto.
+                        <p>Esta unidad reúne lo trabajado en las cuatro anteriores: dado un caso, el estudiante fundamenta la elección del paso siguiente del cuidado integrando el mecanismo de la arritmia, su clasificación y el riesgo del paciente.</p>
+                        <div class="espacio-reservado">
+                            <span class="icono" aria-hidden="true">📝</span>
+                            Contenido pendiente en el documento fuente. El documento anuncia esta unidad en la estructura del módulo y en los objetivos de aprendizaje, pero su desarrollo no está redactado todavía.
                         </div>
                     </div>
 
@@ -305,14 +588,28 @@
                         <button class="btn-enviar-eval" onclick="verificarAutoevaluacion(this)">Enviar respuestas</button>
                     </div>
 
+
                     <!-- BIBLIOGRAFÍA -->
                     <div class="modulo-bibliografia">
                         <h3>Bibliografía</h3>
                         <ol>
-                            <li>American Heart Association. Aspectos destacados de las guías de la AHA para RCP y atención cardiovascular de emergencia (ACLS/BLS).</li>
-                            <li>Herdman TH, Kamitsuru S, editores. NANDA International: Diagnósticos enfermeros. Definiciones y clasificación.</li>
-                            <li>Moorhead S, Johnson M, Maas ML, Swanson E. Clasificación de Resultados de Enfermería (NOC).</li>
-                            <li>Bulechek GM, Butcher HK, Dochterman JM, Wagner CM. Clasificación de Intervenciones de Enfermería (NIC).</li>
+                            <li>Kusumoto FM, Schoenfeld MH, Barrett C, Edgerton JR, Ellenbogen KA, Gold MR, et al. 2018 ACC/AHA/HRS guideline on the evaluation and management of patients with bradycardia and cardiac conduction delay: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines and the Heart Rhythm Society. Circulation. 2019;140(8):e382-e482. doi: 10.1161/CIR.0000000000000628.</li>
+                            <li>Gaztañaga L, Marchlinski FE, Betensky BP. Mecanismos de las arritmias cardiacas. Rev Esp Cardiol. 2012;65(2):174-85. doi: 10.1016/j.recesp.2011.09.018.</li>
+                            <li>Antzelevitch C, Burashnikov A. Overview of basic mechanisms of cardiac arrhythmia. Card Electrophysiol Clin. 2011;3(1):23-45. doi: 10.1016/j.ccep.2010.10.012.</li>
+                            <li>Page RL, Joglar JA, Caldwell MA, Calkins H, Conti JB, Deal BJ, et al. 2015 ACC/AHA/HRS guideline for the management of adult patients with supraventricular tachycardia: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines and the Heart Rhythm Society. Circulation. 2016;133(14):e506-e574. doi: 10.1161/CIR.0000000000000311.</li>
+                            <li>Al-Khatib SM, Stevenson WG, Ackerman MJ, Bryant WJ, Callans DJ, Curtis AB, et al. 2017 AHA/ACC/HRS guideline for management of patients with ventricular arrhythmias and the prevention of sudden cardiac death: a report of the American College of Cardiology/American Heart Association Task Force on Clinical Practice Guidelines and the Heart Rhythm Society. Circulation. 2018;138(13):e272-e391. doi: 10.1161/CIR.0000000000000549.</li>
+                            <li>Drew BJ, Ackerman MJ, Funk M, Gibler WB, Kligfield P, Menon V, et al. Prevention of torsade de pointes in hospital settings: a scientific statement from the American Heart Association and the American College of Cardiology Foundation. Circulation. 2010;121(8):1047-60. doi: 10.1161/CIRCULATIONAHA.109.192704.</li>
+                            <li>Joglar JA, Chung MK, Armbruster AL, Benjamin EJ, Chyou JY, Cronin EM, et al. 2023 ACC/AHA/ACCP/HRS guideline for the diagnosis and management of atrial fibrillation: a report of the American College of Cardiology/American Heart Association Joint Committee on Clinical Practice Guidelines. Circulation. 2024;149(1):e1-e156. doi: 10.1161/CIR.0000000000001193.</li>
+                            <li>Wigginton JG, Agarwal S, Bartos JA, Coute RA, Drennan IR, Haamid A, et al. Part 9: Adult advanced life support: 2025 American Heart Association Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care. Circulation. 2025;152(16 Suppl 2):S538-S577. doi: 10.1161/CIR.0000000000001376.</li>
+                            <li>Royal College of Physicians. National Early Warning Score (NEWS) 2: standardising the assessment of acute-illness severity in the NHS. Updated report of a working party [Internet]. London: RCP; 2017 [citado 10 oct 2026]. Disponible en: https://www.rcp.ac.uk/media/a4ibkkbf/news2-final-report_0_0.pdf.</li>
+                            <li>Cecconi M, De Backer D, Antonelli M, Beale R, Bakker J, Hofer C, et al. Consensus on circulatory shock and hemodynamic monitoring. Task force of the European Society of Intensive Care Medicine. Intensive Care Med. 2014;40(12):1795-815. doi: 10.1007/s00134-014-3525-z.</li>
+                            <li>Van Gelder IC, Rienstra M, Bunting KV, Casado-Arroyo R, Caso V, Crijns HJGM, et al. 2024 ESC Guidelines for the management of atrial fibrillation developed in collaboration with the European Association for Cardio-Thoracic Surgery (EACTS). Eur Heart J. 2024;45(36):3314-414. doi: 10.1093/eurheartj/ehae176.</li>
+                            <li>American Heart Association. Adult bradycardia with a pulse algorithm [Internet]. Dallas (TX): American Heart Association; 2025 [citado 10 oct 2026]. Disponible en: https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Bradycardia-250514.pdf.</li>
+                            <li>American Heart Association. Adult tachyarrhythmia with a pulse algorithm [Internet]. Dallas (TX): American Heart Association; 2025 [citado 10 oct 2026]. Disponible en: https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Tachycardia-250514.pdf.</li>
+                            <li>American Heart Association. Adult cardiac arrest algorithm [Internet]. Dallas (TX): American Heart Association; 2025 [citado 10 oct 2026]. Disponible en: https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-CA-250527.pdf.</li>
+                            <li>Glikson M, Nielsen JC, Kronborg MB, Michowitz Y, Auricchio A, Barbash IM, et al. 2021 ESC Guidelines on cardiac pacing and cardiac resynchronization therapy. Eur Heart J. 2021;42(35):3427-520. doi: 10.1093/eurheartj/ehab364.</li>
+                            <li>Brugada J, Katritsis DG, Arbelo E, Arribas F, Bax JJ, Blomström-Lundqvist C, et al. 2019 ESC Guidelines for the management of patients with supraventricular tachycardia. Eur Heart J. 2020;41(5):655-720. doi: 10.1093/eurheartj/ehz467.</li>
+                            <li>Zeppenfeld K, Tfelt-Hansen J, de Riva M, Winkel BG, Behr ER, Blom NA, et al. 2022 ESC Guidelines for the management of patients with ventricular arrhythmias and the prevention of sudden cardiac death. Eur Heart J. 2022;43(40):3997-4126. doi: 10.1093/eurheartj/ehac262.</li>
                         </ol>
                     </div>
 

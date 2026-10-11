@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triángulo de Coumel</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: documento académico de una columna — encabezado, figura interactiva con leyenda, interpretación, componentes en tabla, aplicación clínica y referencias */
+:root{
+  --bg:#ffffff;
+  --ink:#1b2433;
+  --muted:#535d6d;
+  --line:#d6dce6;
+  --soft:#f5f7fb;
+  --blue:#1d4f9c;
+  --blue-soft:#e7eef9;
+  --yellow:#e0a800;
+  --yellow-soft:#fdf5d8;
+  --yellow-ink:#7a5a00;
+  --font:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:32px 48px}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:28px}
+header{display:grid;gap:10px;border-bottom:2px solid var(--blue);padding-bottom:18px}
+.meta{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:clamp(22px,3vw,29px);font-weight:800;line-height:1.25;margin:0;text-wrap:balance}
+.abstract{margin:0;color:var(--muted);max-width:72ch;text-align:justify;hyphens:auto}
+h2{font-size:18px;font-weight:700;margin:0;color:var(--blue);display:flex;gap:10px;align-items:baseline}
+h2 .n{font-size:13px;color:var(--yellow-ink);font-weight:800;font-variant-numeric:tabular-nums}
+section{display:grid;gap:12px}
+p{margin:0;max-width:72ch}
+.just{text-align:justify;hyphens:auto}
+figure{margin:0;display:grid;gap:10px}
+.diagram{border:1px solid var(--line);border-radius:4px;background:var(--soft);overflow-x:auto}
+svg{display:block;width:100%;min-width:560px;height:auto;font-family:var(--font)}
+figcaption{font-size:13.5px;color:var(--muted);max-width:80ch}
+figcaption b{color:var(--ink)}
+.node{cursor:pointer}
+.node rect{fill:var(--bg);stroke:var(--line);stroke-width:1.5;transition:fill .25s,stroke .25s}
+.node .t{font-size:15px;font-weight:700;fill:var(--ink)}
+.node .s{font-size:12px;fill:var(--muted)}
+.node .st{font-size:9.5px;font-weight:700;letter-spacing:.1em;fill:var(--muted)}
+.node.on rect{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.2}
+.node.on .st{fill:var(--blue)}
+.node:hover rect{stroke:var(--blue)}
+.node:focus{outline:none}
+.node:focus-visible rect{stroke:var(--yellow);stroke-width:3}
+.arrow{stroke:#b3bccb;stroke-width:2;fill:none;transition:stroke .25s}
+.arrow.on{stroke:var(--yellow);stroke-width:3}
+#ahead path{fill:#b3bccb}
+#aheadOn path{fill:var(--yellow)}
+.center rect.box{fill:var(--bg);stroke:var(--line);stroke-width:2;transition:fill .3s,stroke .3s}
+.center .t{font-size:15px;font-weight:800;fill:var(--muted)}
+.center.on rect.box{fill:var(--blue);stroke:var(--blue)}
+.center.on .t{fill:#fff}
+.center.on.strong rect.box{stroke:var(--yellow);stroke-width:4}
+.result{display:grid;gap:4px;padding:14px 18px;background:var(--yellow-soft);border-left:4px solid var(--yellow);border-radius:2px}
+.result .k{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow-ink)}
+.result b{color:var(--blue)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.controls .lbl{font-size:13px;font-weight:600;color:var(--muted);margin-right:4px}
+button{font-family:var(--font);font-size:13.5px;font-weight:600;cursor:pointer;border-radius:4px;padding:7px 14px;border:1.5px solid var(--blue);background:var(--bg);color:var(--blue)}
+button:hover{background:var(--blue-soft)}
+button[aria-pressed="true"]{background:var(--blue);color:#fff}
+button.ghost{border-color:var(--line);color:var(--muted)}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+caption{caption-side:top;text-align:left;font-size:13.5px;color:var(--muted);padding:0 0 8px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{background:var(--blue);color:#fff;font-weight:700}
+tbody th{font-weight:700;color:var(--blue);background:var(--soft);white-space:nowrap}
+tr:last-child td,tr:last-child th{border-bottom:none}
+.casebox{border:1px solid var(--line);border-radius:4px}
+.casebox[hidden]{display:none}
+.casebox h3{margin:0;font-size:15px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--soft)}
+.casebox dl{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;padding:12px 14px;font-size:14px}
+.casebox dt{font-weight:700;color:var(--blue)}
+.casebox dd{margin:0;min-width:0}
+.note{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.refs{font-size:13.5px;color:var(--muted);padding-left:20px;margin:0;display:grid;gap:6px}
+.refs i{font-style:italic}
+@media (max-width:520px){.casebox dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="meta">Electrofisiología clínica · Mecanismos de arritmogénesis</span>
+    <h1>Modelo de arritmogénesis: interacción entre sustrato, desencadenante y moduladores</h1>
+    <p class="abstract">La aparición de una arritmia clínica requiere, por lo general, la coincidencia de tres elementos: un sustrato arritmogénico, un factor desencadenante y un conjunto de factores moduladores. Este planteamiento, conocido como triángulo de Coumel, permite analizar de forma sistemática el origen de las arritmias y orientar su prevención y tratamiento.</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>Representación del modelo</h2>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 640 320" role="group" aria-label="Figura 1. Diagrama interactivo del triángulo de arritmogénesis">
+          <defs>
+            <marker id="ahead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="aheadOn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z"/></marker>
+          </defs>
+          <path class="arrow" id="aS" d="M320 92 L320 142" marker-end="url(#ahead)"/>
+          <path class="arrow" id="aD" d="M200 238 L262 194" marker-end="url(#ahead)"/>
+          <path class="arrow" id="aM" d="M440 238 L378 194" marker-end="url(#ahead)"/>
+          <g class="node" id="nS" tabindex="0" role="button" aria-pressed="false" data-k="S">
+            <rect x="190" y="18" width="260" height="74" rx="3"/>
+            <text class="st" x="320" y="36" text-anchor="middle">AUSENTE</text>
+            <text class="t" x="320" y="58" text-anchor="middle">Sustrato</text>
+            <text class="s" x="320" y="78" text-anchor="middle">cicatriz, fibrosis, vía accesoria</text>
+          </g>
+          <g class="center" id="nC">
+            <rect class="box" x="242" y="146" width="156" height="46" rx="3"/>
+            <text class="t" x="320" y="174" text-anchor="middle">Arritmia clínica</text>
+          </g>
+          <g class="node" id="nD" tabindex="0" role="button" aria-pressed="false" data-k="D">
+            <rect x="18" y="238" width="270" height="74" rx="3"/>
+            <text class="st" x="153" y="256" text-anchor="middle">AUSENTE</text>
+            <text class="t" x="153" y="278" text-anchor="middle">Desencadenante</text>
+            <text class="s" x="153" y="298" text-anchor="middle">extrasístoles, actividad desencadenada</text>
+          </g>
+          <g class="node" id="nM" tabindex="0" role="button" aria-pressed="false" data-k="M">
+            <rect x="352" y="238" width="270" height="74" rx="3"/>
+            <text class="st" x="487" y="256" text-anchor="middle">AUSENTE</text>
+            <text class="t" x="487" y="278" text-anchor="middle">Moduladores</text>
+            <text class="s" x="487" y="298" text-anchor="middle">sistema autónomo, isquemia, electrolitos</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption><b>Figura 1.</b> Triángulo de arritmogénesis. Seleccione cada componente para indicar su presencia o ausencia; el recuadro inferior describe el resultado electrofisiológico esperado para cada combinación. Adaptado de Coumel (1987, 1993).</figcaption>
+    </figure>
+    <div class="result" aria-live="polite">
+      <span class="k" id="rK">Ritmo sinusal</span>
+      <p id="rP"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Componentes del modelo</h2>
+    <div class="tablewrap">
+      <table>
+        <caption><b>Tabla 1.</b> Definición, ejemplos y mecanismo de cada componente.</caption>
+        <thead><tr><th>Componente</th><th>Definición</th><th>Ejemplos</th><th>Mecanismo electrofisiológico</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Sustrato</th><td>Alteración estructural o eléctrica, relativamente estable, que hace al tejido susceptible de sostener una arritmia.</td><td>Cicatriz de infarto, fibrosis auricular, vía accesoria, miocardiopatías, canalopatías.</td><td>Conducción lenta, bloqueo unidireccional y heterogeneidad de la refractariedad, que permiten circuitos de reentrada.</td></tr>
+          <tr><th scope="row">Desencadenante</th><td>Evento eléctrico transitorio que inicia la arritmia sobre un sustrato vulnerable.</td><td>Extrasístoles auriculares o ventriculares, posdespolarizaciones tempranas o tardías, focos ectópicos de las venas pulmonares.</td><td>Un impulso prematuro encuentra tejido parcialmente refractario, bloquea en una vía y conduce por otra, iniciando la reentrada; o la actividad desencadenada alcanza el umbral.</td></tr>
+          <tr><th scope="row">Moduladores</th><td>Factores dinámicos que facilitan el inicio o el mantenimiento de la arritmia sin ser suficientes por sí mismos.</td><td>Tono simpático o vagal, isquemia aguda, hipopotasemia, hipomagnesemia, fármacos, inflamación.</td><td>Modifican la excitabilidad, la velocidad de conducción, la duración del potencial de acción y la refractariedad.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Aplicación clínica</h2>
+    <p class="just">En la práctica, el modelo permite identificar en cada paciente qué componente puede intervenirse. La ablación actúa sobre el sustrato o el desencadenante; los betabloqueadores, la corrección electrolítica y el control de la isquemia actúan sobre los moduladores. Seleccione un ejemplo para observar la distribución de los componentes.</p>
+    <div class="controls" id="cases">
+      <span class="lbl">Ejemplos clínicos:</span>
+      <button data-c="tv">Taquicardia ventricular posinfarto</button>
+      <button data-c="wpw">Síndrome de Wolff-Parkinson-White</button>
+      <button data-c="fa">Fibrilación auricular</button>
+      <button class="ghost" id="reset">Restablecer</button>
+    </div>
+    <div class="casebox" id="caseBox" hidden>
+      <h3 id="cT"></h3>
+      <dl>
+        <dt>Sustrato</dt><dd id="cS"></dd>
+        <dt>Desencadenante</dt><dd id="cD"></dd>
+        <dt>Moduladores</dt><dd id="cM"></dd>
+        <dt>Intervención</dt><dd id="cI"></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Referencias</h2>
+    <ol class="refs">
+      <li>Coumel P. The management of clinical arrhythmias: an overview on invasive versus non-invasive electrophysiology. <i>Eur Heart J.</i> 1987;8(2):92-99.</li>
+      <li>Coumel P. Cardiac arrhythmias and the autonomic nervous system. <i>J Cardiovasc Electrophysiol.</i> 1993;4(3):338-355.</li>
+      <li>Zipes DP, Jalife J, Stevenson WG, editores. <i>Cardiac Electrophysiology: From Cell to Bedside.</i> 8.ª ed. Filadelfia: Elsevier; 2022.</li>
+    </ol>
+    <p class="note">Material de apoyo docente. Verifique los datos bibliográficos en la fuente original antes de citarlos.</p>
+  </section>
+</div>
+
+<script>
+const st={S:false,D:false,M:false};
+const RES={
+  "000":["Ritmo sinusal","En ausencia de los tres componentes se mantiene el ritmo sinusal. Seleccione uno o varios componentes en la Figura 1."],
+  "100":["Sustrato sin expresión clínica","Existe un sustrato arritmogénico, pero en ausencia de un evento desencadenante no se inicia la arritmia. El riesgo permanece latente."],
+  "010":["Ectopia aislada","El desencadenante, sin un sustrato capaz de sostener la actividad, se manifiesta como extrasistolia aislada sin perpetuación."],
+  "001":["Ausencia de arritmia","Los moduladores alteran las propiedades electrofisiológicas del tejido, pero no son suficientes por sí solos para generar una arritmia."],
+  "110":["Arritmia clínica","<b>El desencadenante actúa sobre un sustrato vulnerable</b> e inicia la arritmia. Sin moduladores favorables, puede ser autolimitada."],
+  "101":["Sustrato con vulnerabilidad aumentada","Los moduladores incrementan la vulnerabilidad del sustrato; sin embargo, falta el evento que inicie la arritmia. Constituye una situación de alto riesgo."],
+  "011":["Ectopia frecuente","Los moduladores aumentan la frecuencia de los desencadenantes, pero en ausencia de sustrato no se establece una arritmia sostenida."],
+  "111":["Arritmia clínica sostenida","<b>Concurren los tres componentes.</b> La arritmia se inicia con mayor facilidad y tiende a perpetuarse."]
+};
+const nodes={S:nS,D:nD,M:nM}, arrows={S:aS,D:aD,M:aM};
+function render(){
+  for(const k in st){
+    nodes[k].classList.toggle("on",st[k]);
+    nodes[k].setAttribute("aria-pressed",st[k]);
+    nodes[k].querySelector(".st").textContent=st[k]?"PRESENTE":"AUSENTE";
+    arrows[k].classList.toggle("on",st[k]);
+    arrows[k].setAttribute("marker-end",st[k]?"url(#aheadOn)":"url(#ahead)");
+  }
+  const key=(+st.S)+""+(+st.D)+""+(+st.M);
+  nC.classList.toggle("on",st.S&&st.D);
+  nC.classList.toggle("strong",st.S&&st.D&&st.M);
+  rK.textContent=RES[key][0];
+  rP.innerHTML=RES[key][1];
+}
+Object.values(nodes).forEach(n=>{
+  const tog=()=>{st[n.dataset.k]=!st[n.dataset.k];clearCase();render();};
+  n.addEventListener("click",tog);
+  n.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});
+});
+const CASES={
+  tv:{t:"Taquicardia ventricular monomórfica en cicatriz posinfarto",s:"Cicatriz de infarto con canales de miocardio viable y conducción lenta.",d:"Extrasístole ventricular que produce bloqueo unidireccional en el istmo del circuito.",m:"Isquemia recurrente, activación simpática, alteraciones electrolíticas.",i:"Ablación del istmo del circuito, fármacos antiarrítmicos, desfibrilador automático implantable."},
+  wpw:{t:"Taquicardia por reentrada auriculoventricular en el síndrome de Wolff-Parkinson-White",s:"Vía accesoria auriculoventricular paralela al nodo AV.",d:"Extrasístole auricular o ventricular que bloquea en una vía y conduce por la otra.",m:"Tono simpático (ejercicio, estrés), sustancias estimulantes.",i:"Ablación con radiofrecuencia de la vía accesoria."},
+  fa:{t:"Fibrilación auricular",s:"Remodelado auricular estructural y eléctrico (fibrosis, dilatación).",d:"Actividad ectópica rápida originada en las venas pulmonares.",m:"Tono autonómico, consumo de alcohol, hipertiroidismo, inflamación.",i:"Aislamiento eléctrico de las venas pulmonares, control de factores de riesgo."}
+};
+const caseBtns=document.querySelectorAll("#cases button[data-c]");
+function clearCase(){caseBtns.forEach(b=>b.setAttribute("aria-pressed","false"));caseBox.hidden=true;}
+caseBtns.forEach(b=>{
+  b.setAttribute("aria-pressed","false");
+  b.addEventListener("click",()=>{
+    const c=CASES[b.dataset.c];
+    st.S=st.D=st.M=true;render();
+    caseBtns.forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");
+    cT.textContent=c.t;cS.textContent=c.s;cD.textContent=c.d;cM.textContent=c.m;cI.textContent=c.i;
+    caseBox.hidden=false;
+  });
+});
+reset.addEventListener("click",()=>{st.S=st.D=st.M=false;clearCase();render();});
+render();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

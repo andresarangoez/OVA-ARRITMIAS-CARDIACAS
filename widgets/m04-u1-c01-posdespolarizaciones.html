@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Posdespolarizaciones tempranas y tardías</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: título + dos paneles lado a lado (apilan en móvil), cada uno con trazo SVG animable, controles y fichas de factores */
+:root{
+  --bg:#ffffff;
+  --ink:#1b2433;
+  --muted:#5a6474;
+  --line:#e2e6ee;
+  --soft:#f4f7fc;
+  --blue:#1f5fbf;
+  --blue-soft:#e6eefb;
+  --yellow:#f2b705;
+  --yellow-soft:#fff6d6;
+  --yellow-ink:#8a6500;
+  --font:"Raleway",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:28px 40px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:24px}
+header{display:grid;gap:8px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:clamp(22px,3.2vw,30px);font-weight:800;line-height:1.2;margin:0;text-wrap:balance}
+.lede{margin:0;color:var(--muted);max-width:65ch}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border-radius:999px;padding:8px 16px;border:1.5px solid var(--blue);background:var(--bg);color:var(--blue);transition:background .15s,color .15s}
+button:hover{background:var(--blue-soft)}
+button.primary{background:var(--blue);color:#fff}
+button.primary:hover{background:#174a96}
+button[aria-pressed="true"]{background:var(--blue);color:#fff}
+button:focus-visible,.chip:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+.panel{border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;min-width:0;align-content:start}
+.panel h2{margin:0;font-size:19px;font-weight:700}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--yellow-soft);color:var(--yellow-ink)}
+.svgbox{background:var(--soft);border-radius:10px;overflow:hidden}
+svg{display:block;width:100%;height:auto}
+.trace{fill:none;stroke:#9aa5b8;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.trace.hot{stroke:var(--blue);stroke-width:3}
+.trig{fill:none;stroke:var(--blue);stroke-width:2.4;stroke-dasharray:6 5;opacity:0;transition:opacity .4s}
+.show-trig .trig{opacity:1}
+.thr{stroke:var(--yellow);stroke-width:1.6;stroke-dasharray:4 4}
+.thr-label{fill:var(--yellow-ink);font-size:10px;font-weight:700;font-family:var(--font)}
+.halo{fill:rgba(31,95,191,.10);stroke:var(--blue);stroke-width:2}
+.pulse{animation:pulse 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.dot{fill:var(--yellow);stroke:var(--ink);stroke-width:1.2}
+.phase text{font-size:11px;font-weight:700;fill:var(--blue);font-family:var(--font)}
+.phase circle{fill:var(--bg);stroke:var(--blue);stroke-width:1.4}
+.phases-off .phase{display:none}
+.axis{fill:var(--muted);font-size:10px;font-family:var(--font)}
+.callout{font-size:14px;color:var(--ink);background:var(--blue-soft);border-radius:10px;padding:10px 14px}
+.callout strong{color:var(--blue)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--font);font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--yellow)}
+.chip[aria-pressed="true"]{border-color:var(--yellow);background:var(--yellow-soft)}
+.label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.info{font-size:14px;border-left:3px solid var(--yellow);padding:4px 0 4px 12px;color:var(--ink);min-height:3.2em;max-width:65ch}
+.info b{color:var(--blue)}
+.switch{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer;user-select:none}
+.switch input{width:18px;height:18px;accent-color:var(--blue)}
+.compare{border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;background:var(--soft)}
+thead th:nth-child(2){color:var(--blue)}
+thead th:nth-child(3){color:var(--yellow-ink)}
+tr:last-child td{border-bottom:none}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Mecanismos de arritmia · Actividad desencadenada</span>
+    <h1>Las posdespolarizaciones difieren en el momento en que aparecen</h1>
+    <p class="lede">Son oscilaciones del potencial de membrana que surgen después de la fase 0. Si alcanzan el umbral, generan un latido prematuro desencadenado. Pulsa <b>Reproducir</b>, activa el umbral y toca cada factor para ver su mecanismo.</p>
+    <div class="toolbar">
+      <button class="primary" id="play">▶ Reproducir</button>
+      <button id="phases" aria-pressed="true">Mostrar fases</button>
+    </div>
+  </header>
+
+  <div class="panels">
+    <!-- EAD -->
+    <section class="panel" id="pEAD">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h2>Posdespolarización temprana</h2><span class="tag">Fases 2 y 3</span>
+      </div>
+      <div class="svgbox">
+        <svg viewBox="0 0 400 240" role="img" aria-label="Potencial de acción con oscilación durante la repolarización">
+          <line class="thr" x1="10" y1="168" x2="390" y2="168"/>
+          <text class="thr-label" x="388" y="162" text-anchor="end">Umbral</text>
+          <text class="axis" x="14" y="215">−85 mV</text>
+          <path class="trace" id="eadPath" d="M10 200 L58 200 L63 38 L72 54 C110 60 140 66 160 92 C170 106 174 118 178 126 C184 114 194 108 202 120 C210 136 220 180 250 196 C262 200 280 200 390 200"/>
+          <path class="trig" d="M190 112 L196 46 L204 60 C220 70 235 110 250 150 C262 186 280 199 310 200"/>
+          <g class="phase">
+            <circle cx="52" cy="128" r="9"/><text x="52" y="132" text-anchor="middle">0</text>
+            <circle cx="82" cy="40" r="9"/><text x="82" y="44" text-anchor="middle">1</text>
+            <circle cx="122" cy="48" r="9"/><text x="122" y="52" text-anchor="middle">2</text>
+            <circle cx="232" cy="164" r="9"/><text x="232" y="168" text-anchor="middle">3</text>
+            <circle cx="330" cy="186" r="9"/><text x="330" y="190" text-anchor="middle">4</text>
+          </g>
+          <circle class="halo pulse" cx="190" cy="118" r="24"/>
+          <circle class="dot" id="eadDot" r="6" cx="10" cy="200"/>
+        </svg>
+      </div>
+      <label class="switch"><input type="checkbox" id="eadTrig"> La oscilación alcanza el umbral</label>
+      <div class="callout" id="eadMsg"><strong>Oscilación antes de terminar la repolarización.</strong> Aparece mientras la célula aún no recupera su potencial de reposo.</div>
+      <div class="label">Favorecida por · toca para ver el mecanismo</div>
+      <div class="row" data-target="eadInfo">
+        <button class="chip" data-k="qt">QT largo</button>
+        <button class="chip" data-k="bradi">Bradicardia</button>
+        <button class="chip" data-k="hipoK">Hipopotasemia</button>
+        <button class="chip" data-k="tdp">Torsades de pointes</button>
+      </div>
+      <p class="info" id="eadInfo">Selecciona un factor.</p>
+    </section>
+
+    <!-- DAD -->
+    <section class="panel" id="pDAD">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h2>Posdespolarización tardía</h2><span class="tag">Fase 4</span>
+      </div>
+      <div class="svgbox">
+        <svg viewBox="0 0 400 240" role="img" aria-label="Potencial de acción con oscilación después de la repolarización">
+          <line class="thr" x1="10" y1="168" x2="390" y2="168"/>
+          <text class="thr-label" x="388" y="162" text-anchor="end">Umbral</text>
+          <text class="axis" x="14" y="215">−85 mV</text>
+          <path class="trace" id="dadPath" d="M10 200 L48 200 L53 38 L62 54 C100 58 125 62 140 90 C150 110 160 170 178 196 C186 200 200 200 222 200 C236 200 244 176 260 176 C276 176 284 200 300 200 L390 200"/>
+          <path class="trig" d="M262 172 L268 46 L276 60 C306 66 320 90 330 130 C340 170 350 197 370 200 L390 200"/>
+          <g class="phase">
+            <circle cx="40" cy="128" r="9"/><text x="40" y="132" text-anchor="middle">0</text>
+            <circle cx="72" cy="40" r="9"/><text x="72" y="44" text-anchor="middle">1</text>
+            <circle cx="108" cy="46" r="9"/><text x="108" y="50" text-anchor="middle">2</text>
+            <circle cx="168" cy="140" r="9"/><text x="168" y="144" text-anchor="middle">3</text>
+            <circle cx="206" cy="186" r="9"/><text x="206" y="190" text-anchor="middle">4</text>
+          </g>
+          <circle class="halo pulse" cx="260" cy="186" r="24"/>
+          <circle class="dot" id="dadDot" r="6" cx="10" cy="200"/>
+        </svg>
+      </div>
+      <label class="switch"><input type="checkbox" id="dadTrig"> La oscilación alcanza el umbral</label>
+      <div class="callout" id="dadMsg"><strong>Oscilación tras la repolarización.</strong> Aparece cuando la célula ya volvió a su potencial de reposo.</div>
+      <div class="label">Favorecida por · toca para ver el mecanismo</div>
+      <div class="row" data-target="dadInfo">
+        <button class="chip" data-k="ca">Sobrecarga de Ca²⁺</button>
+        <button class="chip" data-k="dig">Digoxina</button>
+        <button class="chip" data-k="cat">Catecolaminas</button>
+        <button class="chip" data-k="cpvt">TV catecolaminérgica</button>
+      </div>
+      <p class="info" id="dadInfo">Selecciona un factor.</p>
+    </section>
+  </div>
+
+  <div class="compare">
+    <table>
+      <thead><tr><th>Característica</th><th>Temprana</th><th>Tardía</th></tr></thead>
+      <tbody>
+        <tr><td>Momento</td><td>Antes de completar la repolarización (fases 2 y 3)</td><td>Después de completar la repolarización (fase 4)</td></tr>
+        <tr><td>Corriente principal</td><td>Reactivación de canales de Ca²⁺ tipo L (o de Na⁺ tardía)</td><td>Corriente transitoria de entrada por el intercambiador Na⁺/Ca²⁺</td></tr>
+        <tr><td>Frecuencia cardíaca</td><td>Se favorece con frecuencias lentas</td><td>Se favorece con frecuencias rápidas</td></tr>
+        <tr><td>Arritmia típica</td><td>Torsades de pointes</td><td>Arritmias por digoxina, TV catecolaminérgica (bidireccional)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const INFO={
+  qt:"<b>QT largo:</b> la repolarización se prolonga y los canales de Ca²⁺ tipo L tienen tiempo de reactivarse, generando una corriente de entrada durante la meseta.",
+  bradi:"<b>Bradicardia:</b> a frecuencias lentas el potencial de acción se alarga, lo que facilita la reactivación de corrientes de entrada.",
+  hipoK:"<b>Hipopotasemia:</b> reduce la corriente de salida de K⁺ (IKr), retrasa la repolarización y prolonga el QT.",
+  tdp:"<b>Torsades de pointes:</b> los latidos desencadenados por posdespolarizaciones tempranas, sumados a la dispersión de la repolarización, inician esta TV polimórfica.",
+  ca:"<b>Sobrecarga de Ca²⁺:</b> el retículo sarcoplásmico libera Ca²⁺ de forma espontánea; el intercambiador Na⁺/Ca²⁺ lo expulsa e introduce Na⁺, lo que despolariza la membrana.",
+  dig:"<b>Digoxina:</b> inhibe la bomba Na⁺/K⁺‑ATPasa, aumenta el Na⁺ intracelular y, por el intercambiador, eleva el Ca²⁺ intracelular.",
+  cat:"<b>Catecolaminas:</b> la estimulación β‑adrenérgica aumenta la entrada de Ca²⁺ y la carga del retículo sarcoplásmico.",
+  cpvt:"<b>TV catecolaminérgica:</b> mutaciones del receptor de rianodina (RyR2) o de la calsecuestrina provocan fuga de Ca²⁺ con el esfuerzo o el estrés; típicamente TV bidireccional."
+};
+document.querySelectorAll(".row").forEach(row=>{
+  const out=document.getElementById(row.dataset.target);
+  row.querySelectorAll(".chip").forEach(c=>{
+    c.setAttribute("aria-pressed","false");
+    c.addEventListener("click",()=>{
+      row.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+      c.setAttribute("aria-pressed","true");
+      out.innerHTML=INFO[c.dataset.k];
+    });
+  });
+});
+
+const msgs={
+  ead:[`<strong>Oscilación antes de terminar la repolarización.</strong> Aparece mientras la célula aún no recupera su potencial de reposo.`,
+       `<strong>Latido desencadenado.</strong> La oscilación supera el umbral durante la fase 3 y dispara un nuevo potencial de acción. En el ECG puede verse un fenómeno R sobre T.`],
+  dad:[`<strong>Oscilación tras la repolarización.</strong> Aparece cuando la célula ya volvió a su potencial de reposo.`,
+       `<strong>Latido desencadenado.</strong> La oscilación supera el umbral en fase 4 y genera un nuevo potencial de acción, que puede repetirse y mantener una taquicardia.`]
+};
+[["ead","pEAD"],["dad","pDAD"]].forEach(([k,p])=>{
+  const box=document.getElementById(k+"Trig"), panel=document.getElementById(p), msg=document.getElementById(k+"Msg");
+  box.addEventListener("change",()=>{
+    panel.querySelector("svg").classList.toggle("show-trig",box.checked);
+    msg.innerHTML=msgs[k][box.checked?1:0];
+  });
+});
+
+const ph=document.getElementById("phases");
+ph.addEventListener("click",()=>{
+  const on=ph.getAttribute("aria-pressed")!=="true";
+  ph.setAttribute("aria-pressed",on);
+  document.querySelectorAll(".panel svg").forEach(s=>s.classList.toggle("phases-off",!on));
+});
+
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let raf=null;
+function run(){
+  cancelAnimationFrame(raf);
+  const items=["ead","dad"].map(k=>{
+    const p=document.getElementById(k+"Path");
+    return {p,d:document.getElementById(k+"Dot"),L:p.getTotalLength()};
+  });
+  items.forEach(i=>i.p.classList.add("hot"));
+  const dur=reduce?1:3200, t0=performance.now();
+  const step=now=>{
+    const f=Math.min(1,(now-t0)/dur);
+    items.forEach(i=>{const pt=i.p.getPointAtLength(f*i.L);i.d.setAttribute("cx",pt.x);i.d.setAttribute("cy",pt.y);});
+    if(f<1) raf=requestAnimationFrame(step);
+  };
+  raf=requestAnimationFrame(step);
+}
+document.getElementById("play").addEventListener("click",run);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
