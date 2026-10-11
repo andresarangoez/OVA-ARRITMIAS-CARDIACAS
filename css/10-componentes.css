@@ -24,7 +24,7 @@
      Bibliografía              → .modulo-*              (05-modulo.css)
 
    Los componentes definidos AQUÍ son los que sí faltaban:
-   botón de acción, breadcrumb, barra de progreso, caja de éxito,
+   botón de acción, breadcrumb, caja de éxito,
    perla clínica, tabs, modal, tooltip, zoom de imágenes,
    contenedor de video, contenedor de modelo 3D, dato curioso,
    error frecuente, mini reto, stepper de fases, diagrama de nodos,
@@ -58,14 +58,6 @@
 .breadcrumb .breadcrumb-item { color: var(--text-muted); }
 .breadcrumb .breadcrumb-item.actual { color: var(--fucs-azul-profundo); font-weight: 700; }
 .breadcrumb .breadcrumb-separador { color: var(--fucs-gris); }
-
-/* --- BARRA DE PROGRESO --- */
-/* Uso: progreso del módulo, porcentaje, unidades completadas */
-.barra-progreso-wrap { margin-bottom: 24px; }
-.barra-progreso-meta { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
-.barra-progreso-meta .porcentaje { color: var(--fucs-azul-oscuro); font-weight: 700; }
-.barra-progreso { width: 100%; height: 8px; background: var(--fucs-niebla); border-radius: 20px; overflow: hidden; }
-.barra-progreso-fill { height: 100%; background: linear-gradient(90deg, var(--fucs-dorado), var(--fucs-azul-oscuro)); border-radius: 20px; transition: width 0.3s ease; }
 
 /* --- CAJA DE ÉXITO --- */
 /* Uso: conclusiones. Mismo patrón visual que .key-box (información) y

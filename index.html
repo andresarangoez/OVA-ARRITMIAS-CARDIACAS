@@ -48,9 +48,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="assets/images/icono-ova-192.png">
     <meta name="theme-color" content="#082956">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/00-tipografias.css">
     <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
     <link rel="stylesheet" href="css/01-variables.css">
     <link rel="stylesheet" href="css/02-layout.css">
@@ -67,6 +65,11 @@
     <link rel="stylesheet" href="css/17-comparador-figura.css">
     <link rel="stylesheet" href="css/18-simulador-potencial.css">
     <link rel="stylesheet" href="css/19-paciente-virtual.css">
+    <link rel="stylesheet" href="css/20-widget-externo.css">
+    <link rel="stylesheet" href="css/21-tablero-farmacos.css">
+    <link rel="stylesheet" href="css/22-diagrama-wiggers.css">
+    <link rel="stylesheet" href="css/23-ciclo-cardiaco-fases.css">
+    <link rel="stylesheet" href="css/24-simuladores-ecg.css">
 </head>
 <body>
 
@@ -98,18 +101,10 @@
                 <h2 class="indice-titulo">Selecciona un módulo</h2>
                 <button class="indice-btn-buscar" onclick="alternarBusqueda()" aria-label="Buscar en el módulo" title="Buscar en el módulo">🔍</button>
             </div>
-            <div class="indice-progreso-linea">
-                <span class="indice-porcentaje">0% completado</span>
-            </div>
-            <div class="indice-barra"><div class="indice-barra-fill" style="width: 0%;"></div></div>
-            <div class="indice-meta-linea">
-                <span class="indice-conteo">0 de 0 unidades</span>
-                <span class="indice-tiempo-restante"></span>
-            </div>
         </div>
 
         <div class="indice-busqueda">
-            <input type="text" class="indice-busqueda-input" placeholder="Buscar en el módulo…" oninput="ejecutarBusqueda(this.value)" onkeydown="manejarTeclaBusqueda(event)" aria-label="Texto a buscar">
+            K<input type="text" class="indice-busqueda-input" placeholder="Buscar en el módulo…" oninput="ejecutarBusqueda(this.value)" onkeydown="manejarTeclaBusqueda(event)" aria-label="Texto a buscar">
             <span class="indice-busqueda-contador">0 de 0</span>
             <button class="indice-busqueda-nav" onclick="irACoincidenciaAnterior()" aria-label="Resultado anterior">‹</button>
             <button class="indice-busqueda-nav" onclick="irACoincidenciaSiguiente()" aria-label="Resultado siguiente">›</button>
@@ -393,18 +388,61 @@
                     </div>
                 </div>
 
-                <div class="monitor-frame">
-                    <div class="canvas-container">
-                        <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
-                    </div>
-                </div>
+                <!-- MONITOR MULTIPARAMÉTRICO
+                     Antes eran dos bloques separados: el trazado en su marco y,
+                     debajo, cinco tarjetas blancas con las cifras. Se leían como
+                     dos cosas distintas. Ahora son un solo dispositivo: la misma
+                     carcasa oscura contiene la barra de identificación, el
+                     trazado y la columna de parámetros, como en un monitor de
+                     cabecera. Los id de las cifras no cambian (val-fc, val-ta,
+                     val-spo2, val-fr, val-temp), así que actualizarMonitor() en
+                     js/04-simulador.js sigue escribiendo donde escribía. -->
+                <div class="monitor-clinico" data-estado="estable" role="group" aria-label="Monitor multiparamétrico del paciente simulado">
 
-                <div class="vitals-panel">
-                    <div class="vital-box fc"><div class="label">FC (LPM)</div><div class="value" id="val-fc">75</div></div>
-                    <div class="vital-box ta"><div class="label">TA (mmHg) / PAM</div><div class="value small-text" id="val-ta">120/80 (93)</div></div>
-                    <div class="vital-box spo2"><div class="label">SpO2 (%)</div><div class="value" id="val-spo2">98</div></div>
-                    <div class="vital-box fr"><div class="label">FR (RPM)</div><div class="value" id="val-fr">16</div></div>
-                    <div class="vital-box temp"><div class="label">T° (°C)</div><div class="value" id="val-temp">36.5</div></div>
+                    <div class="monitor-barra">
+                        <span class="monitor-paciente">Paciente simulado</span>
+                        <span class="monitor-ritmo" id="monitor-ritmo">Ritmo sinusal</span>
+                        <span class="monitor-estado" id="monitor-estado">Estable</span>
+                    </div>
+
+                    <div class="monitor-pantalla">
+                        <div class="monitor-trazado">
+                            <span class="monitor-derivacion" aria-hidden="true">II</span>
+                            <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
+                        </div>
+
+                        <!-- La jerarquía la marcan el tamaño y el color, como en
+                             un monitor real: la frecuencia manda, la presión va
+                             debajo con su PAM entre paréntesis, y el resto en un
+                             cuerpo menor. -->
+                        <div class="monitor-parametros">
+                            <div class="monitor-param fc">
+                                <span class="monitor-param-rotulo">FC</span>
+                                <span class="monitor-param-valor" id="val-fc">75</span>
+                                <span class="monitor-param-unidad">lpm</span>
+                            </div>
+                            <div class="monitor-param ta">
+                                <span class="monitor-param-rotulo">PA</span>
+                                <span class="monitor-param-valor" id="val-ta">120/80</span>
+                                <span class="monitor-param-unidad">mmHg · PAM <span id="val-pam">93</span></span>
+                            </div>
+                            <div class="monitor-param spo2">
+                                <span class="monitor-param-rotulo">SpO₂</span>
+                                <span class="monitor-param-valor" id="val-spo2">98</span>
+                                <span class="monitor-param-unidad">%</span>
+                            </div>
+                            <div class="monitor-param fr">
+                                <span class="monitor-param-rotulo">FR</span>
+                                <span class="monitor-param-valor" id="val-fr">16</span>
+                                <span class="monitor-param-unidad">rpm</span>
+                            </div>
+                            <div class="monitor-param temp">
+                                <span class="monitor-param-rotulo">T</span>
+                                <span class="monitor-param-valor" id="val-temp">36.5</span>
+                                <span class="monitor-param-unidad">°C</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bottom-row">
@@ -444,9 +482,19 @@
 
                         <button id="btn-aplicar-intervencion" class="btn-action btn-aplicar" disabled>Seleccione una intervención</button>
 
-                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué.</p>
+                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué. El tablero de abajo reúne la información de cada fármaco.</p>
                     </div>
                 </div>
+
+                <!-- TABLERO DE INTERVENCIONES FARMACOLÓGICAS
+                     Lo rellena js/26-tablero-farmacos.js, que lleva dentro el
+                     contenido de la Unidad 2 del Módulo 05. Va aquí, dentro de
+                     #simulador-wrapper, y no en el HTML de un módulo: así viaja
+                     con el simulador a los módulos 03, 05 y 06 sin duplicarse.
+                     No se adapta al ritmo seleccionado a propósito — señalar el
+                     fármaco correcto delataría el ejercicio del panel de
+                     intervenciones. -->
+                <div id="tablero-farmacos"></div>
             </div>
         </div>
 
@@ -474,7 +522,7 @@
                     <span class="guia-icono" aria-hidden="true">☰</span>
                     <div>
                         <h3>Índice del módulo</h3>
-                        <p>El botón redondo de la izquierda abre el índice: la lista de unidades, el porcentaje completado y el tiempo que te queda. Al hacer clic en una unidad saltas directo a ella.</p>
+                        <p>El botón redondo de la izquierda abre el índice del módulo: la lista de unidades, con la que estás leyendo marcada. Al hacer clic en una unidad saltas directo a ella.</p>
                     </div>
                 </li>
                 <li class="guia-item">
@@ -551,7 +599,6 @@
             <div class="modal-finalizacion-check" aria-hidden="true">✓</div>
             <h2 class="modal-finalizacion-titulo">¡Felicitaciones!</h2>
             <p class="modal-finalizacion-texto">Has concluido exitosamente este módulo.</p>
-            <div class="modal-finalizacion-progreso">100% completado</div>
             <div class="modal-finalizacion-acciones">
                 <button id="modal-finalizacion-siguiente" class="btn-comenzar" onclick="continuarSiguienteModulo()">Continuar al siguiente módulo</button>
                 <button class="btn-accion" onclick="cerrarModal('modal-finalizacion'); volverHome();">Volver al inicio</button>
@@ -637,7 +684,6 @@
     <script src="js/05-modulo.js"></script>
     <script src="js/04-simulador.js"></script>
     <script src="js/10-componentes.js"></script>
-    <script src="js/11-contenido-dinamico.js"></script>
     <script src="js/12-widgets-aprendizaje.js"></script>
     <script src="js/13-shell-indice.js"></script>
     <script src="js/14-busqueda-modulo.js"></script>
@@ -651,5 +697,13 @@
     <script src="js/22-comparador-figura.js"></script>
     <script src="js/23-simulador-potencial.js"></script>
     <script src="js/24-paciente-virtual.js"></script>
+    <script src="js/25-widget-externo.js"></script>
+    <script src="js/26-tablero-farmacos.js"></script>
+    <script src="js/27-ciclo-cardiaco-datos.js"></script>
+    <script src="js/28-diagrama-wiggers.js"></script>
+    <script src="js/29-ciclo-cardiaco-fases.js"></script>
+    <script src="js/30-tira-ecg.js"></script>
+    <script src="js/31-lectura-sistematica.js"></script>
+    <script src="js/32-casos-progresivos.js"></script>
 </body>
 </html>

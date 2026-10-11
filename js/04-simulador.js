@@ -20,16 +20,41 @@
         logBox.scrollTop = logBox.scrollHeight; 
     }
     
+    // Nombres de los ritmos para la barra del monitor. Se leen del <select>,
+    // que ya los tiene escritos: así no hay una segunda lista que mantener en
+    // paralelo y que acabe divergiendo de la primera.
+    function nombreDelRitmo(clave) {
+        const opcion = document.querySelector('#selectorRitmo option[value="' + clave + '"]');
+        return opcion ? opcion.textContent.trim() : clave;
+    }
+
     function actualizarMonitor() {
         const pam = Math.round((hmd_actual.sis + 2 * hmd_actual.dia) / 3);
-        const strTA = hmd_actual.sis > 0 ? `${hmd_actual.sis}/${hmd_actual.dia} (${pam})` : "0/0 (0)";
+        const hayTension = hmd_actual.sis > 0;
         const strSpO2 = estado.datos.pulso ? hmd_actual.spo2 : "--";
-        
+
         document.getElementById('val-fc').innerText = hmd_actual.fc;
-        document.getElementById('val-ta').innerText = strTA;
+        // La presión y la PAM van en dos nodos, no en una sola cadena: en el
+        // monitor la cifra grande es la presión y la PAM la acompaña en el
+        // renglón de la unidad, igual que en un aparato de cabecera.
+        document.getElementById('val-ta').innerText = hayTension ? `${hmd_actual.sis}/${hmd_actual.dia}` : '--/--';
+        document.getElementById('val-pam').innerText = hayTension ? pam : '--';
         document.getElementById('val-spo2').innerText = strSpO2;
         document.getElementById('val-fr').innerText = hmd_actual.fr;
         document.getElementById('val-temp').innerText = hmd_actual.temp.toFixed(1);
+
+        // Barra de identificación: qué ritmo se está viendo y en qué estado
+        // clínico queda el paciente con esas cifras. El estado lo calcula
+        // MotorClinico.Hemodinamico (06-motor-hemodinamico.js); aquí solo se
+        // muestra, para que las cifras no queden desconectadas del escenario.
+        const ROTULO_ESTADO = { estable: 'Estable', inestable: 'Inestable', paro: 'Paro cardíaco' };
+        const estadoClinico = hmd_actual.estadoClinico || 'estable';
+        const monitor = document.querySelector('.monitor-clinico');
+        if (monitor) monitor.setAttribute('data-estado', estadoClinico);
+        const rotuloRitmo = document.getElementById('monitor-ritmo');
+        if (rotuloRitmo) rotuloRitmo.innerText = nombreDelRitmo(estado.ritmo);
+        const rotuloEstado = document.getElementById('monitor-estado');
+        if (rotuloEstado) rotuloEstado.innerText = ROTULO_ESTADO[estadoClinico] || estadoClinico;
 
         // El panel de intervenciones no se adapta al ritmo a propósito: mostrar
         // solo las opciones válidas delataría la respuesta. El estudiante elige

@@ -1,0 +1,184 @@
+/* --- DIAGRAMA DE WIGGERS (Módulo 01, Unidad 3) --- */
+
+.wg-diagrama {
+    margin: 28px 0 8px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid var(--fucs-gris);
+    border-radius: var(--bento-radius-md);
+    box-shadow: var(--bento-shadow-soft);
+}
+
+/* --- CONTROLES --- */
+.wg-controles {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;
+    margin-bottom: 12px;
+}
+.wg-tiempo-control {
+    display: flex; align-items: center; gap: 10px; flex: 1 1 260px;
+    font-size: 0.8rem; color: var(--text-muted);
+}
+.wg-tiempo-control input[type="range"] {
+    flex: 1; accent-color: var(--fucs-azul-profundo); min-width: 140px;
+}
+
+.wg-fases {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding-bottom: 14px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--fucs-niebla);
+}
+.wg-fase-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--fucs-gris); border-radius: 999px;
+    background: #ffffff; color: var(--fucs-azul-oscuro);
+    font-size: 0.8rem; cursor: pointer;
+    transition: background .18s, border-color .18s, color .18s;
+}
+.wg-fase-btn:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, .14); }
+.wg-fase-btn[aria-current="true"] {
+    background: var(--fucs-azul-profundo); border-color: var(--fucs-azul-profundo);
+    color: #ffffff; font-weight: 600;
+}
+
+/* --- DISPOSICIÓN --- */
+/* El diagrama manda en ancho; la lectura ocupa una columna fija a la derecha,
+   como el panel de un monitor. Por debajo de 1000 px pasa a una sola columna:
+   con menos de eso, el eje de tiempo deja de ser legible. */
+.wg-cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 18px;
+    align-items: start;
+}
+.wg-lienzo { min-width: 0; }
+.wg-svg { display: block; width: 100%; height: auto; }
+
+/* --- BANDAS DE FASE --- */
+.wg-banda { fill: transparent; transition: fill .2s; }
+.wg-banda--sistole  { fill: rgba(192, 57, 43, .035); }
+.wg-banda--diastole { fill: rgba(41, 128, 185, .035); }
+.wg-banda.activa    { fill: rgba(251, 215, 133, .30); }
+.wg-divisoria { stroke: var(--fucs-gris); stroke-width: 1; stroke-dasharray: 3 3; }
+
+/* --- CURVAS --- */
+.wg-curva { fill: none; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.wg-curva--presionVI    { stroke: #c0392b; }
+.wg-curva--presionAorta { stroke: #8e44ad; }
+.wg-curva--presionAI    { stroke: #2980b9; stroke-width: 2; }
+.wg-curva--volumen      { stroke: #16a085; }
+
+.wg-rejilla { stroke: var(--fucs-niebla); stroke-width: 1; }
+.wg-ecg { fill: none; stroke: #1f8a4c; stroke-width: 2; stroke-linejoin: round; }
+.wg-ecg-base { stroke: var(--fucs-niebla); stroke-width: 1; }
+
+/* --- VÁLVULAS EN EL DIAGRAMA --- */
+.wg-valvula-carril { stroke: var(--fucs-niebla); stroke-width: 1; stroke-dasharray: 2 4; }
+.wg-valvula-abierta--auriculoventricular { fill: #2980b9; opacity: .78; }
+.wg-valvula-abierta--semilunar          { fill: #c0392b; opacity: .78; }
+
+/* --- TEXTO DEL SVG ---
+   font-family: inherit para que el SVG use Raleway como el resto del OVA;
+   sin ella, el navegador le aplica su propia familia por defecto. */
+.wg-svg text { font-family: inherit; }
+.wg-rotulo-eje     { font-size: 10px; fill: var(--text-muted); letter-spacing: .04em; text-transform: uppercase; font-weight: 700; }
+.wg-rotulo-valor   { font-size: 10px; fill: var(--text-muted); }
+.wg-rotulo-valvula { font-size: 10.5px; fill: var(--fucs-azul-oscuro); }
+.wg-rotulo-tiempo  { font-size: 10px; fill: var(--text-muted); }
+.wg-rotulo-onda    { font-size: 11px; fill: #1f8a4c; font-weight: 700; }
+
+.wg-nombre { cursor: pointer; }
+.wg-nombre-texto { font-size: 10.5px; fill: var(--text-muted); font-weight: 600; }
+.wg-nombre:hover .wg-nombre-texto { fill: var(--fucs-azul-profundo); }
+.wg-nombre.activo .wg-nombre-texto { fill: var(--fucs-azul-profundo); font-weight: 800; }
+.wg-nombre:focus-visible { outline: 2px solid var(--fucs-dorado); outline-offset: 2px; }
+
+/* --- CURSOR --- */
+.wg-cursor-linea { stroke: var(--fucs-azul-profundo); stroke-width: 1.6; }
+.wg-cursor-punto { stroke: #ffffff; stroke-width: 1.6; }
+.wg-cursor-punto--presionVI    { fill: #c0392b; }
+.wg-cursor-punto--presionAorta { fill: #8e44ad; }
+.wg-cursor-punto--presionAI    { fill: #2980b9; }
+.wg-cursor-punto--volumen      { fill: #16a085; }
+
+/* --- PANEL DE LECTURA --- */
+.wg-lectura {
+    background: var(--fucs-niebla);
+    border-radius: var(--bento-radius-md);
+    padding: 16px 16px 18px;
+}
+/* El periodo y el instante van uno sobre otro, no en los dos extremos de la
+   misma línea: «Relajación isovolumétrica» ocupa dos renglones en esta
+   columna y el tiempo quedaba descolgado junto al segundo. */
+.wg-lectura-periodo {
+    display: flex; flex-direction: column; gap: 1px;
+    margin: 0 0 2px; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+}
+.wg-lectura-periodo [data-periodo="sistole"]  { color: #c0392b; }
+.wg-lectura-periodo [data-periodo="diastole"] { color: #2980b9; }
+.wg-lectura-tiempo { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.wg-lectura-fase { margin: 0 0 8px; font-size: 1.02rem; color: var(--fucs-azul-profundo); }
+.wg-lectura-evento {
+    margin: 0 0 12px; padding: 7px 10px;
+    background: rgba(251, 215, 133, .28); border-radius: 6px;
+    font-size: 0.8rem; color: var(--fucs-azul-oscuro);
+}
+
+.wg-cifras { margin: 0 0 12px; display: grid; gap: 4px; }
+.wg-cifras > div { display: flex; justify-content: space-between; gap: 10px; font-size: 0.82rem; }
+.wg-cifras dt { color: var(--text-muted); }
+.wg-cifras dd {
+    margin: 0; font-weight: 700; color: var(--fucs-azul-oscuro);
+    font-variant-numeric: tabular-nums;
+}
+
+.wg-valvulas-lista {
+    list-style: none; margin: 0 0 12px; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+}
+.wg-valvula-ficha {
+    display: flex; flex-direction: column; gap: 1px;
+    padding: 6px 8px; border-radius: 6px;
+    border-left: 3px solid currentColor;
+    font-size: 0.74rem;
+}
+.wg-valvula-ficha[data-estado="abierta"] { color: #1f8a4c; background: rgba(31, 138, 76, .08); }
+.wg-valvula-ficha[data-estado="cerrada"] { color: #99463c; background: rgba(192, 57, 43, .07); }
+.wg-valvula-nombre { color: var(--fucs-azul-oscuro); font-weight: 600; }
+.wg-valvula-estado { font-weight: 700; }
+
+.wg-lectura-ecg { margin: 0 0 10px; font-size: 0.8rem; color: var(--text-body); }
+.wg-lectura-detalle { margin: 0; font-size: 0.82rem; line-height: 1.55; color: var(--text-body); }
+
+@media (max-width: 1000px) {
+    .wg-cuerpo { grid-template-columns: 1fr; }
+    .wg-valvulas-lista { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Por debajo de 720 px el diagrama se encoge tanto que sus rótulos dejan de
+   leerse: a 250 px de ancho, un texto de 10 px del viewBox mide 2,5 px reales.
+   En vez de reducirlo más, se le da scroll horizontal con un ancho mínimo
+   legible — el mismo recurso que usan las tablas anchas del módulo
+   (.tabla-scroll). Se prefiere desplazar a no poder leer. */
+@media (max-width: 720px) {
+    .wg-lienzo {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    .wg-svg { min-width: 660px; }
+}
+
+@media (max-width: 560px) {
+    .wg-diagrama { padding: 14px; }
+    .wg-valvulas-lista { grid-template-columns: 1fr 1fr; }
+    .wg-controles { gap: 8px 12px; }
+    .wg-tiempo-control { flex-basis: 100%; }
+}
+
+/* El módulo justifica los párrafos de las unidades para dar aspecto de texto
+   impreso (:where(.modulo-unidad) p en css/05-modulo.css). En la columna de
+   lectura, de 290 px, eso abre ríos de espacio entre palabras. Esto es
+   interfaz, no cuerpo de texto, así que se alinea a la izquierda. La regla
+   general usa :where(), sin especificidad, de modo que una sola clase basta. */
+.wg-diagrama p { text-align: left; }

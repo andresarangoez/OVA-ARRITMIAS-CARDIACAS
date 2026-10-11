@@ -332,6 +332,13 @@ class MotorMatematicoECG {
         this.contadorLatido = 0; // Para intercalar la extrasístole cada 4 latidos
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
+
+        // Fibrilacion auricular: factor que alarga o acorta el ciclo de cada
+        // latido. Sin el, la FA se dibujaba con los R-R perfectamente
+        // constantes, cuando su rasgo definitorio —el que el Modulo 03 usa
+        // para reconocerla— es justamente que sean irregularmente
+        // irregulares. Se renueva en cada latido (ver obtenerVoltaje).
+        this.variacionRR = 1;
     }
 
     // Reinicia el estado interno del motor (relojes, contadores y lógica de
@@ -346,6 +353,7 @@ class MotorMatematicoECG {
         this.contadorLatido = 0;
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
+        this.variacionRR = 1;
     }
 
     obtenerVoltaje(deltaTime, ritmo, fc) {
@@ -358,6 +366,13 @@ class MotorMatematicoECG {
         if (this.tipoLatidoActual === 'EAP') cicloActual = cicloBase * 0.70;
         if (this.tipoLatidoActual === 'EV') cicloActual = cicloBase * 0.60;
         if (this.pausaCompensatoria) cicloActual = cicloBase * 1.40;
+
+        // Fibrilación auricular: cada latido dura algo distinto del anterior.
+        // El factor se sortea al cerrar el latido previo (más abajo) y se
+        // aplica aquí, de modo que el ciclo es constante DENTRO del latido y
+        // cambia ENTRE latidos — que es lo que produce un R-R irregularmente
+        // irregular y no un trazado tembloroso.
+        if (ritmo === 'fa') cicloActual = cicloActual * this.variacionRR;
 
         // En los bloqueos de 2do grado el ciclo es el P-P, no el R-R.
         const secuenciaAV = SECUENCIAS_CONDUCCION_AV[ritmo];
@@ -400,6 +415,12 @@ class MotorMatematicoECG {
             } else {
                 this.tipoLatidoActual = 'NORMAL';
             }
+
+            // Sortea la duración del latido que empieza ahora. El rango, de
+            // 0,72 a 1,28 veces el ciclo base, da la variabilidad que se ve
+            // en una FA con respuesta ventricular rápida sin llegar a
+            // frecuencias que no corresponden al ritmo.
+            if (ritmo === 'fa') this.variacionRR = 0.72 + Math.random() * 0.56;
 
             // Bloqueos de 2do grado: pasa a la P siguiente de la secuencia.
             if (secuenciaAV) this.indiceConduccion = (this.indiceConduccion + 1) % secuenciaAV.length;

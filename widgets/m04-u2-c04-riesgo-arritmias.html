@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Riesgo de las arritmias</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: cuatro páginas con barra de progreso (criterios, dos grupos, clasifica, ¿cambia el riesgo?) y paginador abajo. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1d38; --muted:#5d6a80; --line:#e1e6ee; --navy:#16305e; --navy-ink:#fff;
+  --low:#1f7a52; --low-bg:#e8f6ef; --low-b:#9fd4b8;
+  --mid:#a86a00; --mid-bg:#fff5df; --mid-b:#ebc169;
+  --high:#c0392b; --high-bg:#fdecea; --high-b:#ec9d95;
+  --font:"Raleway",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --low:#5fd08c; --low-bg:#10291d; --low-b:#2d6b4a; --mid:#ffc94a; --mid-bg:#2e240b; --mid-b:#8a6a1f;
+  --high:#ff7a7a; --high-bg:#36171a; --high-b:#8a3a3a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --low:#5fd08c; --low-bg:#10291d; --low-b:#2d6b4a; --mid:#ffc94a; --mid-bg:#2e240b; --mid-b:#8a6a1f;
+  --high:#ff7a7a; --high-bg:#36171a; --high-b:#8a3a3a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:lining-nums;font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 30px}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:16px}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+h1{font-weight:700;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+h2{font-weight:700;font-size:1.15rem;margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+[hidden]{display:none!important}
+.lead{margin:0;color:var(--muted);max-width:70ch}
+.ref{color:var(--muted);font-size:.85em}
+/* pasos */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.steps button{border:0;background:none;text-align:left;cursor:pointer;padding:0;display:grid;gap:6px;min-width:0}
+.steps button::before{content:"";height:5px;border-radius:3px;background:var(--line);transition:background .25s}
+.steps button[aria-current="step"]::before,.steps button.done::before{background:var(--navy)}
+.steps span{font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps button[aria-current="step"] span{color:var(--ink)}
+.page{display:grid;gap:14px}
+.pager{display:flex;justify-content:space-between;gap:10px}
+.pbtn{font-weight:700;border-radius:10px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.pbtn.pri{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.pbtn:disabled{opacity:.35;cursor:default}
+/* Página 1: criterios */
+.crit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:720px){.crit{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.crit{grid-template-columns:1fr}}
+.cc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:left;cursor:pointer;display:grid;gap:4px;align-content:start;min-width:0;transition:border-color .2s,box-shadow .2s}
+.cc b{font-size:.95rem;line-height:1.3}
+.cc small{color:var(--muted);font-size:.8rem}
+.cc[aria-expanded="true"]{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+.cdet{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.cdet{grid-template-columns:1fr}}
+.cdet h3{grid-column:1/-1;margin:0;font-size:1rem}
+.side{border-radius:10px;padding:10px 12px}
+.side.low{background:var(--low-bg)} .side.high{background:var(--high-bg)}
+.side p{margin:0;font-size:.92rem}
+.side .lab{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.side.low .lab{color:var(--low)} .side.high .lab{color:var(--high)}
+/* Página 2: grupos */
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+@media (max-width:640px){.groups{grid-template-columns:1fr}}
+.grp{border-radius:14px;padding:16px;display:grid;gap:10px;border:1.5px solid}
+.grp.low{background:var(--low-bg);border-color:var(--low-b)} .grp.high{background:var(--high-bg);border-color:var(--high-b)}
+.grp h2{font-size:1.05rem} .grp.low h2{color:var(--low)} .grp.high h2{color:var(--high)}
+.cond{font-size:.82rem;font-weight:600;background:var(--surface);border-radius:8px;padding:6px 10px}
+.sub{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 -4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:.85rem;font-weight:600;cursor:pointer;text-align:left}
+.chip[aria-pressed="true"]{border-color:currentColor}
+.grp.low .chip[aria-pressed="true"]{color:var(--low)} .grp.high .chip[aria-pressed="true"]{color:var(--high)}
+.why{background:var(--surface);border-radius:10px;padding:10px 12px;font-size:.92rem;min-height:3.2em}
+.why b{font-weight:700}
+.foot{font-size:.88rem;margin:0}
+/* Página 3: clasifica */
+.game{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px}
+.qtop{display:flex;justify-content:space-between;font-size:.82rem;font-weight:600;color:var(--muted)}
+.prog{height:5px;background:var(--line);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--navy);transition:width .3s}
+.card{border:1.5px solid var(--line);border-radius:12px;padding:22px 18px;text-align:center;font-size:1.25rem;font-weight:700;background:var(--bg)}
+.card small{display:block;font-size:.85rem;font-weight:500;color:var(--muted);margin-top:4px}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border-radius:12px;padding:14px;font-weight:700;cursor:pointer;border:1.5px solid}
+.bin.low{background:var(--low-bg);border-color:var(--low-b);color:var(--low)} .bin.high{background:var(--high-bg);border-color:var(--high-b);color:var(--high)}
+.bin:disabled{cursor:default;opacity:.55} .bin.pick{opacity:1;box-shadow:0 0 0 3px currentColor}
+.fb{border-radius:10px;padding:12px 14px;background:var(--bg);display:grid;gap:4px;font-size:.95rem}
+.good{color:var(--low)} .bad{color:var(--high)}
+/* Página 4: evaluador */
+.eval{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:720px){.eval{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.panel h3{margin:0;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.base{display:flex;flex-wrap:wrap;gap:6px}
+.base button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:.85rem;font-weight:600;cursor:pointer}
+.base button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.tg{display:grid;gap:6px}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;background:var(--surface);text-align:left}
+.tog span{font-size:.9rem;font-weight:600}
+.tog small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+.sw{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.tog[aria-pressed="true"]{border-color:var(--high-b)}
+.tog[aria-pressed="true"] .sw{background:var(--high)}
+.tog[aria-pressed="true"] .sw::after{left:19px}
+.tog:disabled{opacity:.4;cursor:default}
+.gauge{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.gauge i{height:10px;border-radius:5px;background:var(--line);transition:background .25s}
+.gauge.l1 i:nth-child(1){background:var(--low)}
+.gauge.l2 i:nth-child(-n+2){background:var(--mid)}
+.gauge.l3 i{background:var(--high)}
+.verdict{font-size:1.2rem;font-weight:800;margin:0}
+.verdict.l1{color:var(--low)} .verdict.l2{color:var(--mid)} .verdict.l3{color:var(--high)}
+.reasons{margin:0;padding-left:18px;font-size:.92rem;display:grid;gap:3px}
+.tip{font-size:.78rem;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+:root{--paper:#fff7f7;--gminor:#f7d2d2;--gmajor:#eaa5a5;--trace:#1a1a24}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#07120d;--gminor:#0f261a;--gmajor:#1b412c;--trace:#5dff9e}}
+:root[data-theme="dark"]{--paper:#07120d;--gminor:#0f261a;--gmajor:#1b412c;--trace:#5dff9e}
+.strip{display:block;width:100%;height:auto;border-radius:8px;background:var(--paper)}
+.strip .tr{fill:none;stroke:var(--trace);stroke-width:.32;stroke-linejoin:round;stroke-linecap:round}
+.strip.draw .tr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.strip .gmin{fill:none;stroke:var(--gminor);stroke-width:.07}
+.strip .gmaj{fill:none;stroke:var(--gmajor);stroke-width:.16}
+.strip .lbl{fill:var(--trace);font-family:var(--font);font-weight:700;font-size:2.4px;opacity:.7}
+.selp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px}
+.selp .sh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.selp h3{margin:0;font-size:1.05rem}
+.gtag{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px}
+.gtag.low{background:var(--low-bg);color:var(--low)} .gtag.high{background:var(--high-bg);color:var(--high)}
+.selp p{margin:0;max-width:72ch}
+.cardw{display:grid;gap:10px}
+.again{border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;justify-self:start;padding:0}
+@media (prefers-reduced-motion:reduce){.strip.draw .tr{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">2.6 · Estratificación del riesgo</p>
+    <h1>Diferenciación entre arritmias de menor riesgo y arritmias potencialmente letales</h1>
+  </header>
+
+  <nav class="steps" id="steps" aria-label="Páginas">
+    <button data-p="0"><span>1. Criterios de riesgo</span></button>
+    <button data-p="1"><span>2. Dos grupos</span></button>
+    <button data-p="2"><span>3. Clasifica</span></button>
+    <button data-p="3"><span>4. ¿Cambia el riesgo?</span></button>
+  </nav>
+
+  <!-- 1 -->
+  <section class="page" data-page="0">
+    <p class="lead">El riesgo no depende solo del tipo de arritmia, sino de la combinación de varios elementos <span class="ref">(1,5)</span>. Toca cada criterio para comparar qué tranquiliza y qué alarma.</p>
+    <div class="crit" id="crit"></div>
+    <div class="cdet" id="cdet"></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="page" data-page="1" hidden>
+    <p class="lead">Toca cada arritmia para ver su trazo y por qué está en ese grupo.</p>
+    <div class="selp" id="selp" aria-live="polite"></div>
+    <div class="groups">
+      <div class="grp low">
+        <h2>Arritmias de menor riesgo</h2>
+        <div class="cond">En ausencia de cardiopatía y de síntomas relevantes <span class="ref">(1,4,5)</span></div>
+        <div class="chips" id="lowChips"></div>
+        <p class="foot">Su manejo se centra en la búsqueda de la causa, el alivio de los síntomas y la vigilancia.</p>
+      </div>
+      <div class="grp high">
+        <h2>Arritmias potencialmente letales</h2>
+        <div class="cond">Su reconocimiento exige una respuesta inmediata del equipo de salud <span class="ref">(1,4-6)</span></div>
+        <div id="highChips" style="display:grid;gap:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="page" data-page="2" hidden>
+    <p class="lead">Ubica cada arritmia en su grupo. Asume un paciente sin cardiopatía ni síntomas relevantes, salvo que la tarjeta diga otra cosa.</p>
+    <div class="game" id="game"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="page" data-page="3" hidden>
+    <p class="lead">Una arritmia de menor riesgo deja de serlo cuando aparecen otros criterios. Elige una arritmia y activa lo que tenga el paciente.</p>
+    <div class="eval">
+      <div class="panel">
+        <h3>Arritmia</h3>
+        <div class="base" id="base"></div>
+        <h3>Criterios del paciente</h3>
+        <div class="tg" id="tg"></div>
+      </div>
+      <div class="panel" aria-live="polite">
+        <h3>Valoración</h3>
+        <div id="evEcg"></div>
+        <div class="gauge" id="gauge"><i></i><i></i><i></i></div>
+        <p class="verdict" id="verdict"></p>
+        <ul class="reasons" id="reasons"></ul>
+        <p class="tip">Valoración orientativa con fines docentes; no reemplaza el juicio clínico.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="pager"><button class="pbtn" id="prev">‹ Anterior</button><button class="pbtn pri" id="next">Siguiente ›</button></div>
+</div>
+
+<script>
+/* ---------- ECG esquemático ---------- */
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(id,dur){
+  const R=rng(id.length*53+id.charCodeAt(0)),C=[];let X=null,hr="";
+  const add=(c,a,w)=>C.push([c,a,w]);
+  const P=(t,a=.15,w=.022)=>add(t,a,w);
+  const N=(q,rr=.8,qw=1)=>{add(q-.025,-.08,.008*qw);add(q,1.1,.011*qw);add(q+.028*qw,-.28,.01*qw);add(q+Math.min(.32,.17+.17*rr),.28,.045)};
+  const V=q=>{add(q,1.0,.032);add(q+.075,-.7,.032);add(q+.32,-.38,.06)};
+  const PX=(q,k)=>{add(q-.045,.38*k,.032);add(q,1.0,.02);add(q+.06,-.35,.028);add(q+.28,-.3,.06)};
+  const sinus=(q,rr,pr=.16)=>{P(q-pr);N(q,rr)};
+  switch(id){
+   case"ts":{let q=.3;while(q<dur+.4){sinus(q,.5,.15);q+=.5}hr="120";break}
+   case"bs":{let q=.5;while(q<dur+.4){sinus(q,1.3);q+=1.3}hr="46";break}
+   case"esa":{let q=.4,i=0;while(q<dur+.4){if(i===2||i===5){P(q-.13,.1,.018);N(q,.6);q+=.95}else{sinus(q,.85);q+=(i===1||i===4)?.55:.85}i++}hr="≈75";break}
+   case"esv":{let q=.4,i=0;while(q<dur+.4){if(i===2||i===6){V(q);q+=1.2}else{sinus(q,.85);q+=(i===1||i===5)?.5:.85}i++}hr="≈75";break}
+   case"b1":{let q=.5;while(q<dur+.4){sinus(q,.85,.32);q+=.85}hr="70";break}
+   case"m1":{let p=.2,k=0;const pr=[.18,.27,.33];while(p<dur+.4){P(p);const c=k%4;if(c<3)N(p+pr[c],.78);p+=.78;k++}hr="≈58";break}
+   case"reen":{let q=.25;while(q<dur+.4){N(q,.33);add(q+.045,-.12,.01);q+=.33}hr="182";break}
+   case"fv":{const r=R,ph=[r()*6,r()*6,r()*6,r()*6];X=t=>(.42+.22*Math.sin(2*Math.PI*.45*t))*(.55*Math.sin(2*Math.PI*4.3*t+ph[0])+.35*Math.sin(2*Math.PI*5.6*t+ph[1])+.25*Math.sin(2*Math.PI*3.2*t+ph[2])+.15*Math.sin(2*Math.PI*7.1*t+ph[3]));hr="—";break}
+   case"tvsp":{let q=.2;while(q<dur+.4){V(q);q+=.27}hr="222";break}
+   case"asis":{hr="0";break}
+   case"aesp":{let q=.6;while(q<dur+.4){P(q-.16,.1);N(q,1.25,1.3);q+=1.25}hr="48";break}
+   case"tvs":{let q=.25;while(q<dur+.4){V(q);q+=.35}let p=.5;while(p<dur+.4){P(p,.1);p+=.8}hr="171";break}
+   case"tvp":{const s0=.3;X=t=>{const u=t-s0;if(u<0)return 0;const env=1.1*Math.sin(Math.PI*u/2.6)*(u<.15?u/.15:1);return env*Math.sin(2*Math.PI*3.8*u)};hr="≈230";break}
+   case"fap":{let q=.25;while(q<dur+.4){const rr=.22+R()*.3;PX(q,.6+R()*.9);q+=rr}const ph=[R()*6,R()*6];X=t=>.04*Math.sin(2*Math.PI*6.3*t+ph[0])+.03*Math.sin(2*Math.PI*8.4*t+ph[1]);hr="≈220";break}
+   case"m2":{let p=.2,k=0;while(p<dur+.4){P(p);if(k%3!==2)N(p+.18,.78);p+=.78;k++}hr="≈51";break}
+   case"bavz":{let p=.2,k=0;while(p<dur+.4){P(p);if(k%3===0)N(p+.2,1.8);p+=.6;k++}hr="≈33";break}
+   case"b3":{let p=.25;while(p<dur+.4){P(p);p+=.68}let q=.9;while(q<dur+.4){V(q);q+=1.6}hr="≈38";break}
+   case"pau":{[.4,1.2,2.0].forEach(q=>sinus(q,.8));sinus(5.6,.8);hr="pausa 3,6 s";break}
+  }
+  const wander=R()*6;
+  return t=>{let s=.025*Math.sin(2*Math.PI*.22*t+wander);for(const[c,a,w]of C){const x=(t-c)/w;if(x>-5&&x<5)s+=a*Math.exp(-x*x/2)}if(X)s+=X(t);return s};
+}
+const HR={};
+function ecg(id,{dur=6,H=28}={}){
+  const v=build(id,dur),W=dur*25,base=H*.6;let d="";
+  for(let i=0;i<=dur*250;i++){const t=i/250,y=Math.max(.6,Math.min(H-.6,base-v(t)*10));d+=(i?"L":"M")+(t*25).toFixed(2)+" "+y.toFixed(2)}
+  let gmin="",gmaj="";for(let x=0;x<=W;x++)(x%5?(gmin+=`M${x} 0V${H}`):(gmaj+=`M${x} 0V${H}`));for(let y=0;y<=H;y++)(y%5?(gmin+=`M0 ${y}H${W}`):(gmaj+=`M0 ${y}H${W}`));
+  return`<svg class="strip draw" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trazo de ECG esquemático"><path class="gmin" d="${gmin}"/><path class="gmaj" d="${gmaj}"/><text class="lbl" x="1.2" y="3.4">DII</text><path class="tr" pathLength="1" d="${d}"/></svg>`;
+}
+
+const $=id=>document.getElementById(id);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---------- 1. Criterios ---------- */
+const CRIT=[
+ {id:"hemo",t:"Repercusión hemodinámica",s:"¿Cómo lo tolera el paciente?",low:"Paciente estable, con presión arterial y perfusión conservadas.",high:"Hipotensión, alteración de la conciencia, dolor torácico, signos de hipoperfusión o insuficiencia cardíaca."},
+ {id:"card",t:"Cardiopatía estructural y función ventricular",s:"¿Cómo es el corazón de base?",low:"Corazón estructuralmente sano con función ventricular normal.",high:"Infarto previo, miocardiopatía o fracción de eyección reducida."},
+ {id:"nivel",t:"Nivel del bloqueo",s:"En las bradiarritmias",low:"Bloqueo nodal: primer grado o Mobitz I, generalmente con QRS estrecho.",high:"Bloqueo infranodal: Mobitz II, bloqueo avanzado o completo, a menudo con QRS ancho."},
+ {id:"qrs",t:"Anchura y morfología del QRS",s:"En las taquiarritmias",low:"QRS estrecho: el impulso usa el sistema de conducción normal.",high:"QRS ancho, sobre todo si es polimórfico o cambia de forma latido a latido."},
+ {id:"qt",t:"Intervalo QT",s:"Antes y durante la arritmia",low:"QT normal para la frecuencia.",high:"QT prolongado: predispone a torsades de pointes."},
+ {id:"ant",t:"Antecedentes del paciente",s:"Personales y familiares",low:"Sin síncope ni antecedentes familiares relevantes.",high:"Síncope, o muerte súbita en familiares jóvenes."}
+];
+let critSel="hemo";
+function renderCrit(){
+  $("crit").innerHTML=CRIT.map(c=>`<button class="cc" data-c="${c.id}" aria-expanded="${c.id===critSel}"><b>${c.t}</b><small>${c.s}</small></button>`).join("");
+  const c=CRIT.find(x=>x.id===critSel);
+  $("cdet").innerHTML=`<h3>${c.t}</h3><div class="side low"><div class="lab">Tranquiliza</div><p>${c.low}</p></div><div class="side high"><div class="lab">Alarma</div><p>${c.high}</p></div>`;
+  $$("[data-c]").forEach(b=>b.onclick=()=>{critSel=b.dataset.c;renderCrit()});
+}
+renderCrit();
+
+/* ---------- 2. Grupos ---------- */
+const LOW=[
+ ["ts","Taquicardia sinusal con causa identificada","Es una respuesta del nodo sinusal a fiebre, dolor, ansiedad, hipovolemia o anemia. El problema es la causa, no el ritmo."],
+ ["bs","Bradicardia sinusal con causa identificada","Frecuente en deportistas, durante el sueño, por tono vagal o por fármacos. El impulso sigue naciendo en el nodo sinusal."],
+ ["esa","Extrasístoles auriculares aisladas","Latidos prematuros de origen auricular, frecuentes y benignos en el corazón sano."],
+ ["esv","Extrasístoles ventriculares aisladas","Sin cardiopatía suelen ser benignas. Preocupan si son muy frecuentes, complejas o si hay cardiopatía."],
+ ["b1","Bloqueo AV de primer grado","Todas las P conducen; solo se alarga el intervalo PR por encima de 0,20 s."],
+ ["m1","Bloqueo Mobitz I","Bloqueo nodal: el PR se alarga hasta que una P no conduce. Rara vez progresa."],
+ ["reen","Taquicardias por reentrada en el corazón sano","La reentrada intranodal o AV suele ser bien tolerada cuando el corazón es estructuralmente normal."]
+];
+const HIGH=[
+ ["Paros cardíacos",[["fv","Fibrilación ventricular","Actividad eléctrica caótica: los ventrículos no se contraen y no hay gasto cardíaco."],
+   ["tvsp","TV sin pulso","Ritmo ventricular tan rápido que no genera pulso."],
+   ["asis","Asistolia","Ausencia de actividad eléctrica ventricular."],
+   ["aesp","Actividad eléctrica sin pulso","Hay actividad eléctrica organizada, pero sin contracción eficaz ni pulso."]]],
+ ["Taquiarritmias ventriculares",[["tvs","TV sostenida","Dura más de 30 segundos o compromete al paciente. Puede degenerar en fibrilación ventricular."],
+   ["tvp","TV polimórfica y torsades de pointes","Inestable por naturaleza; las torsades se asocian a QT largo y degeneran con facilidad en FV."]]],
+ ["Por vía accesoria",[["fap","Fibrilación auricular preexcitada","La vía accesoria conduce sin el filtro del nodo AV; la frecuencia ventricular puede ser tan alta que desencadene FV."]]],
+ ["Bradiarritmias infranodales",[["m2","Bloqueo Mobitz II","Bloqueo por debajo del nodo AV; puede progresar de forma súbita a bloqueo completo."],
+   ["bavz","Bloqueo AV avanzado","Dos o más ondas P consecutivas no conducen."],
+   ["b3","Bloqueo AV completo","Aurículas y ventrículos laten por separado; el ritmo de escape es lento e inestable."],
+   ["pau","Pausas prolongadas con síncope","Indican que el corazón puede quedarse sin ritmo eficaz durante varios segundos."]]]
+];
+const chip=(g,[id,n])=>`<button class="chip" data-g="${g}" data-id="${id}" aria-pressed="false">${n}</button>`;
+$("lowChips").innerHTML=LOW.map(x=>chip("low",x)).join("");
+$("highChips").innerHTML=HIGH.map(([h,l])=>`<div><p class="sub">${h}</p><div class="chips" style="margin-top:8px">${l.map(x=>chip("high",x)).join("")}</div></div>`).join("");
+const ALL={};LOW.forEach(x=>ALL[x[0]]=[...x,"low"]);HIGH.forEach(([,l])=>l.forEach(x=>ALL[x[0]]=[...x,"high"]));
+function pick(id){$$(".chip").forEach(x=>x.setAttribute("aria-pressed",x.dataset.id===id));
+  const [,n,w,grp]=ALL[id];
+  $("selp").innerHTML=`<div class="sh"><h3>${n}</h3><span class="gtag ${grp}">${grp==="low"?"Menor riesgo":"Potencialmente letal"}</span></div>${ecg(id)}<p>${w}</p>${id==="aesp"?'<p class="tip">El trazo puede verse organizado: el diagnóstico se hace al comprobar que no hay pulso.</p>':""}<button class="again" id="redraw">Volver a trazar</button>`;
+  $("redraw").onclick=()=>pick(id)}
+$$(".chip").forEach(b=>b.onclick=()=>pick(b.dataset.id));
+pick("ts");
+
+/* ---------- 3. Clasifica ---------- */
+const g={};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function startGame(){g.order=shuffle(Object.keys(ALL));g.i=0;g.score=0;card()}
+function card(){
+  const n=g.order.length;
+  if(g.i>=n){$("game").innerHTML=`<p class="verdict">${g.score} de ${n} correctas</p><p class="lead">${g.score>=16?"Excelente: distingues con claridad los dos grupos.":"Repasa la página 2 y vuelve a intentarlo."}</p><div><button class="pbtn pri" id="again">Intentar de nuevo</button></div>`;$("again").onclick=startGame;return}
+  const [id,name,why,grp]=ALL[g.order[g.i]];
+  $("game").innerHTML=`<div class="prog"><i style="width:${g.i/n*100}%"></i></div><div class="qtop"><span>${g.i+1} de ${n}</span><span>Aciertos ${g.score}</span></div>
+    <div class="cardw"><div class="card">${name}</div>${ecg(id)}</div>
+    <div class="bins"><button class="bin low" data-b="low">Menor riesgo</button><button class="bin high" data-b="high">Potencialmente letal</button></div><div id="gfb"></div>`;
+  $$("[data-b]",$("game")).forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.b===grp;if(ok)g.score++;
+    $$("[data-b]",$("game")).forEach(x=>{x.disabled=true;if(x.dataset.b===grp)x.classList.add("pick")});
+    $("gfb").innerHTML=`<div class="fb"><strong class="${ok?"good":"bad"}">${ok?"Correcto.":"No es ese grupo."}</strong><span>${why}</span></div>
+      <div style="margin-top:10px"><button class="pbtn pri" id="nx">${g.i+1<n?"Siguiente ›":"Ver resultado"}</button></div>`;
+    $("nx").onclick=()=>{g.i++;card()};$("nx").focus()});
+}
+
+/* ---------- 4. ¿Cambia el riesgo? ---------- */
+const BASES=[
+ {id:"reen",n:"Reentrada (TRIN / TRAV)",type:"tachy"},
+ {id:"ts",n:"Taquicardia sinusal",type:"tachy"},
+ {id:"esv",n:"Extrasístoles ventriculares",type:"tachy"},
+ {id:"bs",n:"Bradicardia sinusal",type:"brady"},
+ {id:"b1",n:"Bloqueo AV 1.er grado / Mobitz I",type:"brady"}
+];
+const FLAGS=[
+ {id:"hemo",t:"Inestabilidad hemodinámica",s:"Hipotensión, alteración de conciencia, dolor torácico",r:"Hay repercusión hemodinámica: el paciente no tolera la arritmia.",lvl:3},
+ {id:"card",t:"Cardiopatía o función ventricular reducida",s:"Infarto previo, miocardiopatía, FEVI baja",r:"Existe cardiopatía estructural o disfunción ventricular.",lvl:2},
+ {id:"nivel",t:"Bloqueo infranodal",s:"Mobitz II, avanzado o completo; QRS ancho",r:"El bloqueo es infranodal: puede progresar a bloqueo completo.",lvl:3,only:"brady"},
+ {id:"qrs",t:"QRS ancho o polimórfico",s:"Durante la taquicardia",r:"El QRS es ancho o polimórfico: sospechar origen ventricular.",lvl:3,only:"tachy"},
+ {id:"qt",t:"QT prolongado",s:"Corregido para la frecuencia",r:"El QT largo predispone a torsades de pointes.",lvl:2},
+ {id:"ant",t:"Síncope o muerte súbita familiar",s:"Síncope propio o familiares jóvenes",r:"Hay antecedentes de síncope o de muerte súbita en familiares jóvenes.",lvl:2}
+];
+const ev={base:"reen",on:new Set(),shown:null};
+function renderEval(){
+  const b=BASES.find(x=>x.id===ev.base);
+  if(ev.shown!==ev.base){$("evEcg").innerHTML=ecg(ev.base==="b1"?"b1":ev.base);ev.shown=ev.base}
+  $("base").innerHTML=BASES.map(x=>`<button data-base="${x.id}" aria-pressed="${x.id===ev.base}">${x.n}</button>`).join("");
+  $("tg").innerHTML=FLAGS.map(f=>{const na=f.only&&f.only!==b.type;if(na)ev.on.delete(f.id);
+    return`<button class="tog" data-f="${f.id}" aria-pressed="${ev.on.has(f.id)}" ${na?"disabled":""}><span>${f.t}<small>${na?(f.only==="brady"?"Solo aplica a bradiarritmias":"Solo aplica a taquiarritmias"):f.s}</small></span><i class="sw" aria-hidden="true"></i></button>`}).join("");
+  const act=FLAGS.filter(f=>ev.on.has(f.id));
+  let lvl=1;act.forEach(f=>lvl=Math.max(lvl,f.lvl));if(act.filter(f=>f.lvl===2).length>=2)lvl=3;
+  $("gauge").className="gauge l"+lvl;
+  const V=["","Menor riesgo","Riesgo aumentado","Potencialmente letal"];
+  $("verdict").className="verdict l"+lvl;$("verdict").textContent=V[lvl];
+  $("reasons").innerHTML=act.length?act.map(f=>`<li>${f.r}</li>`).join("")+(lvl===3?`<li><b>Requiere respuesta inmediata del equipo de salud.</b></li>`:lvl===2?"<li>Requiere evaluación cuidadosa y vigilancia.</li>":""):
+    `<li>${b.n} sin cardiopatía ni síntomas relevantes: se busca la causa, se alivian los síntomas y se vigila.</li>`;
+  $$("[data-base]").forEach(x=>x.onclick=()=>{ev.base=x.dataset.base;renderEval()});
+  $$("[data-f]").forEach(x=>x.onclick=()=>{const id=x.dataset.f;ev.on.has(id)?ev.on.delete(id):ev.on.add(id);renderEval()});
+}
+renderEval();
+
+/* ---------- Páginas ---------- */
+const pages=$$(".page");let cur=0;
+function show(i){cur=Math.max(0,Math.min(pages.length-1,i));pages.forEach((p,j)=>p.hidden=j!==cur);
+  $$("#steps button").forEach((b,j)=>{b.removeAttribute("aria-current");if(j===cur)b.setAttribute("aria-current","step");b.classList.toggle("done",j<cur)});
+  $("prev").disabled=cur===0;$("next").textContent=cur===pages.length-1?"Volver al inicio":"Siguiente ›";
+  if(cur===2&&!g.order)startGame();window.scrollTo({top:0,behavior:"smooth"})}
+$$("#steps button").forEach(b=>b.onclick=()=>show(+b.dataset.p));
+$("prev").onclick=()=>show(cur-1);$("next").onclick=()=>show(cur===pages.length-1?0:cur+1);
+show(0);
+</script>
+
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

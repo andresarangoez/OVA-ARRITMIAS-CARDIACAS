@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Algoritmo de taquicardias</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: tres páginas (recorrer, mapa del algoritmo, casos con ECG) con barra de progreso y paginador. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#0f1d38; --muted:#5d6a80; --line:#dfe4ec; --navy:#16305e; --navy-ink:#fff;
+  --p1:#c0392b; --p1-bg:#fdecea; --p1-b:#ec9d95;
+  --p2:#a86a00; --p2-bg:#fff5df; --p2-b:#ebc169;
+  --p3:#2457b8; --p3-bg:#e8f0fd; --p3-b:#9dbbef;
+  --p4:#1f7a52; --p4-bg:#e8f6ef; --p4-b:#8fd0ad;
+  --paper:#fff7f7; --gminor:#f7d2d2; --gmajor:#eaa5a5; --trace:#1a1a24;
+  --font:"Raleway",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --p1:#ff7a7a; --p1-bg:#36171a; --p1-b:#8a3a3a; --p2:#ffc94a; --p2-bg:#2e240b; --p2-b:#8a6a1f;
+  --p3:#7fa9f2; --p3-bg:#13233f; --p3-b:#2f4f86; --p4:#5fd08c; --p4-bg:#10291d; --p4-b:#2d6b4a;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1424; --surface:#131e33; --ink:#e7ecf5; --muted:#9aa7bd; --line:#24314a; --navy:#2b4f8f;
+  --p1:#ff7a7a; --p1-bg:#36171a; --p1-b:#8a3a3a; --p2:#ffc94a; --p2-bg:#2e240b; --p2-b:#8a6a1f;
+  --p3:#7fa9f2; --p3-bg:#13233f; --p3-b:#2f4f86; --p4:#5fd08c; --p4-bg:#10291d; --p4-b:#2d6b4a;
+  --paper:#07120d; --gminor:#0f261a; --gmajor:#1b412c; --trace:#5dff9e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:lining-nums;font-size:16px;line-height:1.5;padding-inline:16px;padding-block:22px 30px}
+.wrap{max-width:860px;margin:0 auto;display:grid;gap:16px}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+h1{font-weight:700;font-size:1.35rem;line-height:1.25;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+[hidden]{display:none!important}
+.lead{margin:0;color:var(--muted);max-width:70ch}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.steps button{border:0;background:none;text-align:left;cursor:pointer;padding:0;display:grid;gap:6px;min-width:0}
+.steps button::before{content:"";height:5px;border-radius:3px;background:var(--line)}
+.steps button[aria-current="step"]::before,.steps button.done::before{background:var(--navy)}
+.steps span{font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps button[aria-current="step"] span{color:var(--ink)}
+.page{display:grid;gap:14px}
+.pager{display:flex;justify-content:space-between;gap:10px}
+.pbtn{font-weight:700;border-radius:10px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface)}
+.pbtn.pri{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.pbtn:disabled{opacity:.35;cursor:default}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;min-width:0}
+.note{font-size:.85rem;color:var(--muted);margin:0;border-left:3px solid var(--line);padding-left:10px}
+/* Recorrer */
+.trail{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:28px}
+.trail span{font-size:.8rem;font-weight:600;background:var(--bg);border-radius:999px;padding:3px 10px}
+.trail span b{font-weight:800}
+.trail i{color:var(--muted);font-style:normal;font-size:.8rem}
+.qnum{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.qbig{font-size:1.6rem;font-weight:800;margin:0;line-height:1.2;text-wrap:balance}
+.qhelp{margin:0;color:var(--muted);font-size:.92rem;max-width:62ch}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yn button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;font-weight:800;font-size:1.05rem;cursor:pointer}
+.yn button:hover{border-color:var(--navy)}
+.res{border-radius:14px;padding:18px;border:2px solid;display:grid;gap:4px}
+.res b{font-size:1.25rem;font-weight:800}
+.res p{margin:0}
+.pr1{background:var(--p1-bg);border-color:var(--p1-b)} .pr1 b{color:var(--p1)}
+.pr2{background:var(--p2-bg);border-color:var(--p2-b)} .pr2 b{color:var(--p2)}
+.pr3{background:var(--p3-bg);border-color:var(--p3-b)} .pr3 b{color:var(--p3)}
+.pr4{background:var(--p4-bg);border-color:var(--p4-b)} .pr4 b{color:var(--p4)}
+.restart{border:0;background:none;color:var(--muted);font-weight:700;cursor:pointer;justify-self:start;padding:0}
+/* Mapa */
+.map{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);gap:0 0;align-items:center}
+.mq{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;text-align:center;font-weight:700;cursor:pointer;transition:opacity .2s,border-color .2s}
+.mr{border-radius:10px;padding:10px 12px;text-align:center;border:1.5px solid;cursor:pointer;transition:opacity .2s}
+.mr b{display:block;font-size:.9rem}
+.mr small{display:block;font-size:.78rem;color:var(--ink)}
+.hl{display:grid;grid-template-rows:auto;align-items:center;justify-items:center;font-size:.72rem;font-weight:700;color:var(--muted);position:relative;height:100%}
+.hl::before{content:"";position:absolute;left:4px;right:4px;top:50%;height:2px;background:var(--line)}
+.hl span{position:relative;top:-12px}
+.vl{height:30px;display:grid;justify-items:center;font-size:.72rem;font-weight:700;color:var(--muted);position:relative}
+.vl::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--line)}
+.vl span{position:relative;left:18px;top:6px}
+.map .dim{opacity:.35}
+.map .on{border-color:var(--navy)}
+.hl.on::before,.vl.on::before{background:var(--navy)}
+.mapnote{font-size:.85rem;margin:0;min-height:1.5em}
+@media (max-width:560px){.map{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr)}.mq{font-size:.82rem;padding:9px}.mr b{font-size:.8rem}.mr small{font-size:.7rem}}
+/* Casos */
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;cursor:pointer}
+.cases button[aria-current="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.cases button.ok::after{content:" ✓"}
+.strip{display:block;width:100%;height:auto;border-radius:8px;background:var(--paper)}
+.strip .tr{fill:none;stroke:var(--trace);stroke-width:.32;stroke-linejoin:round;stroke-linecap:round}
+.strip.draw .tr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.4s linear forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.strip .gmin{fill:none;stroke:var(--gminor);stroke-width:.07}
+.strip .gmaj{fill:none;stroke:var(--gmajor);stroke-width:.16}
+.strip .lbl{fill:var(--trace);font-family:var(--font);font-weight:700;font-size:2.4px;opacity:.7}
+.vitals{display:flex;flex-wrap:wrap;gap:6px}
+.vitals span{background:var(--bg);border-radius:8px;padding:4px 10px;font-size:.85rem;font-weight:600}
+.cfb{font-size:.92rem;margin:0}
+.good{color:var(--p4);font-weight:800} .bad{color:var(--p1);font-weight:800}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.strip.draw .tr{animation:none;stroke-dashoffset:0}}
+</style>
+<style>
+.tmap{display:grid;gap:0;justify-items:center}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);align-items:center;width:100%}
+.split2{display:grid;grid-template-columns:1fr 1fr;width:100%;font-size:.75rem;font-weight:700;color:var(--muted);text-align:center;border-top:2px solid var(--line);margin-top:4px;padding-top:4px}
+.split2.on-e span:first-child,.split2.on-a span:last-child{color:var(--ink)}
+.quad4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%;margin-top:8px}
+@media (max-width:640px){.quad4{grid-template-columns:1fr 1fr}.trow{grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr)}}
+.rc{border-radius:12px;border:1.5px solid;padding:12px;text-align:left;cursor:pointer;display:grid;gap:4px;align-content:start;transition:opacity .2s}
+.rc b{font-size:.92rem}
+.rc ul{margin:0;padding-left:16px;font-size:.84rem;display:grid;gap:2px}
+.rc.dim,.mr.dim,.mq.dim{opacity:.35}
+.ty-blue{background:var(--p3-bg);border-color:var(--p3-b)} .ty-blue b{color:var(--p3)}
+.ty-amber{background:var(--p2-bg);border-color:var(--p2-b)} .ty-amber b{color:var(--p2)}
+.ty-red{background:var(--p1-bg);border-color:var(--p1-b)} .ty-red b{color:var(--p1)}
+.resx{border-radius:14px;padding:18px;border:2px solid;display:grid;gap:6px}
+.resx b{font-size:1.25rem;font-weight:800}
+.resx ul{margin:0;padding-left:18px;display:grid;gap:2px}
+.resx p{margin:0}
+.src{font-size:.8rem;color:var(--muted)}
+</style>
+<style>
+.monitor{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;background:#050b09;border:1px solid #1d2a26;border-radius:14px;padding:10px;color:#e8efe9}
+@media (max-width:620px){.monitor{grid-template-columns:1fr}.mvit{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+.mscreen{min-width:0}
+.mon-svg,.zoom-svg{display:block;width:100%;height:auto;border-radius:8px}
+.mbg{fill:#04100b}
+.mg1{fill:none;stroke:#0c2618;stroke-width:.5px;vector-effect:non-scaling-stroke}
+.mg2{fill:none;stroke:#15402a;stroke-width:1px;vector-effect:non-scaling-stroke}
+.mtr{fill:none;stroke:#5dff9e;stroke-width:1.8px;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 2px rgba(93,255,158,.55))}
+.mcur{fill:#d9ffe6}
+.mlbl{fill:#5dff9e;font-family:var(--font);font-weight:700;font-size:2.4px}
+.mrr line{stroke:#7fc8ff;stroke-width:1.2px;vector-effect:non-scaling-stroke}
+.mrr text{fill:#7fc8ff;font-family:var(--font);font-weight:700;font-size:2.3px}
+.mqb path{fill:none;stroke:#ff8a80;stroke-width:1.6px;vector-effect:non-scaling-stroke}
+.mqb text{fill:#ff8a80;font-family:var(--font);font-weight:700;font-size:2.3px}
+.mvit{display:grid;grid-template-columns:1fr;gap:6px}
+.mv{background:#0a1611;border-radius:8px;padding:6px 10px;display:grid;line-height:1.1}
+.mv span{font-size:.68rem;font-weight:700;letter-spacing:.08em;opacity:.8}
+.mv b{font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums}
+.mv small{font-size:.7rem;opacity:.75}
+.mv.hr{color:#5dff9e} .mv.pa{color:#ff8a80} .mv.sp{color:#6fd8ff} .mv.fr{color:#ffd36b}
+.mv.alarm{background:#3a0d0d;color:#ff8a80;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{background:#5a1414}}
+@media (max-width:620px){.mv b{font-size:1.2rem}}
+.clin{margin:0;font-size:.92rem}
+.mtools{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:700;cursor:pointer}
+.mbtn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--navy-ink)}
+.mbtn:disabled{opacity:.4;cursor:default}
+.mnote{font-size:.8rem;color:var(--muted)}
+.zoomw{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:12px;align-items:center}
+@media (max-width:560px){.zoomw{grid-template-columns:1fr}}
+.zref{fill:none;stroke:#ffd36b;stroke-width:2px;stroke-dasharray:5 3;vector-effect:non-scaling-stroke}
+.zqb{fill:none;stroke:#ff8a80;stroke-width:2.2px;vector-effect:non-scaling-stroke}
+.ztx{font-family:var(--font);font-weight:800;font-size:.95px}
+.ztx.ref{fill:#ffd36b} .ztx.q{fill:#ff8a80}
+.ztxt{margin:0;font-size:.92rem}
+.exg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.exg{grid-template-columns:1fr}}
+.exf{margin:0;display:grid;gap:4px}
+.exf figcaption{font-size:.82rem;color:var(--muted)}
+.exf figcaption b{color:var(--ink)}
+.lsep{stroke:#1d3a2c;stroke-width:1px;vector-effect:non-scaling-stroke}
+.aref{stroke:#3a1a1a;stroke-width:.6px;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
+.atk{fill:#ff8a80;opacity:.6;font-family:var(--font);font-weight:700;font-size:1.8px}
+.llbl{font-family:var(--font);font-weight:700;font-size:2.2px}
+.llbl.art{fill:#ff6b6b} .llbl.ple{fill:#6fd8ff} .llbl.res{fill:#ffd36b}
+.ltr{fill:none;stroke-width:1.6px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.ltr.art{stroke:#ff6b6b} .ltr.ple{stroke:#6fd8ff} .ltr.res{stroke:#ffd36b}
+.mv.pa{color:#ff8a80}
+@media (prefers-reduced-motion:reduce){.mv.alarm{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Intervención · Taquicardias</p>
+    <h1>La estabilidad decide primero; el QRS y la regularidad orientan después</h1>
+  </header>
+
+  <nav class="steps" id="steps" aria-label="Páginas">
+    <button data-p="0"><span>1. Recorrer</span></button>
+    <button data-p="1"><span>2. Mapa completo</span></button>
+    <button data-p="2"><span>3. Casos con ECG</span></button>
+  </nav>
+
+  <section class="page" data-page="0">
+    <p class="lead">Responde una pregunta a la vez. Si el paciente está inestable, el recorrido termina ahí; si no, el QRS y la regularidad definen el grupo.</p>
+    <div class="panel" id="walk" aria-live="polite"></div>
+  </section>
+
+  <section class="page" data-page="1" hidden>
+    <p class="lead">El algoritmo completo. Toca cualquier recuadro de resultado para ver el camino que lleva a él.</p>
+    <div class="panel"><div class="tmap" id="map"></div><p class="mapnote" id="mapnote"></p></div>
+  </section>
+
+  <section class="page" data-page="2" hidden>
+    <p class="lead">Aplica el algoritmo a cada paciente. Lee el trazo y los datos clínicos antes de responder.</p>
+    <div class="cases" id="cases"></div>
+    <div class="panel" id="case" aria-live="polite"></div>
+  </section>
+
+  <div class="pager"><button class="pbtn" id="prev">‹ Anterior</button><button class="pbtn pri" id="next">Siguiente ›</button></div>
+</div>
+
+<script>function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(id,dur,seed){
+  const R=rng(seed),C=[],B=[];let X=null,noCal=false;
+  const add=(c,a,w)=>C.push([c,a,w]);
+  const P=(t,a=.15,w=.022)=>add(t,a,w);
+  const N=(q,rr)=>{add(q-.025,-.08,.008);add(q,1.1,.011);add(q+.028,-.28,.01);add(q+Math.min(.3,.17+.17*rr),.28,.045);B.push({t:q,w:.08})};
+  const V=q=>{add(q,1.0,.032);add(q+.075,-.7,.032);add(q+.32,-.38,.06);B.push({t:q,w:.16})};
+  const BB=(q,rr)=>{add(q-.02,-.06,.008);add(q,1.0,.012);add(q+.055,-.42,.026);add(q+Math.min(.3,.18+.16*rr),-.18,.05);B.push({t:q,w:.13})};
+  const PX=(q,k=1)=>{add(q-.045,.38*k,.032);add(q,1.0,.02);add(q+.06,-.35,.028);add(q+.28,-.3,.06);B.push({t:q,w:.14+.02*(k-1)})};
+  const f=()=>{const ph=[R()*6,R()*6,R()*6];return t=>.05*Math.sin(2*Math.PI*6.3*t+ph[0])+.035*Math.sin(2*Math.PI*8.4*t+ph[1])+.03*Math.sin(2*Math.PI*4.6*t+ph[2])};
+  const saw=t=>{const p=((t*5)%1+1)%1;return p<.72?.1-.32*(p/.72):-.22+.32*((p-.72)/.28)};
+  switch(id){
+   case"st":{let q=.3;while(q<dur+.4){const rr=.5+R()*.015;P(q-.15);N(q,rr);q+=rr}break}
+   case"at":{let q=.3;while(q<dur+.4){P(q-.13,-.14);N(q,.4);q+=.4}break}
+   case"trin":{let q=.25;while(q<dur+.4){N(q,.33);add(q+.045,-.12,.01);q+=.33}break}
+   case"fl":{let q=.36;while(q<dur+.4){N(q,.4);q+=.4}X=saw;break}
+   case"fa":{let q=.3;while(q<dur+.4){const rr=.36+R()*.5;N(q,rr);q+=rr}X=f();break}
+   case"flv":{let q=.36;const seq=[2,3,2,4,2,2,3,4,2,3,2,4];let i=0;while(q<dur+.4){N(q,.5);q+=seq[i++%seq.length]*.2}X=saw;break}
+   case"tam":{let q=.35;const sh=[[.15,.022],[-.12,.02],[.24,.014],[.08,.035]];while(q<dur+.4){const s=sh[Math.floor(R()*4)],pr=.11+R()*.09;P(q-pr,s[0],s[1]);const rr=.4+R()*.24;N(q,rr);q+=rr}break}
+   case"tv":{let q=.25;while(q<dur+.4){V(q);q+=.35}let p=.5;while(p<dur+.4){P(p,.1);p+=.8}break}
+   case"svtb":{let q=.25;while(q<dur+.4){BB(q,.36);q+=.36}break}
+   case"pre":{let q=.25;while(q<dur+.4){PX(q);q+=.34}break}
+   case"fabb":{let q=.3;while(q<dur+.4){const rr=.36+R()*.5;BB(q,rr);q+=rr}X=f();break}
+   case"fap":{let q=.25;while(q<dur+.4){const rr=.22+R()*.3;PX(q,.6+R()*.9);q+=rr}X=f();break}
+   case"tdp":{noCal=true;const s0=.3;X=t=>{const u=t-s0;if(u<0)return 0;const env=1.1*Math.sin(Math.PI*u/2.6)*(u<.15?u/.15:1);return env*Math.sin(2*Math.PI*3.8*u)};
+     for(let u=.066;u<dur;u+=1/3.8)B.push({t:s0+u,w:.16});break}
+  }
+  const wander=R()*6;
+  const v=t=>{let s=.025*Math.sin(2*Math.PI*.22*t+wander);for(const[c,a,w]of C){const x=(t-c)/w;if(x>-5&&x<5)s+=a*Math.exp(-x*x/2)}if(X)s+=X(t);return s};
+  return{v,B:B.filter(b=>b.t>0&&b.t<dur),noCal};
+}
+
+/* ---------- Monitor ---------- */
+const fmtS=x=>x.toFixed(2).replace(".",",")+" s";
+let MID=0;const MONS=new Set();
+function monPath(v,t0,t1,H,base,sx){let d="";const n=Math.round((t1-t0)*400);for(let i=0;i<=n;i++){const t=t0+(t1-t0)*i/n,y=Math.max(.5,Math.min(H-.5,base-v(t)*10));d+=(i?"L":"M")+((t-t0)*25*sx).toFixed(2)+" "+y.toFixed(2)}return d}
+function grid(W,H){let a="",b="";for(let x=0;x<=W;x++)(x%5?(a+=`M${x} 0V${H}`):(b+=`M${x} 0V${H}`));for(let y=0;y<=H;y++)(y%5?(a+=`M0 ${y}H${W}`):(b+=`M0 ${y}H${W}`));return`<path class="mg1" d="${a}"/><path class="mg2" d="${b}"/>`}
+function pulseWave(B,{delay,rise,decay,dic}){
+  // devuelve f(t) en 0..1 continua, latido a latido, con amplitud según el R–R previo
+  const beats=[];
+  if(B.length){const m=B.length>1?(B[B.length-1].t-B[0].t)/(B.length-1):.6;B=[{t:B[0].t-3*m},{t:B[0].t-2*m},{t:B[0].t-m},...B]}
+  B.forEach((b,i)=>{const rr=i?b.t-B[i-1].t:.6,a=Math.max(.3,Math.min(1,Math.pow(rr/.6,.7)));beats.push({t:b.t+delay,a})});
+  const g=(bk,u,v0)=>u<rise?v0+(bk.a-v0)*Math.sin(Math.PI/2*u/rise):bk.a*(Math.exp(-(u-rise)/decay)+dic*Math.exp(-Math.pow((u-rise-.14)/.03,2)));
+  beats.forEach((bk,i)=>{bk.v0=i?g(beats[i-1],bk.t-beats[i-1].t,beats[i-1].v0):0});
+  return t=>{let k=-1;for(let i=0;i<beats.length;i++){if(beats[i].t<=t)k=i;else break}
+    if(k<0)return beats.length?beats[0].v0*Math.exp(-(beats[0].t-t)/decay):0;return g(beats[k],t-beats[k].t,beats[k].v0)};
+}
+function lanePath(f,dur,y0,h){let d="";const n=dur*120;for(let i=0;i<=n;i++){const t=i/120*1,y=y0+h-Math.max(0,Math.min(1,f(t)))*h;d+=(i?"L":"M")+(t*25).toFixed(2)+" "+y.toFixed(2)}return d}
+function monSVG(id,{dur=6,H=32,seed=5,live=true,showRR=false,showQRS=false,vit=null}={}){
+  const G=build(id,dur,seed),W=dur*25,base=H*.6,cid="m"+(++MID);
+  const d=monPath(G.v,0,dur,H,base,1);
+  let rr="",qb="";const rrs=[];
+  if(!G.noCal){for(let i=1;i<G.B.length;i++){const a=G.B[i-1].t*25,b=G.B[i].t*25,r=G.B[i].t-G.B[i-1].t;rrs.push(r);
+      rr+=`<line x1="${a}" y1="2" x2="${a}" y2="4.4"/><line x1="${b}" y1="2" x2="${b}" y2="4.4"/><line x1="${a}" y1="3.2" x2="${b}" y2="3.2"/>`+((b-a)>8?`<text x="${(a+b)/2}" y="6.6" text-anchor="middle">${Math.round(r*1000)}</text>`:"")}
+    const k=G.B[Math.min(1,G.B.length-1)];if(k){const x1=(k.t-k.w/2-.01)*25,x2=(k.t+k.w/2-.01)*25,y=H-3;qb=`<path d="M${x1} ${y-1.2}V${y}H${x2}V${y-1.2}"/><text x="${x2+1}" y="${y+.8}">QRS ${fmtS(k.w)}</text>`}}
+  const mean=rrs.length?rrs.reduce((a,b)=>a+b,0)/rrs.length:.26;
+  // Ondas de los demás signos vitales
+  let lanes="",lst="",TH=H;
+  if(vit){
+    const weak=G.noCal?.35:1, perf=Math.max(.4,Math.min(1,(vit.pas-50)/70));
+    const art=pulseWave(G.B,{delay:.14,rise:.07,decay:.32,dic:.12}), ple=pulseWave(G.B,{delay:.24,rise:.12,decay:.38,dic:.08});
+    const aH=22,aY=H+1,maxP=160,top=v=>aY+aH-(v/maxP)*aH;
+    const norm=f=>{let lo=1e9,hi=-1e9;for(let t=.5;t<dur;t+=.01){const v=f(t);if(v<lo)lo=v;if(v>hi)hi=v}const r=Math.max(1e-6,hi-lo);return t=>Math.max(0,Math.min(1,(f(t)-lo)/r))};
+    const artN=norm(art),pleN=norm(ple);
+    const artF=t=>{const x=G.noCal?.5+(artN(t)-.5)*.6:artN(t);return(vit.pad+(vit.pas-vit.pad)*x)/maxP};
+    const pY=aY+aH+2,pH=12,rY=pY+pH+2,rH=11;TH=rY+rH+1;
+    const plF=t=>.12+.8*pleN(t)*perf*weak;
+    const fr=vit.fr/60,ph=seed%7;const rF=t=>.5+.42*Math.sin(2*Math.PI*fr*t+ph)*(vit.fr>24?(.8+.2*Math.sin(2*Math.PI*.37*t)):1);
+    lst=`<line class="lsep" x1="0" x2="${W}" y1="${H+.5}" y2="${H+.5}"/>
+      ${[120,80,40].map(v=>`<line class="aref" x1="0" x2="${W}" y1="${top(v)}" y2="${top(v)}"/><text class="atk" x="${W-.8}" y="${top(v)-.5}" text-anchor="end">${v}</text>`).join("")}
+      <text class="llbl art" x="1.2" y="${aY+3}">ART</text><text class="llbl ple" x="1.2" y="${pY+3}">Pleth</text><text class="llbl res" x="1.2" y="${rY+3}">Resp</text>`;
+    lanes=`<path class="ltr art" d="${lanePath(artF,dur,aY,aH)}"/><path class="ltr ple" d="${lanePath(plF,dur,pY,pH)}"/><path class="ltr res" d="${lanePath(rF,dur,rY,rH)}"/>`;
+  }
+  const svg=`<svg class="mon-svg" viewBox="0 0 ${W} ${TH}" data-mon="${cid}" role="img" aria-label="Monitor: ECG${vit?", presión arterial, pletismografía y respiración":""}">
+    ${live?`<defs><clipPath id="${cid}"><rect class="r1" x="0" y="0" width="${W}" height="${TH}"/><rect class="r2" x="0" y="0" width="0" height="${TH}"/></clipPath></defs>`:""}
+    <rect width="${W}" height="${TH}" class="mbg"/>
+    <g>${grid(W,H)}</g>${lst}<text class="mlbl" x="1.2" y="${H-1.3}">II</text>
+    <g ${live?`clip-path="url(#${cid})"`:""}><path class="mtr" d="${d}"/>${lanes}</g>
+    <g class="mrr" ${showRR?"":"hidden"}>${rr}</g><g class="mqb" ${showQRS?"":"hidden"}>${qb}</g>
+    ${live?`<circle class="mcur" r=".9" cx="0" cy="${base}"/>`:""}</svg>`;
+  return{svg,G,cid,W,H,base,dur,hr:Math.round(60/mean),w:G.B.length?G.B[Math.min(1,G.B.length-1)].w:.16,noCal:G.noCal,id,seed};
+}
+function zoomSVG(M){
+  const k=M.G.B[Math.min(1,M.G.B.length-1)],t0=k.t-.32,t1=k.t+.4,sx=1,W=(t1-t0)*25,H=20,base=H*.64;
+  const d=monPath(M.G.v,t0,t1,H,base,sx);
+  const x1=(k.t-k.w/2-.01-t0)*25,x2=(k.t+k.w/2-.01-t0)*25,ref=.12*25;
+  return`<svg class="zoom-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Ampliación de un complejo QRS">
+    <rect width="${W}" height="${H}" class="mbg"/>${grid(W,H)}<path class="mtr" d="${d}"/>
+    <path class="zref" d="M${x1} 2.4H${x1+ref}"/><text class="ztx ref" x="${x1}" y="1.8">límite 0,12 s</text>
+    <path class="zqb" d="M${x1} ${H-4}V${H-2.6}H${x2}V${H-4}"/><text class="ztx q" x="${x1}" y="${H-.8}">QRS ${fmtS(k.w)}</text></svg>`;
+}
+let mSpeed=1,mPaused=false;const RED=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function startMon(root,M){const svg=root.querySelector(`[data-mon="${M.cid}"]`);if(!svg)return;
+  MONS.add({svg,M,t:RED?M.dur-.001:0,r1:svg.querySelector(".r1"),r2:svg.querySelector(".r2"),cur:svg.querySelector(".mcur"),ys:null})}
+let mLast=performance.now();
+(function loop(now){const dt=Math.min(.05,(now-mLast)/1000);mLast=now;
+  for(const m of MONS){if(!m.svg.isConnected){MONS.delete(m);continue}
+    if(!mPaused&&!RED){m.t+=dt*mSpeed;if(m.t>=m.M.dur)m.t=0}
+    const x=m.t*25,gap=5;m.r1.setAttribute("width",x);m.r2.setAttribute("x",x+gap);m.r2.setAttribute("width",Math.max(0,m.M.W-x-gap));
+    m.cur.setAttribute("cx",x);m.cur.setAttribute("cy",Math.max(.5,Math.min(m.M.H-.5,m.M.base-m.M.G.v(m.t)*10)))}
+  requestAnimationFrame(loop)})(performance.now());
+
+function monitorBlock(M,vit){
+  const low=vit.pas<90;
+  return`<div class="monitor">
+    <div class="mscreen">${M.svg}</div>
+    <div class="mvit">
+      <div class="mv hr"><span>FC</span><b>${M.hr}</b><small>lpm</small></div>
+      <div class="mv pa ${low?"alarm":""}"><span>PA</span><b>${vit.pas}/${vit.pad}</b><small>mmHg${low?" · baja":""}</small></div>
+      <div class="mv sp"><span>SpO₂</span><b>${vit.spo}</b><small>%</small></div>
+      <div class="mv fr"><span>FR</span><b>${vit.fr}</b><small>rpm</small></div>
+    </div>
+  </div>
+  <p class="clin"><b>Al examinarlo:</b> ${vit.cl}</p>
+  <div class="mtools">
+    <button class="mbtn" data-t="rr" aria-pressed="false" ${M.noCal?"disabled":""}>Medir R–R</button>
+    <button class="mbtn" data-t="qrs" aria-pressed="false" ${M.noCal?"disabled":""}>Medir QRS</button>
+    <button class="mbtn" data-t="pp">${mPaused?"Reproducir":"Pausar"}</button>
+    ${M.noCal?'<span class="mnote">Los QRS cambian de forma y amplitud: no se miden latido a latido.</span>':""}
+  </div>
+  <div class="zoomw" hidden></div>`;
+}
+function wireMonitor(root,M){
+  startMon(root,M);
+  root.querySelectorAll(".mbtn").forEach(b=>b.onclick=()=>{const t=b.dataset.t;
+    if(t==="pp"){mPaused=!mPaused;document.querySelectorAll('.mbtn[data-t="pp"]').forEach(x=>x.textContent=mPaused?"Reproducir":"Pausar");return}
+    const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);
+    if(t==="rr")root.querySelector(".mrr").toggleAttribute("hidden",!on);
+    if(t==="qrs"){root.querySelector(".mqb").toggleAttribute("hidden",!on);const z=root.querySelector(".zoomw");z.hidden=!on;
+      if(on)z.innerHTML=`<div class="zoomc">${zoomSVG(M)}</div><p class="ztxt">Complejo ampliado. El QRS dura <b>${fmtS(M.w)}</b>: es <b>${M.w>=.12?"ancho":"estrecho"}</b> (${M.w>=.12?"igual o mayor que":"menor que"} 0,12 s, la línea punteada).</p>`}
+  });
+}
+
+const $=id=>document.getElementById(id);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const Q=[
+ {k:"inst",t:"¿Inestable por la taquicardia?",help:"Hipotensión, alteración aguda de la conciencia, dolor torácico isquémico, shock o insuficiencia cardíaca aguda causados por la taquicardia."},
+ {k:"qrs",t:"¿QRS ≥ 0,12 s?",help:"Mide el QRS: 3 cuadros pequeños o más es ancho."},
+ {k:"reg",t:"¿El ritmo es regular?",help:"Compara los intervalos R–R: ¿son constantes de un latido a otro?"}
+];
+const R={
+ inst:{ty:"red",n:"Cardioversión sincronizada",l:["No sincronizada si es polimórfica"]},
+ er:{ty:"blue",n:"Estrecho, regular",l:["Maniobras vagales","Adenosina","BB o calcioantagonista"]},
+ ei:{ty:"blue",n:"Estrecho, irregular",l:["Control de frecuencia","Riesgo tromboembólico","FA, flúter variable"]},
+ ar:{ty:"amber",n:"Ancho, regular",l:["AHA: antiarrítmico IV","ESC: cardioversión con sedación segura"]},
+ ai:{ty:"red",n:"Ancho, irregular",l:["TV polimórfica: descarga no sincronizada","FA preexcitada: evitar bloqueadores del nodo AV"]}
+};
+const PATH={inst:["si"],er:["no","no","si"],ei:["no","no","no"],ar:["no","si","si"],ai:["no","si","no"]};
+const ANS=(k,a)=>({inst:{si:"Sí",no:"No"},qrs:{si:"Sí (ancho)",no:"No (estrecho)"},reg:{si:"Regular",no:"Irregular"}})[k][a];
+const resHTML=k=>`<div class="resx ty-${R[k].ty}"><b>${R[k].n}</b><ul>${R[k].l.map(x=>`<li>${x}</li>`).join("")}</ul></div>`;
+function endOf(ans){if(ans[0]==="si")return"inst";if(ans.length<3)return null;return(ans[1]==="si"?"a":"e")+(ans[2]==="si"?"r":"i")}
+
+/* ---------- 1. Recorrer ---------- */
+const EXC={};
+function examples(k){
+  if(k==="inst")return"";
+  if(!EXC[k]){const P=k==="qrs"?[["st","Estrecho"],["tv","Ancho"]]:[["trin","Regular"],["fa","Irregular"]];
+    EXC[k]=`<div class="exg">${P.map(([id,l],j)=>{const M=monSVG(id,{dur:3,H:28,seed:j+3,live:false,showRR:k==="reg",showQRS:k==="qrs"});return`<figure class="exf"><figcaption><b>${l}</b>${k==="qrs"?` · QRS ${fmtS(M.w)}`:""}</figcaption>${M.svg}</figure>`}).join("")}</div>`}
+  return EXC[k];
+}
+const w={ans:[]};
+function walk(){
+  const trail=w.ans.map((a,i)=>`<span>${Q[i].t} <b>${ANS(Q[i].k,a)}</b></span>`).join("<i>›</i>");
+  const end=endOf(w.ans);
+  if(end){$("walk").innerHTML=`<div class="trail">${trail}</div>${resHTML(end)}<button class="restart" id="rs">↺ Empezar de nuevo</button>`;$("rs").onclick=()=>{w.ans=[];walk()};return}
+  const q=Q[w.ans.length],o=q.k==="reg"?[["si","Regular"],["no","Irregular"]]:q.k==="qrs"?[["si","Sí · ancho"],["no","No · estrecho"]]:[["si","Sí"],["no","No"]];
+  $("walk").innerHTML=`<div class="trail">${trail||'<span style="background:none;color:var(--muted);padding:0">Pregunta inicial</span>'}</div>
+    <p class="qnum">Pregunta ${w.ans.length+1} de 3</p><p class="qbig">${q.t}</p><p class="qhelp">${q.help}</p>${examples(q.k)}
+    <div class="yn">${o.map(([v,l])=>`<button data-a="${v}">${l}</button>`).join("")}</div>
+    ${w.ans.length?'<button class="restart" id="bk">‹ Pregunta anterior</button>':""}`;
+  $$("[data-a]",$("walk")).forEach(b=>b.onclick=()=>{w.ans.push(b.dataset.a);walk()});
+  if($("bk"))$("bk").onclick=()=>{w.ans.pop();walk()};
+}
+walk();
+
+/* ---------- 2. Mapa ---------- */
+let sel=null;
+function renderMap(){
+  const p=sel?PATH[sel]:null,d=k=>sel&&sel!==k?"dim":"";
+  const card=k=>`<button class="rc ty-${R[k].ty} ${d(k)}" data-r="${k}"><b>${R[k].n}</b><ul>${R[k].l.map(x=>`<li>${x}</li>`).join("")}</ul></button>`;
+  $("map").innerHTML=`<div class="trow"><div class="mq ${sel?"on":""}">${Q[0].t}</div><div class="hl ${sel==="inst"?"on":""}"><span>sí</span></div>${card("inst").replace('class="rc','class="rc mrx')}</div>
+    <div class="vl ${sel&&sel!=="inst"?"on":""}" style="justify-self:start;margin-left:25%"><span>no</span></div>
+    <div class="trow"><div class="mq ${sel?(sel==="inst"?"dim":"on"):""}">${Q[1].t}</div><span></span><span></span></div>
+    <div class="split2 ${sel&&sel[0]==="e"?"on-e":""} ${sel&&sel[0]==="a"?"on-a":""}"><span>no: estrecho</span><span>sí: ancho</span></div>
+    <div class="quad4">${["er","ei","ar","ai"].map(card).join("")}</div>`;
+  $$("[data-r]",$("map")).forEach(b=>b.onclick=()=>{sel=sel===b.dataset.r?null:b.dataset.r;renderMap()});
+  $("mapnote").innerHTML=sel?`<b>Camino:</b> ${p.map((a,i)=>`${Q[i].t} ${ANS(Q[i].k,a).toLowerCase()}`).join(" → ")} → <b>${R[sel].n}</b>`:"Toca un resultado para ver su camino.";
+}
+renderMap();
+
+/* ---------- 3. Casos ---------- */
+const CASES=[
+ {n:"TV con hipotensión",d:"Hombre de 64 años con infarto previo; pálido, sudoroso, PAS 76 mmHg.",v:["Pulso débil","PAS 76 mmHg","FC 170 lpm","Somnoliento"],e:"tvs",r:"inst",why:["La hipotensión y la alteración de la conciencia indican inestabilidad por la taquicardia."]},
+ {n:"Torsades con hipotensión",d:"Mujer de 58 años con QT largo por fármacos; mareada y con PAS 70 mmHg.",v:["Pulso débil","PAS 70 mmHg","FC ≈ 230 lpm"],e:"tvp",r:"inst",extra:"Es polimórfica: la descarga debe ser no sincronizada.",why:["Está inestable por la taquicardia."]},
+ {n:"Taquicardia por reentrada",d:"Mujer de 27 años con palpitaciones de inicio súbito; bien perfundida.",v:["PAS 118 mmHg","FC 182 lpm","Alerta"],e:"reen",r:"er",why:["Está estable.","El QRS dura menos de 3 cuadros pequeños: estrecho.","Los R–R son constantes: regular."]},
+ {n:"Fibrilación auricular",d:"Hombre de 71 años con palpitaciones desde hace un día; sin dolor ni disnea.",v:["PAS 128 mmHg","FC ≈ 100 lpm","Alerta"],e:"fa",r:"ei",why:["Está estable.","QRS estrecho.","Los R–R cambian sin patrón: irregular."]},
+ {n:"Flúter con conducción variable",d:"Mujer de 66 años con disnea leve al esfuerzo; estable.",v:["PAS 124 mmHg","FC ≈ 105 lpm","Alerta"],e:"flv",r:"ei",why:["Está estable.","QRS estrecho.","La conducción 2:1, 3:1 y 4:1 hace que los R–R cambien: irregular."]},
+ {n:"TV monomórfica estable",d:"Hombre de 59 años con palpitaciones; consciente y con buena presión.",v:["PAS 112 mmHg","FC 171 lpm","Alerta"],e:"tvs",r:"ar",why:["Está estable pese a la frecuencia.","El QRS es ancho.","Los R–R son constantes: regular."]},
+ {n:"FA preexcitada",d:"Hombre de 22 años con síndrome de Wolff-Parkinson-White conocido; palpitaciones, estable.",v:["PAS 110 mmHg","FC ≈ 220 lpm","Alerta"],e:"fap",r:"ai",why:["Está estable por ahora.","Los QRS son anchos y cambian de forma.","Los R–R son muy irregulares."]}
+];
+const EMAP={tvs:"tv",tvp:"tdp",reen:"trin",fa:"fa",flv:"flv",fap:"fap"};
+const VIT=[
+ {pas:76,pad:48,spo:91,fr:26,cl:"somnoliento, piel fría y sudorosa, llenado capilar lento."},
+ {pas:70,pad:40,spo:90,fr:24,cl:"mareada, responde con dificultad a la voz."},
+ {pas:118,pad:76,spo:98,fr:18,cl:"alerta, piel tibia, sin dolor torácico."},
+ {pas:128,pad:80,spo:97,fr:18,cl:"alerta, sin dolor torácico ni disnea."},
+ {pas:124,pad:78,spo:96,fr:20,cl:"alerta; disnea leve solo al esfuerzo."},
+ {pas:112,pad:70,spo:97,fr:18,cl:"alerta, bien perfundido, sin dolor torácico."},
+ {pas:110,pad:70,spo:97,fr:20,cl:"alerta, con palpitaciones, bien perfundido."}
+];
+const cs={i:0,step:0,ok:new Set(),errs:0};
+function renderCaseList(){$("cases").innerHTML=CASES.map((c,i)=>`<button data-c="${i}" aria-current="${i===cs.i}" class="${cs.ok.has(i)?"ok":""}">${c.n}</button>`).join("");$$("[data-c]").forEach(b=>b.onclick=()=>openCase(+b.dataset.c))}
+function openCase(i){cs.i=i;cs.step=0;cs.errs=0;renderCaseList();const c=CASES[i];
+  $("case").innerHTML=`<div><b style="font-size:1.05rem">${c.n}</b><p class="lead" style="margin-top:2px">${c.d}</p></div><div id="monw"></div><div id="cq"></div>`;
+  const M=monSVG(EMAP[c.e],{seed:i*17+5,vit:VIT[i]});$("monw").innerHTML=monitorBlock(M,VIT[i]);wireMonitor($("monw"),M);caseStep()}
+function caseStep(){
+  const c=CASES[cs.i],path=PATH[c.r];
+  if(cs.step>=path.length){cs.ok.add(cs.i);renderCaseList();
+    $("cq").innerHTML=`${resHTML(c.r)}${c.extra?`<p class="note" style="margin-top:10px">${c.extra}</p>`:""}
+      <p class="cfb" style="margin-top:10px">${cs.errs?`Llegaste con ${cs.errs} ${cs.errs===1?"corrección":"correcciones"}.`:"Recorrido sin errores."}</p>
+      ${cs.i<CASES.length-1?'<div style="margin-top:10px"><button class="pbtn pri" id="nc">Siguiente caso ›</button></div>':""}`;
+    if($("nc"))$("nc").onclick=()=>openCase(cs.i+1);return}
+  const q=Q[cs.step],right=path[cs.step],o=q.k==="reg"?[["si","Regular"],["no","Irregular"]]:q.k==="qrs"?[["si","Sí · ancho"],["no","No · estrecho"]]:[["si","Sí"],["no","No"]];
+  $("cq").innerHTML=`<p class="qnum">Pregunta ${cs.step+1}</p><p class="qbig" style="font-size:1.3rem">${q.t}</p><div class="yn">${o.map(([v,l])=>`<button data-a="${v}">${l}</button>`).join("")}</div><div id="cf"></div>`;
+  $$("[data-a]",$("cq")).forEach(b=>b.onclick=()=>{const ok=b.dataset.a===right;if(!ok)cs.errs++;
+    $$("[data-a]",$("cq")).forEach(x=>x.disabled=true);
+    $("cf").innerHTML=`<p class="cfb" style="margin-top:10px"><span class="${ok?"good":"bad"}">${ok?"Correcto.":`La respuesta es "${ANS(q.k,right)}".`}</span> ${c.why[cs.step]}</p><div style="margin-top:8px"><button class="pbtn pri" id="go">Continuar ›</button></div>`;
+    $("go").onclick=()=>{cs.step++;caseStep()};$("go").focus()});
+}
+renderCaseList();openCase(0);
+
+/* ---------- Páginas ---------- */
+const pages=$$(".page");let cur=0;
+function show(i){cur=Math.max(0,Math.min(pages.length-1,i));pages.forEach((p,j)=>p.hidden=j!==cur);
+  $$("#steps button").forEach((b,j)=>{b.removeAttribute("aria-current");if(j===cur)b.setAttribute("aria-current","step");b.classList.toggle("done",j<cur)});
+  $("prev").disabled=cur===0;$("next").textContent=cur===pages.length-1?"Volver al inicio":"Siguiente ›";
+  if(cur===2)openCase(cs.i);window.scrollTo({top:0,behavior:"smooth"})}
+$$("#steps button").forEach(b=>b.onclick=()=>show(+b.dataset.p));
+$("prev").onclick=()=>show(cur-1);$("next").onclick=()=>show(cur===pages.length-1?0:cur+1);
+show(0);
+</script>
+
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

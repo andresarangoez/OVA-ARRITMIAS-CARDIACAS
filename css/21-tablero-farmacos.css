@@ -1,0 +1,144 @@
+/* --- TABLERO DE INTERVENCIONES FARMACOLÓGICAS ---
+   Acompaña al simulador. Reutiliza el componente de pestañas de
+   css/10-componentes.css (.tabs, .tabs-nav, .tabs-panel) en vez de definir
+   otro: lo único que se añade aquí es lo propio del tablero. */
+
+#tablero-farmacos {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--fucs-gris);
+    border-top: 4px solid var(--fucs-dorado);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.tf-cabecera h3 {
+    margin: 0 0 6px;
+    color: var(--fucs-azul-profundo);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.tf-intro {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 78ch;
+}
+
+/* --- FILTRO POR SITUACIÓN CLÍNICA --- */
+.tf-filtros {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--fucs-niebla);
+}
+.tf-filtros-rotulo {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-right: 2px;
+}
+.tf-filtro {
+    padding: 6px 13px;
+    border: 1px solid var(--fucs-gris);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.tf-filtro:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.14); }
+.tf-filtro.activo {
+    background: var(--fucs-azul-profundo);
+    border-color: var(--fucs-azul-profundo);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.tf-sin-resultados {
+    margin: 18px 0 0; padding: 14px 16px;
+    background: var(--fucs-niebla); border-radius: var(--bento-radius-md);
+    color: var(--text-muted); font-size: 0.9rem;
+}
+
+/* --- FICHA DEL FÁRMACO --- */
+.tf-tabs { margin-top: 6px; }
+
+.tf-encabezado { margin-bottom: 14px; }
+.tf-nombre {
+    margin: 0; color: var(--fucs-azul-profundo);
+    font-size: 1.32rem; font-weight: 700;
+}
+.tf-grupo {
+    margin: 2px 0 0; color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.tf-bloque { margin: 0 0 16px; }
+.tf-bloque:last-child { margin-bottom: 0; }
+.tf-bloque-titulo {
+    margin: 0 0 6px;
+    font-size: 0.76rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--fucs-azul-profundo);
+}
+.tf-bloque p { margin: 0; max-width: 80ch; line-height: 1.6; }
+
+.tf-lista { margin: 0; padding-left: 20px; max-width: 80ch; }
+.tf-lista li { margin-bottom: 6px; line-height: 1.55; }
+.tf-lista li:last-child { margin-bottom: 0; }
+
+/* Las contraindicaciones y las precauciones se distinguen del resto: son lo
+   que no debe pasarse por alto al elegir el fármaco. */
+.tf-bloque--alerta,
+.tf-bloque--aviso {
+    padding: 12px 14px;
+    border-radius: var(--bento-radius-md);
+    border-left: 4px solid currentColor;
+}
+.tf-bloque--alerta { background: rgba(231, 76, 60, 0.07); color: #a93226; }
+.tf-bloque--aviso  { background: rgba(243, 156, 18, 0.09); color: #9a6508; }
+.tf-bloque--alerta .tf-bloque-titulo,
+.tf-bloque--aviso  .tf-bloque-titulo { color: inherit; }
+.tf-bloque--alerta .tf-lista,
+.tf-bloque--aviso  .tf-lista { color: var(--text-body); }
+
+.tf-aviso {
+    margin: 10px 0 0; padding: 10px 13px;
+    background: rgba(243, 156, 18, 0.09);
+    border-left: 4px solid #9a6508;
+    border-radius: var(--bento-radius-md);
+    font-size: 0.88rem; line-height: 1.55;
+}
+
+/* --- TABLA DE DOSIS --- */
+.tf-tabla-scroll { overflow-x: auto; }
+.tf-tabla {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem; min-width: 620px;
+}
+.tf-tabla th, .tf-tabla td {
+    padding: 9px 11px;
+    border-bottom: 1px solid var(--fucs-niebla);
+    text-align: left; vertical-align: top;
+}
+.tf-tabla thead th {
+    background: var(--fucs-niebla);
+    color: var(--fucs-azul-profundo);
+    font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--fucs-gris);
+}
+.tf-tabla tbody th { font-weight: 600; color: var(--fucs-azul-oscuro); width: 24%; }
+.tf-tabla tbody tr:last-child th,
+.tf-tabla tbody tr:last-child td { border-bottom: 0; }
+
+.tf-cita { color: var(--text-muted); font-size: 0.85em; white-space: nowrap; }
+
+.tf-referencias { border-top: 1px solid var(--fucs-niebla); padding-top: 14px; }
+.tf-refs { margin: 0; padding-left: 24px; font-size: 0.82rem; color: var(--text-muted); }
+.tf-refs li { margin-bottom: 4px; line-height: 1.5; }
+
+@media (max-width: 640px) {
+    #tablero-farmacos { padding: 16px 14px 18px; }
+    .tf-filtros-rotulo { width: 100%; margin-bottom: 2px; }
+}

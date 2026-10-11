@@ -20,7 +20,7 @@ function iniciarModulo(idModulo) {
     if (bienvenida) bienvenida.style.display = 'none';
     if (desarrollo) {
         desarrollo.style.display = 'block';
-        activarBarraProgreso(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onProgresoUnidad);
+        activarSeguimientoUnidad(desarrollo, OVA.ShellModulo && OVA.ShellModulo.onUnidadVisible);
     }
 
     // Los botones flotantes (índice del módulo y volver arriba) se revelan
@@ -35,12 +35,51 @@ function iniciarModulo(idModulo) {
     const simulador = document.getElementById('simulador-wrapper');
     if (simulador && OVA.Navegacion && OVA.Navegacion.MODULOS_CON_SIMULADOR.includes(idModulo)) {
         simulador.style.display = 'block';
+        colocarSimuladorEnSuSitio(contenedor, simulador);
     }
 
     // Llevar el scroll al tope absoluto de la página, donde se ve el
     // encabezado global de la OVA (Facultad de Enfermería · Universidad FUCS)
     // — no solo la barra del módulo, y mucho menos el contenido de la Unidad 1.
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- UBICACIÓN DEL SIMULADOR DENTRO DEL MÓDULO ---
+// El simulador vive en index.html, fuera del HTML de los módulos, por una
+// razón que sigue siendo buena: hay uno solo, con su motor, su estado y su
+// registro, y los módulos 03, 05 y 06 lo comparten sin duplicar una línea.
+// Lo que estaba mal era DÓNDE aparecía: como hermano de .pedagogy-container,
+// quedaba al final de todo, después incluso de la bibliografía, y el
+// estudiante llegaba a él cuando ya había terminado el módulo.
+//
+// Cada módulo tiene ahora un <div data-anclaje-simulador> en su apartado de
+// recurso interactivo, con un párrafo que explica para qué sirve el simulador
+// EN ESE módulo (reconocer el ritmo en el 03, decidir el tratamiento en el
+// 05, cerrar el ciclo en el 06). Al entrar al desarrollo, el nodo se traslada
+// allí; al salir, vuelve a su sitio.
+//
+// Trasladar y no clonar es deliberado: un clon duplicaría el canvas, el bucle
+// de animación y los id, y el estudiante perdería el registro clínico al
+// cambiar de módulo.
+function colocarSimuladorEnSuSitio(contenedor, simulador) {
+    const anclaje = contenedor.querySelector('[data-anclaje-simulador]');
+    if (!anclaje || anclaje.contains(simulador)) return;
+    anclaje.appendChild(simulador);
+}
+
+// Devuelve el simulador a index.html, como último hijo de #vista-modulo, que
+// es donde estaba al cargar la página.
+//
+// Esto NO es opcional ni cosmético: cargarContenidoModulo() (03-navegacion.js)
+// reemplaza el innerHTML del contenedor del módulo en cada visita, incluso
+// cuando el HTML viene de la caché. Si el simulador siguiera dentro, se iría
+// por delante con él —canvas, bucle y todo— y no habría forma de recuperarlo
+// sin recargar la página. Por eso se llama ANTES de tocar ese innerHTML.
+function devolverSimuladorASuSitio() {
+    const simulador = document.getElementById('simulador-wrapper');
+    const vista = document.getElementById('vista-modulo');
+    if (!simulador || !vista) return;
+    if (simulador.parentElement !== vista) vista.appendChild(simulador);
 }
 
 // Se invoca desde abrirModulo() en 03-navegacion.js cada vez que el
@@ -86,40 +125,35 @@ function reiniciarEstadoModulo(idModulo) {
     }
 }
 
-// --- BARRA DE PROGRESO (opcional — no hace nada si el módulo no la incluye) ---
-// Observa las .modulo-unidad del módulo y actualiza .barra-progreso-fill /
-// .barra-progreso-meta .porcentaje según cuántas unidades distintas ha
-// visto el estudiante mientras hace scroll. Se activa una sola vez por
-// contenedor (guardia en dataset) para no acumular observers si el
-// estudiante entra y sale del módulo varias veces en la misma sesión.
+// --- UNIDAD VISIBLE (opcional — no hace nada si el módulo no tiene unidades) ---
+// Observa las .modulo-unidad y avisa de cuál es la que el estudiante tiene
+// delante, para que el sidebar de índice (js/13-shell-indice.js) la marque.
+// Se activa una sola vez por contenedor (guardia en dataset) para no acumular
+// observers si el estudiante entra y sale del módulo varias veces.
 //
-// onProgreso (opcional) permite que otro componente (el sidebar de índice
-// del curso, ver js/13-shell-indice.js) se entere de cada actualización sin
-// que este archivo sepa nada de él — se le pasa un solo objeto con todo lo
-// que podría necesitar, no argumentos posicionales sueltos:
-//   { indiceActual, elementoActual, indicesVistos, totalUnidades, porcentaje }
-// indiceActual es la unidad visible más arriba en pantalla ahora mismo (se
+// Antes esto llevaba además la cuenta de unidades vistas y pintaba una barra
+// de progreso. Se retiró: el avance del estudiante no sobrevive a salir y
+// volver a entrar, y cuando el curso se empaquete en SCORM es Moodle quien lo
+// registra.
+//
+// onUnidadVisible recibe un solo objeto, no argumentos posicionales sueltos:
+//   { indiceActual, elementoActual, totalUnidades }
+// indiceActual es la unidad visible más arriba en pantalla ahora mismo; se
 // conserva la última conocida si momentáneamente ninguna cumple el umbral,
-// para no "parpadear" a 0 en huecos de scroll). indicesVistos es la lista
-// completa de unidades vistas alguna vez (igual que vistas.size, pero con
-// el detalle de cuáles, no solo cuántas).
-function activarBarraProgreso(desarrollo, onProgreso) {
-    const barra = desarrollo.querySelector('.barra-progreso-fill');
-    if (!barra || desarrollo.dataset.progresoActivo === 'true') return;
-    desarrollo.dataset.progresoActivo = 'true';
+// para que la marca no parpadee en los huecos del scroll.
+function activarSeguimientoUnidad(desarrollo, onUnidadVisible) {
+    if (desarrollo.dataset.seguimientoActivo === 'true') return;
 
     const unidades = Array.from(desarrollo.querySelectorAll('.modulo-unidad'));
     if (unidades.length === 0) return;
+    desarrollo.dataset.seguimientoActivo = 'true';
 
-    const meta = desarrollo.querySelector('.barra-progreso-meta .porcentaje');
-    const vistas = new Set();
     const actualmenteVisibles = new Set();
     let indiceActual = 0;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                vistas.add(entry.target);
                 actualmenteVisibles.add(entry.target);
             } else {
                 actualmenteVisibles.delete(entry.target);
@@ -130,22 +164,11 @@ function activarBarraProgreso(desarrollo, onProgreso) {
             indiceActual = unidades.findIndex(unidad => actualmenteVisibles.has(unidad));
         }
 
-        const porcentaje = Math.round((vistas.size / unidades.length) * 100);
-        barra.style.width = porcentaje + '%';
-        if (meta) meta.textContent = porcentaje + '%';
-
-        if (typeof onProgreso === 'function') {
-            const indicesVistos = unidades.reduce((acc, unidad, indice) => {
-                if (vistas.has(unidad)) acc.push(indice);
-                return acc;
-            }, []);
-
-            onProgreso({
+        if (typeof onUnidadVisible === 'function') {
+            onUnidadVisible({
                 indiceActual,
                 elementoActual: unidades[indiceActual],
-                indicesVistos,
-                totalUnidades: unidades.length,
-                porcentaje
+                totalUnidades: unidades.length
             });
         }
     }, { threshold: 0.3 });
@@ -220,6 +243,7 @@ function verificarAutoevaluacion(boton) {
 
     // --- API PÚBLICA DEL NAMESPACE ---
     OVA.ModuloUI.iniciarModulo = iniciarModulo;
+    OVA.ModuloUI.devolverSimuladorASuSitio = devolverSimuladorASuSitio;
     OVA.ModuloUI.reiniciarEstadoModulo = reiniciarEstadoModulo;
     OVA.ModuloUI.toggleAcordeon = toggleAcordeon;
     OVA.ModuloUI.verificarActividad = verificarActividad;
