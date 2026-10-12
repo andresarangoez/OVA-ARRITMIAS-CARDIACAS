@@ -80,7 +80,14 @@ function dibujar(lienzo, opciones) {
         if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
 
         // Posición de cada R, para poder marcar los R-R sin volver a calcular.
-        if (!arriba && v > 40) { picos.push({ x: x, t: i * dt / 1000 }); arriba = true; }
+        //
+        // El umbral era 40, pensado para la R estrecha, que el motor dibuja a
+        // 80. Pero el complejo ancho —el del escape ventricular y el de los
+        // bloqueos infrahisianos— llega solo a 35, así que no se contaba
+        // ninguno: el bloqueo AV completo declaraba cero complejos en seis
+        // segundos, que es la descripción de una asistolia, no de un bloqueo.
+        // Con 25 entra el ancho y siguen fuera la T (18) y la P (12).
+        if (!arriba && v > 25) { picos.push({ x: x, t: i * dt / 1000 }); arriba = true; }
         if (arriba && v < 10) arriba = false;
     }
     c.stroke();
