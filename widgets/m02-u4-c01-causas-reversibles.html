@@ -755,6 +755,29 @@ requestAnimationFrame(frame);
     sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
     (document.head || document.documentElement).appendChild(sinBarra);
 
+    /* Un lienzo que ocupa sitio en la pagina pero no tiene ni un pixel se
+       midio cuando el modulo estaba oculto. Se le lanza un 'resize', que es el
+       aviso al que ya responden estos codigos para volver a medirse. */
+    function lienzoSinMedir() {
+        var cs = document.getElementsByTagName('canvas');
+        for (var i = 0; i < cs.length; i++) {
+            var c = cs[i], r = c.getBoundingClientRect();
+            if (r.width > 1 && r.height > 1 && (c.width <= 1 || c.height <= 1)) return true;
+        }
+        return false;
+    }
+    function remedirLienzos() {
+        if (lienzoSinMedir()) dispatchEvent(new Event('resize'));
+    }
+    var intentos = 0;
+    var vigilante = setInterval(function () {
+        if (!document.getElementsByTagName('canvas').length || ++intentos > 40) {
+            clearInterval(vigilante);
+            return;
+        }
+        remedirLienzos();
+    }, 300);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);
@@ -764,7 +787,7 @@ requestAnimationFrame(frame);
     }
     addEventListener('load', medir);
     addEventListener('resize', medir);
-    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') { remedirLienzos(); medir(); } });
     document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
     if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
     [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
