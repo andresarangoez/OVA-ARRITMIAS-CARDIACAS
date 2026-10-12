@@ -8,7 +8,7 @@
     display: block; width: 100%;
     border: 1px solid var(--fucs-gris);
     border-radius: var(--bento-radius-md);
-    background: #fff5f5;
+    background: #fff6f6;
 }
 .tira-ecg-pie {
     margin: 7px 0 0; font-size: 0.76rem; color: var(--text-muted); line-height: 1.5;

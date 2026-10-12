@@ -272,14 +272,11 @@ function pintarTira(raiz) {
     const caja = raiz.querySelector('.ls-tira');
     caja.innerHTML = '';
 
-    const lienzo = document.createElement('canvas');
-    lienzo.className = 'tira-ecg-lienzo';
-    lienzo.setAttribute('role', 'img');
-    caja.appendChild(lienzo);
-    const info = OVA.TiraECG.dibujar(lienzo, { ritmo: tira.ritmo, segundos: 6 });
-    if (info) {
-        lienzo.setAttribute('aria-label', 'Trazado para la lectura sistemática, 6 segundos a 25 mm/s.');
-    }
+    const info = OVA.TiraECG.crear({
+        ritmo: tira.ritmo, segundos: 6,
+        etiqueta: 'Trazado para la lectura sistemática, 6 segundos a 25 mm/s.'
+    });
+    if (info) caja.appendChild(info.nodo);
     const pie = document.createElement('p');
     pie.className = 'tira-ecg-pie';
     pie.innerHTML = '<span class="tira-ecg-calibre">6 s · 25 mm/s · 10 mm/mV</span> '
