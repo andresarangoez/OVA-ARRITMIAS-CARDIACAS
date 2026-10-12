@@ -343,9 +343,18 @@
 
         <div id="simulador-wrapper">
             <div class="main-container">
+
+                <!-- EL MONITOR COMO UN SOLO APARATO
+                     La barra de mando (selector de ritmo e instrucción) y la
+                     pantalla eran dos tarjetas distintas: una blanca encima de
+                     un monitor oscuro, como si no tuvieran que ver. Ahora
+                     comparten carcasa: la consola es la franja superior del
+                     mismo dispositivo. -->
+                <div class="monitor-dispositivo">
+
                 <div class="controls">
                     <div class="control-group">
-                        <label for="selectorRitmo"><strong>Ritmo clínico:</strong></label>
+                        <label for="selectorRitmo"><strong>Ritmo clínico</strong></label>
                         <select id="selectorRitmo">
                             <option value="sinusal">Ritmo Sinusal</option>
 
@@ -382,8 +391,8 @@
                         </select>
                     </div>
                     <div class="control-group instruccion-box">
-                        <p style="margin: 0; font-size: 0.9rem;">
-                            <strong>Instrucción:</strong> Al cambiar el ritmo, el simulador actualizará automáticamente el estado clínico del paciente.
+                        <p>
+                            <strong>Instrucción</strong> Al cambiar el ritmo, el monitor recalcula los signos vitales. Cada intervención que apliques vuelve a moverlos.
                         </p>
                     </div>
                 </div>
@@ -445,6 +454,8 @@
                     </div>
                 </div>
 
+                </div><!-- /.monitor-dispositivo -->
+
                 <div class="bottom-row">
                     <div class="clinical-panel">
                         <h3>Acciones Clínicas</h3>
@@ -452,37 +463,40 @@
                             <div class="log-entry">-- Inicio de Simulación --</div>
                             <div class="log-entry">Paciente monitorizado. Seleccione un ritmo.</div>
                         </div>
+
+                        <!-- El tablero de fármacos no se muestra de entrada: con
+                             él abierto, la respuesta del ejercicio está escrita
+                             en la pantalla. Se consulta cuando el estudiante
+                             decide consultarlo. -->
+                        <button type="button" id="btn-tablero" class="btn-tablero"
+                                aria-expanded="false" aria-controls="tablero-farmacos">
+                            <span class="btn-tablero-icono" aria-hidden="true">📖</span>
+                            <span class="btn-tablero-texto">Consultar el tablero de fármacos</span>
+                            <span class="btn-tablero-flecha" aria-hidden="true">▾</span>
+                        </button>
                     </div>
 
                     <div class="intervenciones-panel">
                         <h3>Intervenciones</h3>
-                        <!-- Radio, no checkbox: se elige UNA intervención y se
-                             aplica con el botón de abajo. La desfibrilación y la
-                             solución salina son dos opciones más de la lista, ya
-                             no botones aparte. -->
-                        <div class="intervenciones-grupo">
-                            <h4>Medicamentos</h4>
-                            <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-nombre">Adenosina</span><input type="radio" name="intervencion" value="adenosina"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Atropina</span><input type="radio" name="intervencion" value="atropina"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Adrenalina</span><input type="radio" name="intervencion" value="adrenalina"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Amiodarona</span><input type="radio" name="intervencion" value="amiodarona"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Solución salina</span><input type="radio" name="intervencion" value="salina"></label>
-                            </div>
-                        </div>
-                        <div class="intervenciones-grupo">
-                            <h4>Procedimientos</h4>
-                            <div class="intervenciones-grid">
-                                <label class="intervencion-item"><span class="intervencion-nombre">Cardioversión</span><input type="radio" name="intervencion" value="cardioversion"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Desfibrilación</span><input type="radio" name="intervencion" value="desfibrilacion"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Marcapasos</span><input type="radio" name="intervencion" value="marcapasos"></label>
-                                <label class="intervencion-item"><span class="intervencion-nombre">Oxígeno</span><input type="radio" name="intervencion" value="oxigeno"></label>
-                            </div>
-                        </div>
+
+                        <!-- BANDEJA DE INTERVENCIONES
+                             Las fichas las construye js/04-simulador.js a partir
+                             de MotorClinico.Intervenciones.CATALOGO. Antes
+                             estaban escritas aquí a mano, y por eso faltaban dos
+                             fármacos del Módulo 05 y no se veía ninguna dosis:
+                             la lista del simulador y la del motor eran dos
+                             listas distintas que había que mantener en paralelo.
+                             Ahora hay una sola. -->
+                        <div id="intervenciones-bandeja" class="intervenciones-bandeja"></div>
+
+                        <!-- Detalle de lo que se va a administrar: dosis, vía y
+                             mecanismo de la intervención elegida, antes de
+                             aplicarla. Lo rellena el simulador al seleccionar. -->
+                        <div id="intervencion-detalle" class="intervencion-detalle" hidden></div>
 
                         <button id="btn-aplicar-intervencion" class="btn-action btn-aplicar" disabled>Seleccione una intervención</button>
 
-                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el registro le indicará si estaba indicada para este ritmo y por qué. El tablero de abajo reúne la información de cada fármaco.</p>
+                        <p class="intervenciones-nota">Elija una intervención y aplíquela: el monitor responderá y el registro le dirá si estaba indicada para este ritmo y por qué.</p>
                     </div>
                 </div>
 
@@ -493,8 +507,9 @@
                      con el simulador a los módulos 03, 05 y 06 sin duplicarse.
                      No se adapta al ritmo seleccionado a propósito — señalar el
                      fármaco correcto delataría el ejercicio del panel de
-                     intervenciones. -->
-                <div id="tablero-farmacos"></div>
+                     intervenciones. Por lo mismo arranca plegado: lo abre el
+                     botón del panel de acciones clínicas. -->
+                <div id="tablero-farmacos" hidden></div>
             </div>
         </div>
 

@@ -11,12 +11,23 @@
     box-shadow: var(--bento-shadow-soft);
 }
 
+/* Dos columnas y dos filas: el dibujo arriba a la izquierda, su explicación
+   justo debajo, y el panel de la fase ocupando toda la columna derecha. Con la
+   explicación dentro del panel, la columna de 300 px se estiraba muy por
+   debajo del dibujo y quedaba media caja en blanco bajo el corazón. */
 .cf-cuerpo {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 20px;
+    grid-template-areas:
+        "escena panel"
+        "ecg    panel";
+    grid-template-rows: auto 1fr;
+    gap: 16px 20px;
     align-items: start;
 }
+.cf-escena { grid-area: escena; }
+.cf-panel  { grid-area: panel; }
+.cf-ecg    { grid-area: ecg; }
 
 /* El corazón manda; el anillo de fases va debajo, más pequeño, porque es
    navegación y no contenido. */
@@ -167,8 +178,16 @@
 .cf-vn { color: var(--fucs-azul-oscuro); font-weight: 600; }
 .cf-ve { font-weight: 700; }
 
-.cf-panel-ecg { margin: 0 0 10px; font-size: 0.8rem; }
-.cf-panel-detalle { margin: 0; font-size: 0.82rem; line-height: 1.55; color: var(--text-body); }
+/* --- CORRESPONDENCIA CON EL ECG (bajo el dibujo) --- */
+.cf-ecg {
+    background: var(--fucs-niebla);
+    border-left: 3px solid var(--fucs-azul-profundo);
+    border-radius: var(--bento-radius-md);
+    padding: 12px 16px 14px;
+}
+.cf-panel-ecg { margin: 0 0 8px; font-size: 0.82rem; }
+.cf-panel-ecg strong { color: var(--fucs-azul-profundo); }
+.cf-panel-detalle { margin: 0; font-size: 0.84rem; line-height: 1.6; color: var(--text-body); max-width: 78ch; }
 
 /* --- CONTROLES --- */
 .cf-controles {
@@ -181,7 +200,15 @@
 .cf-ciclo p { text-align: left; }
 
 @media (max-width: 1000px) {
-    .cf-cuerpo { grid-template-columns: 1fr; }
+    /* En una sola columna se mantiene el orden de lectura de siempre: el
+       dibujo, los datos de la fase y, al final, la correspondencia con el
+       ECG. Hay que redeclarar las áreas: sin esto, «panel» seguiría pidiendo
+       una segunda columna que ya no existe. */
+    .cf-cuerpo {
+        grid-template-columns: 1fr;
+        grid-template-areas: "escena" "panel" "ecg";
+        grid-template-rows: auto;
+    }
     .cf-valvulas { grid-template-columns: repeat(4, 1fr); }
 }
 @media (max-width: 680px) {

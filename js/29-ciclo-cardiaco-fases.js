@@ -292,8 +292,12 @@ function mostrar(raiz, indice) {
         fase.periodo === 'sistole' ? 'Sístole ventricular' : 'Diástole ventricular';
     p.querySelector('[data-campo="periodo"]').dataset.periodo = fase.periodo;
     p.querySelector('[data-campo="resumen"]').textContent = escena.nota;
-    p.querySelector('[data-campo="detalle"]').textContent = fase.detalle;
-    p.querySelector('[data-campo="ecg"]').textContent = fase.ecg;
+
+    // El ECG y su explicación ya no viven dentro del panel, sino en el bloque
+    // que va debajo del dibujo: se buscan desde la raíz del simulador.
+    const e = raiz.querySelector('.cf-ecg');
+    e.querySelector('[data-campo="detalle"]').textContent = fase.detalle;
+    e.querySelector('[data-campo="ecg"]').textContent = fase.ecg;
 
     p.querySelector('[data-campo="presion"]').textContent =
         Math.round(C.valorEn('presionVI', t)) + ' mmHg';
@@ -385,9 +389,16 @@ function plantilla() {
       + '    </dl>'
       + '    <p class="cf-cambio" data-campo="cambio" data-tipo="constante"></p>'
       + '    <ul class="cf-valvulas">' + fichas + '</ul>'
+      + '  </aside>'
+      // La correspondencia con el ECG y su explicación van debajo del corazón,
+      // no dentro del panel lateral. Son los dos textos largos de la fase: en
+      // una columna de 300 px estiraban el panel muy por debajo del dibujo y
+      // dejaban en blanco media caja del simulador. Aquí ocupan justo ese
+      // hueco y además se leen al ancho que les corresponde.
+      + '  <div class="cf-ecg">'
       + '    <p class="cf-panel-ecg"><strong>En el ECG:</strong> <span data-campo="ecg"></span></p>'
       + '    <p class="cf-panel-detalle" data-campo="detalle"></p>'
-      + '  </aside>'
+      + '  </div>'
       + '</div>'
       + '<div class="cf-controles">'
       + '  <button type="button" class="btn-accion" data-accion="anterior">← Fase anterior</button>'

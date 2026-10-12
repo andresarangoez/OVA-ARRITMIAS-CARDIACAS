@@ -4,8 +4,26 @@
    columna única para tablet. */
 .main-container { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 1100px; margin: 0 auto; }
 
+/* --- EL MONITOR COMO UN SOLO APARATO ---
+   La consola de mando (selector de ritmo e instrucción) y la pantalla eran dos
+   tarjetas sin relación: una blanca encima de un monitor oscuro. Ahora
+   comparten carcasa, de modo que lo que se manipula arriba y lo que responde
+   abajo se lean como el mismo dispositivo. */
+.monitor-dispositivo {
+    width: 100%;
+    border-radius: var(--bento-radius-md, 14px);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.42);
+    overflow: hidden;
+    /* Filo superior de luz: es lo único "de aparato" que se permite el
+       dispositivo, y basta para que la consola no parezca una barra suelta. */
+    border-top: 2px solid transparent;
+    background:
+        linear-gradient(#0b0f14, #0b0f14) padding-box,
+        linear-gradient(90deg, #3fb950, #58a6ff 55%, #3fb950) border-box;
+}
+
 /* --- MONITOR MULTIPARAMÉTRICO ---
-   Un solo dispositivo, no un trazado con cifras sueltas debajo: la misma
+   Un trazado con cifras sueltas debajo se leía como dos cosas; aquí la misma
    carcasa oscura envuelve la barra de identificación, el trazado y la columna
    de parámetros. El trazado manda en ancho (1fr) y los parámetros ocupan una
    columna fija a la derecha, como en un monitor de cabecera. */
@@ -13,10 +31,17 @@
     width: 100%;
     background: #0b0f14;
     border: 1px solid #243040;
-    border-radius: var(--bento-radius-md, 14px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    border-top: 0;
+    border-radius: 0 0 var(--bento-radius-md, 14px) var(--bento-radius-md, 14px);
     color: #e6edf3;
     overflow: hidden;
+}
+/* Fuera del dispositivo (por si el monitor se reutiliza suelto) recupera su
+   marco completo. */
+.monitor-clinico:first-child {
+    border-top: 1px solid #243040;
+    border-radius: var(--bento-radius-md, 14px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 /* Barra superior: a quién se está monitorizando, qué ritmo y en qué estado.
@@ -115,16 +140,34 @@
 .monitor-param.fr   { color: #e3b341; }
 .monitor-param.temp { color: #ff9f4a; }
 
+/* El parámetro que acaba de moverse por una intervención. En una pantalla
+   llena de cifras, una que cambia sin avisar pasa desapercibida; el destello
+   dura lo justo para que el ojo la encuentre. La clase la pone y la retira
+   destacarParametros() en js/04-simulador.js. */
+@keyframes monitor-destello {
+    0%   { background: rgba(255, 255, 255, 0);    box-shadow: inset 3px 0 0 currentColor; }
+    18%  { background: rgba(255, 255, 255, 0.11); box-shadow: inset 3px 0 0 currentColor; }
+    100% { background: rgba(255, 255, 255, 0);    box-shadow: inset 3px 0 0 transparent; }
+}
+.monitor-param.cambiado { animation: monitor-destello 2s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+    .monitor-param.cambiado { animation: none; box-shadow: inset 3px 0 0 currentColor; }
+}
+
 /* En tableta y móvil los parámetros pasan debajo del trazado, en fila: la
    columna de 214 px dejaría el trazado sin ancho útil. */
 @media (max-width: 860px) {
     .monitor-pantalla { grid-template-columns: 1fr; }
     /* Rejilla y no flex-wrap: con auto-fit las columnas quedan del mismo ancho
        en las dos filas. Con flex, el último parámetro —al quedarse solo en su
-       fila— se estiraba a todo el ancho y rompía la retícula. */
+       fila— se estiraba a todo el ancho y rompía la retícula.
+       El min() es lo que impide que la columna se quede más estrecha que su
+       contenido: dentro de un módulo en móvil el monitor baja a unos 225 px, y
+       con dos columnas de 112 px la presión arterial salía cortada («120/»)
+       porque .monitor-clinico recorta lo que se desborda. */
     .monitor-parametros {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
         border-left: 0; border-top: 1px solid #243040;
     }
     .monitor-param {
@@ -165,36 +208,187 @@
 .log-container::-webkit-scrollbar-thumb { background: var(--fucs-gris); border-radius: 4px; }
 .log-container::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* --- PANEL DE INTERVENCIONES (escenario preparado, sin lógica todavía) --- */
-.intervenciones-grupo h4 { margin: 0 0 8px 0; color: var(--fucs-azul-profundo); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-/* Dos columnas por grupo (auto-fit: cae a una sola en pantallas angostas). */
-.intervenciones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.intervencion-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #ffffff; border: 1px solid var(--fucs-gris); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; }
-.intervencion-item:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
-.intervencion-nombre { flex: 1; font-size: 0.9rem; color: var(--fucs-azul-oscuro); }
-.intervencion-item input { margin: 0; accent-color: var(--fucs-azul-profundo); }
+/* --- BANDEJA DE INTERVENCIONES ---
+   Cada opción es una ficha con el nombre y la pauta, no un renglón con un
+   botón de radio al lado. La dosis a la vista no delata nada: saber que la
+   atropina se pone 1 mg IV no dice si la atropina es lo que este ritmo
+   necesita, que es justo lo que se está preguntando. Las fichas las construye
+   construirBandeja() en js/04-simulador.js desde el catálogo del motor. */
+.intervenciones-bandeja { display: flex; flex-direction: column; gap: 14px; }
+.intervenciones-grupo h4 {
+    margin: 0 0 8px 0; color: var(--fucs-azul-profundo);
+    font-size: 0.74rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+}
+.intervenciones-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 9px; }
+
+.intervencion-item {
+    position: relative;
+    display: block;
+    padding: 9px 30px 9px 12px;
+    background: #ffffff;
+    border: 1px solid var(--fucs-gris);
+    border-left: 3px solid var(--fucs-gris);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
+}
+.intervencion-item:hover { border-color: var(--fucs-dorado); border-left-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.1); }
+/* El radio sigue ahí —es lo que agrupa la elección y lo que leen los lectores
+   de pantalla—, solo que la ficha entera hace de control. */
+.intervencion-item input {
+    position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0;
+}
+.intervencion-ficha { display: block; min-width: 0; }
+.intervencion-nombre { display: block; font-size: 0.9rem; font-weight: 600; color: var(--fucs-azul-oscuro); line-height: 1.3; }
+.intervencion-dosis { display: block; margin-top: 2px; font-size: 0.73rem; line-height: 1.35; color: var(--text-muted); }
+
+/* La marca de la derecha: vacía mientras no hay elección, llena cuando la
+   ficha está seleccionada, y con el signo del veredicto una vez aplicada. */
+.intervencion-marca {
+    position: absolute; top: 11px; right: 10px;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--fucs-gris);
+    display: grid; place-items: center;
+    font-size: 0.6rem; font-weight: 700; line-height: 1; color: #ffffff;
+    transition: background 0.18s, border-color 0.18s;
+}
 
 /* Opción elegida, todavía sin aplicar. */
-.intervencion-item:has(input:checked) { border-color: var(--fucs-azul-profundo); background: rgba(9, 39, 85, 0.05); }
+.intervencion-item:has(input:checked) {
+    border-color: var(--fucs-azul-profundo); border-left-color: var(--fucs-azul-profundo);
+    background: rgba(9, 39, 85, 0.05);
+}
+.intervencion-item:has(input:checked) .intervencion-marca { border-color: var(--fucs-azul-profundo); background: var(--fucs-azul-profundo); }
+.intervencion-item:has(input:focus-visible) { outline: 2px solid var(--fucs-azul-profundo); outline-offset: 2px; }
 
 /* Veredicto ya aplicado. Las clases las pone resolverIntervencion() en
    04-simulador.js a partir del resultado del motor de intervenciones. */
-.intervencion-item.ok { border-color: var(--success); background: rgba(46, 204, 113, 0.1); }
-.intervencion-item.medio { border-color: var(--warning); background: rgba(241, 196, 15, 0.12); }
-.intervencion-item.mal { border-color: var(--danger); background: rgba(231, 76, 60, 0.1); }
+.intervencion-item.ok    { border-color: var(--success); border-left-color: var(--success); background: rgba(46, 204, 113, 0.1); }
+.intervencion-item.medio { border-color: var(--warning); border-left-color: var(--warning); background: rgba(241, 196, 15, 0.12); }
+.intervencion-item.mal   { border-color: var(--danger);  border-left-color: var(--danger);  background: rgba(231, 76, 60, 0.1); }
+.intervencion-item.ok    .intervencion-marca { border-color: var(--success); background: var(--success); }
+.intervencion-item.medio .intervencion-marca { border-color: var(--warning); background: var(--warning); }
+.intervencion-item.mal   .intervencion-marca { border-color: var(--danger);  background: var(--danger); }
+.intervencion-item.ok    .intervencion-marca::after { content: '✓'; }
+.intervencion-item.medio .intervencion-marca::after { content: '!'; }
+.intervencion-item.mal   .intervencion-marca::after { content: '✕'; }
+
+/* Qué es lo que se tiene en la mano antes de administrarlo. No dice si está
+   indicado: eso es lo que el estudiante tiene que decidir. */
+.intervencion-detalle {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 10px 13px;
+    background: var(--fucs-niebla);
+    border-left: 3px solid var(--fucs-azul-profundo);
+    border-radius: var(--bento-radius-md);
+    font-size: 0.8rem; line-height: 1.45;
+}
+/* display:flex gana al display:none que el navegador aplica a [hidden]: sin
+   esta línea el detalle vacío deja una franja antes de elegir nada. */
+.intervencion-detalle[hidden] { display: none; }
+.intervencion-detalle-clase { color: var(--fucs-azul-profundo); font-weight: 600; }
+.intervencion-detalle-pauta { color: var(--text-body); }
 
 .intervenciones-nota { margin: 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
 
-/* --- CONTROLES MANUALES (cabecera: ritmo + instrucción) --- */
-.controls { background: #ffffff; color: var(--fucs-azul-oscuro); padding: 16px 20px; border-radius: var(--bento-radius-xl); width: 100%; display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 20px; align-items: center; box-sizing: border-box; box-shadow: var(--bento-shadow-soft); }
-.control-group { display: flex; flex-direction: column; gap: 4px; }
-.control-group label { color: var(--fucs-azul-profundo); font-size: 0.9rem; font-weight: 600; }
-.control-group select { padding: 6px 8px; font-size: 0.9rem; }
+/* --- BOTÓN QUE DESPLIEGA EL TABLERO DE FÁRMACOS ---
+   Vive al pie del registro clínico. El tablero abierto de entrada daba la
+   respuesta del ejercicio de intervenciones; abrirlo es ahora una decisión. */
+.btn-tablero {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 10px 14px;
+    background: #ffffff;
+    border: 1px dashed var(--fucs-gris);
+    border-radius: var(--radius-md);
+    color: var(--fucs-azul-profundo);
+    font-family: inherit; font-size: 0.85rem; font-weight: 600;
+    text-align: left; cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+}
+.btn-tablero:hover { border-color: var(--fucs-dorado); background: rgba(251, 215, 133, 0.12); }
+.btn-tablero-texto { flex: 1; }
+.btn-tablero-flecha { transition: transform 0.2s; }
+.btn-tablero.abierto { border-style: solid; border-color: var(--fucs-azul-profundo); background: rgba(9, 39, 85, 0.05); }
+.btn-tablero.abierto .btn-tablero-flecha { transform: rotate(180deg); }
+
+/* --- CONSOLA DE MANDO (ritmo + instrucción) ---
+   La franja superior del dispositivo. Mismo lenguaje que la pantalla: fondo
+   oscuro, rótulos en versalitas espaciadas y las cifras y controles en claro.
+   Antes era una tarjeta blanca y el salto de blanco a negro partía el aparato
+   en dos. */
+.controls {
+    width: 100%; box-sizing: border-box;
+    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 14px 24px; align-items: center;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, #16202c 0%, #0e1621 100%);
+    border: 1px solid #243040; border-bottom: 0;
+    color: #cfdbe7;
+}
+
+.control-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.control-group label {
+    color: #8698ab; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+}
+
+/* El selector: oscuro, con la flecha dibujada aquí (la del sistema no se puede
+   teñir y se veía como un parche claro sobre la consola). */
+.control-group select {
+    width: 100%; box-sizing: border-box;
+    padding: 9px 34px 9px 12px;
+    font-size: 0.92rem; font-weight: 600;
+    color: #e6edf3;
+    background-color: #070c12;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%233fb950' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 11px 7px;
+    border: 1px solid #2b3a4d; border-radius: 8px;
+    appearance: none; -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+.control-group select:hover { border-color: #3d5268; }
+.control-group select:focus-visible {
+    outline: none;
+    border-color: #3fb950;
+    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.22);
+}
+/* La lista desplegada la pinta el sistema; en los navegadores que sí dejan
+   teñirla, al menos no aparece en blanco. */
+.control-group select option { background: #0b1119; color: #e6edf3; }
+.control-group select optgroup { background: #0b1119; color: #8698ab; font-style: normal; }
+
 /* El grupo del selector va en fila (etiqueta al lado, no encima): es lo que
-   adelgaza la barra de cabecera. El .instruccion-box conserva su columna. */
-.control-group:not(.instruccion-box) { flex-direction: row; align-items: center; gap: 10px; }
+   adelgaza la consola. El .instruccion-box conserva su columna. */
+.control-group:not(.instruccion-box) { flex-direction: row; align-items: center; gap: 12px; }
 .control-group:not(.instruccion-box) label { white-space: nowrap; }
 .control-group:not(.instruccion-box) select { flex: 1; min-width: 0; }
+
+/* La instrucción, como una nota del propio aparato y no como un aviso pegado
+   encima: filete de luz a la izquierda y texto en gris claro. El fondo crema y
+   el filete amarillo vienen de .instruccion-box en 03-components.css, que es
+   un componente general del OVA; aquí se neutralizan en lugar de tocar el
+   componente, porque sobre la consola oscura desentonan. */
+.controls .instruccion-box {
+    background: rgba(88, 166, 255, 0.06);
+    border-left: 0; box-shadow: none;
+    padding: 0; border-radius: var(--bento-radius-md);
+    overflow: hidden;
+}
+.instruccion-box p {
+    margin: 0; padding: 9px 14px 9px 13px;
+    border-left: 3px solid rgba(88, 166, 255, 0.6);
+    font-size: 0.84rem; line-height: 1.5; color: #9fb1c4;
+}
+.instruccion-box strong {
+    display: block;
+    color: #58a6ff; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    margin-bottom: 1px;
+}
 
 /* --- ANIMACIÓN DE CARGA DEL DESFIBRILADOR Y LOGS --- */
 /* Se aplica sobre la propia opción de la lista (cardioversión/desfibrilación)
@@ -220,4 +414,8 @@
    solo a cualquier ancho. */
 @media (max-width: 900px) {
     .controls, .bottom-row { grid-template-columns: 1fr; }
+    /* En una sola columna, el rótulo al lado deja al selector un resto de
+       ancho donde no cabe el nombre del ritmo («Ritm…»): vuelve a ponerse
+       encima, que es lo que hace el resto de los campos del OVA. */
+    .control-group:not(.instruccion-box) { flex-direction: column; align-items: stretch; gap: 6px; }
 }

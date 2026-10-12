@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partes del ECG</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Paleta institucional FUCS */
+:root{
+  --azul:#092755; --azul2:#0A3E7C; --dorado:#F8C680; --amarillo:#FBD785;
+  --gris:#C6C7C8; --niebla:#E8E8E8; --bg:#F3F5F8; --txt:#333333; --mut:#6b7280;
+  --font:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --c:#0A3E7C;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:500 15px/1.5 var(--font)}
+button{font-family:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 16px 40px}
+header{background:var(--azul);color:#fff;border-radius:18px;padding:16px 22px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(9,39,85,.18);border-bottom:4px solid var(--dorado)}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
+.card{background:#fff;border:1px solid var(--gris);border-radius:18px;padding:14px 18px;box-shadow:0 10px 30px rgba(9,39,85,.08)}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.cat{appearance:none;border:1px solid var(--gris);background:#fff;color:var(--azul2);padding:8px 14px;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer}
+.cat.on{background:var(--azul);color:var(--dorado);border-color:var(--azul)}
+.items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;min-height:40px}
+.item{appearance:none;border:2px solid var(--gris);background:#fff;color:var(--azul);padding:6px 12px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.item i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.item.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+#fig{width:100%;height:auto;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.btn{appearance:none;border:1px solid var(--azul);background:var(--azul);color:var(--dorado);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
+.btn.alt{background:#fff;color:var(--azul)}
+.hint{color:var(--mut);font-size:12.5px}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;margin-top:14px}
+@media (max-width:940px){.grid{grid-template-columns:1fr}}
+.info{border-left:8px solid var(--c);transition:border-color .25s}
+.info h2{margin:0;font-size:26px;font-weight:800;color:var(--azul)}
+.tag{display:inline-block;margin:6px 0 8px;padding:2px 12px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;background:color-mix(in srgb,var(--c) 18%,#fff);color:var(--azul);border:1px solid var(--c)}
+.info h4{margin:12px 0 2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+.info p{margin:0}
+.meas{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.meas div{background:var(--bg);border:1px solid var(--gris);border-radius:12px;padding:6px 12px;min-width:120px}
+.meas small{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.meas b{font-size:17px;color:var(--azul)}
+.defs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.def{border:2px solid var(--niebla);border-radius:12px;padding:8px 12px;background:#fff}
+.def b{color:var(--azul)}
+.def.on{border-color:var(--dorado);background:#fffaf0}
+.def p{margin:2px 0 0;font-size:13px;color:#555}
+.title2{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Partes del ECG: ondas, segmentos, intervalos y complejo</h1></header>
+
+<section class="card">
+  <div class="cats" id="cats"></div>
+  <div class="items" id="items"></div>
+  <svg id="fig" viewBox="0 0 1000 410" role="img" aria-label="Latido normal de ECG con sus partes"></svg>
+  <div class="tools">
+    <button class="btn" id="tour">▶ Recorrer el latido</button>
+    <button class="btn alt" id="prev">◀ Anterior</button>
+    <button class="btn alt" id="next">Siguiente ▶</button>
+    <span class="hint">Haz clic sobre el trazo o usa las flechas ← → del teclado. Velocidad 25 mm/s · 1 mV = 10 mm.</span>
+  </div>
+</section>
+
+<div class="grid">
+  <section class="card info" id="info" aria-live="polite"></section>
+  <section class="card">
+    <p class="title2">Cómo se diferencian</p>
+    <div class="defs" id="defs"></div>
+  </section>
+</div>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const T_END=.8;
+const X=t=>60+t/T_END*880;
+const Y=v=>250-v*170;
+const BASE=250;
+
+/* ---------- Forma de onda de un latido normal ---------- */
+const QRS_PTS=[[.20,0],[.215,-.15],[.24,1.2],[.265,-.3],[.28,0]];
+function wave(t){
+  if(t>=.04&&t<=.12){const u=(t-.04)/.08;return .15*.5*(1-Math.cos(2*Math.PI*u));}
+  if(t>=.20&&t<=.28){
+    for(let i=1;i<QRS_PTS.length;i++){
+      const a=QRS_PTS[i-1],b=QRS_PTS[i];
+      if(t<=b[0]) return a[1]+(b[1]-a[1])*(t-a[0])/(b[0]-a[0]);
+    }
+  }
+  if(t>=.36&&t<=.52){const u=(t-.36)/.16;return .30*Math.sin(Math.PI*Math.pow(u,.9));}
+  if(t>=.58&&t<=.66){const u=(t-.58)/.08;return .06*Math.sin(Math.PI*u);}
+  return 0;
+}
+
+/* ---------- Definición de las partes ---------- */
+const CATS=[
+  {id:'all',   name:'Visión general'},
+  {id:'onda',  name:'Ondas'},
+  {id:'seg',   name:'Segmentos'},
+  {id:'int',   name:'Intervalos'},
+  {id:'comp',  name:'Complejo'}
+];
+const TIPO={onda:'Onda',seg:'Segmento',int:'Intervalo',comp:'Complejo'};
+const PARTS=[
+  {id:'P',cat:'onda',name:'Onda P',a:.04,b:.12,col:'#e8707a',band:'#F6B1B6',
+   rep:'Despolarización auricular: el impulso sale del nodo sinusal y activa primero la aurícula derecha y luego la izquierda.',
+   donde:'Inicia al separarse de la línea basal y termina al volver a ella.',
+   normal:'< 0,12 s (3 mm) · amplitud < 2,5 mm en DII',
+   alt:'P picuda (≥ 2,5 mm): sobrecarga de aurícula derecha. P ancha o bimodal (> 0,12 s): crecimiento de aurícula izquierda. Ausente: fibrilación auricular o ritmo no sinusal.'},
+  {id:'PRseg',cat:'seg',name:'Segmento PR',a:.12,b:.20,col:'#e08a2c',band:'#F8C680',
+   rep:'Retraso fisiológico del impulso en el nodo AV, haz de His y ramas: son tejidos con muy poca masa y no dejan voltaje detectable.',
+   donde:'Del final de la onda P al inicio del complejo QRS. Es una línea isoeléctrica.',
+   normal:'≈ 0,04 – 0,10 s · isoeléctrico',
+   alt:'Depresión del PR: pericarditis aguda. Una línea basal alterada aquí puede indicar repolarización auricular exagerada.'},
+  {id:'Q',cat:'onda',name:'Onda Q',a:.20,b:.218,col:'#c9a000',band:'#FBD785',
+   rep:'Primera deflexión negativa del QRS: despolarización del tabique interventricular (de izquierda a derecha).',
+   donde:'Primera deflexión negativa del complejo, antes de la R.',
+   normal:'< 0,04 s y < 25 % de la R que le sigue',
+   alt:'Q patológica (ancha o profunda): necrosis miocárdica previa (infarto). Pequeñas q septales en DI, aVL, V5–V6 son normales.'},
+  {id:'R',cat:'onda',name:'Onda R',a:.218,b:.26,col:'#c9a000',band:'#FBD785',
+   rep:'Primera deflexión positiva: despolarización de las paredes libres de ambos ventrículos; el ventrículo izquierdo (más grueso) domina.',
+   donde:'Cualquier deflexión positiva del complejo QRS.',
+   normal:'Amplitud variable según la derivación; crece de V1 a V5 (progresión de la R)',
+   alt:'R de voltaje alto: hipertrofia ventricular. Mala progresión de R en precordiales: infarto anterior o rotación horaria.'},
+  {id:'S',cat:'onda',name:'Onda S',a:.26,b:.28,col:'#c9a000',band:'#FBD785',
+   rep:'Deflexión negativa que sigue a la R: activación de las porciones basales del ventrículo izquierdo y del tracto de salida.',
+   donde:'Primera deflexión negativa después de una onda R.',
+   normal:'Profunda en V1–V2 y cada vez menor hacia V6',
+   alt:'S profunda y persistente hasta V6: hipertrofia ventricular derecha o EPOC. S en DI con Q en DIII: patrón S1Q3T3 del tromboembolismo pulmonar.'},
+  {id:'QRS',cat:'comp',name:'Complejo QRS',a:.20,b:.28,col:'#c9a000',band:'#FBD785',
+   rep:'Despolarización de ambos ventrículos. Agrupa las ondas Q, R y S (no siempre están las tres). La repolarización auricular queda oculta en él.',
+   donde:'Del inicio de la Q (o R) al punto J, donde el trazo vuelve a la línea basal.',
+   normal:'0,06 – 0,10 s (hasta 0,12 s)',
+   alt:'QRS ≥ 0,12 s: bloqueo de rama, ritmo ventricular, preexcitación, hiperpotasemia o fármacos (antiarrítmicos, antidepresivos tricíclicos).'},
+  {id:'ST',cat:'seg',name:'Segmento ST',a:.28,b:.36,col:'#2f9e55',band:'#98F5A0',
+   rep:'Los ventrículos están despolarizados por completo (meseta del potencial de acción): no hay diferencia de voltaje entre células.',
+   donde:'Del punto J (fin del QRS) al inicio de la onda T.',
+   normal:'Isoeléctrico (± 0,5 – 1 mm respecto a la línea basal)',
+   alt:'Elevación: infarto con elevación del ST, pericarditis, Brugada. Depresión: isquemia, sobrecarga ventricular, digoxina, hipopotasemia.'},
+  {id:'T',cat:'onda',name:'Onda T',a:.36,b:.52,col:'#2f7fc4',band:'#9CCBFF',
+   rep:'Repolarización ventricular (fase 3 del potencial de acción). Es asimétrica y suele ir en el mismo sentido que el QRS.',
+   donde:'Se inicia al separarse del ST y termina al regresar a la línea basal.',
+   normal:'< 5 mm en derivaciones de miembros · < 10 mm en precordiales',
+   alt:'T alta y picuda: hiperpotasemia, isquemia hiperaguda. T plana o invertida: isquemia, hipopotasemia, hipertrofia. T invertida en V1–V3 puede ser normal.'},
+  {id:'U',cat:'onda',name:'Onda U',a:.58,b:.66,col:'#8a56cc',band:'#CDA2FF',
+   rep:'Pequeña onda posterior a la T; se atribuye a repolarización tardía de fibras de Purkinje o de los músculos papilares (origen aún discutido).',
+   donde:'Después de la onda T, antes de la siguiente P. No siempre se ve.',
+   normal:'< 1 mm; mejor visible en V2–V3 y con frecuencias lentas',
+   alt:'U prominente: hipopotasemia, bradicardia, fármacos (digoxina, antiarrítmicos). U invertida: isquemia o hipertensión.'},
+  {id:'PRint',cat:'int',name:'Intervalo PR',a:.04,b:.20,col:'#c2693f',band:'#F0B58E',
+   rep:'Tiempo de conducción desde el inicio de la activación auricular hasta el inicio de la ventricular (incluye onda P + segmento PR).',
+   donde:'Del inicio de la onda P al inicio del complejo QRS.',
+   normal:'0,12 – 0,20 s (3 – 5 mm)',
+   alt:'> 0,20 s: bloqueo AV de primer grado. < 0,12 s: preexcitación (Wolff-Parkinson-White) o ritmo de la unión.'},
+  {id:'QTint',cat:'int',name:'Intervalo QT',a:.20,b:.52,col:'#0A3E7C',band:'#9DB8DE',
+   rep:'Duración de la sístole eléctrica ventricular: despolarización + repolarización (incluye QRS, segmento ST y onda T).',
+   donde:'Del inicio del complejo QRS al final de la onda T.',
+   normal:'Depende de la frecuencia: se corrige (QTc = QT/√RR). QTc normal < 450 ms en hombres y < 460 ms en mujeres',
+   alt:'QT prolongado: riesgo de torsades de pointes (hipocalcemia, hipopotasemia, hipomagnesemia, fármacos, síndrome de QT largo). QT corto: hipercalcemia, digoxina.'}
+];
+const ORDER=['P','PRseg','Q','R','S','QRS','ST','T','U','PRint','QTint'];
+const byId=Object.fromEntries(PARTS.map(p=>[p.id,p]));
+
+const DEFS=[
+  {c:'onda',t:'Onda',d:'Deflexión (hacia arriba o abajo) a partir de la línea basal: P, Q, R, S, T, U.'},
+  {c:'seg', t:'Segmento',d:'Tramo de línea isoeléctrica entre dos ondas. No incluye ondas: PR y ST.'},
+  {c:'int', t:'Intervalo',d:'Distancia en el tiempo que incluye ondas y segmentos: PR, QT.'},
+  {c:'comp',t:'Complejo',d:'Grupo de ondas que ocurren juntas: el complejo QRS.'}
+];
+
+/* ---------- SVG ---------- */
+const fig=$('#fig');
+function mk(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||fig).appendChild(e);return e;}
+const gGrid=mk('g',{}), gBand=mk('g',{}), gTrace=mk('g',{}), gOver=mk('g',{}), gBr=mk('g',{}), gHit=mk('g',{});
+
+// rejilla
+for(let i=0;i<=20;i++){
+  const x=X(i*.04), big=i%5===0;
+  mk('line',{x1:x,y1:30,x2:x,y2:335,stroke:big?'#f0b9b9':'#f8dede','stroke-width':big?1.4:1},gGrid);
+}
+for(let k=-5;k<=12;k++){
+  const y=BASE-k*17, big=k%5===0;
+  if(y<30||y>335) continue;
+  mk('line',{x1:60,y1:y,x2:940,y2:y,stroke:big?'#f0b9b9':'#f8dede','stroke-width':big?1.4:1},gGrid);
+}
+for(let i=0;i<=4;i++){
+  const t=mk('text',{x:X(i*.2),y:400,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#6b7280'},gGrid);
+  t.textContent=(i*.2).toFixed(1).replace('.',',')+' s';
+}
+// trazo
+let d='';
+for(let t=0;t<=T_END+1e-9;t+=.002) d+=(d?'L':'M')+X(t).toFixed(1)+','+Y(wave(t)).toFixed(1);
+mk('path',{d,fill:'none',stroke:'#111827','stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'},gTrace);
+function pathFor(a,b){
+  let s='';const st=.001;
+  for(let t=a;t<=b+1e-9;t+=st) s+=(s?'L':'M')+X(t).toFixed(1)+','+Y(wave(t)).toFixed(1);
+  return s;
+}
+// zonas clicables (ondas, segmentos, QRS)
+['P','PRseg','QRS','ST','T','U'].forEach(id=>{
+  const p=byId[id];
+  const r=mk('rect',{x:X(p.a),y:30,width:Math.max(10,X(p.b)-X(p.a)),height:305,fill:'transparent',style:'cursor:pointer'},gHit);
+  r.addEventListener('click',()=>select(id));
+  r.addEventListener('mouseenter',()=>{ if(sel==='all') preview(id); });
+  r.addEventListener('mouseleave',()=>{ if(sel==='all') show('all'); });
+});
+function txt(x,y,s,o){const t=mk('text',Object.assign({x,y,'text-anchor':'middle','font-family':'Raleway,sans-serif'},o||{}),gBr);t.textContent=s;return t;}
+function bracket(a,b,y,col,label){
+  const x0=X(a),x1=X(b);
+  mk('path',{d:`M${x0},${y-8}V${y+8}M${x0},${y}H${x1}M${x1},${y-8}V${y+8}`,stroke:col,'stroke-width':3,fill:'none','stroke-linecap':'round'},gBr);
+  txt((x0+x1)/2,y-12,label,{'font-size':14,'font-weight':800,fill:col});
+}
+function fmt(s){return (s).toFixed(2).replace('.',',')+' s';}
+
+/* ---------- Dibujo de la selección ---------- */
+function drawSel(ids,opts){
+  gBand.innerHTML='';gOver.innerHTML='';gBr.innerHTML='';
+  opts=opts||{};
+  ids.forEach(id=>{
+    const p=byId[id], x0=X(p.a), x1=X(p.b);
+    const isInt=p.cat==='int';
+    if(!isInt || opts.bracketsOnly){
+      if(!isInt) mk('rect',{x:x0,y:28,width:Math.max(8,x1-x0),height:310,rx:14,fill:p.band,opacity:opts.faint?.55:.5},gBand);
+    } else {
+      mk('rect',{x:x0,y:28,width:x1-x0,height:310,rx:14,fill:p.band,opacity:.28},gBand);
+    }
+    if(!isInt){
+      // subrayado del propio trazo
+      mk('path',{d:pathFor(p.a,p.b),fill:'none',stroke:p.col,'stroke-width':opts.faint?6:8,'stroke-linecap':'round','stroke-linejoin':'round'},gOver);
+      // línea base de subrayado bajo el trazo
+      if(!opts.faint) mk('line',{x1:x0,x2:x1,y1:345,y2:345,stroke:p.col,'stroke-width':5,'stroke-linecap':'round'},gBr);
+    } else {
+      mk('path',{d:pathFor(p.a,p.b),fill:'none',stroke:p.col,'stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.85},gOver);
+    }
+    // etiquetas superiores
+    const nm=p.name.replace('Complejo ','').replace('Onda ','').replace('Segmento ','Seg. ').replace('Intervalo ','Int. ');
+    if(!isInt) txt((x0+x1)/2,22,nm,{'font-size':opts.faint?17:20,'font-weight':800,fill:'#092755'});
+  });
+}
+function drawBrackets(list){
+  list.forEach(([id,y])=>{
+    const p=byId[id];
+    bracket(p.a,p.b,y,p.col,(p.cat==='int'?p.name.replace('Intervalo ',''):p.name)+' · '+fmt(p.b-p.a));
+  });
+}
+function qrsLetters(){
+  const q=byId.Q,r=byId.R,s=byId.S;
+  [[q,'Q',.215,-.15],[r,'R',.24,1.2],[s,'S',.265,-.3]].forEach(([p,l,t,v])=>{
+    txt(X(t)+(l==='R'?0:(l==='Q'?-14:14)),Y(v)+(l==='R'?-12:18),l,{'font-size':18,'font-weight':800,fill:'#7a5a05'});
+  });
+}
+
+let sel='all';
+function preview(id){ // vista previa al pasar el mouse en "visión general"
+  drawSel([id],{faint:false});
+}
+function show(id){
+  sel=id;
+  const col=id==='all'?'#0A3E7C':byId[id].col;
+  document.documentElement.style.setProperty('--c',col);
+  if(id==='all'){
+    drawAllBrackets();
+  } else {
+    const p=byId[id];
+    drawSel([id]);
+    if(id==='QRS'){ qrsLetters(); }
+    if(p.cat==='int'){ drawBrackets([[id,362]]); }
+    else if(p.cat==='seg'||p.cat==='comp'||p.cat==='onda'){
+      drawBrackets([[id,372]]);
+    }
+  }
+  renderInfo(id);
+  document.querySelectorAll('.item').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+}
+function drawAllBrackets(){
+  const pr=byId.PRint, qt=byId.QTint;
+  drawSel(['P','PRseg','QRS','ST','T','U'],{faint:true});
+  // como en el esquema clásico: PR y QT por debajo
+  bracket(pr.a,pr.b,360,pr.col,'Intervalo PR · '+fmt(pr.b-pr.a));
+  bracket(qt.a,qt.b,385,qt.col,'Intervalo QT · '+fmt(qt.b-qt.a));
+}
+
+/* ---------- Panel de información ---------- */
+function renderInfo(id){
+  const el=$('#info');
+  if(id==='all'){
+    el.innerHTML=`<h2>Un latido normal</h2><span class="tag">Visión general</span>
+      <p>Cada latido deja una secuencia repetible de <b>ondas</b> (P, QRS, T y a veces U) separadas por <b>segmentos</b> isoeléctricos (PR y ST). Los <b>intervalos</b> (PR y QT) miden tiempos que abarcan ondas y segmentos.</p>
+      <h4>Cómo usarlo</h4><p>Elige una categoría arriba y selecciona una parte: se resalta en el trazo, se subraya y se mide su duración.</p>
+      <div class="meas"><div><small>Frecuencia del trazo</small><b>75 lpm</b></div><div><small>Duración del latido</small><b>0,80 s</b></div></div>`;
+    return;
+  }
+  const p=byId[id], dur=p.b-p.a, mm=Math.round(dur/.04*10)/10;
+  el.innerHTML=`<h2>${p.name}</h2><span class="tag">${TIPO[p.cat]}</span>
+    <h4>Qué representa</h4><p>${p.rep}</p>
+    <h4>Dónde empieza y termina</h4><p>${p.donde}</p>
+    <div class="meas">
+      <div><small>En este trazo</small><b>${fmt(dur)} · ${String(mm).replace('.',',')} mm</b></div>
+      <div style="flex:1"><small>Valor normal</small><b style="font-size:14px">${p.normal}</b></div>
+    </div>
+    <h4>Alteraciones frecuentes</h4><p>${p.alt}</p>`;
+}
+
+/* ---------- Controles ---------- */
+let cat='all';
+function buildCats(){
+  $('#cats').innerHTML='';
+  CATS.forEach(c=>{
+    const b=document.createElement('button');b.className='cat'+(c.id===cat?' on':'');b.textContent=c.name;
+    b.addEventListener('click',()=>{stopTour();cat=c.id;buildCats();buildItems();pickFirst();});
+    $('#cats').appendChild(b);
+  });
+}
+function listFor(c){
+  if(c==='all') return [];
+  if(c==='comp') return ['QRS','Q','R','S'];
+  return ORDER.filter(id=>byId[id].cat===c);
+}
+function buildItems(){
+  const box=$('#items'); box.innerHTML='';
+  listFor(cat).forEach(id=>{
+    const p=byId[id];
+    const b=document.createElement('button');b.className='item';b.dataset.id=id;
+    b.innerHTML=`<i style="background:${p.col}"></i>${p.name}`;
+    b.addEventListener('click',()=>{stopTour();select(id);});
+    box.appendChild(b);
+  });
+  $('#items').style.minHeight=cat==='all'?'0':'40px';
+}
+function pickFirst(){ const l=listFor(cat); show(l.length?l[0]:'all'); highlightDef(); }
+function select(id){
+  const c=byId[id].cat;
+  if(cat!=='all' && cat!==c && !(cat==='comp'&&['Q','R','S'].includes(id))){cat=c;buildCats();buildItems();}
+  if(cat==='all'){cat=c;buildCats();buildItems();}
+  show(id); highlightDef();
+}
+function highlightDef(){
+  const cur=sel==='all'?null:byId[sel].cat;
+  document.querySelectorAll('.def').forEach(d=>d.classList.toggle('on',d.dataset.c===cur||(cur==='comp'&&d.dataset.c==='comp')));
+}
+$('#defs').innerHTML=DEFS.map(d=>`<div class="def" data-c="${d.c}"><b>${d.t}</b><p>${d.d}</p></div>`).join('');
+
+// recorrido y navegación
+let tourT=null;
+function stopTour(){ if(tourT){clearInterval(tourT);tourT=null;} $('#tour').textContent='▶ Recorrer el latido'; }
+function step(dir){
+  const i=ORDER.indexOf(sel);
+  const n=ORDER[(i<0?(dir>0?0:ORDER.length-1):(i+dir+ORDER.length)%ORDER.length)];
+  select(n);
+}
+$('#tour').addEventListener('click',()=>{
+  if(tourT){stopTour();return;}
+  $('#tour').textContent='⏸ Detener';
+  select(ORDER[0]);
+  tourT=setInterval(()=>step(1),3200);
+});
+$('#next').addEventListener('click',()=>{stopTour();step(1);});
+$('#prev').addEventListener('click',()=>{stopTour();step(-1);});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){stopTour();step(1);}
+  if(e.key==='ArrowLeft'){stopTour();step(-1);}
+});
+
+buildCats(); buildItems(); show('all');
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
