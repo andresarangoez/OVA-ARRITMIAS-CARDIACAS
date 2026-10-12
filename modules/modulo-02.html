@@ -345,9 +345,18 @@
                                 <p>La digoxina merece una mención particular, porque su margen terapéutico es estrecho y su toxicidad aumenta con la insuficiencia renal, la hipopotasemia, la hipomagnesemia y las interacciones con fármacos como la amiodarona. Puede producir prácticamente cualquier arritmia, en especial las extrasístoles ventriculares, la taquicardia auricular con bloqueo, los ritmos de la unión, los bloqueos auriculoventriculares y la taquicardia ventricular bidireccional, que es muy sugestiva de esta intoxicación.</p>
                             </div>
                             <figure class="ampolla-digoxina">
+                                <input type="checkbox" id="ampolla-de-pie" class="ampolla-interruptor">
                                 <div class="ampolla-escena">
                                     <span class="ampolla-halo" aria-hidden="true"></span>
-                                    <svg class="ampolla-svg" viewBox="0 0 200 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ampolla de digoxina de 2 mL, etiquetada con una concentración de 0,25 mg por mililitro y la vía intravenosa o intramuscular.">
+                                    <div class="ampolla-flota">
+                                    <div class="ampolla-giro">
+                                    <!-- El dibujo está hecho de pie (200 de ancho por 520 de alto) y aquí se
+                                         tumba girándolo un cuarto de vuelta, así que el lienzo mide 520 por 200.
+                                         Girar el dibujo y no la etiqueta <svg> deja que el marco se comporte
+                                         como cualquier imagen apaisada: ocupa el ancho que le den y el alto
+                                         sale de la proporción. -->
+                                    <svg class="ampolla-svg" viewBox="0 0 520 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ampolla de digoxina de 2 mL, etiquetada con una concentración de 0,25 mg por mililitro y la vía intravenosa o intramuscular.">
+                                      <g transform="translate(0,200) rotate(-90)">
                                         <defs>
                                             <linearGradient id="amp-vidrio" x1="0%" y1="0%" x2="100%" y2="0%">
                                                 <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
@@ -419,8 +428,15 @@
                                         <path class="ampolla-reflejo" d="M 62 210 L 62 450" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
                                         <path d="M 64 200 C 70 180, 90 165, 92 155" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
                                         <path d="M 141 210 L 141 450" stroke="#0284c7" stroke-width="2" opacity="0.4"/>
+                                      </g>
                                     </svg>
+                                    </div>
+                                    </div>
                                 </div>
+                                <label class="ampolla-boton" for="ampolla-de-pie">
+                                    <span class="ampolla-boton-ampliar">Ampliar y poner de pie</span>
+                                    <span class="ampolla-boton-reducir">Volver a tumbarla</span>
+                                </label>
                                 <figcaption class="figura-caption"><strong>Figura 1.2.</strong> Presentación inyectable de la digoxina. Creación propia.</figcaption>
                             </figure>
                         </div>

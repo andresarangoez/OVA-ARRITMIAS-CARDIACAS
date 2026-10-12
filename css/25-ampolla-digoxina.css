@@ -3,28 +3,45 @@
    Va dentro de una .figura-fila: el texto a la izquierda, la ampolla a la
    derecha.
 
-   Por qué el fondo es oscuro en un módulo claro: el vidrio de la ampolla está
-   dibujado con blancos a baja opacidad —los reflejos, el brillo del hombro, la
-   línea que barre el cuerpo—. Sobre el blanco del módulo no se vería nada de
-   eso; el vidrio necesita un fondo oscuro detrás para leerse como vidrio. El
-   recuadro queda así como una vitrina, que es además lo que separa la
-   ilustración del texto que la rodea.
+   La ampolla se ve TUMBADA. De pie mide dos y media veces lo que mide de
+   ancho, así que al lado de un párrafo obligaba a la fila a crecer hasta su
+   alto y dejaba un palmo de página en blanco debajo del texto. Tumbada, la
+   vitrina es apaisada y la que manda es la columna del texto.
 
-   Todo el movimiento es CSS. Los <script> de los módulos no se ejecutan —el
-   OVA los inyecta con innerHTML—, así que una animación que dependiera de
-   JavaScript aquí se quedaría quieta. */
+   Quien quiera verla como está dibujada tiene el botón de debajo: la pone de
+   pie y la agranda. Es una casilla de verificación con su etiqueta, sin una
+   línea de JavaScript, porque los <script> de un módulo no se ejecutan —el OVA
+   inyecta el HTML con innerHTML— y un botón con onclick dependería de una
+   función global para algo que el CSS resuelve solo. De paso se maneja con el
+   teclado y anuncia su estado sin que haya que escribir nada.
 
-/* La fila no centra sus dos columnas, las estira: así la vitrina mide
-   exactamente lo que mide el texto que tiene al lado, en vez de dejar un
-   palmo en blanco arriba y otro abajo. Es la columna del texto la que manda,
-   porque la ampolla se adapta al alto que le quede. */
+   Por qué el fondo es oscuro en un módulo claro: el vidrio está dibujado con
+   blancos a baja opacidad —los reflejos, el brillo del hombro, la línea que
+   barre el cuerpo—. Sobre el blanco del módulo no se vería nada de eso; el
+   vidrio necesita un fondo oscuro detrás para leerse como vidrio.
+
+   Todo el movimiento es CSS, por lo mismo que el botón. */
+
+/* La fila estira sus dos columnas en vez de centrarlas, para que la vitrina
+   mida exactamente lo que mide el texto que tiene al lado. */
 .figura-fila.fila-ampolla { align-items: stretch; }
 
 .ampolla-digoxina {
+    position: relative;
     margin: 0;
     display: flex;
     flex-direction: column;
     min-height: 0;
+}
+
+/* La casilla que cambia de estado. No se oculta con display:none, que la
+   sacaría del orden de tabulación: se deja del tamaño de un punto y sin
+   pintar, y quien navega con teclado llega a ella y ve el foco en el botón. */
+.ampolla-interruptor {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .ampolla-escena {
@@ -32,17 +49,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Crece hasta llenar la columna, y el suelo evita que con un texto muy
-       corto la ampolla quede diminuta. */
+    /* Crece hasta llenar la columna; el suelo evita que con un texto muy corto
+       la vitrina quede aplastada. */
     flex: 1 1 auto;
-    min-height: 260px;
-    /* La vitrina se acota y se centra: a ancho completo, la ampolla —que es
-       estrecha— dejaba dos palmos de fondo oscuro vacío a cada lado. */
-    max-width: 330px;
-    width: 100%;
-    margin-inline: auto;
-    padding: 18px 0 24px;
-    background: radial-gradient(circle at 50% 38%, #1e293b 0%, #0f172a 100%);
+    min-height: 190px;
+    padding: 16px 18px 22px;
+    background: radial-gradient(circle at 50% 42%, #1e293b 0%, #0f172a 100%);
     border-radius: var(--bento-radius-md);
     box-shadow: var(--bento-shadow-soft), inset 0 0 0 1px rgba(255, 255, 255, .08);
     overflow: hidden;
@@ -51,26 +63,91 @@
 /* Halo del pedestal: la sombra luminosa sobre la que parece posarse. */
 .ampolla-halo {
     position: absolute;
-    bottom: 42px;
-    width: 190px; height: 26px;
+    bottom: 26px;
+    width: 72%; height: 22px;
     background: radial-gradient(ellipse at center,
-                rgba(14, 165, 233, .40) 0%, rgba(14, 165, 233, 0) 70%);
+                rgba(14, 165, 233, .38) 0%, rgba(14, 165, 233, 0) 70%);
     border-radius: 50%;
     animation: ampolla-halo 3s ease-in-out infinite alternate;
 }
 
-/* El alto lo pone la vitrina y el ancho sale solo, por la proporción del
-   viewBox: la ampolla se encoge o se estira con el texto sin deformarse. */
-.ampolla-svg {
+/* Dos envoltorios, y cada uno con una sola tarea:
+   · .ampolla-flota sube y baja, y nunca gira, así que el balanceo es vertical
+     en pantalla en los dos estados;
+   · .ampolla-giro gira, y como va dentro, su rotación no arrastra al balanceo.
+   Con una sola capa, al poner la ampolla de pie el balanceo giraba con ella y
+   la ampolla se mecía de lado. */
+.ampolla-flota {
     position: relative;
-    height: 100%; width: auto;
-    max-height: 380px; max-width: 100%;
-    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .45));
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 520 / 200;
     animation: ampolla-flotar 4s ease-in-out infinite;
 }
+.ampolla-giro {
+    position: absolute;
+    inset: 0;
+    transition: transform .45s cubic-bezier(.2, .8, .3, 1);
+}
+.ampolla-svg {
+    display: block;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .45));
+}
 
-/* El líquido se mece, suben burbujas y un reflejo recorre el vidrio. Las tres
-   animaciones van sobre elementos del SVG, no sobre el conjunto, para que la
+/* --- DE PIE Y AMPLIADA --- */
+/* La vitrina pasa a un alto propio: aquí ya no se trata de igualar al texto,
+   sino de enseñar la ampolla como está dibujada. */
+.ampolla-interruptor:checked ~ .ampolla-escena {
+    min-height: 520px;
+    padding: 24px 18px;
+}
+/* El hueco del balanceo es la huella de la ampolla ya girada: 470 de largo por
+   los 181 que salen de la proporción del lienzo (520 ÷ 200). */
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-flota {
+    width: 181px; height: 470px;
+    max-width: none;
+    aspect-ratio: auto;
+}
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-giro {
+    inset: auto;
+    left: 50%; top: 50%;
+    width: 470px; height: 181px;
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-halo {
+    bottom: 20px; width: 190px;
+}
+
+/* --- BOTÓN --- */
+.ampolla-boton {
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 6px 13px;
+    border: 1px solid var(--fucs-gris);
+    border-radius: 99px;
+    background: var(--fucs-niebla);
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s ease, border-color .2s ease;
+}
+.ampolla-boton:hover { background: #ffffff; border-color: var(--fucs-azul-oscuro); }
+.ampolla-interruptor:focus-visible ~ .ampolla-boton {
+    outline: 3px solid var(--fucs-azul-oscuro);
+    outline-offset: 2px;
+}
+.ampolla-boton-reducir { display: none; }
+.ampolla-interruptor:checked ~ .ampolla-boton .ampolla-boton-ampliar { display: none; }
+.ampolla-interruptor:checked ~ .ampolla-boton .ampolla-boton-reducir { display: inline; }
+
+.ampolla-digoxina .figura-caption { margin-top: 8px; }
+
+/* --- MOVIMIENTO DEL DIBUJO ---
+   El líquido se mece, suben burbujas y un reflejo recorre el vidrio. Las tres
+   van sobre elementos de dentro del SVG, no sobre el conjunto, para que la
    ampolla pueda flotar al mismo tiempo sin que una transformación pise a la
    otra. */
 .ampolla-liquido { animation: ampolla-ola 3s ease-in-out infinite; }
@@ -84,7 +161,7 @@
 
 @keyframes ampolla-flotar {
     0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-13px); }
+    50%      { transform: translateY(-10px); }
 }
 @keyframes ampolla-halo {
     from { opacity: .5; transform: scale(.9); }
@@ -104,21 +181,24 @@
     50%      { opacity: .8; transform: translateX(4px); }
 }
 
-.ampolla-digoxina .figura-caption { margin-top: 10px; }
-
-/* Quien pide menos movimiento ve la ampolla quieta: la ilustración no pierde
-   nada, porque lo que enseña —la presentación, la etiqueta, el anillo de
-   corte— está dibujado, no animado. */
+/* Quien pide menos movimiento ve la ampolla quieta, y el botón sigue
+   funcionando: lo que la ilustración enseña —la presentación, la etiqueta, el
+   anillo de corte— está dibujado, no animado. */
 @media (prefers-reduced-motion: reduce) {
-    .ampolla-svg, .ampolla-halo, .ampolla-liquido,
+    .ampolla-flota, .ampolla-halo, .ampolla-liquido,
     .ampolla-burbuja, .ampolla-reflejo { animation: none; }
     .ampolla-burbuja { opacity: .7; }
+    .ampolla-giro { transition: none; }
 }
 
 @media (max-width: 780px) {
-    /* Apilada bajo el texto ya no hay texto al lado que igualar, así que la
-       vitrina toma un alto propio. */
-    .ampolla-escena { min-height: 320px; padding: 16px 0 24px; }
-    .ampolla-svg { max-height: 300px; }
-    .ampolla-halo { bottom: 30px; width: 160px; }
+    /* Apilada bajo el texto ya no hay texto al lado que igualar. */
+    .ampolla-escena { min-height: 170px; padding: 14px 14px 18px; }
+    .ampolla-interruptor:checked ~ .ampolla-escena { min-height: 430px; }
+    .ampolla-interruptor:checked ~ .ampolla-escena .ampolla-flota {
+        width: 146px; height: 380px;
+    }
+    .ampolla-interruptor:checked ~ .ampolla-escena .ampolla-giro {
+        width: 380px; height: 146px;
+    }
 }
