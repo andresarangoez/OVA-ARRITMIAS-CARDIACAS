@@ -37,9 +37,26 @@ h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
 .grp .chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:8px}
 .grp .chip{width:100%;height:100%;min-height:58px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;line-height:1.2}
 @media (max-width:560px){.grp .chip{font-size:12px;padding:6px 6px}.grp .chip small{font-size:10px}}
-.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+/* Dos columnas y dos filas: arriba la escena y el monitor, abajo las dos
+   mitades de la ficha. Antes la columna derecha apilaba monitor y ficha
+   entera, y la ficha se estiraba muy por debajo de la ilustración. */
+.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
 @media (max-width:980px){.main{grid-template-columns:1fr}}
-.right{display:flex;flex-direction:column;gap:14px}
+
+/* La escena y su barra vertical. */
+.escena-fila{display:flex;gap:12px;align-items:stretch}
+.escena-fila #scene{flex:1;min-width:0}
+/* Con `.sev-vert` a secas no basta: `input[type=range]` lleva un atributo y
+   gana en especificidad, así que su width:100% se imponía y la barra seguía
+   horizontal. */
+input[type=range].sev-vert{
+  /* writing-mode es la forma vigente de poner un range en vertical; el
+     appearance queda como respaldo para navegadores anteriores. */
+  writing-mode:vertical-lr; direction:rtl;
+  -webkit-appearance:slider-vertical; appearance:slider-vertical;
+  width:26px; height:auto; min-height:180px; align-self:stretch;
+  accent-color:var(--azul2); margin:0; cursor:pointer;
+}
 #scene{width:100%;height:auto;display:block;background:linear-gradient(180deg,#fbfcfe,#eef2f8);border-radius:12px;border:1px solid var(--niebla)}
 .ctl{margin-top:10px}
 .ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
@@ -60,6 +77,9 @@ select{background:#fff;color:var(--azul);border:1px solid var(--gris);border-rad
 .info h2{margin:0 0 2px;font-size:22px;font-weight:800;color:var(--azul)}
 .info .tag{display:inline-block;background:var(--amarillo);color:var(--azul);font-weight:800;font-size:12px;padding:1px 10px;border-radius:999px;margin-bottom:6px}
 .info h4{margin:10px 0 2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+/* La mitad derecha abre con un h4: sin esto arranca 10 px más abajo que la
+   izquierda y las dos tarjetas no casan por arriba. */
+.info h4:first-child{margin-top:0}
 .info ul{margin:0;padding-left:20px}
 .info li{margin:1px 0}
 .info p{margin:0}
@@ -82,27 +102,36 @@ select{background:#fff;color:var(--azul);border:1px solid var(--gris);border-rad
 </div>
 
 <div class="main">
-  <section class="card">
-    <svg id="scene" viewBox="0 0 520 340" role="img" aria-label="Mecanismo de la causa seleccionada"></svg>
+  <section class="card escena">
     <div class="ctl">
       <label><span id="slab">Gravedad</span><b id="sval"></b></label>
-      <input type="range" id="sev" min="0" max="100" step="1" value="50" aria-label="Gravedad">
-      <div id="selWrap" hidden><select id="sel" aria-label="Agente"></select></div>
     </div>
+    <!-- La barra de gravedad va vertical, pegada a la ilustración: sube y baja
+         igual que lo que mide, y deja de robarle alto a la escena. -->
+    <div class="escena-fila">
+      <input type="range" id="sev" class="sev-vert" min="0" max="100" step="1" value="50" aria-label="Gravedad">
+      <svg id="scene" viewBox="0 0 520 340" role="img" aria-label="Mecanismo de la causa seleccionada"></svg>
+    </div>
+    <div id="selWrap" hidden><select id="sel" aria-label="Agente"></select></div>
   </section>
-  <div class="right">
-    <section class="mon">
-      <div class="top"><span>Monitor · DII</span><span class="rh" id="rh">—</span></div>
-      <canvas id="ecg"></canvas>
-      <div class="vit">
-        <div class="hr"><small>FC · lpm</small><b id="vHr">--</b></div>
-        <div class="bp"><small>PA · mmHg</small><b id="vBp">--</b></div>
-        <div class="sp"><small>SpO₂ · %</small><b id="vSp">--</b></div>
-      </div>
-      <div class="pulse" id="pulse"></div>
-    </section>
-    <section class="card info" id="info"></section>
-  </div>
+
+  <section class="mon">
+    <div class="top"><span>Monitor · DII</span><span class="rh" id="rh">—</span></div>
+    <canvas id="ecg"></canvas>
+    <div class="vit">
+      <div class="hr"><small>FC · lpm</small><b id="vHr">--</b></div>
+      <div class="bp"><small>PA · mmHg</small><b id="vBp">--</b></div>
+      <div class="sp"><small>SpO₂ · %</small><b id="vSp">--</b></div>
+    </div>
+    <div class="pulse" id="pulse"></div>
+  </section>
+
+  <!-- La ficha de la causa iba en una sola columna y se hacía larguísima: el
+       tratamiento quedaba muy por debajo de la ilustración. Partida en dos,
+       lo que explica la causa queda a la izquierda y lo que se ve y se hace,
+       a la derecha. -->
+  <section class="card info" id="infoA"></section>
+  <section class="card info" id="infoB"></section>
 </div>
 <p class="note">Modelo didáctico con valores ilustrativos: la morfología y los signos reales varían entre pacientes. Siempre se atiende primero la reanimación según el algoritmo vigente y se busca la causa reversible en paralelo.</p>
 </div>
@@ -673,9 +702,11 @@ function choose(id){
 function renderInfo(){
   const c=cause;
   const li=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
-  $('#info').innerHTML=`<span class="tag">${c.g==='H'?'6H':'6T'}</span><h2>${c.name}</h2>
-    <h4>Mecanismo</h4><p>${c.mech}</p><h4>Pistas clínicas</h4>${li(c.pistas)}
-    <h4>ECG / monitor</h4>${li(c.ecg)}<h4>Tratamiento dirigido</h4>${li(c.tx)}`;
+  // Izquierda: qué es y cómo sospecharla. Derecha: qué se ve y qué se hace.
+  $('#infoA').innerHTML=`<span class="tag">${c.g==='H'?'6H':'6T'}</span><h2>${c.name}</h2>
+    <h4>Mecanismo</h4><p>${c.mech}</p><h4>Pistas clínicas</h4>${li(c.pistas)}`;
+  $('#infoB').innerHTML=`<h4>ECG / monitor</h4>${li(c.ecg)}
+    <h4>Tratamiento dirigido</h4>${li(c.tx)}`;
 }
 
 /* ---------- Bucle ---------- */
