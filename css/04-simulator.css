@@ -1,3 +1,12 @@
+/* --- EL SIMULADOR NACE OCULTO ---
+   Vive dentro de #vista-modulo, y solo debe verse una vez que el estudiante
+   pulsa «Comenzar» en un módulo que lo incluya (iniciarModulo, js/05-modulo.js).
+   Sin esta regla su estado de reposo es «visible», así que el primer pintado
+   de la página —antes de que corra ninguna línea de JavaScript— ya lo muestra,
+   y al abrir un módulo se colaba un fotograma con el monitor antes de la
+   pantalla de bienvenida. */
+#simulador-wrapper { display: none; }
+
 /* --- CONTENEDOR PRINCIPAL --- */
 /* Fluido en vez de ancho fijo: se encoge en laptop sin necesidad de media
    query; el breakpoint de abajo (900px) cubre la reestructuración a
