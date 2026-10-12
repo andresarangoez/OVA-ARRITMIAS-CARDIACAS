@@ -17,7 +17,33 @@
         entry.className = `log-entry ${tipo}`;
         entry.innerText = `[${time}] ${mensaje}`;
         logBox.appendChild(entry);
-        logBox.scrollTop = logBox.scrollHeight; 
+        logBox.scrollTop = logBox.scrollHeight;
+
+        espejoEnMonitor(time, mensaje, tipo);
+    }
+
+    // --- LO ÚLTIMO QUE PASÓ, AL PIE DEL TRAZADO ---
+    //
+    // El panel de acciones clínicas guarda la historia entera, pero está al
+    // lado y exige apartar la vista del monitor justo cuando el monitor está
+    // respondiendo. Esta banda lleva solo las dos últimas líneas, donde se
+    // está mirando, y aprovecha el aire que sobraba bajo el trazado.
+    const LINEAS_EN_MONITOR = 2;
+
+    function espejoEnMonitor(hora, mensaje, tipo) {
+        const banda = document.getElementById('monitor-registro');
+        if (!banda) return;
+
+        const linea = document.createElement('div');
+        linea.className = 'monitor-registro-linea ' + (tipo || 'action');
+        const h = document.createElement('span');
+        h.className = 'monitor-registro-hora';
+        h.textContent = hora;
+        linea.appendChild(h);
+        linea.appendChild(document.createTextNode(mensaje));
+        banda.appendChild(linea);
+
+        while (banda.childElementCount > LINEAS_EN_MONITOR) banda.removeChild(banda.firstElementChild);
     }
     
     // Nombres de los ritmos para la barra del monitor. Se leen del <select>,
@@ -94,30 +120,75 @@
         if (!estado.datos.pulso) return false;
 
         const cambiados = [];
+        const destino = { fc: hmd_actual.fc, sis: hmd_actual.sis, dia: hmd_actual.dia,
+                          spo2: hmd_actual.spo2, fr: hmd_actual.fr };
+
         ['fc', 'sis', 'dia', 'spo2', 'fr'].forEach(function (campo) {
             if (typeof efectos[campo] !== 'number' || !efectos[campo]) return;
             const antes = hmd_actual[campo];
             if (!antes) return;
             const despues = acotar(campo, antes + efectos[campo]);
             if (despues === antes) return;
-            hmd_actual[campo] = despues;
+            destino[campo] = despues;
             cambiados.push(campo);
         });
 
         if (!cambiados.length) return false;
 
         // La diastólica no puede alcanzar a la sistólica.
-        if (hmd_actual.dia >= hmd_actual.sis) hmd_actual.dia = hmd_actual.sis - 20;
-        hmd_actual.pam = Math.round((hmd_actual.sis + 2 * hmd_actual.dia) / 3);
+        if (destino.dia >= destino.sis) destino.dia = destino.sis - 20;
 
-        // El paciente se reclasifica con las cifras nuevas: una intervención
-        // puede sacarlo de la inestabilidad, y una equivocada meterlo en ella.
-        hmd_actual.estadoClinico = MotorClinico.Hemodinamico
-            .clasificarEstadoClinico(hmd_actual, estado.ritmo);
-
-        actualizarMonitor();
+        animarVitales(destino, 1400);
         destacarParametros(cambiados);
         return true;
+    }
+
+    // --- LA RESPUESTA DEL PACIENTE SE VE OCURRIR ---
+    //
+    // Las cifras saltaban de golpe al valor nuevo: el cambio pasaba antes de
+    // que el ojo llegara. Aquí recorren la distancia en algo menos de un
+    // segundo y medio, que es el tiempo que hace falta para seguir una cifra
+    // sin que el plano se haga lento.
+    //
+    // Va con setInterval y no con requestAnimationFrame a propósito: el bucle
+    // del trazado ya ocupa el rAF, y veinticinco pasos por segundo sobran para
+    // cifras que cambian de unidad en unidad.
+    let animacionVitales = null;
+
+    function detenerAnimacionVitales() {
+        if (animacionVitales) { clearInterval(animacionVitales); animacionVitales = null; }
+    }
+
+    function animarVitales(destino, duracion) {
+        detenerAnimacionVitales();
+
+        const campos = ['fc', 'sis', 'dia', 'spo2', 'fr'];
+        const inicio = {};
+        campos.forEach(function (c) { inicio[c] = hmd_actual[c]; });
+        const arranque = performance.now();
+
+        function paso() {
+            const t = Math.min(1, (performance.now() - arranque) / duracion);
+            // Arranca y termina suave; en medio avanza deprisa. Una rampa
+            // lineal se lee como un contador, no como un paciente.
+            const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+            campos.forEach(function (c) {
+                hmd_actual[c] = Math.round(inicio[c] + (destino[c] - inicio[c]) * e);
+            });
+            hmd_actual.pam = Math.round((hmd_actual.sis + 2 * hmd_actual.dia) / 3);
+
+            // Se reclasifica en cada paso, no al final: así la insignia cambia
+            // justo cuando las cifras cruzan el umbral, que es la lección.
+            hmd_actual.estadoClinico = MotorClinico.Hemodinamico
+                .clasificarEstadoClinico(hmd_actual, estado.ritmo);
+
+            actualizarMonitor();
+            if (t >= 1) detenerAnimacionVitales();
+        }
+
+        animacionVitales = setInterval(paso, 40);
+        paso();
     }
 
     // Un parpadeo sobre el parámetro que acaba de moverse: sin él, el cambio
@@ -139,6 +210,11 @@
     }
 
     function cambiarRitmo(nuevoRitmo) {
+        // Un ritmo nuevo es un escenario nuevo: si quedaba una animación de la
+        // intervención anterior en marcha, seguiría escribiendo cifras del
+        // paciente de antes sobre el de ahora.
+        detenerAnimacionVitales();
+
         estado.ritmo = nuevoRitmo;
         estado.datos = RITMOS_DB[nuevoRitmo];
         
@@ -164,6 +240,117 @@
         registrarLog(`Cambio de ritmo: ${this.options[this.selectedIndex].text}`);
         cambiarRitmo(this.value);
     });
+
+    // --- SELECTOR DE RITMO DESPLEGABLE ---
+    //
+    // El <select> del navegador abre una lista del sistema: plana, sin los
+    // grupos a la vista y sin forma de teñirla. Para elegir entre diecisiete
+    // ritmos hay que leerla entera. Este panel despliega los cinco grupos en
+    // dos columnas, que es como se clasifican las arritmias y como las enseña
+    // el Módulo 03: quien busca una bradicardia mira un sitio, no diecisiete.
+    //
+    // El <select> no se retira: sigue siendo quien guarda el valor y quien
+    // dispara el change, así que todo lo demás —cambiarRitmo, el registro, el
+    // rótulo del monitor— funciona sin enterarse de que hay otra interfaz
+    // encima. También es lo que mantiene el control accesible por teclado y en
+    // un lector de pantalla.
+    function construirSelectorRitmo() {
+        const caja = document.getElementById('ritmo-selector');
+        const select = document.getElementById('selectorRitmo');
+        if (!caja || !select) return;
+
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'ritmo-boton';
+        boton.id = 'ritmo-boton';
+        boton.setAttribute('aria-expanded', 'false');
+        boton.setAttribute('aria-haspopup', 'listbox');
+        boton.innerHTML = '<span class="ritmo-boton-texto"></span>'
+                        + '<span class="ritmo-boton-flecha" aria-hidden="true">▼</span>';
+
+        const panel = document.createElement('div');
+        panel.className = 'ritmo-panel';
+        panel.setAttribute('role', 'listbox');
+        panel.setAttribute('aria-label', 'Ritmo clínico');
+        panel.hidden = true;
+
+        // El panel se construye a partir del propio <select>: una sola lista
+        // de ritmos, no dos que haya que mantener a la par.
+        // Cada grupo es un bloque: el encabezado y sus ritmos viajan juntos a
+        // la misma columna. Sueltos, la retícula los repartía uno a cada lado
+        // y «Bradiarritmias» acababa encabezando ritmos que no eran suyos.
+        function bloque(rotulo) {
+            const b = document.createElement('div');
+            b.className = 'ritmo-grupo-bloque';
+            const titulo = document.createElement('p');
+            titulo.className = 'ritmo-grupo';
+            titulo.textContent = rotulo;
+            b.appendChild(titulo);
+            panel.appendChild(b);
+            return b;
+        }
+
+        Array.from(select.children).forEach(function (nodo) {
+            if (nodo.tagName === 'OPTGROUP') {
+                // Los grupos vienen numerados («1. Bradiarritmias»); el número
+                // ordena el <select> pero aquí lo ordena la propia columna.
+                const b = bloque(nodo.label.replace(/^\d+\.\s*/, ''));
+                Array.from(nodo.children).forEach(opcion => b.appendChild(crearOpcion(opcion)));
+            } else if (nodo.tagName === 'OPTION') {
+                bloque('Ritmo base').appendChild(crearOpcion(nodo));
+            }
+        });
+
+        function crearOpcion(opcion) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'ritmo-opcion';
+            b.setAttribute('role', 'option');
+            b.dataset.valor = opcion.value;
+            b.textContent = opcion.textContent.trim();
+            b.addEventListener('click', function () {
+                select.value = opcion.value;
+                select.dispatchEvent(new Event('change'));
+                cerrar();
+                boton.focus();
+            });
+            return b;
+        }
+
+        function sincronizar() {
+            const elegida = select.options[select.selectedIndex];
+            boton.querySelector('.ritmo-boton-texto').textContent = elegida ? elegida.textContent.trim() : '';
+            panel.querySelectorAll('.ritmo-opcion').forEach(function (b) {
+                b.setAttribute('aria-selected', String(b.dataset.valor === select.value));
+            });
+        }
+
+        function abrir()  { panel.hidden = false; boton.setAttribute('aria-expanded', 'true'); }
+        function cerrar() { panel.hidden = true;  boton.setAttribute('aria-expanded', 'false'); }
+
+        boton.addEventListener('click', function () {
+            panel.hidden ? abrir() : cerrar();
+        });
+
+        // Cerrar al pulsar fuera o con Escape, como cualquier desplegable.
+        document.addEventListener('click', function (e) {
+            if (!panel.hidden && !caja.contains(e.target)) cerrar();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !panel.hidden) { cerrar(); boton.focus(); }
+        });
+
+        // El cambio puede venir de otro sitio —resuelveA reorganiza el ritmo
+        // tras una intervención acertada—, así que el botón se sincroniza con
+        // el select y no con el clic.
+        select.addEventListener('change', sincronizar);
+
+        caja.appendChild(boton);
+        caja.appendChild(panel);
+        sincronizar();
+    }
+
+    construirSelectorRitmo();
     
     // --- INTERACCIONES CLÍNICAS ---
     // El estudiante elige UNA intervención de la lista y la aplica. Quién

@@ -344,18 +344,30 @@
         <div id="simulador-wrapper">
             <div class="main-container">
 
+                <!-- CÓMO SE USA
+                     Va fuera del aparato y antes que él, a continuación del
+                     texto con que cada módulo presenta el simulador: son
+                     instrucciones de uso, no una lectura del monitor, y dentro
+                     de la carcasa competían con lo que sí hay que leer ahí. -->
+                <div class="simulador-instruccion">
+                    <p class="simulador-instruccion-titulo">Cómo usar el simulador</p>
+                    <p>Elige un ritmo y el monitor recalcula los signos vitales del paciente. Después aplica una intervención: el monitor vuelve a moverse y el registro te dice si estaba indicada y por qué.</p>
+                    <p class="simulador-calibre">Derivación II · 25 mm/s · 10 mm/mV</p>
+                </div>
+
                 <!-- EL MONITOR COMO UN SOLO APARATO
-                     La barra de mando (selector de ritmo e instrucción) y la
-                     pantalla eran dos tarjetas distintas: una blanca encima de
-                     un monitor oscuro, como si no tuvieran que ver. Ahora
-                     comparten carcasa: la consola es la franja superior del
-                     mismo dispositivo. -->
+                     La barra de mando (selector de ritmo) y la pantalla eran
+                     dos tarjetas distintas: una blanca encima de un monitor
+                     oscuro, como si no tuvieran que ver. Ahora comparten
+                     carcasa: la consola es la franja superior del mismo
+                     dispositivo. -->
                 <div class="monitor-dispositivo">
 
                 <div class="controls">
                     <div class="control-group">
                         <label for="selectorRitmo"><strong>Ritmo clínico</strong></label>
-                        <select id="selectorRitmo">
+                        <div class="ritmo-selector" id="ritmo-selector">
+                            <select id="selectorRitmo">
                             <option value="sinusal">Ritmo Sinusal</option>
 
                             <optgroup label="1. Bradiarritmias">
@@ -388,13 +400,10 @@
                                 <option value="eap">Extrasístole Auricular</option>
                                 <option value="ev">Extrasístole Ventricular</option>
                             </optgroup>
-                        </select>
+                            </select>
+                        </div>
                     </div>
-                    <div class="control-group instruccion-box">
-                        <p>
-                            <strong>Instrucción</strong> Al cambiar el ritmo, el monitor recalcula los signos vitales. Cada intervención que apliques vuelve a moverlos.
-                        </p>
-                    </div>
+                    <p class="controls-calibre" aria-hidden="true">Derivación II · 25 mm/s · 10 mm/mV</p>
                 </div>
 
                 <!-- MONITOR MULTIPARAMÉTRICO
@@ -418,6 +427,14 @@
                         <div class="monitor-trazado">
                             <span class="monitor-derivacion" aria-hidden="true">II</span>
                             <canvas id="ekgCanvas" width="1040" height="224" role="img" aria-label="Trazado electrocardiográfico en tiempo real del ritmo seleccionado"></canvas>
+
+                            <!-- Las dos últimas líneas del registro, al pie del
+                                 trazado. El panel de acciones clínicas sigue
+                                 guardando la historia completa; esto es lo que
+                                 acaba de pasar, donde se está mirando, que es
+                                 donde hace falta — y aprovecha el aire que
+                                 sobraba bajo el trazado. -->
+                            <div class="monitor-registro" id="monitor-registro" aria-hidden="true"></div>
                         </div>
 
                         <!-- La jerarquía la marcan el tamaño y el color, como en
