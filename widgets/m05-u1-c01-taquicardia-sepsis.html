@@ -197,7 +197,10 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   function col(){return getComputedStyle(document.documentElement).getPropertyValue('--mon-hr').trim()||'#46e08a';}
   function draw(now){
     const w=cv.clientWidth,h=cv.clientHeight,speed=110; // px/s
-    const dt=Math.min((now-last)/1000,.05); last=now;
+    /* Acotado por los dos lados: `last` arranca en performance.now() y la
+       marca del primer fotograma, dentro de un marco del OVA, llega por
+       detrás. Sin el suelo, el salto sale negativo. */
+    const dt=Math.min(Math.max(0,(now-last)/1000),.05); last=now;
     const steps=Math.max(1,Math.round(dt*speed));
     ctx.strokeStyle=col(); ctx.lineWidth=2;
     for(let i=0;i<steps;i++){
