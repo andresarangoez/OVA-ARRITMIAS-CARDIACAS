@@ -30,16 +30,36 @@ const P_DURACION_MS = 90;                                   // normal < 120 ms
 const PR_INTERVALO_MS = 160;                                // inicio de P → inicio de QRS (normal 120-200 ms)
 const QRS_INICIO_MS = P_INICIO_MS + PR_INTERVALO_MS;        // 200 ms
 
-// Q + R + S = 80 ms → QRS angosto (normal < 120 ms).
-const Q_DURACION_MS = 18;
-const R_DURACION_MS = 34;
-const S_DURACION_MS = 28;
+// Q + R + S = 80 ms → QRS angosto (normal < 120 ms). El reparto entre las tres
+// ondas está en QRS_ANGOSTO, más abajo.
 const QRS_ANCHO_DURACION_MS = 140;                          // > 120 ms = inequívocamente ancho
 
 const QTC_MS = 400;                                         // QT corregido normal
 
 // --- PRIMITIVAS DE DIBUJO (compartidas entre generadores) ---
 // Todas reciben `ms` = milisegundos transcurridos desde el inicio del latido.
+
+// Interpolación lineal entre vértices, que es como se ve una deflexión en el
+// papel: el QRS de un ECG real no es una curva suave ni una escalera, son
+// tramos rectos que se cortan en ángulo.
+//
+// Cada tramo del QRS devolvía antes una constante (-15 en la Q, 80 en la R,
+// -25 en la S), así que el complejo se dibujaba como una escalera de saltos
+// verticales y mesetas planas. En el monitor, a 16 ms por muestra, el salto
+// pasaba por una línea; en una tira quieta a 25 mm/s, con muestras cada 2 ms,
+// el escalón se ve.
+function porVertices(ms, vertices) {
+    const ultimo = vertices.length - 1;
+    if (ms < vertices[0][0] || ms > vertices[ultimo][0]) return 0;
+    for (let i = 1; i <= ultimo; i++) {
+        const t1 = vertices[i][0];
+        if (ms <= t1) {
+            const t0 = vertices[i - 1][0], v0 = vertices[i - 1][1], v1 = vertices[i][1];
+            return v0 + (v1 - v0) * (ms - t0) / (t1 - t0);
+        }
+    }
+    return 0;
+}
 
 function dibujarP(ms) {
     if (ms > P_INICIO_MS && ms < P_INICIO_MS + P_DURACION_MS) {
@@ -48,22 +68,38 @@ function dibujarP(ms) {
     return 0;
 }
 
+// Complejo angosto, qRs: Q pequeña de 18 ms, R de 34 ms que llega a 80 y S de
+// 28 ms. Los picos valen lo mismo que antes —el umbral de detección de R de
+// js/30-tira-ecg.js y la escala del monitor dependen de ellos—; lo que cambia
+// es que ahora hay rampas entre un vértice y el siguiente.
+//
+// El vértice de la R no es una punta geométrica sino un romo de 8 ms. No es
+// decorativo: el monitor muestrea una vez por fotograma (unos 16 ms), y con
+// una punta perfecta la muestra caería unas veces en el vértice y otras en la
+// rampa, así que la altura de la R cambiaría de un latido a otro. Con el romo,
+// y con los hombros a 66 que lo flanquean, la peor muestra posible dibuja la R
+// a un 83% de su altura en lugar de a la mitad. A 25 mm/s esos 8 ms miden dos
+// décimas de milímetro: en la tira, y ampliándola, se lee como una punta.
+const QRS_ANGOSTO = [
+    [0, 0], [10, -15], [20, 0],                             // Q
+    [25, 66], [30, 80], [38, 80], [43, 66], [48, 0],        // R
+    [59, -25], [80, 0]                                      // S
+];
+
+// Complejo ancho (EV, escape ventricular, bloqueo infra-Hisiano): deflexión
+// única de 140 ms, asimétrica, con el ascenso lento y el vértice pasada la
+// mitad. Era una media senoidal perfectamente simétrica, que es la misma
+// forma de la onda P pero más grande; lo que distingue a un complejo ancho de
+// verdad es justamente el empastamiento inicial, porque el impulso viaja de
+// músculo a músculo y no por el His.
+const QRS_ANCHO = [
+    [0, 0], [18, 6], [40, 26], [58, 35], [78, 22], [105, 6], [QRS_ANCHO_DURACION_MS, 0]
+];
+
 function dibujarQRS(ms, ancho = false) {
     const desde = ms - QRS_INICIO_MS;
     if (desde < 0) return 0;
-
-    if (ancho) {
-        // Complejo ancho para EV, escape ventricular o bloqueo infra-Hisiano
-        if (desde < QRS_ANCHO_DURACION_MS) {
-            return 35 * Math.sin(desde * Math.PI / QRS_ANCHO_DURACION_MS);
-        }
-        return 0;
-    }
-
-    if (desde < Q_DURACION_MS) return -15;
-    if (desde < Q_DURACION_MS + R_DURACION_MS) return 80;
-    if (desde < Q_DURACION_MS + R_DURACION_MS + S_DURACION_MS) return -25;
-    return 0;
+    return porVertices(desde, ancho ? QRS_ANCHO : QRS_ANGOSTO);
 }
 
 // La repolarización SÍ depende de la frecuencia: se aplica la fórmula de
@@ -83,7 +119,15 @@ function dibujarT(ms, ciclo, invertida = false) {
     const fin = QRS_INICIO_MS + qt;
 
     if (ms > inicio && ms < fin) {
-        const val = 18 * Math.sin((ms - inicio) * Math.PI / (fin - inicio));
+        // La T es asimétrica: sube despacio y baja más rápido. Con una media
+        // senoidal salía perfectamente simétrica, que es la forma de la P.
+        // El vértice se coloca al 62% de su duración y cada mitad se dibuja
+        // con su propio cuarto de senoidal, así que el empalme en el vértice
+        // queda liso.
+        const dur = fin - inicio, x = ms - inicio, vertice = dur * 0.62;
+        const val = 18 * (x < vertice
+            ? Math.sin(x * Math.PI / (2 * vertice))
+            : Math.cos((x - vertice) * Math.PI / (2 * (dur - vertice))));
         return invertida ? -val : val;
     }
     return 0;
@@ -206,38 +250,73 @@ function generarBav3(ctx) {
     return amplitud;
 }
 
-// Flutter auricular: ondas en "dientes de sierra" a su propio reloj auricular,
-// conectadas a un QRS de conducción regular.
+// Flutter auricular: ondas F en dientes de sierra a su propio reloj auricular
+// (200 ms, 300/min), con un QRS de conducción regular encima.
+//
+// Las F eran una senoidal: el trazado ondulaba, pero el diente de sierra —el
+// hallazgo que da el diagnóstico, y el que el Módulo 03 pide buscar en II, III
+// y aVF— no estaba en ninguna parte. Un diente de sierra es una rampa lenta y
+// una caída rápida, así que se dibuja como tal.
 function generarFlutter(ctx) {
-    let amplitud = 0;
-    amplitud += 8 * Math.sin(ctx.t_aur * Math.PI * 2);
-    amplitud += dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
-    return amplitud;
+    const f = ctx.t_aur;
+    const RAMPA = 0.72;
+    const F = f < RAMPA
+        ? -9 + (f / RAMPA) * 17
+        : 8 - ((f - RAMPA) / (1 - RAMPA)) * 17;
+    return F + dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
 }
 
 // Fibrilación Auricular: línea de base irregular ("fibrilatoria") sin onda P,
 // con QRS estrecho de conducción irregular.
 function generarFA(ctx) {
-    // Donde iría la P hay ondas f a ~430/min (período de 138 ms), no una P.
-    let amplitud = 4 * Math.sin(ctx.ms / 22) + 3 * Math.random();
-    amplitud += dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
-    return amplitud;
+    // Donde iría la P hay ondas f, que no son una oscilación limpia ni ruido
+    // blanco: son una ondulación de amplitud pequeña y período variable. Se
+    // obtiene sumando tres senoidales de períodos no múltiplos entre sí, que
+    // nunca vuelven a coincidir en fase.
+    //
+    // Antes era una senoidal más `3 * Math.random()` por muestra. En el
+    // monitor, con una muestra cada 16 ms, pasaba por temblor; en una tira
+    // quieta, con una cada 2 ms, son 500 Hz de ruido: pelusa, no ondas f. Y
+    // al ir sobre el reloj del latido se repetía igual en cada ciclo.
+    const r = ctx.relojMs;
+    const base = 3.2 * Math.sin(r / 21) + 2.1 * Math.sin(r / 13 + 1.7) + 1.4 * Math.sin(r / 31 + 0.6);
+    return base + dibujarQRS(ctx.ms) + dibujarT(ctx.ms, ctx.ciclo);
 }
 
-// Taquicardia Ventricular Monomórfica.
+// Taquicardia Ventricular Monomórfica: complejos anchos, todos iguales, con la
+// repolarización en sentido contrario.
+//
+// Era `60 · sen(t · 2π)`: una senoidal perfecta, un ciclo por latido. No se
+// distinguía dónde acababa el complejo y empezaba la T, que es precisamente lo
+// que hay que reconocer; y al ser simétrica no mostraba el ascenso empastado.
+// Aquí el complejo ocupa el 42% del ciclo con el vértice pasada la mitad, y el
+// resto es la T discordante.
 function generarTVMonomorfica(ctx) {
-    return 60 * Math.sin(ctx.t * Math.PI * 2);
+    const ciclo = ctx.ciclo, ms = ctx.ms;
+    const anchoQrs = Math.min(150, ciclo * 0.42);
+    if (ms < anchoQrs) {
+        const u = ms / anchoQrs;
+        return 58 * Math.sin(Math.pow(u, 1.25) * Math.PI);
+    }
+    const u = (ms - anchoQrs) / (ciclo - anchoQrs);
+    return -24 * Math.sin(u * Math.PI);
 }
 
 // Fibrilación Ventricular: caos eléctrico total, sin complejos organizados
 // ni ciclo cardíaco reconocible. Se genera con osciladores de alta frecuencia
-// independientes del reloj de latido (ctx.t no se usa) más ruido aleatorio,
-// para que nunca se repita un patrón.
-function generarFV() {
-    const caos = Math.sin(performance.now() / 47) * 25
-               + Math.sin(performance.now() / 91) * 18
-               + Math.sin(performance.now() / 23) * 12;
-    return caos + 15 * (Math.random() - 0.5);
+// independientes del reloj de latido (ctx.t no se usa) más ruido, para que
+// nunca se repita un patrón.
+//
+// Los tres osciladores iban sobre performance.now(), el reloj de pared. En el
+// monitor da igual, porque el reloj de pared y el del motor avanzan a la vez;
+// pero una tira quieta se dibuja entera en menos de un milisegundo, así que
+// performance.now() valía prácticamente lo mismo en las 3000 muestras y la
+// fibrilación salía como una línea casi recta. Con ctx.relojMs —el tiempo que
+// el motor dice que ha pasado— la forma es la misma en los dos sitios.
+function generarFV(ctx) {
+    const t = ctx.relojMs;
+    const caos = Math.sin(t / 47) * 25 + Math.sin(t / 91) * 18 + Math.sin(t / 23) * 12;
+    return caos + 12 * ctx.ruido(16);
 }
 
 // Asistolia: ausencia total de actividad eléctrica organizada. Se registra
@@ -248,16 +327,24 @@ function generarAsistolia() {
 }
 
 // Taquicardia Ventricular Polimórfica: caótica e irregular, sin patrón
-// repetitivo — osciladores rápidos y asimétricos más ruido.
+// repetitivo — osciladores rápidos y asimétricos más ruido. Sobre el reloj del
+// motor, por lo mismo que la FV.
 function generarTVPolimorfica(ctx) {
-    let variacionCaotica = 40 + 15 * Math.sin(performance.now() / 113) + 20 * Math.cos(performance.now() / 239);
-    return variacionCaotica * Math.sin(ctx.t * Math.PI * 2) + 8 * (Math.random() - 0.5);
+    const t = ctx.relojMs;
+    const variacionCaotica = 42 + 16 * Math.sin(t / 113) + 20 * Math.cos(t / 239);
+    return variacionCaotica * Math.sin(ctx.t * Math.PI * 2) + 8 * ctx.ruido(20);
 }
 
-// Torsades de Pointes: patrón cíclico organizado ("huso") — envolvente lenta
-// que crece y decrece limpiamente (torsión de eje).
+// Torsades de Pointes: husos de amplitud creciente y decreciente. La
+// envolvente cruza el cero, y al cruzarlo el trazado cambia de polaridad: esa
+// inversión es la torsión del eje que da nombre al ritmo.
+//
+// Iba también sobre el reloj de pared, con lo que en una tira quieta la
+// envolvente valía lo mismo de principio a fin y el huso —el único hallazgo
+// de este ritmo— no aparecía. El período del huso baja de 4,4 s a 1,8 s, que
+// deja ver tres husos completos en los seis segundos de una tira.
 function generarTorsades(ctx) {
-    let huso = 15 + 40 * Math.sin(performance.now() / 700);
+    const huso = 55 * Math.sin(ctx.relojMs * Math.PI * 2 / 1800);
     return huso * Math.sin(ctx.t * Math.PI * 2);
 }
 
@@ -286,6 +373,15 @@ const GENERADORES_RITMO = {
     fv: generarFV,
     asistolia: generarAsistolia,
 };
+
+// Ritmos a los que NO se les aplica la retención de pico (ver obtenerVoltaje).
+// No tienen deflexiones finas que perder —su trazado es una oscilación
+// continua— y su forma lleva ruido: volver a preguntar por el mismo fotograma
+// consumiría ruido de más y ensancharía la amplitud hacia fuera.
+const SIN_RETENCION = ['fv', 'tv_poli', 'torsades', 'asistolia'];
+
+// Resolución con la que se busca el pico dentro de un fotograma, en ms.
+const PASO_FINO_MS = 6;
 
 // Ritmos cuyo reloj marca las P y no los QRS, con su secuencia de conducción.
 const SECUENCIAS_CONDUCCION_AV = {
@@ -339,6 +435,43 @@ class MotorMatematicoECG {
         // para reconocerla— es justamente que sean irregularmente
         // irregulares. Se renueva en cada latido (ver obtenerVoltaje).
         this.variacionRR = 1;
+
+        // Reloj simulado: la suma de todos los deltaTime que ha recibido el
+        // motor. Lo usan los ritmos cuya forma no depende del latido sino del
+        // paso del tiempo (FV, TV polimórfica, torsades, la línea de base de
+        // la FA), que antes leían performance.now().
+        this.relojMs = 0;
+
+        // Azar reproducible. Con Math.random(), una tira quieta de fibrilación
+        // auricular salía con R-R distintos en cada apertura del módulo, así
+        // que el trazado que el estudiante mide no era el que se usó para
+        // calcular la respuesta correcta. Con una semilla fija, la misma
+        // llamada da siempre la misma tira.
+        this.semilla = 20260101;
+        this.azar = () => {
+            this.semilla = (this.semilla * 1103515245 + 12345) & 0x7fffffff;
+            return this.semilla / 0x7fffffff;
+        };
+
+        // Ruido de banda limitada, entre -1 y 1: sortea un valor nuevo cada
+        // `periodo` milisegundos y se mueve en línea recta de uno al siguiente.
+        //
+        // El ruido de la FV y de la TV polimórfica era un sorteo por muestra.
+        // En el monitor, con una muestra cada 16 ms, eso son 60 Hz, dentro del
+        // ancho de banda de un ECG; en una tira quieta, con una cada 2 ms, son
+        // 500 Hz — una frecuencia que ningún electrocardiógrafo registra, y que
+        // en el papel se ve como pelusa en lugar de como un trazado caótico.
+        // Fijando el período, el ruido es el mismo en los dos sitios.
+        this.ruidoEstado = { hasta: 0, de: 0, a: 0 };
+        this.ruido = (periodo) => {
+            const r = this.ruidoEstado;
+            while (this.relojMs >= r.hasta) {
+                r.de = r.a;
+                r.a = this.azar() * 2 - 1;
+                r.hasta += periodo;
+            }
+            return r.de + (r.a - r.de) * (1 - (r.hasta - this.relojMs) / periodo);
+        };
     }
 
     // Reinicia el estado interno del motor (relojes, contadores y lógica de
@@ -354,10 +487,14 @@ class MotorMatematicoECG {
         this.tipoLatidoActual = 'NORMAL';
         this.pausaCompensatoria = false;
         this.variacionRR = 1;
+        this.relojMs = 0;
+        this.semilla = 20260101;
+        this.ruidoEstado = { hasta: 0, de: 0, a: 0 };
     }
 
     obtenerVoltaje(deltaTime, ritmo, fc) {
         if (fc === 0 && !['fv', 'asistolia', 'aesp'].includes(ritmo)) return 0;
+        this.relojMs += deltaTime;
 
         const cicloBase = fc > 0 ? 60000 / fc : 1000;
         let cicloActual = cicloBase;
@@ -420,7 +557,7 @@ class MotorMatematicoECG {
             // 0,72 a 1,28 veces el ciclo base, da la variabilidad que se ve
             // en una FA con respuesta ventricular rápida sin llegar a
             // frecuencias que no corresponden al ritmo.
-            if (ritmo === 'fa') this.variacionRR = 0.72 + Math.random() * 0.56;
+            if (ritmo === 'fa') this.variacionRR = 0.72 + this.azar() * 0.56;
 
             // Bloqueos de 2do grado: pasa a la P siguiente de la secuencia.
             if (secuenciaAV) this.indiceConduccion = (this.indiceConduccion + 1) % secuenciaAV.length;
@@ -450,12 +587,54 @@ class MotorMatematicoECG {
 
             ciclo: cicloActual, // largo real del ciclo (ms), necesario para el QT de Bazett
 
+            // Reloj simulado y azar reproducible (ver el constructor).
+            relojMs: this.relojMs,
+            azar: this.azar,
+            ruido: this.ruido,
+
             tipoLatidoActual: this.tipoLatidoActual,
             latido: this.latidoActual,
         };
 
         const generador = GENERADORES_RITMO[ritmo];
-        return generador ? generador(contexto) : 0;
+        if (!generador) return 0;
+        const valor = generador(contexto);
+
+        // --- RETENCIÓN DE PICO ---
+        //
+        // El monitor pide una muestra por fotograma, unos 16 ms a 60 Hz. La
+        // parte alta de la R dura 18 ms y su vértice 8: si la muestra cae en
+        // la rampa, el complejo se pinta más bajo de lo que es, y como el
+        // fotograma no va sincronizado con el latido, la altura de la R baila
+        // de un latido al siguiente. Medido sobre un ritmo sinusal a 60 Hz, la
+        // R oscilaba entre 68 y 80 — un 15% de salto, visible en pantalla.
+        //
+        // Un monitor real hace exactamente esto: muestrea mucho más rápido de
+        // lo que pinta y lleva al trazado el valor más alejado de la línea de
+        // base de cada intervalo. Aquí el reloj no se toca: se vuelve a
+        // preguntar al generador por instantes anteriores dentro del mismo
+        // fotograma, que para un ritmo con latidos es una función pura.
+        if (deltaTime <= PASO_FINO_MS || SIN_RETENCION.includes(ritmo)) return valor;
+
+        let extremo = valor;
+        const pasos = Math.min(8, Math.ceil(deltaTime / PASO_FINO_MS));
+        for (let i = 1; i < pasos; i++) {
+            const atras = deltaTime * i / pasos;
+            const v = generador({
+                t: contexto.t - atras / cicloActual,
+                t_aur: contexto.t_aur - atras / cicloAuricular,
+                ms: contexto.ms - atras,
+                ms_aur: contexto.ms_aur - atras,
+                ciclo: cicloActual,
+                relojMs: contexto.relojMs - atras,
+                azar: contexto.azar,
+                ruido: contexto.ruido,
+                tipoLatidoActual: contexto.tipoLatidoActual,
+                latido: contexto.latido,
+            });
+            if (Math.abs(v) > Math.abs(extremo)) extremo = v;
+        }
+        return extremo;
     }
 }
 

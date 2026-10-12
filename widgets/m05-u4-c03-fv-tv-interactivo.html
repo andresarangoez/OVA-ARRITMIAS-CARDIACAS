@@ -110,7 +110,6 @@ footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padd
 
 <div class="wrap">
   <header>
-    <span class="eyebrow">Ritmos de QRS ancho · Paro y periparo</span>
     <h1>FV, TV sin pulso y TV con pulso</h1>
     <p class="lede">Las tres se ven graves en el monitor. Lo que cambia la conducta es la organización del ritmo y, sobre todo, si el paciente tiene pulso.</p>
   </header>
@@ -318,6 +317,15 @@ if(reduce) strips.forEach(s=>drawStrip(s,0)); else requestAnimationFrame(loop);
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

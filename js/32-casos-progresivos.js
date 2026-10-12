@@ -229,12 +229,11 @@ function pintarCaso(raiz) {
 
     const caja = raiz.querySelector('.cp-tira');
     caja.innerHTML = '';
-    const lienzo = document.createElement('canvas');
-    lienzo.className = 'tira-ecg-lienzo';
-    lienzo.setAttribute('role', 'img');
-    lienzo.setAttribute('aria-label', 'Trazado del caso, 6 segundos a 25 mm/s.');
-    caja.appendChild(lienzo);
-    OVA.TiraECG.dibujar(lienzo, { ritmo: caso.ritmo, segundos: 6 });
+    const info = OVA.TiraECG.crear({
+        ritmo: caso.ritmo, segundos: 6,
+        etiqueta: 'Trazado del caso, 6 segundos a 25 mm/s.'
+    });
+    if (info) caja.appendChild(info.nodo);
     const pie = document.createElement('p');
     pie.className = 'tira-ecg-pie';
     pie.innerHTML = '<span class="tira-ecg-calibre">6 s · 25 mm/s · 10 mm/mV</span>';

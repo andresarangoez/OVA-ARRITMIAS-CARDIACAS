@@ -339,3 +339,42 @@
 .corazon-estructuras-texto {
     text-align: left;
 }
+
+/* --- TABLA PLEGABLE ---
+   Un dato que el apartado necesita pero que ya está desarrollado en otro
+   módulo. Antes la remisión decía «se describió en el Módulo 01 y no se
+   repite aquí», que deja al estudiante con la instrucción de ir a buscarlo
+   en otra pantalla justo cuando lo necesita. Aquí se abre en el sitio. */
+.tabla-plegable {
+    margin: 16px 0;
+    border: 1px solid var(--fucs-gris);
+    border-left: 3px solid var(--fucs-azul-profundo);
+    border-radius: var(--bento-radius-md);
+    background: var(--fucs-niebla);
+    padding: 0 14px;
+}
+.tabla-plegable > summary {
+    cursor: pointer;
+    padding: 11px 2px;
+    font-size: 0.88rem; font-weight: 600;
+    color: var(--fucs-azul-profundo);
+    list-style: none;
+    display: flex; align-items: center; gap: 9px;
+}
+.tabla-plegable > summary::-webkit-details-marker { display: none; }
+/* El triángulo se dibuja aquí para poder girarlo al abrir; el del navegador
+   no se puede animar ni teñir. */
+.tabla-plegable > summary::before {
+    content: '▸';
+    font-size: 0.9em;
+    transition: transform 0.18s;
+}
+.tabla-plegable[open] > summary::before { transform: rotate(90deg); }
+.tabla-plegable > summary:hover { color: var(--fucs-azul-oscuro); }
+.tabla-plegable > summary:focus-visible { outline: 2px solid var(--fucs-azul-profundo); outline-offset: 2px; border-radius: 4px; }
+.tabla-plegable[open] > summary { border-bottom: 1px solid var(--fucs-gris); margin-bottom: 12px; }
+.tabla-plegable .tabla-scroll { margin: 0 0 10px; }
+.tabla-plegable-fuente {
+    margin: 0; padding-bottom: 12px;
+    font-size: 0.78rem; color: var(--text-muted);
+}

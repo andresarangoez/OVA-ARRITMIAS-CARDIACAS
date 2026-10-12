@@ -1,3 +1,12 @@
+/* --- EL SIMULADOR NACE OCULTO ---
+   Vive dentro de #vista-modulo, y solo debe verse una vez que el estudiante
+   pulsa «Comenzar» en un módulo que lo incluya (iniciarModulo, js/05-modulo.js).
+   Sin esta regla su estado de reposo es «visible», así que el primer pintado
+   de la página —antes de que corra ninguna línea de JavaScript— ya lo muestra,
+   y al abrir un módulo se colaba un fotograma con el monitor antes de la
+   pantalla de bienvenida. */
+#simulador-wrapper { display: none; }
+
 /* --- CONTENEDOR PRINCIPAL --- */
 /* Fluido en vez de ancho fijo: se encoge en laptop sin necesidad de media
    query; el breakpoint de abajo (900px) cubre la reestructuración a
@@ -86,6 +95,31 @@
     background-size: 20px 20px;
 }
 .monitor-trazado canvas { display: block; width: 100%; height: 224px; }
+
+/* --- REGISTRO AL PIE DEL TRAZADO ---
+   Lo que acaba de hacerse, donde se está mirando. El panel de acciones
+   clínicas conserva la historia entera; esta banda solo lleva las dos últimas
+   líneas, y ocupa el aire que sobraba bajo el trazado. */
+.monitor-registro {
+    margin-top: 10px;
+    min-height: 42px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.035);
+    border-radius: 8px;
+    font-size: 0.76rem; line-height: 1.5;
+    color: #8698ab;
+    display: flex; flex-direction: column; gap: 1px;
+    justify-content: center;
+}
+.monitor-registro-linea {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.monitor-registro-hora { color: #55687b; font-variant-numeric: tabular-nums; margin-right: 7px; }
+/* El color lo marca el veredicto, igual que en el registro del panel. */
+.monitor-registro-linea.success { color: #3fb950; }
+.monitor-registro-linea.alert   { color: #f85149; }
+.monitor-registro-linea.warning { color: #e3b341; }
+.monitor-registro-linea.action  { color: #cfdbe7; }
 .monitor-derivacion {
     position: absolute; top: 10px; left: 14px;
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
@@ -312,7 +346,133 @@
 .btn-tablero.abierto { border-style: solid; border-color: var(--fucs-azul-profundo); background: rgba(9, 39, 85, 0.05); }
 .btn-tablero.abierto .btn-tablero-flecha { transform: rotate(180deg); }
 
-/* --- CONSOLA DE MANDO (ritmo + instrucción) ---
+/* --- CÓMO SE USA ---
+   Fuera del aparato y antes que él, a continuación del texto con que cada
+   módulo presenta el simulador. Dentro de la carcasa, las instrucciones de uso
+   competían con lo único que ahí hay que leer, que son las cifras. */
+.simulador-instruccion {
+    background: var(--fucs-niebla);
+    border-left: 3px solid var(--fucs-azul-profundo);
+    border-radius: var(--bento-radius-md);
+    padding: 14px 18px;
+}
+.simulador-instruccion p { margin: 0; font-size: 0.88rem; line-height: 1.55; color: var(--text-body); }
+.simulador-instruccion-titulo {
+    font-size: 0.72rem !important; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--fucs-azul-profundo); margin-bottom: 5px !important;
+}
+.simulador-calibre {
+    margin-top: 8px !important;
+    font-size: 0.76rem !important; color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- SELECTOR DE RITMO DESPLEGABLE ---
+   El <select> del navegador abre una lista del sistema, plana y sin los
+   grupos a la vista: para elegir entre diecisiete ritmos hay que leerla
+   entera. Este despliega los cinco grupos en dos columnas, que es como se
+   clasifican las arritmias y como se enseñan en el Módulo 03.
+   El <select> sigue en el documento, oculto: es él quien guarda el valor y
+   quien dispara el evento change, así que el resto del simulador no se entera
+   del cambio. */
+.ritmo-selector { position: relative; }
+.ritmo-selector select {
+    position: absolute; width: 1px; height: 1px;
+    opacity: 0; pointer-events: none;
+}
+.ritmo-boton {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; box-sizing: border-box;
+    padding: 9px 12px;
+    font-family: inherit; font-size: 0.92rem; font-weight: 600; text-align: left;
+    color: #e6edf3; background: #070c12;
+    border: 1px solid #2b3a4d; border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+.ritmo-boton:hover { border-color: #3d5268; }
+.ritmo-boton[aria-expanded="true"],
+.ritmo-boton:focus-visible {
+    outline: none; border-color: #3fb950;
+    box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.22);
+}
+.ritmo-boton-flecha { color: #3fb950; font-size: 0.7rem; transition: transform 0.2s; }
+.ritmo-boton[aria-expanded="true"] .ritmo-boton-flecha { transform: rotate(180deg); }
+
+.ritmo-panel {
+    position: absolute; z-index: 40;
+    top: calc(100% + 6px); left: 0;
+    min-width: 100%; width: max-content; max-width: min(92vw, 700px);
+    /* Rejilla sobre los bloques de grupo, no sobre los ritmos sueltos: así
+       cada encabezado viaja con los suyos. La primera versión repartía las
+       opciones una a una y «Bradiarritmias» acababa encabezando ritmos
+       ajenos; la segunda usaba columnas CSS, que agrupan bien pero no
+       recalculan de forma fiable al cambiar el ancho. Con auto-fit la
+       retícula cae sola a una columna cuando no caben dos. */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 4px 30px; align-items: start;
+    padding: 16px 18px;
+    background: #0e141b;
+    border: 1px solid rgba(63, 185, 80, 0.28);
+    border-radius: 12px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+    /* La apertura se anima desde el borde superior, como un panel que se
+       despliega, no como una caja que aparece. */
+    transform-origin: top center;
+    animation: ritmo-desplegar 0.22s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes ritmo-desplegar {
+    from { opacity: 0; transform: scaleY(0.86) translateY(-10px); }
+    to   { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .ritmo-panel { animation: none; } }
+.ritmo-panel[hidden] { display: none; }
+
+.ritmo-grupo-bloque { min-width: 0; }
+/* El selector lleva el panel delante a propósito: una sola clase pierde contra
+   cualquier regla de párrafo del OVA, y el encabezado salía en gris de texto
+   en lugar del verde del trazado. */
+.ritmo-panel .ritmo-grupo {
+    margin: 10px 0 3px;
+    font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: #3fb950;
+}
+/* Cada bloque es un elemento de la retícula y empieza su propia columna, así
+   que ninguno necesita el margen superior de separación entre grupos. */
+.ritmo-panel .ritmo-grupo-bloque .ritmo-grupo { margin-top: 0; }
+.ritmo-panel .ritmo-grupo-bloque + .ritmo-grupo-bloque .ritmo-grupo { margin-top: 2px; }
+.ritmo-opcion {
+    display: block; width: 100%;
+    padding: 5px 8px; margin: 0;
+    font-family: inherit; font-size: 0.86rem; text-align: left;
+    color: #cfdbe7; background: transparent;
+    border: 0; border-radius: 6px; cursor: pointer;
+}
+.ritmo-opcion:hover { background: rgba(63, 185, 80, 0.12); color: #ffffff; }
+.ritmo-opcion[aria-selected="true"] { background: rgba(63, 185, 80, 0.18); color: #ffffff; font-weight: 600; }
+.ritmo-opcion:focus-visible { outline: 2px solid #3fb950; outline-offset: -2px; }
+
+@media (max-width: 620px) {
+    /* Anclado a los dos lados: con width:max-content el panel arrancaba en el
+       botón y se salía por la derecha, dejando media lista fuera de la
+       pantalla. Aquí ocupa el ancho del control y se desplaza por dentro. */
+    .ritmo-panel {
+        left: 0; right: 0; width: auto; max-width: none;
+        max-height: 60vh; overflow-y: auto;
+    }
+}
+
+/* La calibración, a la derecha de la consola: es la del papel del trazado. */
+.controls-calibre {
+    margin: 0; justify-self: end; align-self: center;
+    font-size: 0.72rem; color: #6e8294; letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- CONSOLA DE MANDO (ritmo + calibración) ---
    La franja superior del dispositivo. Mismo lenguaje que la pantalla: fondo
    oscuro, rótulos en versalitas espaciadas y las cifras y controles en claro.
    Antes era una tarjeta blanca y el salto de blanco a negro partía el aparato

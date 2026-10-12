@@ -87,7 +87,6 @@ footer{margin-top:36px;color:var(--muted);font-size:13px;max-width:780px}
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">Arritmias · Paro cardíaco</div>
   <h1>Solo dos ritmos del paro cardíaco responden a la descarga</h1>
   <p class="lead">Mira los cuatro ritmos en movimiento, luego palpa el pulso, clasifica el ritmo del monitor y elige qué hacer.</p>
   <div class="tabs" role="tablist">
@@ -224,6 +223,15 @@ document.querySelector(".tabs").onclick=e=>{const t=e.target.closest(".tab");if(
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

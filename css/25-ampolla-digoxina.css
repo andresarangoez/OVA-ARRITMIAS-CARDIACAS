@@ -1,0 +1,204 @@
+/* --- AMPOLLA DE DIGOXINA (Módulo 02, 4.6.4) ---
+   Ilustración animada que acompaña al texto sobre la toxicidad digitálica.
+   Va dentro de una .figura-fila: el texto a la izquierda, la ampolla a la
+   derecha.
+
+   La ampolla se ve TUMBADA. De pie mide dos y media veces lo que mide de
+   ancho, así que al lado de un párrafo obligaba a la fila a crecer hasta su
+   alto y dejaba un palmo de página en blanco debajo del texto. Tumbada, la
+   vitrina es apaisada y la que manda es la columna del texto.
+
+   Quien quiera verla como está dibujada tiene el botón de debajo: la pone de
+   pie y la agranda. Es una casilla de verificación con su etiqueta, sin una
+   línea de JavaScript, porque los <script> de un módulo no se ejecutan —el OVA
+   inyecta el HTML con innerHTML— y un botón con onclick dependería de una
+   función global para algo que el CSS resuelve solo. De paso se maneja con el
+   teclado y anuncia su estado sin que haya que escribir nada.
+
+   Por qué el fondo es oscuro en un módulo claro: el vidrio está dibujado con
+   blancos a baja opacidad —los reflejos, el brillo del hombro, la línea que
+   barre el cuerpo—. Sobre el blanco del módulo no se vería nada de eso; el
+   vidrio necesita un fondo oscuro detrás para leerse como vidrio.
+
+   Todo el movimiento es CSS, por lo mismo que el botón. */
+
+/* La fila estira sus dos columnas en vez de centrarlas, para que la vitrina
+   mida exactamente lo que mide el texto que tiene al lado. */
+.figura-fila.fila-ampolla { align-items: stretch; }
+
+.ampolla-digoxina {
+    position: relative;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* La casilla que cambia de estado. No se oculta con display:none, que la
+   sacaría del orden de tabulación: se deja del tamaño de un punto y sin
+   pintar, y quien navega con teclado llega a ella y ve el foco en el botón. */
+.ampolla-interruptor {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ampolla-escena {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Crece hasta llenar la columna; el suelo evita que con un texto muy corto
+       la vitrina quede aplastada. */
+    flex: 1 1 auto;
+    min-height: 190px;
+    padding: 16px 18px 22px;
+    background: radial-gradient(circle at 50% 42%, #1e293b 0%, #0f172a 100%);
+    border-radius: var(--bento-radius-md);
+    box-shadow: var(--bento-shadow-soft), inset 0 0 0 1px rgba(255, 255, 255, .08);
+    overflow: hidden;
+}
+
+/* Halo del pedestal: la sombra luminosa sobre la que parece posarse. */
+.ampolla-halo {
+    position: absolute;
+    bottom: 26px;
+    width: 72%; height: 22px;
+    background: radial-gradient(ellipse at center,
+                rgba(14, 165, 233, .38) 0%, rgba(14, 165, 233, 0) 70%);
+    border-radius: 50%;
+    animation: ampolla-halo 3s ease-in-out infinite alternate;
+}
+
+/* Dos envoltorios, y cada uno con una sola tarea:
+   · .ampolla-flota sube y baja, y nunca gira, así que el balanceo es vertical
+     en pantalla en los dos estados;
+   · .ampolla-giro gira, y como va dentro, su rotación no arrastra al balanceo.
+   Con una sola capa, al poner la ampolla de pie el balanceo giraba con ella y
+   la ampolla se mecía de lado. */
+.ampolla-flota {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 520 / 200;
+    animation: ampolla-flotar 4s ease-in-out infinite;
+}
+.ampolla-giro {
+    position: absolute;
+    inset: 0;
+    transition: transform .45s cubic-bezier(.2, .8, .3, 1);
+}
+.ampolla-svg {
+    display: block;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .45));
+}
+
+/* --- DE PIE Y AMPLIADA --- */
+/* La vitrina pasa a un alto propio: aquí ya no se trata de igualar al texto,
+   sino de enseñar la ampolla como está dibujada. */
+.ampolla-interruptor:checked ~ .ampolla-escena {
+    min-height: 520px;
+    padding: 24px 18px;
+}
+/* El hueco del balanceo es la huella de la ampolla ya girada: 470 de largo por
+   los 181 que salen de la proporción del lienzo (520 ÷ 200). */
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-flota {
+    width: 181px; height: 470px;
+    max-width: none;
+    aspect-ratio: auto;
+}
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-giro {
+    inset: auto;
+    left: 50%; top: 50%;
+    width: 470px; height: 181px;
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+.ampolla-interruptor:checked ~ .ampolla-escena .ampolla-halo {
+    bottom: 20px; width: 190px;
+}
+
+/* --- BOTÓN --- */
+.ampolla-boton {
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 6px 13px;
+    border: 1px solid var(--fucs-gris);
+    border-radius: 99px;
+    background: var(--fucs-niebla);
+    color: var(--fucs-azul-oscuro);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s ease, border-color .2s ease;
+}
+.ampolla-boton:hover { background: #ffffff; border-color: var(--fucs-azul-oscuro); }
+.ampolla-interruptor:focus-visible ~ .ampolla-boton {
+    outline: 3px solid var(--fucs-azul-oscuro);
+    outline-offset: 2px;
+}
+.ampolla-boton-reducir { display: none; }
+.ampolla-interruptor:checked ~ .ampolla-boton .ampolla-boton-ampliar { display: none; }
+.ampolla-interruptor:checked ~ .ampolla-boton .ampolla-boton-reducir { display: inline; }
+
+.ampolla-digoxina .figura-caption { margin-top: 8px; }
+
+/* --- MOVIMIENTO DEL DIBUJO ---
+   El líquido se mece, suben burbujas y un reflejo recorre el vidrio. Las tres
+   van sobre elementos de dentro del SVG, no sobre el conjunto, para que la
+   ampolla pueda flotar al mismo tiempo sin que una transformación pise a la
+   otra. */
+.ampolla-liquido { animation: ampolla-ola 3s ease-in-out infinite; }
+
+.ampolla-burbuja { opacity: 0; animation: ampolla-subir 3s linear infinite; }
+.ampolla-burbuja--1 { animation-duration: 2.5s; animation-delay: 0s; }
+.ampolla-burbuja--2 { animation-duration: 3.2s; animation-delay: .8s; }
+.ampolla-burbuja--3 { animation-duration: 2.8s; animation-delay: 1.5s; }
+
+.ampolla-reflejo { animation: ampolla-brillo 4s ease-in-out infinite; }
+
+@keyframes ampolla-flotar {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+@keyframes ampolla-halo {
+    from { opacity: .5; transform: scale(.9); }
+    to   { opacity: 1;  transform: scale(1.1); }
+}
+@keyframes ampolla-ola {
+    0%, 100% { transform: translateX(-9px); }
+    50%      { transform: translateX(9px); }
+}
+@keyframes ampolla-subir {
+    0%        { transform: translateY(0) scale(.8); opacity: 0; }
+    20%, 80%  { opacity: .8; }
+    100%      { transform: translateY(-155px) scale(1.2); opacity: 0; }
+}
+@keyframes ampolla-brillo {
+    0%, 100% { opacity: .2; transform: translateX(-8px); }
+    50%      { opacity: .8; transform: translateX(4px); }
+}
+
+/* Quien pide menos movimiento ve la ampolla quieta, y el botón sigue
+   funcionando: lo que la ilustración enseña —la presentación, la etiqueta, el
+   anillo de corte— está dibujado, no animado. */
+@media (prefers-reduced-motion: reduce) {
+    .ampolla-flota, .ampolla-halo, .ampolla-liquido,
+    .ampolla-burbuja, .ampolla-reflejo { animation: none; }
+    .ampolla-burbuja { opacity: .7; }
+    .ampolla-giro { transition: none; }
+}
+
+@media (max-width: 780px) {
+    /* Apilada bajo el texto ya no hay texto al lado que igualar. */
+    .ampolla-escena { min-height: 170px; padding: 14px 14px 18px; }
+    .ampolla-interruptor:checked ~ .ampolla-escena { min-height: 430px; }
+    .ampolla-interruptor:checked ~ .ampolla-escena .ampolla-flota {
+        width: 146px; height: 380px;
+    }
+    .ampolla-interruptor:checked ~ .ampolla-escena .ampolla-giro {
+        width: 380px; height: 146px;
+    }
+}

@@ -30,6 +30,19 @@ h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
 .item.on{background:var(--azul);color:#fff;border-color:var(--azul)}
 #fig{width:100%;height:auto;display:block}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+/* Pestañas a la izquierda y mandos del recorrido a la derecha, en la misma
+   línea. En pantalla estrecha caen uno debajo del otro. */
+.barra-sup{display:flex;justify-content:space-between;align-items:flex-start;gap:12px 16px;flex-wrap:wrap;margin-bottom:6px}
+.barra-sup .cats{margin-bottom:0}
+.tools-sup{margin-top:0;flex-shrink:0}
+.sel-vel{padding-right:10px;font-family:inherit}
+/* En móvil los cuatro mandos no caben al lado de las pestañas: el flex-shrink
+   bloqueado los empujaba fuera del marco. Aquí pasan a su propia línea. */
+@media (max-width:640px){
+  .barra-sup{flex-direction:column}
+  .tools-sup{flex-shrink:1;width:100%}
+  .tools-sup .btn{flex:1 1 auto}
+}
 .btn{appearance:none;border:1px solid var(--azul);background:var(--azul);color:var(--dorado);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
 .btn.alt{background:#fff;color:var(--azul)}
 .hint{color:var(--mut);font-size:12.5px}
@@ -58,15 +71,25 @@ h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
 <header><h1>Partes del ECG: ondas, segmentos, intervalos y complejo</h1></header>
 
 <section class="card">
-  <div class="cats" id="cats"></div>
+  <!-- Los mandos del recorrido van arriba, junto a las pestañas: son lo
+       primero que se usa, y al pie quedaban por debajo del trazado, fuera de
+       la vista cuando el simulador se ve dentro del módulo. -->
+  <div class="barra-sup">
+    <div class="cats" id="cats"></div>
+    <div class="tools tools-sup">
+      <button class="btn" id="tour">▶ Recorrer el latido</button>
+      <button class="btn alt" id="prev">◀ Anterior</button>
+      <button class="btn alt" id="next">Siguiente ▶</button>
+      <select class="btn alt sel-vel" id="vel" aria-label="Velocidad del recorrido">
+        <option value="3200">Lento</option>
+        <option value="1800" selected>Normal</option>
+        <option value="1100">Rápido</option>
+      </select>
+    </div>
+  </div>
   <div class="items" id="items"></div>
   <svg id="fig" viewBox="0 0 1000 410" role="img" aria-label="Latido normal de ECG con sus partes"></svg>
-  <div class="tools">
-    <button class="btn" id="tour">▶ Recorrer el latido</button>
-    <button class="btn alt" id="prev">◀ Anterior</button>
-    <button class="btn alt" id="next">Siguiente ▶</button>
-    <span class="hint">Haz clic sobre el trazo o usa las flechas ← → del teclado. Velocidad 25 mm/s · 1 mV = 10 mm.</span>
-  </div>
+  <p class="hint">Haz clic sobre el trazo o usa las flechas ← → del teclado. Velocidad 25 mm/s · 1 mV = 10 mm.</p>
 </section>
 
 <div class="grid">
@@ -358,11 +381,21 @@ function step(dir){
   const n=ORDER[(i<0?(dir>0?0:ORDER.length-1):(i+dir+ORDER.length)%ORDER.length)];
   select(n);
 }
+// La pausa entre una parte y la siguiente la elige el estudiante: tres
+// segundos y pico se hacían largos para quien ya sabe lo que mira, y cortos
+// para quien lo ve por primera vez.
+const velocidad = () => parseInt($('#vel').value,10);
 $('#tour').addEventListener('click',()=>{
   if(tourT){stopTour();return;}
   $('#tour').textContent='⏸ Detener';
   select(ORDER[0]);
-  tourT=setInterval(()=>step(1),3200);
+  tourT=setInterval(()=>step(1),velocidad());
+});
+// Si se cambia la velocidad con el recorrido en marcha, se aplica ya.
+$('#vel').addEventListener('change',()=>{
+  if(!tourT) return;
+  clearInterval(tourT);
+  tourT=setInterval(()=>step(1),velocidad());
 });
 $('#next').addEventListener('click',()=>{stopTour();step(1);});
 $('#prev').addEventListener('click',()=>{stopTour();step(-1);});
@@ -378,6 +411,15 @@ buildCats(); buildItems(); show('all');
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

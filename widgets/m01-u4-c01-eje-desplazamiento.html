@@ -120,14 +120,6 @@ footer{margin-top:16px;color:var(--mut);font-size:12px}
     <div style="margin-top:10px"><span class="pill ok" id="cls">Eje normal</span></div>
     <p class="note" id="clsnote"></p>
 
-    <label class="lab">Rotación horizontal (transición) <b id="hlab">−10°</b></label>
-    <input type="range" id="hrot" min="-90" max="30" step="1" value="-10">
-    <div class="row" style="margin-top:6px">
-      <button class="btn" data-h="10">Antihoraria (V2)</button>
-      <button class="btn" data-h="-10">Normal (V3–V4)</button>
-      <button class="btn" data-h="-45">Horaria (V5)</button>
-    </div>
-    <p class="note" id="trans"></p>
 
     <div class="checks">
       <label><input type="checkbox" id="chShadow" checked> Mostrar sombra (proyección)</label>
@@ -178,11 +170,16 @@ const leadObj = id => LIMB.concat(CHEST).find(l=>l.id===id);
 function waves(){
   const A=S.A, H=S.H;
   return [
-    {k:'P', t:.090, s:.022, m:.15, f:50,     h:30    },
+    // Las magnitudes de P y T van en el extremo alto de su rango normal
+    // (P hasta 0,25 mV; T en torno al 45% de R, como en las precordiales
+    // medias). Con los valores mínimos, proyectadas sobre cada derivación y
+    // reducidas al tamaño de la tira, salían casi planas y no se veía lo que
+    // el simulador quiere enseñar: que también se desplazan con el eje.
+    {k:'P', t:.090, s:.022, m:.25, f:50,     h:30    },
     {k:'q', t:.220, s:.006, m:.18, f:A+160,  h:H+155 },
     {k:'R', t:.238, s:.011, m:1.20,f:A,      h:H     },
     {k:'s', t:.262, s:.008, m:.40, f:A-140,  h:H-50  },
-    {k:'T', t:.440, s:.045, m:.40, f:A-10,   h:H+60  }
+    {k:'T', t:.440, s:.045, m:.55, f:A-10,   h:H+60  }
   ];
 }
 let W = waves();
@@ -493,7 +490,7 @@ function classify(a){
   if(a>=-30&&a<=90) return ['Eje normal','ok','Entre −30° y +90°: DI y aVF positivas (o DII positiva).'];
   if(a<-30&&a>=-90) return ['Desviación izquierda','warn','−30° a −90°: se ve en hipertrofia del VI, hemibloqueo anterior izquierdo, infarto inferior, obesidad/embarazo.'];
   if(a>90&&a<=180) return ['Desviación derecha','warn','+90° a +180°: se ve en hipertrofia del VD, EPOC, TEP, hemibloqueo posterior, dextrocardia/lateral-infarto.'];
-  return ['Desviación extrema (tierra de nadie)','bad','−90° a ±180°: eje indeterminado; considerar taquicardia ventricular, hiperpotasemia, mala colocación de electrodos.'];
+  return ['Eje indeterminado','bad','−90° a ±180°: considerar taquicardia ventricular, hiperpotasemia o mala colocación de los electrodos.'];
 }
 function netBadge(id){
   const arr=Object.keys(NET).filter(k=>(LIMB.some(l=>l.id===k))===(S.plane==='F'));
@@ -504,7 +501,6 @@ function netBadge(id){
 }
 function updateStaticText(){
   $('#alab').textContent=(S.A>0?'+':S.A<0?'−':'')+Math.abs(S.A)+'°';
-  $('#hlab').textContent=(S.H>0?'+':S.H<0?'−':'')+Math.abs(S.H)+'°';
   const [name,cls,note]=classify(S.A);
   const pill=$('#cls'); pill.textContent=name; pill.className='pill '+cls;
   $('#clsnote').textContent=note;
@@ -517,13 +513,9 @@ function updateStaticText(){
   const quad = bi==='+'&&bf==='+' ? 'DI + / aVF + → eje normal (0° a +90°)'
              : bi==='+'&&bf==='−' ? 'DI + / aVF − → izquierda (si DII también − : desviación izquierda patológica)'
              : bi==='−'&&bf==='+' ? 'DI − / aVF + → desviación derecha'
-             : bi==='−'&&bf==='−' ? 'DI − / aVF − → eje extremo (tierra de nadie)'
+             : bi==='−'&&bf==='−' ? 'DI − / aVF − → eje indeterminado'
              : 'Alguna es isobifásica → el eje es perpendicular a esa derivación (±90°)';
   $('#rule').textContent='Regla rápida de cuadrantes: '+quad+'.';
-  // transición: primera precordial (V1→V6) con QRS neto positivo
-  const tr=CHEST.find(l=>NET[l.id]>0.02);
-  $('#trans').textContent='Transición (R = S): '+(tr?(tr.lab+' (primera precordial con QRS positivo)'):'ninguna positiva')+
-     '. Normal: V3–V4.';
 }
 
 /* ---------- Interacción ---------- */
@@ -555,11 +547,8 @@ $('#play').addEventListener('click',()=>setPlaying(!S.playing));
 $('#speed').addEventListener('change',e=>S.speed=parseFloat(e.target.value));
 $('#scrub').addEventListener('input',e=>{S.t=parseFloat(e.target.value)/1000;setPlaying(false);});
 $('#axis').addEventListener('input',e=>{S.A=parseInt(e.target.value,10);recalc();});
-$('#hrot').addEventListener('input',e=>{S.H=parseInt(e.target.value,10);recalc();});
 document.querySelectorAll('[data-axis]').forEach(b=>b.addEventListener('click',()=>{
   S.A=parseInt(b.dataset.axis,10); $('#axis').value=S.A; recalc();}));
-document.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{
-  S.H=parseInt(b.dataset.h,10); $('#hrot').value=S.H; setPlane('H'); recalc();}));
 $('#chShadow').addEventListener('change',e=>S.shadow=e.target.checked);
 $('#chLoop').addEventListener('change',e=>S.loop=e.target.checked);
 $('#chRot').addEventListener('change',e=>S.rot=e.target.checked);
@@ -651,6 +640,15 @@ requestAnimationFrame(frame);
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

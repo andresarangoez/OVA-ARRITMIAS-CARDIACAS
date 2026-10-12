@@ -83,7 +83,21 @@
         }
     }
 
+    function ocultarSimulador() {
+        const simulador = document.getElementById('simulador-wrapper');
+        if (simulador) simulador.style.display = 'none';
+    }
+
     async function abrirModulo(idModulo, titulo) {
+        // Lo PRIMERO, antes de descubrir la vista del módulo: esconder el
+        // simulador. Al final de esta función también se esconde, pero para
+        // entonces ya ha pasado el `await` de cargarContenidoModulo(), y el
+        // navegador ha tenido ocasión de pintar la vista con el monitor de la
+        // visita anterior todavía encima. Eso era el parpadeo: un fotograma
+        // de monitor antes de la pantalla de bienvenida, también en módulos
+        // que ni siquiera llevan simulador.
+        ocultarSimulador();
+
         document.getElementById('vista-home').classList.remove('view-active');
         document.getElementById('vista-home').classList.add('view-hidden');
 
@@ -130,14 +144,12 @@
             }
         }
 
-        // El simulador NUNCA se muestra en la pantalla de bienvenida — solo
-        // debe aparecer una vez que el estudiante entra al desarrollo del
-        // módulo (ver iniciarModulo en 05-modulo.js), aunque el módulo sea
-        // uno de los que sí lo incluyen.
-        const simulador = document.getElementById('simulador-wrapper');
-        if (simulador) {
-            simulador.style.display = 'none';
-        }
+        // Se repite al final a propósito: entre medias ha corrido
+        // reiniciarEstadoModulo(), y el módulo podría haber quedado en un
+        // estado que lo revele. El simulador NUNCA se muestra en la pantalla
+        // de bienvenida, solo al entrar al desarrollo (iniciarModulo, en
+        // 05-modulo.js), aunque el módulo sea de los que sí lo incluyen.
+        ocultarSimulador();
     }
 
     function volverHome() {
@@ -157,10 +169,12 @@
 
         document.getElementById('titulo-modulo-activo').innerText = "Objeto Virtual de Aprendizaje: manejo de arritmias cardiacas";
 
-        const simulador = document.getElementById('simulador-wrapper');
-        if (simulador) {
-            simulador.style.display = 'block';
-        }
+        // Al salir del módulo el simulador se esconde. Antes se ponía en
+        // 'block' —resto de una versión en la que vivía en la portada—, y como
+        // vive dentro de #vista-modulo eso no se notaba estando en el inicio:
+        // se notaba al entrar al módulo siguiente, que descubría la vista con
+        // el monitor ya encima. Esa era la raíz del parpadeo.
+        ocultarSimulador();
 
         document.body.classList.remove('modo-modulo');
     }

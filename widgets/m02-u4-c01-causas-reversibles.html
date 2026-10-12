@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Causas reversibles: 6H y 6T</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Paleta institucional FUCS */
+:root{
+  --azul:#092755; --azul2:#0A3E7C; --dorado:#F8C680; --amarillo:#FBD785;
+  --gris:#C6C7C8; --niebla:#E8E8E8; --bg:#F3F5F8; --txt:#333333; --mut:#6b7280;
+  --ok:#27ae60; --bad:#e74c3c;
+  --font:'Raleway',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:500 15px/1.5 var(--font)}
+button,input,select{font-family:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:18px 16px 40px}
+header{background:var(--azul);color:#fff;border-radius:18px;padding:16px 22px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(9,39,85,.18);border-bottom:4px solid var(--dorado);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
+.card{background:#fff;border:1px solid var(--gris);border-radius:18px;padding:14px 18px;box-shadow:0 10px 30px rgba(9,39,85,.08)}
+.btn{appearance:none;border:1px solid var(--dorado);background:transparent;color:var(--dorado);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
+.btn.on{background:var(--dorado);color:var(--azul)}
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media (max-width:820px){.groups{grid-template-columns:1fr}}
+.grp h3{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+.grp h3 b{color:var(--azul);font-size:15px;letter-spacing:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:2px solid var(--gris);background:#fff;color:var(--azul);padding:7px 11px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;text-align:left}
+.chip small{display:block;font-weight:600;color:var(--mut);font-size:11px}
+.chip.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+.chip.on small{color:var(--dorado)}
+.chip.ok{border-color:var(--ok);background:rgba(39,174,96,.12)}
+.chip.bad{border-color:var(--bad);background:rgba(231,76,60,.1)}
+.grp .chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:8px}
+.grp .chip{width:100%;height:100%;min-height:58px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;line-height:1.2}
+@media (max-width:560px){.grp .chip{font-size:12px;padding:6px 6px}.grp .chip small{font-size:10px}}
+/* Dos columnas y dos filas: arriba la escena y el monitor, abajo las dos
+   mitades de la ficha. Antes la columna derecha apilaba monitor y ficha
+   entera, y la ficha se estiraba muy por debajo de la ilustración. */
+/* Sin align-items: los dos de cada fila se estiran a la altura de la fila y
+   quedan simétricos. Con `start` cada uno medía lo que midiera su contenido y
+   el monitor acababa más bajo que la escena, y la mitad derecha de la ficha
+   más baja que la izquierda. */
+.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+@media (max-width:980px){.main{grid-template-columns:1fr}}
+
+/* La escena y su barra vertical. */
+.escena-fila{display:flex;gap:12px;align-items:stretch}
+.escena-fila #scene{flex:1;min-width:0}
+/* Con `.sev-vert` a secas no basta: `input[type=range]` lleva un atributo y
+   gana en especificidad, así que su width:100% se imponía y la barra seguía
+   horizontal. */
+input[type=range].sev-vert{
+  /* writing-mode es la forma vigente de poner un range en vertical; el
+     appearance queda como respaldo para navegadores anteriores. */
+  writing-mode:vertical-lr; direction:rtl;
+  -webkit-appearance:slider-vertical; appearance:slider-vertical;
+  width:26px; height:auto; min-height:180px; align-self:stretch;
+  accent-color:var(--azul2); margin:0; cursor:pointer;
+}
+#scene{width:100%;height:auto;display:block;background:linear-gradient(180deg,#fbfcfe,#eef2f8);border-radius:12px;border:1px solid var(--niebla)}
+.ctl{margin-top:10px}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.ctl label b{font-size:16px;color:var(--azul);letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--azul2);height:24px}
+select{background:#fff;color:var(--azul);border:1px solid var(--gris);border-radius:8px;padding:6px 8px;font-weight:700;font-size:13px;margin-top:6px}
+/* Columna flexible: al estirarse a la altura de la fila, el espacio que sobra
+   se lo queda el trazado en lugar de dejar un hueco azul bajo los vitales. */
+.mon{background:var(--azul);color:#fff;border-radius:18px;padding:12px 14px;border:1px solid var(--azul);display:flex;flex-direction:column}
+.mon .top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:700;color:#aebbd3;letter-spacing:.06em;text-transform:uppercase}
+.mon .rh{color:var(--dorado);font-weight:800}
+#ecg{width:100%;height:150px;flex:1 1 auto;min-height:150px;display:block;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:20px 20px}
+.vit{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.vit div{background:rgba(255,255,255,.07);border-radius:12px;padding:6px 10px}
+.vit small{display:block;font-size:11px;font-weight:700;color:#aebbd3;letter-spacing:.08em}
+.vit b{font-size:26px;font-weight:800}
+.hr b{color:#4fe3a5}.bp b{color:#ff8a80}.sp b{color:#6fc4ff}
+.pulse{margin-top:8px;font-weight:800;font-size:13px}
+.pulse.no{color:#ff8a80}.pulse.si{color:#4fe3a5}
+.info h2{margin:0 0 2px;font-size:22px;font-weight:800;color:var(--azul)}
+.info .tag{display:inline-block;background:var(--amarillo);color:var(--azul);font-weight:800;font-size:12px;padding:1px 10px;border-radius:999px;margin-bottom:6px}
+.info h4{margin:10px 0 2px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:800}
+/* La mitad derecha abre con un h4: sin esto arranca 10 px más abajo que la
+   izquierda y las dos tarjetas no casan por arriba. */
+.info h4:first-child{margin-top:0}
+.info ul{margin:0;padding-left:20px}
+.info li{margin:1px 0}
+.info p{margin:0}
+.quiz{background:#fffaf0;border:2px solid var(--dorado);border-radius:14px;padding:10px 14px;margin-bottom:14px}
+.quiz b{color:var(--azul)}
+.fb{font-weight:800;margin-top:6px}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.note{color:var(--mut);font-size:12.5px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Causas reversibles del paro: 6H y 6T</h1>
+</header>
+
+<div class="groups">
+  <div class="card grp"><h3><b>6H</b> · causas con H</h3><div class="chips" id="gH"></div></div>
+  <div class="card grp"><h3><b>6T</b> · causas con T</h3><div class="chips" id="gT"></div></div>
+</div>
+
+<div class="main">
+  <section class="card escena">
+    <div class="ctl">
+      <label><span id="slab">Gravedad</span><b id="sval"></b></label>
+    </div>
+    <!-- La barra de gravedad va vertical, pegada a la ilustración: sube y baja
+         igual que lo que mide, y deja de robarle alto a la escena. -->
+    <div class="escena-fila">
+      <input type="range" id="sev" class="sev-vert" min="0" max="100" step="1" value="50" aria-label="Gravedad">
+      <svg id="scene" viewBox="0 0 520 340" role="img" aria-label="Mecanismo de la causa seleccionada"></svg>
+    </div>
+    <div id="selWrap" hidden><select id="sel" aria-label="Agente"></select></div>
+  </section>
+
+  <section class="mon">
+    <div class="top"><span>Monitor · DII</span><span class="rh" id="rh">—</span></div>
+    <canvas id="ecg"></canvas>
+    <div class="vit">
+      <div class="hr"><small>FC · lpm</small><b id="vHr">--</b></div>
+      <div class="bp"><small>PA · mmHg</small><b id="vBp">--</b></div>
+      <div class="sp"><small>SpO₂ · %</small><b id="vSp">--</b></div>
+    </div>
+    <div class="pulse" id="pulse"></div>
+  </section>
+
+  <!-- La ficha de la causa iba en una sola columna y se hacía larguísima: el
+       tratamiento quedaba muy por debajo de la ilustración. Partida en dos,
+       lo que explica la causa queda a la izquierda y lo que se ve y se hace,
+       a la derecha. -->
+  <section class="card info" id="infoA"></section>
+  <section class="card info" id="infoB"></section>
+</div>
+<p class="note">Modelo didáctico con valores ilustrativos: la morfología y los signos reales varían entre pacientes. Siempre se atiende primero la reanimación según el algoritmo vigente y se busca la causa reversible en paralelo.</p>
+</div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const mixC=(a,b,t)=>{const A=[1,3,5].map(i=>parseInt(a.slice(i,i+2),16)),B=[1,3,5].map(i=>parseInt(b.slice(i,i+2),16));
+  return 'rgb('+A.map((v,i)=>Math.round(lerp(v,B[i],t))).join(',')+')';};
+function E(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function TX(parent,x,y,s,o){const t=E('text',Object.assign({x,y,'text-anchor':'middle','font-size':13,'font-weight':800,fill:'#092755','font-family':'Raleway,sans-serif'},o||{}),parent);t.textContent=s;return t;}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+
+/* ---------- Corazón (imagen PNG con contorno que late) y flujo ---------- */
+const HEART={src:'recursos-6h6t/corazon.png',w:485,h:669,
+  lv:{x:385,y:480,rx:46,ry:78}, rv:{x:262,y:522,rx:50,ry:56}};
+let HID=0;
+function heart(g,cx,cy,sc){
+  const id='hb'+(HID++), W=HEART.w, H=HEART.h;
+  const defs=E('defs',{},g);
+  const f=E('filter',{id,filterUnits:'userSpaceOnUse',x:-W/2-40,y:-H/2-40,width:W+80,height:H+80},defs);
+  const mor=E('feMorphology',{in:'SourceAlpha',operator:'dilate',radius:'6',result:'d'},f);
+  E('feFlood',{'flood-color':'#0A3E7C','flood-opacity':'0.95',result:'c'},f);
+  E('feComposite',{in:'c',in2:'d',operator:'in',result:'o'},f);
+  const mg=E('feMerge',{},f);E('feMergeNode',{in:'o'},mg);E('feMergeNode',{in:'SourceGraphic'},mg);
+  const grp=E('g',{},g);
+  E('image',{href:HEART.src,x:-W/2,y:-H/2,width:W,height:H,filter:`url(#${id})`},grp);
+  const mk=c=>({c,ring:E('ellipse',{cx:c.x-W/2,cy:c.y-H/2,rx:c.rx+10,ry:c.ry+10,fill:'rgba(255,255,255,.18)',stroke:'#fff','stroke-width':7,'stroke-dasharray':'16 10',opacity:0},grp),fill:E('ellipse',{cx:c.x-W/2,cy:c.y-H/2,rx:c.rx,ry:c.ry,fill:'rgba(35,0,12,.9)',opacity:0},grp)});
+  const api={grp,lv:mk(HEART.lv),rv:mk(HEART.rv),W,H,
+    cavity(which,frac,show){const e=api[which],c=e.c;
+      e.fill.setAttribute('rx',Math.max(3,c.rx*frac));e.fill.setAttribute('ry',Math.max(4,c.ry*frac));
+      e.fill.setAttribute('opacity',show?1:0);e.ring.setAttribute('opacity',show?1:0);},
+    set(t,amp,hr,x=cx,y=cy,k=sc){
+      const ph=(t*hr/60)%1, q=Math.exp(-(((ph-.15)/.09)**2));
+      const kk=190*k/H*(1+.05*amp*q);
+      grp.setAttribute('transform',`translate(${x} ${y}) scale(${kk})`);
+      mor.setAttribute('radius',((1.4+4.2*amp*q)/kk).toFixed(2));
+    }};
+  api.set(0,1,75);
+  return api;
+}
+function flow(g,d,n,r,w){
+  const path=E('path',{d,fill:'none',stroke:'#efc3b8','stroke-width':w||16,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  const L=path.getTotalLength();
+  const ps=[...Array(n)].map((_,i)=>({p:i/n,el:E('circle',{r:r||4,fill:'#c0392b'},g)}));
+  return {path,L,ps,upd(speed,dt,block,color,visible){
+    ps.forEach((q,i)=>{
+      q.p+=speed*dt; if(q.p>1) q.p-=1;
+      if(block!=null && q.p>block && q.p<block+.12) q.p=block-.014*(i%9)-.003;
+      const pt=path.getPointAtLength(q.p*L);
+      q.el.setAttribute('cx',pt.x); q.el.setAttribute('cy',pt.y);
+      if(color) q.el.setAttribute('fill',color);
+      q.el.setAttribute('opacity',visible==null||i<visible?1:0);
+    });}};
+}
+const LOOP='M260,52 C430,36 490,160 424,250 C380,312 160,312 108,250 C56,190 110,70 260,52Z';
+
+/* ---------- Ampollas (diseños aportados por el usuario) ---------- */
+const AMP={"dig":{"vb":"0 0 200 520","inner":"\n          <defs>\n            <!-- Glass Body Gradient -->\n            <linearGradient id=\"dg_glassGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n              <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.35\"/>\n              <stop offset=\"15%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/>\n              <stop offset=\"50%\" stop-color=\"#ffffff\" stop-opacity=\"0.03\"/>\n              <stop offset=\"85%\" stop-color=\"#38bdf8\" stop-opacity=\"0.15\"/>\n              <stop offset=\"100%\" stop-color=\"#0284c7\" stop-opacity=\"0.4\"/>\n            </linearGradient>\n\n            <!-- Liquid Gradient -->\n            <linearGradient id=\"dg_liquidGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">\n              <stop offset=\"0%\" stop-color=\"#38bdf8\" stop-opacity=\"0.55\"/>\n              <stop offset=\"100%\" stop-color=\"#0284c7\" stop-opacity=\"0.85\"/>\n            </linearGradient>\n\n            <!-- Break Ring Color (Snap Ring) -->\n            <linearGradient id=\"dg_ringGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n              <stop offset=\"0%\" stop-color=\"#ef4444\"/>\n              <stop offset=\"100%\" stop-color=\"#991b1b\"/>\n            </linearGradient>\n\n            <!-- Blue Identification Band -->\n            <linearGradient id=\"dg_bandGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n              <stop offset=\"0%\" stop-color=\"#2563eb\"/>\n              <stop offset=\"100%\" stop-color=\"#1d4ed8\"/>\n            </linearGradient>\n            \n            <clipPath id=\"dg_liquidClip\">\n              <path d=\"M 55 240 C 55 240 55 450 55 460 C 55 480 75 490 100 490 C 125 490 145 480 145 460 C 145 450 145 240 145 240 Z\"/>\n            </clipPath>\n          </defs>\n\n          <!-- 1. Liquid Fill Container -->\n          <g clip-path=\"url(#dg_liquidClip)\">\n            <!-- Liquid Body -->\n            <rect x=\"50\" y=\"250\" width=\"100\" height=\"250\" fill=\"url(#dg_liquidGrad)\" />\n            \n            <!-- Animated Liquid Surface Wave -->\n            <ellipse class=\"surf\" cx=\"100\" cy=\"250\" rx=\"50\" ry=\"12\" fill=\"#7dd3fc\" opacity=\"0.8\" />\n            \n            <!-- Animated Rising Bubbles -->\n            <circle class=\"bub\" data-d=\"0\" cx=\"80\" cy=\"440\" r=\"3\" fill=\"#ffffff\" />\n            <circle class=\"bub\" data-d=\"0.8\" cx=\"110\" cy=\"460\" r=\"4\" fill=\"#ffffff\" />\n            <circle class=\"bub\" data-d=\"1.5\" cx=\"95\" cy=\"420\" r=\"2.5\" fill=\"#ffffff\" />\n          </g>\n\n          <!-- 2. Glass Ampoule Contour Path -->\n          <!-- Tip (Top), Neck (Constriction), Shoulder, Body, Base -->\n          <path d=\"\n            M 90 30\n            C 90 20, 110 20, 110 30\n            L 112 100\n            C 112 110, 106 125, 106 135\n            L 106 150\n            C 106 160, 145 180, 145 210\n            L 145 460\n            C 145 485, 125 495, 100 495\n            C 75 495, 55 485, 55 460\n            L 55 210\n            C 55 180, 94 160, 94 150\n            L 94 135\n            C 94 125, 88 110, 88 100\n            Z\n          \" \n          fill=\"url(#dg_glassGrad)\" \n          stroke=\"rgba(255, 255, 255, 0.6)\" \n          stroke-width=\"2.5\" />\n\n          <!-- 3. Identification Rings on Neck -->\n          <!-- Red Snap Ring (Punto de corte) -->\n          <rect x=\"88\" y=\"112\" width=\"24\" height=\"5\" rx=\"2\" fill=\"url(#dg_ringGrad)\" />\n          <!-- Blue Color Code Ring -->\n          <rect x=\"89\" y=\"123\" width=\"22\" height=\"6\" rx=\"2\" fill=\"url(#dg_bandGrad)\" />\n          <!-- One-point Cut Dot -->\n          <circle cx=\"100\" cy=\"140\" r=\"3.5\" fill=\"#ef4444\" />\n\n          <!-- 4. Printed Medical Label -->\n          <g id=\"dg_label-group\">\n            <!-- Label White Background Wrap -->\n            <rect x=\"58\" y=\"270\" width=\"84\" height=\"140\" rx=\"4\" fill=\"#ffffff\" opacity=\"0.95\" />\n            <rect x=\"58\" y=\"270\" width=\"84\" height=\"12\" rx=\"2\" fill=\"#0284c7\" />\n            \n            <!-- Label Content -->\n            <text x=\"100\" y=\"279\" font-family=\"Raleway, sans-serif\" font-weight=\"800\" font-size=\"7\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">\n              VIA IV / IM\n            </text>\n\n            <text x=\"100\" y=\"298\" font-family=\"Raleway, sans-serif\" font-weight=\"800\" font-size=\"11\" fill=\"#0f172a\" text-anchor=\"middle\">\n              DIGOXINA\n            </text>\n\n            <text x=\"100\" y=\"312\" font-family=\"Raleway, sans-serif\" font-weight=\"700\" font-size=\"9\" fill=\"#0284c7\" text-anchor=\"middle\">\n              0.25 mg / mL\n            </text>\n\n            <line x1=\"66\" y1=\"322\" x2=\"134\" y2=\"322\" stroke=\"#e2e8f0\" stroke-width=\"1\" />\n\n            <text x=\"100\" y=\"334\" font-family=\"Raleway, sans-serif\" font-weight=\"600\" font-size=\"6.5\" fill=\"#475569\" text-anchor=\"middle\">\n              Solución Inyectable\n            </text>\n\n            <text x=\"100\" y=\"344\" font-family=\"Raleway, sans-serif\" font-size=\"5.5\" fill=\"#64748b\" text-anchor=\"middle\">\n              Ampolla 2 mL\n            </text>\n\n            <!-- Fake Barcode -->\n            <g transform=\"translate(68, 355)\">\n              <rect x=\"0\" y=\"0\" width=\"2\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"3\" y=\"0\" width=\"1\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"5\" y=\"0\" width=\"3\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"10\" y=\"0\" width=\"1\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"12\" y=\"0\" width=\"2\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"16\" y=\"0\" width=\"4\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"22\" y=\"0\" width=\"1\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"25\" y=\"0\" width=\"3\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"30\" y=\"0\" width=\"2\" height=\"18\" fill=\"#0f172a\"/>\n              <rect x=\"34\" y=\"0\" width=\"1\" height=\"18\" fill=\"#0f172a\"/>\n\n              <text x=\"32\" y=\"25\" font-family=\"Raleway, sans-serif\" font-size=\"5\" fill=\"#94a3b8\" text-anchor=\"middle\">\n                LOT 84920\n              </text>\n            </g>\n          </g>\n\n          <!-- 5. Glass Reflections and Highlights -->\n          <!-- Left Highlight Line -->\n          <path d=\"M 62 210 L 62 450\" stroke=\"#ffffff\" stroke-width=\"4\" stroke-linecap=\"round\" opacity=\"0.5\" class=\"shim\" />\n          \n          <!-- Curved Shoulder Glare -->\n          <path d=\"M 64 200 C 70 180, 90 165, 92 155\" stroke=\"#ffffff\" stroke-width=\"2.5\" stroke-linecap=\"round\" opacity=\"0.6\" />\n\n          <!-- Right Edge Dark Reflection -->\n          <path d=\"M 141 210 L 141 450\" stroke=\"#0284c7\" stroke-width=\"2\" opacity=\"0.4\" />\n        ","w":200,"h":520,"dist":160},"tca":{"vb":"0 0 100 300","inner":"<defs><linearGradient id=\"tca_glassGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.6\"/><stop offset=\"20%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"90%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"0.5\"/></linearGradient></defs>\n            <defs>\n              <linearGradient id=\"tca_liquidPurple\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n                <stop offset=\"0%\" stop-color=\"#581c87\" />\n                <stop offset=\"50%\" stop-color=\"#9d4edd\" />\n                <stop offset=\"100%\" stop-color=\"#3b0764\" />\n              </linearGradient>\n              <linearGradient id=\"tca_glassGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n                <stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.6\" />\n                <stop offset=\"20%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\" />\n                <stop offset=\"90%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\" />\n                <stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"0.5\" />\n              </linearGradient>\n            </defs>\n            <!-- Body Fill/Liquid -->\n            <path d=\"M 25 130 Q 25 120 28 115 L 28 260 Q 25 285 50 285 Q 75 285 72 260 L 72 115 Q 75 120 75 130 Z\" fill=\"url(#tca_liquidPurple)\" opacity=\"0.85\"/>\n            <!-- Bubbles -->\n            <circle cx=\"40\" cy=\"240\" r=\"2\" fill=\"#e9d5ff\" class=\"bub\" data-d=\"0\"/>\n            <circle cx=\"55\" cy=\"220\" r=\"3\" fill=\"#e9d5ff\" class=\"bub\" data-d=\"1\"/>\n            <circle cx=\"48\" cy=\"250\" r=\"1.5\" fill=\"#e9d5ff\" class=\"bub\" data-d=\"1.8\"/>\n            <!-- Glass Outline -->\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"none\" stroke=\"#a855f7\" stroke-width=\"2\"/>\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"url(#tca_glassGrad)\" opacity=\"0.25\"/>\n            <!-- Cut Ring -->\n            <line x1=\"36\" y1=\"72\" x2=\"64\" y2=\"72\" stroke=\"#d8b4fe\" stroke-width=\"2\" stroke-dasharray=\"3,2\"/>\n            <!-- Label -->\n            <rect x=\"27\" y=\"130\" width=\"46\" height=\"100\" rx=\"3\" fill=\"rgba(15, 23, 42, 0.9)\" stroke=\"#9d4edd\" stroke-width=\"1\"/>\n            <text x=\"50\" y=\"148\" font-family=\"Raleway, sans-serif\" font-size=\"5\" fill=\"#c084fc\" text-anchor=\"middle\" font-weight=\"bold\">AMITRIPTILINA</text>\n            <text x=\"50\" y=\"158\" font-family=\"Raleway, sans-serif\" font-size=\"4.5\" fill=\"#e9d5ff\" text-anchor=\"middle\">25 mg / 2 mL</text>\n            <text x=\"50\" y=\"170\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#a855f7\" text-anchor=\"middle\">ANTIDEPRESIVO</text>\n            <text x=\"50\" y=\"177\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#a855f7\" text-anchor=\"middle\">TRICÍCLICO</text>\n            <rect x=\"32\" y=\"195\" width=\"36\" height=\"15\" rx=\"2\" fill=\"#9d4edd\" opacity=\"0.3\"/>\n            <text x=\"50\" y=\"205\" font-family=\"Raleway, sans-serif\" font-size=\"4\" fill=\"#fff\" text-anchor=\"middle\">I.V. / I.M.</text>\n          ","w":100,"h":300,"dist":60},"bb":{"vb":"0 0 100 300","inner":"<defs><linearGradient id=\"bb_glassGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.6\"/><stop offset=\"20%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"90%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"0.5\"/></linearGradient></defs>\n            <defs>\n              <linearGradient id=\"bb_liquidGreen\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n                <stop offset=\"0%\" stop-color=\"#064e3b\" />\n                <stop offset=\"50%\" stop-color=\"#10b981\" />\n                <stop offset=\"100%\" stop-color=\"#022c22\" />\n              </linearGradient>\n            </defs>\n            <!-- Body Fill -->\n            <path d=\"M 25 130 Q 25 120 28 115 L 28 260 Q 25 285 50 285 Q 75 285 72 260 L 72 115 Q 75 120 75 130 Z\" fill=\"url(#bb_liquidGreen)\" opacity=\"0.85\"/>\n            <!-- Bubbles -->\n            <circle cx=\"45\" cy=\"230\" r=\"2.5\" fill=\"#a7f3d0\" class=\"bub\" data-d=\"0.2\"/>\n            <circle cx=\"60\" cy=\"210\" r=\"1.5\" fill=\"#a7f3d0\" class=\"bub\" data-d=\"1.2\"/>\n            <!-- Glass Outline -->\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"2\"/>\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"url(#bb_glassGrad)\" opacity=\"0.25\"/>\n            <!-- Cut Ring -->\n            <line x1=\"36\" y1=\"72\" x2=\"64\" y2=\"72\" stroke=\"#6ee7b7\" stroke-width=\"2\" stroke-dasharray=\"3,2\"/>\n            <!-- Label -->\n            <rect x=\"27\" y=\"130\" width=\"46\" height=\"100\" rx=\"3\" fill=\"rgba(15, 23, 42, 0.9)\" stroke=\"#10b981\" stroke-width=\"1\"/>\n            <text x=\"50\" y=\"148\" font-family=\"Raleway, sans-serif\" font-size=\"5\" fill=\"#34d399\" text-anchor=\"middle\" font-weight=\"bold\">PROPRANOLOL</text>\n            <text x=\"50\" y=\"158\" font-family=\"Raleway, sans-serif\" font-size=\"4.5\" fill=\"#a7f3d0\" text-anchor=\"middle\">1 mg / 1 mL</text>\n            <text x=\"50\" y=\"170\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#059669\" text-anchor=\"middle\">BETABLOQUEANTE</text>\n            <text x=\"50\" y=\"177\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#059669\" text-anchor=\"middle\">NO SELECTIVO</text>\n            <rect x=\"32\" y=\"195\" width=\"36\" height=\"15\" rx=\"2\" fill=\"#10b981\" opacity=\"0.3\"/>\n            <text x=\"50\" y=\"205\" font-family=\"Raleway, sans-serif\" font-size=\"4\" fill=\"#fff\" text-anchor=\"middle\">USO I.V.</text>\n          ","w":100,"h":300,"dist":60},"ccb":{"vb":"0 0 100 300","inner":"<defs><linearGradient id=\"ccb_glassGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\"><stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"0.6\"/><stop offset=\"20%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"90%\" stop-color=\"#ffffff\" stop-opacity=\"0.1\"/><stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"0.5\"/></linearGradient></defs>\n            <defs>\n              <linearGradient id=\"ccb_liquidRed\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n                <stop offset=\"0%\" stop-color=\"#881337\" />\n                <stop offset=\"50%\" stop-color=\"#f43f5e\" />\n                <stop offset=\"100%\" stop-color=\"#4c0519\" />\n              </linearGradient>\n            </defs>\n            <!-- Body Fill -->\n            <path d=\"M 25 130 Q 25 120 28 115 L 28 260 Q 25 285 50 285 Q 75 285 72 260 L 72 115 Q 75 120 75 130 Z\" fill=\"url(#ccb_liquidRed)\" opacity=\"0.85\"/>\n            <!-- Bubbles -->\n            <circle cx=\"50\" cy=\"220\" r=\"2\" fill=\"#fecdd3\" class=\"bub\" data-d=\"0.5\"/>\n            <circle cx=\"38\" cy=\"240\" r=\"2.8\" fill=\"#fecdd3\" class=\"bub\" data-d=\"1.5\"/>\n            <!-- Glass Outline -->\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"none\" stroke=\"#f43f5e\" stroke-width=\"2\"/>\n            <path d=\"M 45 20 L 55 20 L 55 50 L 65 65 L 65 80 L 35 80 L 35 65 L 45 50 Z M 35 80 Q 25 90 25 110 L 25 260 Q 25 290 50 290 Q 75 290 75 260 L 75 110 Q 75 90 65 80 Z\" fill=\"url(#ccb_glassGrad)\" opacity=\"0.25\"/>\n            <!-- Cut Ring -->\n            <line x1=\"36\" y1=\"72\" x2=\"64\" y2=\"72\" stroke=\"#fda4af\" stroke-width=\"2\" stroke-dasharray=\"3,2\"/>\n            <!-- Label -->\n            <rect x=\"27\" y=\"130\" width=\"46\" height=\"100\" rx=\"3\" fill=\"rgba(15, 23, 42, 0.9)\" stroke=\"#f43f5e\" stroke-width=\"1\"/>\n            <text x=\"50\" y=\"148\" font-family=\"Raleway, sans-serif\" font-size=\"5\" fill=\"#fb7185\" text-anchor=\"middle\" font-weight=\"bold\">VERAPAMILO</text>\n            <text x=\"50\" y=\"158\" font-family=\"Raleway, sans-serif\" font-size=\"4.5\" fill=\"#fecdd3\" text-anchor=\"middle\">5 mg / 2 mL</text>\n            <text x=\"50\" y=\"170\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#e11d48\" text-anchor=\"middle\">CALCIOANTAGONISTA</text>\n            <text x=\"50\" y=\"177\" font-family=\"Raleway, sans-serif\" font-size=\"3.5\" fill=\"#e11d48\" text-anchor=\"middle\">NO DIHIDROPIRIDÍNICO</text>\n            <rect x=\"32\" y=\"195\" width=\"36\" height=\"15\" rx=\"2\" fill=\"#f43f5e\" opacity=\"0.3\"/>\n            <text x=\"50\" y=\"205\" font-family=\"Raleway, sans-serif\" font-size=\"4\" fill=\"#fff\" text-anchor=\"middle\">I.V. LENTA</text>\n          ","w":100,"h":300,"dist":60}};
+const AGENTS={
+  tca:{col:'#9d4edd',glow:'rgba(157,78,221,.55)',cls:'Antidepresivos tricíclicos',drug:'Amitriptilina',mech:'Bloquean canales de Na⁺ → QRS ancho'},
+  dig:{col:'#0ea5e9',glow:'rgba(14,165,233,.55)',cls:'Glucósido cardiaco',drug:'Digoxina',mech:'Inhibe la Na⁺/K⁺-ATPasa → ↑Ca²⁺ intracelular'},
+  bb: {col:'#10b981',glow:'rgba(16,185,129,.55)',cls:'β-bloqueador',drug:'Propranolol',mech:'Bloquea el receptor β → bradicardia y bloqueo AV'},
+  ccb:{col:'#f43f5e',glow:'rgba(244,63,94,.55)',cls:'Calcioantagonista',drug:'Verapamilo',mech:'Bloquea canales de Ca²⁺ tipo L → bradicardia, bloqueo AV e hipotensión'}
+};
+
+/* ---------- Escenas ---------- */
+const SCENES={};
+
+SCENES.hipovolemia=(g)=>{
+  const f=flow(g,LOOP,22,4.5), h=heart(g,260,176,1.1);
+  const drops=[...Array(6)].map(()=>E('path',{d:'M0,-7 C5,0 6,4 0,7 C-6,4 -5,0 0,-7Z',fill:'#c0392b'},g));
+  const t1=TX(g,260,330,'Ventrículo casi vacío',{'font-size':13,fill:'#8e2a2a'});
+  E('path',{d:'M110,250 l-14,14 l16,2 l-8,14',stroke:'#8e2a2a','stroke-width':3,fill:'none'},g);
+  return (s,t,dt,st)=>{
+    f.upd(.04+st.hr/60*.05,dt,null,null,Math.round(22*(1-.8*s)));
+    h.set(t,1-.45*s,st.hr,260,176,1.1);
+    h.cavity('lv',1-.78*s,s>.05);
+    drops.forEach((d,i)=>{const k=((t*.8+i/6)%1);d.setAttribute('transform',`translate(${100+i*3},${266+k*60})`);d.setAttribute('opacity',s>.05?(1-k)*Math.min(1,s*2):0);});
+    t1.setAttribute('opacity',s>.4?1:0);
+  };
+};
+
+SCENES.hipoxia=(g)=>{
+  const fo=E('foreignObject',{x:0,y:0,width:520,height:340},g);
+  const v=document.createElement('video');
+  v.src='recursos-6h6t/pulmones-video.mp4';v.poster='recursos-6h6t/pulmones-2.png';
+  v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+  v.style.cssText='width:520px;height:292px;display:block;margin-top:24px;object-fit:contain;background:#f5f5f5;transition:filter .3s';
+  fo.appendChild(v);const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{});
+  const tint=E('rect',{x:0,y:24,width:520,height:292,fill:'#2c3f8a',opacity:0,'pointer-events':'none'},g);
+  E('rect',{x:10,y:6,width:150,height:34,rx:10,fill:'#092755'},g);
+  const tx=TX(g,85,29,'',{'font-size':16,fill:'#fff'});
+  TX(g,370,334,'Intercambio de O₂ y CO₂: circulación sistémica y pulmonar',{'font-size':11,fill:'#6b7280'});
+  return (s,t,dt,st)=>{
+    v.style.filter=`saturate(${1-.55*s}) brightness(${1-.2*s})`;
+    tint.setAttribute('opacity',(.38*s).toFixed(2));
+    tx.textContent='SpO₂ '+Math.round(st.spo2)+' %';
+    tx.setAttribute('fill',st.spo2<90?'#ff8a80':'#fff');
+  };
+};
+
+SCENES.hidrogeniones=(g)=>{
+  const defs=E('defs',{},g), lg=E('linearGradient',{id:'phg',x1:0,x2:1},defs);
+  E('stop',{offset:0,'stop-color':'#c0392b'},lg);E('stop',{offset:.5,'stop-color':'#f1c40f'},lg);E('stop',{offset:1,'stop-color':'#27ae60'},lg);
+  E('rect',{x:60,y:80,width:400,height:230,rx:26,fill:'#fff6ea',stroke:'#c98a2b','stroke-width':3},g);
+  TX(g,260,106,'Líquido extracelular',{'font-size':12,fill:'#8a6a2a'});
+  const ions=[...Array(46)].map(()=>{const o={x:rnd(80,440),y:rnd(120,290),vx:rnd(-30,30),vy:rnd(-30,30)};
+    o.el=E('g',{},g);E('circle',{r:8,fill:'#e67e22'},o.el);TX(o.el,0,3.5,'H⁺',{'font-size':9,fill:'#fff'});return o;});
+  E('rect',{x:60,y:30,width:400,height:14,rx:7,fill:'url(#phg)'},g);
+  const mk=E('path',{d:'M0,0 l-8,-12 h16z',fill:'#092755'},g);
+  TX(g,60,24,'7,4',{'font-size':11});TX(g,460,24,'6,8',{'font-size':11});
+  const ph=TX(g,260,70,'',{'font-size':16});
+  return (s,t,dt,st)=>{
+    const n=Math.round(6+40*s);
+    ions.forEach((o,i)=>{o.x+=o.vx*dt;o.y+=o.vy*dt;
+      if(o.x<80||o.x>440)o.vx*=-1;if(o.y<120||o.y>290)o.vy*=-1;
+      o.el.setAttribute('transform',`translate(${o.x},${o.y})`);o.el.setAttribute('opacity',i<n?1:0);});
+    mk.setAttribute('transform',`translate(${60+400*s},50)`);
+    ph.textContent='pH '+(7.4-.6*s).toFixed(2).replace('.',',');
+  };
+};
+
+SCENES.potasio=(g)=>{
+  E('rect',{x:0,y:0,width:520,height:150,fill:'#f4f8ff'},g);
+  E('rect',{x:0,y:190,width:520,height:150,fill:'#fff6f2'},g);
+  E('rect',{x:0,y:150,width:520,height:40,fill:'#e8d9a8',stroke:'#c0a64a','stroke-width':2},g);
+  TX(g,60,176,'Membrana',{'font-size':13,fill:'#7a5a05'});
+  TX(g,60,22,'Extracelular',{'font-size':12,fill:'#6b7280'});TX(g,58,326,'Intracelular',{'font-size':12,fill:'#6b7280'});
+  const mk=(y0,y1,n)=>[...Array(n)].map(()=>{const o={x:rnd(120,470),y:rnd(y0,y1),ph:rnd(0,6)};o.el=E('g',{},g);E('circle',{r:9,fill:'#8e44ad'},o.el);TX(o.el,0,3.5,'K⁺',{'font-size':9,fill:'#fff'});return o;});
+  const out=mk(70,135,22), inn=mk(205,315,14);
+  // recuadro del potencial de membrana (arriba a la derecha, fuera de la membrana)
+  const box=E('rect',{x:300,y:8,width:208,height:48,rx:10,fill:'#fff',stroke:'#092755','stroke-width':2},g);
+  const em=TX(g,404,28,'',{'font-size':16});
+  const em2=TX(g,404,47,'',{'font-size':11,'font-weight':700});
+  return (s,t,dt,st)=>{
+    const K=2.5+6*s, n=Math.round(lerp(5,22,(K-2.5)/6));
+    out.forEach((o,i)=>{o.el.setAttribute('transform',`translate(${o.x+4*Math.sin(t*1.4+o.ph)},${o.y+4*Math.cos(t*1.1+o.ph)})`);o.el.setAttribute('opacity',i<n?1:0);});
+    inn.forEach(o=>o.el.setAttribute('transform',`translate(${o.x+3*Math.sin(t+o.ph)},${o.y+3*Math.cos(t*1.2+o.ph)})`));
+    const Em=61.5*Math.log10(K/140), bad=K>5.5||K<3.5;
+    em.textContent='Em ≈ '+Em.toFixed(0)+' mV';em.setAttribute('fill',bad?'#c0392b':'#092755');
+    em2.textContent=K>5.5?'despolarización parcial':K<3.5?'hiperpolarización':'potencial de reposo normal';
+    em2.setAttribute('fill',bad?'#c0392b':'#6b7280');
+    box.setAttribute('stroke',bad?'#c0392b':'#092755');
+  };
+};
+
+SCENES.hipotermia=(g)=>{
+  E('rect',{x:46,y:50,width:22,height:200,rx:11,fill:'#fff',stroke:'#092755','stroke-width':3},g);
+  E('circle',{cx:57,cy:268,r:22,fill:'#fff',stroke:'#092755','stroke-width':3},g);
+  const hg=E('rect',{x:51,y:100,width:12,height:150,fill:'#3a86c8'},g);
+  E('circle',{cx:57,cy:268,r:16,fill:'#3a86c8'},g);
+  const tt=TX(g,57,320,'',{'font-size':15});
+  const body=E('rect',{x:190,y:140,width:160,height:150,rx:40,fill:'#f6d7c3',stroke:'#8e5a3c','stroke-width':3},g);
+  const head=E('circle',{cx:270,cy:100,r:42,fill:'#f6d7c3',stroke:'#8e5a3c','stroke-width':3},g);
+  const flakes=[...Array(12)].map(()=>({x:rnd(110,500),y:rnd(0,340),v:rnd(18,40),el:TX(g,0,0,'❄',{'font-size':rnd(14,22),fill:'#7fb3e0'})}));
+  // etiqueta fija en la esquina superior derecha, lejos del paciente
+  const osbBox=E('rect',{x:318,y:8,width:194,height:30,rx:9,fill:'#fff',stroke:'#c0392b','stroke-width':2,opacity:0},g);
+  const osb=TX(g,415,28,'Onda J (Osborn) en el ECG',{'font-size':12,fill:'#c0392b',opacity:0});
+  return (s,t,dt,st)=>{
+    const temp=36-12*s;
+    hg.setAttribute('y',250-150*clamp((temp-24)/14)); hg.setAttribute('height',150*clamp((temp-24)/14));
+    tt.textContent=temp.toFixed(1).replace('.',',')+' °C';
+    const col=mixC('#f6d7c3','#9cc6ee',s);body.setAttribute('fill',col);head.setAttribute('fill',col);
+    const shake=(temp<35.5&&temp>30.5)?2.2:0;
+    body.setAttribute('transform',`translate(${shake*Math.sin(t*60)},0)`);
+    flakes.forEach(f=>{f.y+=f.v*dt;if(f.y>350)f.y=-10;f.el.setAttribute('transform',`translate(${f.x},${f.y})`);f.el.setAttribute('opacity',.2+.8*s);});
+    const on=temp<34;osb.setAttribute('opacity',on?1:0);osbBox.setAttribute('opacity',on?1:0);
+  };
+};
+
+SCENES.hipoglucemia=(g)=>{
+  E('rect',{x:30,y:80,width:460,height:70,rx:35,fill:'#efc3b8',stroke:'#c98a7a','stroke-width':2},g);
+  TX(g,260,70,'Vaso sanguíneo',{'font-size':12,fill:'#8a5a4a'});
+  const gl=[...Array(18)].map(()=>{const o={x:rnd(40,480),y:rnd(95,135),v:rnd(25,45)};o.el=E('polygon',{points:'0,-7 6,-3.5 6,3.5 0,7 -6,3.5 -6,-3.5',fill:'#f1c40f',stroke:'#b8860b'},g);return o;});
+  E('rect',{x:150,y:200,width:220,height:100,rx:30,fill:'#e9eef8',stroke:'#5a6fa8','stroke-width':3},g);
+  TX(g,260,226,'Célula miocárdica / neurona',{'font-size':12,fill:'#3a4a7a'});
+  E('rect',{x:180,y:250,width:160,height:16,rx:8,fill:'#fff',stroke:'#092755','stroke-width':2},g);
+  const atp=E('rect',{x:182,y:252,width:156,height:12,rx:6,fill:'#27ae60'},g);
+  TX(g,260,288,'ATP',{'font-size':12});
+  const val=TX(g,260,32,'',{'font-size':18});
+  return (s,t,dt,st)=>{
+    const n=Math.round(18*(1-.85*s));
+    gl.forEach((o,i)=>{o.x+=o.v*dt*(1-.3*s);if(o.x>480)o.x=40;o.el.setAttribute('transform',`translate(${o.x},${o.y})`);o.el.setAttribute('opacity',i<n?1:0);});
+    atp.setAttribute('width',156*(1-.9*s));atp.setAttribute('fill',mixC('#27ae60','#c0392b',s));
+    val.textContent='Glucemia '+Math.round(120-100*s)+' mg/dL';val.setAttribute('fill',s>.55?'#c0392b':'#092755');
+  };
+};
+
+SCENES.toxicos=(g)=>{
+  const defs=E('defs',{},g);
+  const rg=E('radialGradient',{id:'pedGlow'},defs);
+  const gs0=E('stop',{offset:0,'stop-color':'#fff7c2','stop-opacity':1},rg),gs1=E('stop',{offset:1,'stop-color':'#fff7c2','stop-opacity':0},rg);
+  const root=E('g',{},g);
+  // membrana con canal (derecha)
+  E('rect',{x:240,y:176,width:270,height:34,fill:'#e8d9a8',stroke:'#c0a64a','stroke-width':2},root);
+  TX(root,290,197,'Membrana',{'font-size':11,fill:'#7a5a05'});
+  const gate=[E('rect',{x:340,y:172,width:34,height:42,rx:6,fill:'#5a6fa8'},root),E('rect',{x:396,y:172,width:34,height:42,rx:6,fill:'#5a6fa8'},root)];
+  const blk=E('circle',{cx:385,cy:193,r:0,opacity:.9},root);
+  const ions=[...Array(10)].map(()=>({p:rnd(0,1),el:E('circle',{r:4.5,fill:'#27ae60'},root)}));
+  // ampollas: un grupo por agente; solo se muestra el elegido
+  const amps={};
+  const ped=E('ellipse',{cx:100,cy:312,rx:70,ry:11,fill:'url(#pedGlow)'},root);
+  for(const k of Object.keys(AMP)){
+    const a=AMP[k], ag=E('g',{style:'display:none'},root);
+    const sc=k==='dig'?.5:.82, w=a.w*sc;
+    const inner=E('g',{transform:`translate(${100-w/2},${44}) scale(${sc})`},ag);
+    inner.innerHTML=a.inner;
+    amps[k]={g:ag,bubs:[...inner.querySelectorAll('.bub')],dist:a.dist,shim:inner.querySelector('.shim')};
+  }
+  const nameT=TX(root,260,334,'',{'font-size':14});
+  const mechT=TX(root,375,276,'',{'font-size':12,fill:'#6b7280'});
+  const mechT2=TX(root,375,292,'',{'font-size':12,fill:'#6b7280'});
+  const parts=[...Array(14)].map(()=>({p:rnd(0,1),halo:E('circle',{r:8,opacity:0},root),el:E('circle',{r:3,opacity:0},root)}));
+  let shown=null;
+  return (s,t,dt,st,agent)=>{
+    const A=AGENTS[agent];
+    if(shown!==agent){
+      for(const k in amps) amps[k].g.style.display=(k===agent)?'':'none';
+      shown=agent;
+      nameT.textContent=A.cls+' · '+A.drug;
+      const words=A.mech.split(' ');let l1='',l2='';
+      words.forEach(w=>{if((l1+' '+w).length<44&&!l2)l1+=(l1?' ':'')+w;else l2+=(l2?' ':'')+w;});
+      mechT.textContent=l1;mechT2.textContent=l2;
+      blk.setAttribute('fill',A.col);gs0.setAttribute('stop-color',A.col);gs1.setAttribute('stop-color',A.col);
+      parts.forEach(q=>{q.el.setAttribute('fill',A.col);q.halo.setAttribute('fill',A.glow);});
+    }
+    const a=amps[agent];
+    // ampolla flotando y pedestal con brillo intenso
+    a.g.setAttribute('transform',`translate(0,${(-9*Math.sin(t*1.6)).toFixed(2)})`);
+    const gl=.5+.5*Math.sin(t*2.2);
+    ped.setAttribute('rx',58+26*gl);ped.setAttribute('opacity',(.45+.55*gl).toFixed(2));
+    a.bubs.forEach(b=>{const d=parseFloat(b.dataset.d)||0;const k=(((t*.35)+d/3)%1);
+      b.setAttribute('transform',`translate(0,${(-a.dist*k).toFixed(1)})`);b.setAttribute('opacity',Math.sin(Math.PI*k).toFixed(2));});
+    if(a.shim) a.shim.setAttribute('opacity',(.35+.4*Math.sin(t*1.5)).toFixed(2));
+    // partículas luminosas que viajan desde la ampolla hasta el canal
+    const open=1-.92*s, n=Math.round(3+11*s);
+    parts.forEach((q,i)=>{
+      q.p=(q.p+dt*(.16+.25*s))%1;
+      const u=q.p, x0=140,y0=100, x1=385,y1=170, cx=260,cy=40;
+      const x=(1-u)*(1-u)*x0+2*(1-u)*u*cx+u*u*x1, y=(1-u)*(1-u)*y0+2*(1-u)*u*cy+u*u*y1;
+      const vis=i<n?Math.sin(Math.PI*u):0;
+      q.el.setAttribute('cx',x);q.el.setAttribute('cy',y);q.el.setAttribute('opacity',vis.toFixed(2));
+      q.halo.setAttribute('cx',x);q.halo.setAttribute('cy',y);q.halo.setAttribute('opacity',(vis*.85).toFixed(2));
+      q.halo.setAttribute('r',(7+3*Math.sin(t*5+i)).toFixed(1));
+    });
+    gate[0].setAttribute('x',340+(1-open)*30);gate[1].setAttribute('x',396-(1-open)*30);
+    blk.setAttribute('r',20*s);
+    ions.forEach((q,i)=>{q.p=(q.p+dt*.5*open)%1;q.el.setAttribute('cx',385+Math.sin(i)*8);q.el.setAttribute('cy',lerp(112,240,q.p));q.el.setAttribute('opacity',open>.15?1:0);});
+  };
+};
+
+SCENES.taponamiento=(g)=>{
+  const fluid=E('ellipse',{cx:260,cy:172,rx:100,ry:110,fill:'#f4e3a1',stroke:'#c0a64a','stroke-width':2},g);
+  const sac=E('ellipse',{cx:260,cy:172,rx:100,ry:110,fill:'none',stroke:'#7a5a05','stroke-width':4,'stroke-dasharray':'8 5'},g);
+  const h=heart(g,260,176,.95);
+  const b=['Hipotensión','Ingurgitación yugular','Ruidos cardiacos apagados'].map((s,i)=>{
+    const r=E('rect',{x:14,y:60+i*40,width:160,height:30,rx:8,fill:'#fff',stroke:'#c6c7c8','stroke-width':2},g);
+    const t=TX(g,94,80+i*40,s,{'font-size':12,fill:'#6b7280'});return {r,t};});
+  TX(g,260,332,'El derrame pericárdico comprime las cavidades derechas',{'font-size':12,fill:'#7a5a05'});
+  return (s,t,dt,st)=>{
+    const rx=Math.min(100+90*s,205), ry=Math.min(112+55*s,158);
+    fluid.setAttribute('rx',rx);fluid.setAttribute('ry',ry);sac.setAttribute('rx',rx);sac.setAttribute('ry',ry);
+    h.set(t,1-.7*s,st.hr,260,176,.95-.2*s);
+    h.cavity('rv',1-.7*s,s>.1);
+    [.3,.45,.6].forEach((th,i)=>{const on=s>th;b[i].r.setAttribute('fill',on?'#fdecea':'#fff');b[i].r.setAttribute('stroke',on?'#c0392b':'#c6c7c8');b[i].t.setAttribute('fill',on?'#c0392b':'#6b7280');});
+  };
+};
+
+SCENES.neumotorax=(g)=>{
+  E('ellipse',{cx:260,cy:175,rx:210,ry:140,fill:'#fff',stroke:'#092755','stroke-width':4},g);
+  E('ellipse',{cx:150,cy:175,rx:95,ry:120,fill:'#d9efff',opacity:.9},g);
+  const lungL=E('ellipse',{cx:150,cy:175,rx:90,ry:115,fill:'#f4b8b0',stroke:'#c0392b','stroke-width':2},g);
+  const lungR=E('ellipse',{cx:380,cy:175,rx:85,ry:115,fill:'#f4b8b0',stroke:'#c0392b','stroke-width':2},g);
+  const med=E('g',{},g);
+  E('rect',{x:-6,y:-125,width:12,height:50,rx:5,fill:'#cfe3f5',stroke:'#5aa2c0','stroke-width':2},med);
+  const h=heart(med,0,0,.5);
+  const tl=TX(g,150,330,'Aire a tensión',{'font-size':12,fill:'#2f7fc4'});
+  const ar=E('path',{d:'M240,175 h40 l-8,-8 m8,8 l-8,8',stroke:'#c0392b','stroke-width':3,fill:'none'},g);
+  return (s,t,dt,st)=>{
+    const sh=70*s;
+    lungL.setAttribute('rx',90*(1-.75*s));lungL.setAttribute('ry',115*(1-.55*s));lungL.setAttribute('cx',150+30*s);
+    lungR.setAttribute('rx',85*(1-.3*s));lungR.setAttribute('cx',380+20*s);
+    med.setAttribute('transform',`translate(${260+sh},175)`);
+    h.set(t,1-.4*s,st.hr,0,0,.5-.1*s);
+    ar.setAttribute('opacity',s>.2?1:0);ar.setAttribute('transform',`translate(${sh*.3},0)`);
+    tl.setAttribute('opacity',s>.1?1:0);
+  };
+};
+
+SCENES.coronaria=(g)=>{
+  const h=heart(g,260,172,1.5), W=h.W, H=h.H, G=h.grp;
+  const o=(x,y)=>[x-W/2,y-H/2];
+  // zona isquémica aguas abajo de la oclusión (ventrículo izquierdo / ápex)
+  const [ix,iy]=o(418,505);
+  const isch=E('ellipse',{cx:ix,cy:iy,rx:58,ry:128,transform:`rotate(-10 ${ix} ${iy})`,fill:'#3b1d3a',opacity:0},G);
+  // arteria coronaria (DA) sobre el corazón
+  const P=[[268,238],[305,300],[335,390],[348,470],[360,545],[385,610]].map(p=>o(p[0],p[1]));
+  const D=`M${P[0][0]},${P[0][1]} C${P[1][0]},${P[1][1]} ${P[2][0]},${P[2][1]} ${P[3][0]},${P[3][1]} S${P[4][0]},${P[4][1]} ${P[5][0]},${P[5][1]}`;
+  E('path',{d:D,fill:'none',stroke:'#4a0d0d','stroke-width':26,'stroke-linecap':'round'},G);
+  const f=flow(G,D,14,7.5,17);
+  f.path.setAttribute('stroke','#ff7a6a');
+  const pt=f.path.getPointAtLength(.33*f.L);
+  const clot=E('ellipse',{cx:pt.x,cy:pt.y,rx:3,ry:3,fill:'#4a0b0b',stroke:'#1a0404','stroke-width':3},G);
+  const lab=TX(g,260,334,'',{'font-size':13});
+  TX(g,440,24,'Arteria descendente anterior',{'font-size':11,fill:'#6b7280'});
+  const trL=TX(g,440,44,'',{'font-size':12,fill:'#8e1b1b'});
+  return (s,t,dt,st)=>{
+    const occ=clamp(s*3);
+    clot.setAttribute('rx',4+26*occ);clot.setAttribute('ry',4+18*occ);
+    f.upd(.12*(1-.5*occ),dt,occ>.35?.33:null,null);
+    isch.setAttribute('opacity',(clamp((s-.05)*1.3)*.62).toFixed(2));
+    h.set(t,1-.6*s,st.hr,260,172,1.5);
+    trL.textContent=occ>.2?'Trombo (oclusión)':'';
+    lab.textContent=s<.1?'Arteria permeable':s<.35?'Oclusión aguda: T hiperaguda':s<.7?'Isquemia transmural: elevación del ST':'Necrosis: onda Q patológica';
+    lab.setAttribute('fill',s>.3?'#c0392b':'#092755');
+  };
+};
+
+SCENES.tep=(g)=>{
+  const imgs=[1,2,3,4,5,6].map(i=>E('image',{href:`recursos-6h6t/trombo-${i}.png`,x:10,y:2,width:500,height:281,opacity:i===1?1:0},g));
+  const STEPS=['1 · El trombo se forma en una vena profunda (TVP)','2 · Se desprende y viaja hacia la vena cava','3 · Atraviesa la aurícula y el ventrículo derechos',
+               '4 · Sale por la arteria pulmonar hacia el pulmón','5 · Se enclava en una rama arterial pulmonar','6 · Ocluye ramas distales: zona sin perfusión'];
+  const cap=TX(g,260,304,'',{'font-size':13,fill:'#8e2a2a'});
+  const y=326;
+  E('line',{x1:40,y1:y,x2:480,y2:y,stroke:'#efc3b8','stroke-width':8,'stroke-linecap':'round'},g);
+  const nodes=STEPS.map((_,i)=>E('circle',{cx:40+i*88,cy:y,r:7,fill:'#fff',stroke:'#8e2a2a','stroke-width':3},g));
+  const cells=[...Array(14)].map((_,i)=>({p:i/14,el:E('circle',{r:3.3,fill:'#c0392b'},g)}));
+  const emb=E('circle',{cx:40,cy:y,r:9,fill:'#4a0b0b',stroke:'#1a0404','stroke-width':2},g);
+  return (s,t,dt,st)=>{
+    const f=s*5;
+    imgs.forEach((im,i)=>im.setAttribute('opacity',Math.max(0,1-Math.abs(f-i)).toFixed(2)));
+    const k=Math.min(5,Math.round(f));
+    cap.textContent=STEPS[k];
+    nodes.forEach((n,i)=>n.setAttribute('fill',i<=k?'#c0392b':'#fff'));
+    const ex=40+440*s;
+    emb.setAttribute('cx',ex);
+    cells.forEach(c=>{c.p=(c.p+dt*.12)%1;const x=40+440*c.p;c.el.setAttribute('cx',x);c.el.setAttribute('cy',y+Math.sin(c.p*40+t*3)*1.6);c.el.setAttribute('opacity',x<ex-4?.9:.25);});
+  };
+};
+
+SCENES.trauma=(g)=>{
+  E('rect',{x:150,y:40,width:220,height:270,rx:60,fill:'#f6d7c3',stroke:'#8e5a3c','stroke-width':3},g);
+  for(let i=0;i<5;i++){E('path',{d:`M160,${95+i*34} Q260,${125+i*34} 360,${95+i*34}`,stroke:'#cfa98f','stroke-width':3,fill:'none'},g);}
+  const h=heart(g,262,170,.78), G=h.grp, W=h.W, H=h.H;
+  const con=E('ellipse',{cx:HEART.lv.x-W/2,cy:HEART.lv.y-H/2,rx:5,ry:5,fill:'#3b1d3a',opacity:0},G);
+  const rings=[0,1,2].map(()=>E('circle',{cx:262,cy:170,r:10,fill:'none',stroke:'#c0392b','stroke-width':3},g));
+  const bl=[...Array(8)].map(()=>E('path',{d:'M0,-7 C5,0 6,4 0,7 C-6,4 -5,0 0,-7Z',fill:'#c0392b'},g));
+  const lab=TX(g,260,332,'',{'font-size':12,fill:'#8e2a2a'});
+  return (s,t,dt,st)=>{
+    rings.forEach((r,i)=>{const k=((t*.9+i/3)%1);r.setAttribute('r',10+120*k);r.setAttribute('opacity',(1-k)*clamp(s*2));});
+    h.set(t,1-.5*s,st.hr,262,170,.78);
+    con.setAttribute('rx',6+60*s);con.setAttribute('ry',8+80*s);con.setAttribute('opacity',(clamp(s*1.4)*.7).toFixed(2));
+    bl.forEach((d,i)=>{const k=((t*.7+i/8)%1);d.setAttribute('transform',`translate(${190+i*14},${290+k*35})`);d.setAttribute('opacity',((1-k)*clamp(s*1.6)).toFixed(2));});
+    lab.textContent=s>.5?'Hemorragia + contusión miocárdica (riesgo de FV)':'';
+  };
+};
+
+/* ---------- Definición de causas ---------- */
+const rhythmName=(e,st)=>e.mode==='vf'?'Fibrilación ventricular':e.mode==='asys'?'Asistolia':e.mode==='sine'?'Onda sinusoidal':
+  !st.pulse?'Actividad eléctrica sin pulso (AESP)':st.label;
+function E0(){return {mode:'norm',pAmp:.15,pr:.16,qw:1,rAmp:1,qDeep:.1,stDep:0,tAmp:.3,tSig:.045,uAmp:0,osb:0,alt:0,noise:0,qtX:0,ectopy:0};}
+
+const CAUSES=[
+ {id:'hipovolemia',g:'H',name:'Hipovolemia',sub:'Pérdida de volumen',sl:s=>'Pérdida de volemia: '+Math.round(s*40)+' %',def:55,
+  st(s){const pea=s>.92,e=E0();e.tAmp=.3-.14*s;e.rAmp=1-.15*s;
+    return {hr:pea?45:75+85*clamp(s/.8),sbp:pea?0:120-70*s,dbp:pea?0:80-40*s,spo2:98-6*s,pulse:!pea,e,label:s<.1?'Ritmo sinusal':'Taquicardia sinusal'};},
+  clues:['Sangrado visible o trauma; yugulares colapsadas.','Taquicardia con QRS estrecho que evoluciona a AESP; llenado capilar lento.'],
+  mech:'El volumen circulante cae, el retorno venoso disminuye y el ventrículo se llena poco: el gasto cae aunque el corazón esté sano.',
+  pistas:['Hemorragia, deshidratación grave, vómitos o diarrea','Taquicardia, hipotensión, yugulares planas, piel fría','Ecografía: vena cava inferior colapsada, ventrículos “besándose”'],
+  ecg:['Taquicardia sinusal con QRS estrecho','Con la pérdida progresiva: AESP'],
+  tx:['Control de la hemorragia','Reposición de volumen: cristaloides y hemoderivados','Acceso IV/IO de gran calibre']},
+ {id:'hipoxia',g:'H',name:'Hipoxia',sub:'Falta de oxígeno',sl:s=>'SpO₂: '+Math.round(98-50*s)+' %',def:55,
+  st(s){const pea=s>.95,e=E0();e.stDep=.12*s;e.qw=1+2*Math.max(0,s-.5);
+    const hr=s<.5?75+55*(s/.5):130-100*((s-.5)/.5);
+    return {hr:pea?25:Math.max(25,hr),sbp:pea?0:s<.6?125:125-110*((s-.6)/.4),dbp:pea?0:70,spo2:98-50*s,pulse:!pea,e,label:s<.5?'Taquicardia sinusal':'Bradicardia hipóxica'};},
+  clues:['Cianosis, SpO₂ muy baja, vía aérea comprometida.','Primero taquicardia y luego bradicardia progresiva.'],
+  mech:'Sin oxígeno el miocardio no produce ATP: primero hay taquicardia compensadora y luego bradicardia, QRS ancho y paro.',
+  pistas:['Obstrucción de vía aérea, ahogamiento, EPOC, neumonía','Cianosis, SpO₂ baja, esfuerzo respiratorio','La bradicardia en hipoxia es un signo ominoso'],
+  ecg:['Taquicardia sinusal → bradicardia','Depresión del ST, QRS que se ensancha','AESP o asistolia'],
+  tx:['Vía aérea y ventilación con oxígeno a alta concentración','Intubación / dispositivo avanzado','Tratar la causa de la hipoxemia']},
+ {id:'hidrogeniones',g:'H',name:'Hidrogeniones',sub:'Acidosis',sl:s=>'pH: '+(7.4-.6*s).toFixed(2).replace('.',','),def:55,
+  st(s){const e=E0();e.qw=1+1.4*s;e.tAmp=.3+.4*s;e.tSig=.045-.012*s;e.pAmp=.15*(1-.6*s);
+    const pea=s>.93;
+    return {hr:pea?40:s<.6?75+30*(s/.6):105-65*((s-.6)/.4),sbp:pea?0:120-60*s,dbp:pea?0:80-35*s,spo2:97-4*s,pulse:!pea,e,label:'Ritmo con QRS ancho'};},
+  clues:['Gasometría con pH muy bajo; Kussmaul o paro por acidosis grave.','QRS ensanchado con T picuda.'],
+  mech:'La acidosis deprime la contractilidad, disminuye la respuesta a catecolaminas y desplaza K⁺ al exterior: QRS ancho y arritmias.',
+  pistas:['Sepsis, cetoacidosis, insuficiencia renal, intoxicaciones','Respiración de Kussmaul o hipoventilación','Gasometría: pH < 7,2 con HCO₃⁻ bajo o PaCO₂ alta'],
+  ecg:['QRS ensanchado','Onda T alta y picuda (por hiperpotasemia asociada)','Bradicardia y AESP en acidosis extrema'],
+  tx:['Ventilación efectiva (si es respiratoria)','Tratar la causa metabólica','Bicarbonato de sodio en situaciones específicas (hiperpotasemia, tóxicos)']},
+ {id:'potasio',g:'H',name:'Hipo / Hiperpotasemia',sub:'Alteración del K⁺',sl:s=>'K⁺: '+(2.5+6*s).toFixed(1).replace('.',',')+' mEq/L',def:80,
+  st(s){const K=2.5+6*s,e=E0();let label='Ritmo sinusal';
+    if(K<3.5){const d=clamp((3.5-K)/1);e.tAmp=.3-.24*d;e.uAmp=.28*d;e.stDep=.15*d;e.tSig=.055;label='Hipopotasemia: T plana + U';}
+    else if(K>5){const d=clamp((K-5)/2);e.tAmp=.3+.55*d;e.tSig=.045-.014*d;e.pAmp=.15*(1-clamp((K-5.5)/2.5));
+      e.pr=.16+.08*clamp((K-6)/2);e.qw=1+2*clamp((K-7)/2);label='Hiperpotasemia: T picuda';}
+    if(K>=8.3) e.mode='sine';
+    const pea=K>8.8;
+    return {hr:K>7?55:72,sbp:pea?0:120-(K>6?35*clamp((K-6)/2.5):0),dbp:pea?0:78,spo2:97,pulse:!pea,e,label};},
+  clues:['Insuficiencia renal en diálisis omitida; T muy alta y picuda.','Diurético + diarrea; T plana con onda U prominente.'],
+  mech:'El K⁺ extracelular fija el potencial de reposo: si sube, la membrana se despolariza parcialmente (bloqueo y arritmias); si baja, hay hiperpolarización y mayor automatismo.',
+  pistas:['Hiper: insuficiencia renal, IECA, ahorradores de K⁺, rabdomiólisis','Hipo: diuréticos, vómito, diarrea, insulina','Pedir potasio y ECG temprano'],
+  ecg:['Hiper: T alta y picuda → P aplanada → QRS ancho → onda sinusoidal','Hipo: T plana, onda U, depresión del ST, QT aparente largo'],
+  tx:['Hiper: gluconato o cloruro de calcio, bicarbonato, insulina con glucosa, salbutamol, diálisis','Hipo: reposición de K⁺ (y Mg²⁺) con monitorización']},
+ {id:'hipotermia',g:'H',name:'Hipotermia',sub:'Temperatura central baja',sl:s=>'Temperatura: '+(36-12*s).toFixed(1).replace('.',',')+' °C',def:60,
+  st(s){const T=36-12*s,e=E0();e.pr=.16+.1*s;e.qw=1+.6*s;e.qtX=.12*s;e.osb=.55*clamp((34-T)/6);
+    e.noise=(T<35.5&&T>30.5)?.1:0;let label=T>32?'Bradicardia sinusal con temblor':'Bradicardia con onda J';
+    if(T<=25.5){e.mode='vf';label='FV';}
+    return {hr:75-52*s,sbp:T<=25.5?0:120-55*s,dbp:T<=25.5?0:80-30*s,spo2:96-5*s,pulse:T>25.5,e,label};},
+  clues:['Rescatado de agua fría; piel fría, temblor que cesa.','Bradicardia con onda J (Osborn) y artefacto de temblor.'],
+  mech:'El frío reduce el metabolismo y la conducción: bradicardia, intervalos prolongados y, bajo ~28 °C, riesgo de FV.',
+  pistas:['Exposición ambiental, inmersión, intoxicación alcohólica','Temblor que desaparece al enfriarse más','Termómetro de temperatura central'],
+  ecg:['Bradicardia sinusal','Onda J (Osborn) tras el QRS','PR, QRS y QT prolongados; artefacto por temblor','FV / asistolia en hipotermia grave'],
+  tx:['Recalentamiento activo (externo e interno)','Limitar descargas y fármacos mientras la temperatura sea muy baja','Continuar RCP hasta recalentar: “nadie está muerto hasta que está caliente y muerto”']},
+ {id:'hipoglucemia',g:'H',name:'Hipoglucemia',sub:'Glucosa baja',sl:s=>'Glucemia: '+Math.round(120-100*s)+' mg/dL',def:55,
+  st(s){const e=E0();e.qtX=.12*s;e.tAmp=.3-.18*s;e.stDep=.1*s;e.uAmp=.1*s;
+    return {hr:75+45*clamp(s/.5)-(s>.85?25:0),sbp:120-30*s,dbp:78-15*s,spo2:97,pulse:true,e,label:s<.1?'Ritmo sinusal':'Taquicardia sinusal (catecolaminas)'};},
+  clues:['Diabético con insulina, sudoración, confusión; glucemia capilar muy baja.','QT largo y T aplanada con taquicardia.'],
+  mech:'Sin glucosa las células agotan ATP; la descarga adrenérgica provoca taquicardia, y la hipopotasemia asociada alarga el QT.',
+  pistas:['Insulina o sulfonilureas, ayuno, insuficiencia hepática','Sudoración, temblor, alteración de la conciencia','Glucemia capilar en toda causa reversible'],
+  ecg:['Taquicardia sinusal','QT prolongado','T aplanada, depresión del ST'],
+  tx:['Dextrosa intravenosa (glucosa) según protocolo','Control seriado de la glucemia','Buscar y tratar la causa (insulina, sepsis)']},
+
+ {id:'toxicos',g:'T',name:'Tóxicos',sub:'Fármacos y venenos',sl:s=>'Gravedad de la intoxicación: '+Math.round(s*100)+' %',def:60,agent:true,
+  st(s,ag){const e=E0();let hr=75,sbp=120,label='';
+    if(ag==='tca'){hr=75+55*s;e.qw=1+1.3*s;e.qtX=.07*s;sbp=120-50*s;label='Taquicardia con QRS ancho';if(s>.9)e.mode='vf';}
+    else if(ag==='dig'){hr=72-20*s;e.stDep=.25*s;e.tAmp=.3-.2*s;e.pr=.16+.1*s;e.ectopy=.08+.5*s;sbp=120-25*s;label='Extrasístoles ventriculares y cubeta digitálica';if(s>.92)e.mode='vf';}
+    else if(ag==='bb'){hr=75-50*s;e.pr=.16+.2*s;e.qw=1+.15*s;sbp=120-60*s;label='Bradicardia con bloqueo AV';}
+    else {hr=75-52*s;e.pr=.16+.24*s;e.qw=1+.2*s;sbp=120-75*s;label='Bradicardia con bloqueo AV e hipotensión';}
+    const pea=(ag==='bb'||ag==='ccb')&&s>.93;
+    return {hr:pea?20:hr,sbp:(pea||e.mode==='vf')?0:sbp,dbp:(pea||e.mode==='vf')?0:sbp*.62,spo2:96,pulse:!pea&&e.mode!=='vf',e,label};},
+  clues:['Sobredosis intencional: QRS ensanchado y convulsiones.','Anciano con digoxina: extrasístoles y cubeta del ST.'],
+  mech:'El fármaco bloquea o altera un canal, receptor o bomba de la célula miocárdica; la forma del ECG revela el tóxico.',
+  pistas:['Antecedente de ingesta, envases, fármacos del paciente','Toxídrome: anticolinérgico, bradicardia + hipotensión, etc.','ECG de 12 derivaciones ayuda a identificar el agente'],
+  ecg:['Tricíclicos: taquicardia, QRS ancho, QT largo','Digoxina: cubeta del ST, extrasístoles, bloqueo AV','β-bloqueador / calcioantagonista: bradicardia y bloqueo AV'],
+  tx:['Tricíclicos: bicarbonato de sodio','Digoxina: fragmentos Fab','β-bloqueador / calcioantagonista: calcio, glucagón, insulina a dosis altas','Soporte vital y contacto con toxicología']},
+ {id:'taponamiento',g:'T',name:'Taponamiento cardiaco',sub:'Derrame pericárdico',sl:s=>'Derrame pericárdico: '+Math.round(s*400)+' mL',def:60,
+  st(s){const e=E0();e.rAmp=1-.65*s;e.tAmp=.3*(1-.5*s);e.alt=s>.35?.35*clamp((s-.35)/.35):0;
+    const pea=s>.92;
+    return {hr:pea?50:75+70*clamp(s/.7),sbp:pea?0:120-75*s,dbp:pea?0:80-45*s,spo2:97-3*s,pulse:!pea,e,label:'Taquicardia sinusal de bajo voltaje'};},
+  clues:['Herida torácica o cáncer; yugulares distendidas, ruidos apagados.','Bajo voltaje con alternancia eléctrica y taquicardia.'],
+  mech:'El líquido en el saco pericárdico comprime las cavidades derechas, el llenado diastólico cae y desciende el gasto cardiaco.',
+  pistas:['Tríada de Beck: hipotensión, ingurgitación yugular, ruidos cardiacos apagados','Pulso paradójico','Ecografía: derrame con colapso del VD/AD'],
+  ecg:['Taquicardia sinusal','Complejos de bajo voltaje','Alternancia eléctrica (la amplitud del QRS cambia latido a latido)','AESP en estadios finales'],
+  tx:['Pericardiocentesis (guiada por ecografía si es posible)','Volumen mientras se prepara el drenaje','Cirugía / ventana pericárdica según la causa']},
+ {id:'neumotorax',g:'T',name:'Neumotórax a tensión',sub:'Aire atrapado',sl:s=>'Aire en el hemitórax: '+Math.round(s*100)+' %',def:60,
+  st(s){const e=E0();e.rAmp=1-.4*s;e.tAmp=.3*(1-.4*s);const pea=s>.93;
+    return {hr:pea?45:75+65*clamp(s/.7),sbp:pea?0:120-70*s,dbp:pea?0:80-40*s,spo2:98-30*s,pulse:!pea,e,label:'Taquicardia sinusal'};},
+  clues:['Trauma torácico o ventilación con presión positiva; ausencia de murmullo vesicular unilateral.','Hipotensión con tráquea desviada y yugulares distendidas.'],
+  mech:'El aire entra al espacio pleural y no sale: colapsa el pulmón, desplaza el mediastino y acoda las venas cavas; cae el retorno venoso.',
+  pistas:['Disnea súbita, dolor pleurítico, trauma o barotrauma','Ausencia de ruidos respiratorios, hiperresonancia','Desviación traqueal y yugulares distendidas (tardío)'],
+  ecg:['Taquicardia sinusal','Bajo voltaje y desviación del eje','AESP si no se descomprime'],
+  tx:['Descompresión inmediata con aguja (2.º espacio intercostal, línea medioclavicular, o 4.º–5.º espacio línea axilar anterior)','Toracostomía con tubo','No esperar la radiografía']},
+ {id:'coronaria',g:'T',name:'Trombosis coronaria',sub:'Síndrome coronario agudo',sl:s=>'Progresión de la oclusión: '+Math.round(s*100)+' %',def:55,
+  st(s){const e=E0();
+    if(s>.1) e.tAmp=.3+.5*clamp((s-.1)/.2)*(s<.5?1:Math.max(0,1-(s-.5)*2));
+    e.stDep=-.45*clamp((s-.25)/.4);
+    e.qDeep=.1+.5*clamp((s-.6)/.3);e.rAmp=1-.3*clamp((s-.6)/.4);
+    if(s>.9) e.mode='vf';
+    return {hr:s>.8?105:75+30*s,sbp:e.mode==='vf'?0:120-55*clamp(s/.9),dbp:e.mode==='vf'?0:80-25*s,spo2:97-4*s,pulse:e.mode!=='vf',e,
+      label:e.mode==='vf'?'FV':s<.1?'Ritmo sinusal':s<.6?'Ritmo sinusal con elevación del ST':'Elevación del ST con onda Q'};},
+  clues:['Dolor torácico opresivo, elevación del ST en derivaciones contiguas.','Colapso súbito: FV en paciente con infarto.'],
+  mech:'Un trombo ocluye una arteria coronaria: la zona irrigada se isquemia, alterando la repolarización y creando sustrato para FV.',
+  pistas:['Dolor torácico, factores de riesgo, ECG de 12 derivaciones','Troponina elevada (puede tardar)','Considerar ICP o fibrinólisis incluso durante la RCP prolongada'],
+  ecg:['T hiperaguda → elevación del ST → onda Q','Recíprocos (depresión del ST) en derivaciones opuestas','FV o TV sin pulso'],
+  tx:['Reanimación según algoritmo (FV/TVSP: desfibrilación)','Reperfusión: angioplastia primaria o fibrinólisis','Antiagregantes y anticoagulación según indicación']},
+ {id:'tep',g:'T',name:'Trombosis pulmonar',sub:'Tromboembolia pulmonar',sl:s=>'Recorrido del trombo: paso '+(1+Math.round(s*5))+' de 6',def:80,
+  st(s){const o=clamp((s-.45)/.55),e=E0();e.tAmp=.3-.55*clamp((o-.1)/.5);e.qw=1+.3*Math.max(0,o-.5);e.pAmp=.15+.1*o;const pea=o>.9;
+    return {hr:pea?50:75+60*clamp(o/.6),sbp:pea?0:120-80*Math.max(0,o-.2),dbp:pea?0:78-40*Math.max(0,o-.2),spo2:98-30*o,pulse:!pea,e,label:o<.05?'Ritmo sinusal':'Taquicardia sinusal con T invertida'};},
+  clues:['Disnea súbita, TVP, posoperatorio; hipoxemia.','Ecografía con VD dilatado y VI hipodinámico.'],
+  mech:'Un émbolo obstruye la circulación pulmonar: sube la poscarga del VD, que se dilata, y el VI se llena poco; cae el gasto.',
+  pistas:['Disnea, dolor pleurítico, hemoptisis, factores de TVP','Hipoxemia sin causa pulmonar evidente','Ecografía: dilatación del VD, desviación del tabique'],
+  ecg:['Taquicardia sinusal (hallazgo más frecuente)','S1Q3T3, T invertida en V1–V3, BRD','AESP en TEP masivo'],
+  tx:['Fibrinólisis sistémica en paro por TEP sospechado o confirmado','Anticoagulación; trombectomía quirúrgica o percutánea','RCP prolongada: la causa es potencialmente reversible']},
+ {id:'trauma',g:'T',name:'Trauma',sub:'Lesión torácica / hemorragia',sl:s=>'Gravedad del trauma: '+Math.round(s*100)+' /100',def:60,
+  st(s){const e=E0();e.stDep=.1*s;e.ectopy=.05+.4*s;e.rAmp=1-.3*s;
+    const vf=s>.95,pea=s>.88&&!vf;
+    if(vf) e.mode='vf';
+    return {hr:pea?50:75+80*clamp(s/.6),sbp:(pea||vf)?0:120-85*s,dbp:(pea||vf)?0:80-50*s,spo2:97-10*s,pulse:!(pea||vf),e,label:'Taquicardia con extrasístoles ventriculares'};},
+  clues:['Impacto torácico; taquicardia con extrasístoles y shock.','Golpe en el pecho en deportista: FV (commotio cordis).'],
+  mech:'La hemorragia y la contusión miocárdica reducen el volumen y generan irritabilidad ventricular; un impacto en la vulnerabilidad del ciclo puede inducir FV.',
+  pistas:['Mecanismo de trauma, hemorragia externa o interna','FAST: líquido libre o derrame pericárdico','Considerar neumotórax, taponamiento y hemotórax'],
+  ecg:['Taquicardia sinusal','Extrasístoles ventriculares y TV','FV (commotio cordis) o AESP por hipovolemia'],
+  tx:['Control de hemorragia y vía aérea (circulación primero en trauma exanguinante)','Tratar neumotórax, taponamiento y hemotórax','Desfibrilación si FV/TVSP; considerar toracotomía de reanimación en centros capacitados']}
+];
+const byId=Object.fromEntries(CAUSES.map(c=>[c.id,c]));
+
+/* ---------- ECG en tiempo real ---------- */
+const cv=$('#ecg'); const WIN=6;
+function sizeCv(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);cv._w=r.width;cv._h=r.height;cv._d=d;
+  cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);ctxE=cv.getContext('2d');ctxE.setTransform(d,0,0,d,0,0);}
+let ctxE=null; addEventListener('resize',sizeCv);
+const gg=(t,c,s,a)=>a*Math.exp(-.5*((t-c)/s)**2);
+function beatY(tau,e,b){
+  const amp=1+(b.k%2?-1:1)*e.alt;
+  if(b.pvc){return gg(tau,.30,.035,1.3)-gg(tau,.50,.07,.5);}
+  const tc=.30,qw=e.qw;
+  let y=gg(tau,tc-e.pr+.04,.03,e.pAmp)
+   +gg(tau,tc-.025*qw,.008*qw,-e.qDeep*e.rAmp*amp)
+   +gg(tau,tc,.012*qw,e.rAmp*amp)
+   +gg(tau,tc+.028*qw,.009*qw,-.22*e.rAmp*amp);
+  const tT=tc+.26+e.qtX;
+  y+=gg(tau,tT,e.tSig,e.tAmp)+gg(tau,tT+.2,.04,e.uAmp)-gg(tau,tc+.13,.06,e.stDep)+gg(tau,tc+.06*qw+.01,.02,e.osb);
+  return y;
+}
+const ECG={beats:[],nextStart:0,T:0,last:0,lastY:null,lastX:null,k:0};
+let cur=null; // estado actual {hr,...}
+function sample(ts){
+  const e=cur.e;
+  if(e.mode==='vf') return .55*(Math.sin(6.3*ts)+.7*Math.sin(9.1*ts+1)+.5*Math.sin(13.7*ts+2))*(.7+.3*Math.sin(.9*ts));
+  if(e.mode==='asys') return .01*Math.sin(3*ts);
+  if(e.mode==='sine') return .85*Math.sin(2*Math.PI*1.1*ts);
+  while(ECG.nextStart<=ts+.02){
+    const rr=60/Math.max(20,cur.hr);
+    ECG.beats.push({start:ECG.nextStart,rr,k:ECG.k++,pvc:Math.random()<e.ectopy,e:{...e}});
+    ECG.nextStart+=rr*(1+rnd(-.01,.01));
+  }
+  while(ECG.beats.length>3&&ECG.beats[1].start<=ts) ECG.beats.shift();
+  let b=ECG.beats[0];
+  for(const q of ECG.beats) if(q.start<=ts) b=q;
+  const f=Math.max(1,.75/b.rr);
+  return beatY((ts-b.start)*f,b.e,b)+(e.noise?rnd(-1,1)*e.noise:0)+(e.noise?.05*Math.sin(ts*70):0);
+}
+function drawEcg(dt){
+  if(!ctxE) return;
+  const w=cv._w,h=cv._h,base=h*.62,ppm=h*.42;
+  const from=ECG.T; ECG.T+=dt;
+  ctxE.strokeStyle='#4fe3a5';ctxE.lineWidth=2.2;ctxE.lineJoin='round';
+  const step=1/180;
+  for(let ts=Math.floor(from/step)*step+step;ts<=ECG.T;ts+=step){
+    const x=((ts%WIN)/WIN)*w, y=base-sample(ts)*ppm;
+    ctxE.clearRect(x,0,18,h);
+    if(ECG.lastX!=null&&x>ECG.lastX){ctxE.beginPath();ctxE.moveTo(ECG.lastX,ECG.lastY);ctxE.lineTo(x,y);ctxE.stroke();}
+    ECG.lastX=x;ECG.lastY=y;
+  }
+}
+
+/* ---------- Estado de la app ---------- */
+let cause=CAUSES[0], sev=.55, agent='tca', updScene=null;
+function sevVal(){return sev;}
+function evalState(){cur=cause.st(sev,agent);return cur;}
+
+function buildChips(){
+  ['H','T'].forEach(gr=>{
+    const box=$('#g'+gr);box.innerHTML='';
+    CAUSES.filter(c=>c.g===gr).forEach(c=>{
+      const b=document.createElement('button');b.className='chip';b.dataset.id=c.id;
+      b.innerHTML=`${c.name}<small>${c.sub}</small>`;
+      b.addEventListener('click',()=>choose(c.id));
+      box.appendChild(b);
+    });
+  });
+}
+function choose(id){
+  cause=byId[id];
+  sev=cause.def/100;$('#sev').value=cause.def;
+  $('#selWrap').hidden=!cause.agent;
+  if(cause.agent){const s=$('#sel');s.innerHTML=[['tca','Antidepresivos tricíclicos (amitriptilina)'],['dig','Digoxina'],['bb','β-bloqueador (propranolol)'],['ccb','Calcioantagonista (verapamilo)']].map(a=>`<option value="${a[0]}">${a[1]}</option>`).join('');agent='tca';s.value='tca';}
+  const g=$('#scene');g.innerHTML='';
+  const og=E('g',{},g);
+  updScene=SCENES[cause.id](og);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+  ECG.beats=[];ECG.nextStart=ECG.T;
+  renderInfo();
+}
+function renderInfo(){
+  const c=cause;
+  const li=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+  // Izquierda: qué es y cómo sospecharla. Derecha: qué se ve y qué se hace.
+  $('#infoA').innerHTML=`<span class="tag">${c.g==='H'?'6H':'6T'}</span><h2>${c.name}</h2>
+    <h4>Mecanismo</h4><p>${c.mech}</p><h4>Pistas clínicas</h4>${li(c.pistas)}`;
+  $('#infoB').innerHTML=`<h4>ECG / monitor</h4>${li(c.ecg)}
+    <h4>Tratamiento dirigido</h4>${li(c.tx)}`;
+}
+
+/* ---------- Bucle ---------- */
+let last=performance.now(),tAnim=0;
+function frame(ts){
+  const dt=Math.min(.05,(ts-last)/1000);last=ts;tAnim+=dt;
+  const st=evalState();
+  if(updScene) updScene(sev,tAnim,dt,st,agent);
+  drawEcg(dt);
+  // signos vitales
+  $('#vHr').textContent=st.e.mode==='vf'||st.e.mode==='asys'?'--':Math.round(st.hr);
+  $('#vBp').textContent=st.pulse?Math.round(st.sbp)+'/'+Math.round(st.dbp):'---';
+  $('#vSp').textContent=st.pulse||st.spo2>40?Math.round(st.spo2):'--';
+  $('#rh').textContent=rhythmName(st.e,st);
+  const p=$('#pulse');p.textContent=st.pulse?'● Pulso central presente':'● Sin pulso: iniciar RCP';p.className='pulse '+(st.pulse?'si':'no');
+  $('#slab').textContent=cause.sl(sev).split(':')[0];
+  $('#sval').textContent=cause.sl(sev).split(': ').slice(1).join(': ');
+  requestAnimationFrame(frame);
+}
+
+/* ---------- Controles ---------- */
+$('#sev').addEventListener('input',e=>{sev=e.target.value/100;});
+$('#sel').addEventListener('change',e=>{agent=e.target.value;});
+
+buildChips();sizeCv();
+choose('hipovolemia');
+requestAnimationFrame(frame);
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

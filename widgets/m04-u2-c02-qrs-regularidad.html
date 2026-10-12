@@ -111,7 +111,7 @@ button:focus-visible{outline:3px solid var(--cal);outline-offset:2px}
 
 <div class="wrap">
   <div class="top">
-    <div><p class="eyebrow">Unidad 2 · Clasificación clínica</p><h1>El QRS y la regularidad orientan el origen de la taquicardia</h1></div>
+    <div><h1>El QRS y la regularidad orientan el origen de la taquicardia</h1></div>
     <div class="tabs" role="tablist">
       <button role="tab" id="t1" aria-selected="true">Matriz</button>
       <button role="tab" id="t2" aria-selected="false">Practicar</button>
@@ -319,6 +319,15 @@ function step(){
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

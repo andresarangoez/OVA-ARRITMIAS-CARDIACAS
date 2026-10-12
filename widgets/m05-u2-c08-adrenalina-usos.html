@@ -108,7 +108,6 @@ footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
 <body>
 
 <div class="wrap">
-  <div class="eyebrow">Arritmias · Fármacos de la unidad</div>
   <h1>Adrenalina en el paro cardíaco y en la bradicardia sintomática</h1>
   <p class="lead">El mismo fármaco se usa de dos formas muy distintas. Elige un contexto para resaltarlo en la tabla y compara después las dosis: confundir el bolo del paro con la infusión de la bradicardia es un error grave.</p>
 
@@ -217,6 +216,15 @@ render(); renderQ();
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);
