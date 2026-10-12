@@ -40,7 +40,11 @@ h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
 /* Dos columnas y dos filas: arriba la escena y el monitor, abajo las dos
    mitades de la ficha. Antes la columna derecha apilaba monitor y ficha
    entera, y la ficha se estiraba muy por debajo de la ilustración. */
-.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+/* Sin align-items: los dos de cada fila se estiran a la altura de la fila y
+   quedan simétricos. Con `start` cada uno medía lo que midiera su contenido y
+   el monitor acababa más bajo que la escena, y la mitad derecha de la ficha
+   más baja que la izquierda. */
+.main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
 @media (max-width:980px){.main{grid-template-columns:1fr}}
 
 /* La escena y su barra vertical. */
@@ -63,10 +67,12 @@ input[type=range].sev-vert{
 .ctl label b{font-size:16px;color:var(--azul);letter-spacing:0}
 input[type=range]{width:100%;accent-color:var(--azul2);height:24px}
 select{background:#fff;color:var(--azul);border:1px solid var(--gris);border-radius:8px;padding:6px 8px;font-weight:700;font-size:13px;margin-top:6px}
-.mon{background:var(--azul);color:#fff;border-radius:18px;padding:12px 14px;border:1px solid var(--azul)}
+/* Columna flexible: al estirarse a la altura de la fila, el espacio que sobra
+   se lo queda el trazado en lugar de dejar un hueco azul bajo los vitales. */
+.mon{background:var(--azul);color:#fff;border-radius:18px;padding:12px 14px;border:1px solid var(--azul);display:flex;flex-direction:column}
 .mon .top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:700;color:#aebbd3;letter-spacing:.06em;text-transform:uppercase}
 .mon .rh{color:var(--dorado);font-weight:800}
-#ecg{width:100%;height:150px;display:block;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:20px 20px}
+#ecg{width:100%;height:150px;flex:1 1 auto;min-height:150px;display:block;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:20px 20px}
 .vit{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .vit div{background:rgba(255,255,255,.07);border-radius:12px;padding:6px 10px}
 .vit small{display:block;font-size:11px;font-weight:700;color:#aebbd3;letter-spacing:.08em}
