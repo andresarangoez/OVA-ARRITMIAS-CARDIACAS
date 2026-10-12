@@ -110,7 +110,6 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
 <div class="wrap">
   <header>
-    <span class="eyebrow">Consideración didáctica · Taquicardias</span>
     <h1>¿Cardiovertir esta taquicardia?</h1>
     <p>Lea el caso, observe el monitor y elija la conducta. Después explore en el modelo qué pasa con el gasto cardíaco si se suprime la frecuencia.</p>
   </header>
@@ -289,6 +288,15 @@ input[type=range]{width:100%;accent-color:var(--accent)}
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);

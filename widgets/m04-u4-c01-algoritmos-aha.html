@@ -202,7 +202,6 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
 
 <div id="alg-app">
   <header>
-    <span class="meta">Soporte vital cardiovascular avanzado · Toma de decisiones</span>
     <h1>Algoritmos de la AHA</h1>
     <p class="abstract">Frente a un paciente con arritmia, la presencia de pulso y la frecuencia cardíaca orientan la elección del algoritmo de soporte vital avanzado. Algunas situaciones, como las torsades de pointes, la fibrilación auricular preexcitada, las intoxicaciones y las alteraciones electrolíticas, requieren un razonamiento específico.</p>
   </header>
@@ -589,6 +588,15 @@ TABS.forEach((t,i)=>{
    contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
    cuando el OVA se lo pide. */
 (function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
     var ultimo = 0;
     function medir() {
         var alto = Math.ceil(document.documentElement.scrollHeight);
