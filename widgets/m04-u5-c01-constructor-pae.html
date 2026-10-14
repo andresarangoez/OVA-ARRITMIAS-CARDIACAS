@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Constructor del plan de cuidados</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: cuatro pasos encadenados (dominio → diagnóstico → resultado →
+   intervenciones) y un panel lateral que arma el plan a medida que se elige.
+   Cada paso solo se abre cuando el anterior tiene respuesta: es la regla del
+   proceso de enfermería, y la herramienta la enseña al aplicarla. */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#c9d3dc;
+  --azul:#0b2b4a; --azul-claro:#e8f0f8; --dorado:#c8a54b;
+  --verde:#2f8a4c; --verde-suave:#e5f4e9; --rojo:#c8323c; --rojo-suave:#fbe7e8;
+  --f-display:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+     font-size:15px;line-height:1.55;font-variant-numeric:lining-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:26px 16px 44px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3vw,30px);
+   line-height:1.18;margin:0 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:68ch;margin:0 0 22px}
+
+/* --- pasos --- */
+.pasos{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.paso-chip{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;
+  background:var(--surface);border:1.5px solid var(--line);font-size:13.5px;font-weight:600;color:var(--muted)}
+.paso-chip .n{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;
+  background:var(--line);color:var(--surface);font-size:12px;font-weight:700}
+.paso-chip[data-estado="activo"]{border-color:var(--azul);color:var(--azul);background:var(--azul-claro)}
+.paso-chip[data-estado="activo"] .n{background:var(--azul)}
+.paso-chip[data-estado="hecho"]{border-color:var(--verde);color:var(--verde);background:var(--verde-suave)}
+.paso-chip[data-estado="hecho"] .n{background:var(--verde)}
+
+.columnas{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.columnas{grid-template-columns:1fr}}
+
+.tarjeta{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+.tarjeta h2{font-family:var(--f-display);font-size:18px;font-weight:700;margin:0 0 3px}
+.tarjeta .sub{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+.tarjeta[aria-disabled="true"]{opacity:.45;pointer-events:none}
+
+/* --- opciones --- */
+.opciones{display:grid;gap:8px}
+.opcion{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px}
+.opcion:hover{border-color:var(--azul)}
+.opcion[aria-pressed="true"]{background:var(--azul-claro);border-color:var(--azul)}
+.opcion .titulo{font-weight:700;display:block}
+.opcion .codigo{font-weight:700;color:var(--azul);font-variant-numeric:tabular-nums}
+.opcion .detalle{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+.etiqueta-tipo{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;padding:1px 8px;border-radius:99px;margin-left:6px;vertical-align:1px}
+.etiqueta-tipo[data-t="riesgo"]{background:var(--rojo-suave);color:var(--rojo)}
+.etiqueta-tipo[data-t="foco"]{background:var(--verde-suave);color:var(--verde)}
+
+/* --- casillas de factores e indicadores --- */
+.grupo{margin-top:16px}
+.grupo h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+  font-weight:700;margin:0 0 8px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:7px}
+.casilla{display:flex;align-items:flex-start;gap:9px;text-align:left;font:inherit;color:inherit;
+  cursor:pointer;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:14px}
+.casilla:hover{border-color:var(--azul)}
+.casilla[aria-pressed="true"]{background:var(--verde-suave);border-color:var(--verde)}
+.casilla .marca{flex:none;width:17px;height:17px;border-radius:5px;border:1.5px solid var(--line);
+  background:var(--surface);display:grid;place-items:center;font-size:11px;color:transparent;margin-top:2px}
+.casilla[aria-pressed="true"] .marca{background:var(--verde);border-color:var(--verde);color:#fff}
+
+/* --- meta --- */
+.meta-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr));gap:10px;margin-top:6px}
+.meta-campos label{display:block;font-size:12px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.meta-campos select,.meta-campos input{width:100%;font:inherit;font-size:14px;padding:8px 10px;
+  border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+
+/* --- plan --- */
+.plan{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);
+  border-top:4px solid var(--dorado);border-radius:14px;padding:18px 20px}
+.plan h2{font-family:var(--f-display);font-size:17px;font-weight:700;margin:0 0 12px}
+.plan-bloque{padding:11px 0;border-top:1px solid var(--bg)}
+.plan-bloque:first-of-type{border-top:0;padding-top:0}
+.plan-rotulo{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.plan-valor{margin-top:3px}
+.plan-valor.vacio{color:var(--muted);font-style:italic}
+.plan ul{margin:5px 0 0;padding-left:19px}
+.plan li{margin:3px 0;font-size:14px}
+.plan-meta{background:var(--azul-claro);border-radius:9px;padding:11px 13px;margin-top:12px;font-size:14.5px}
+.plan-meta.incompleta{background:var(--bg);color:var(--muted);font-style:italic}
+
+.acciones{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.btn{font:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;
+  border:1.5px solid var(--azul);background:var(--azul);color:#fff}
+.btn-fantasma{font:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn:focus-visible,.btn-fantasma:focus-visible,.opcion:focus-visible,.casilla:focus-visible{
+  outline:3px solid var(--azul);outline-offset:2px}
+
+.aviso{background:var(--rojo-suave);border-left:4px solid var(--rojo);border-radius:0 9px 9px 0;
+  padding:11px 14px;margin-top:14px;font-size:14px}
+footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:85ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>Del dominio alterado al plan de cuidados</h1>
+  <p class="lead">Elige el dominio que la valoración encontró alterado. A partir de ahí la herramienta propone los diagnósticos de ese dominio, los resultados que miden su evolución y las intervenciones que corresponden. El plan se arma a la derecha a medida que decides.</p>
+
+  <div class="pasos" id="pasos"></div>
+
+  <div class="columnas">
+    <div>
+      <section class="tarjeta" id="t-dominio">
+        <h2>1 · Dominio alterado</h2>
+        <p class="sub">Qué área de la respuesta humana está comprometida.</p>
+        <div class="opciones" id="op-dominio"></div>
+      </section>
+
+      <section class="tarjeta" id="t-dx" aria-disabled="true">
+        <h2>2 · Diagnóstico enfermero</h2>
+        <p class="sub">NANDA-I 2024-2026. Un diagnóstico de riesgo se sostiene con factores de riesgo; uno de foco, con características presentes.</p>
+        <div class="opciones" id="op-dx"></div>
+        <div id="factores"></div>
+      </section>
+
+      <section class="tarjeta" id="t-noc" aria-disabled="true">
+        <h2>3 · Resultado esperado e indicadores</h2>
+        <p class="sub">Un resultado sin indicador es una intención, no una meta: marca lo que vas a medir.</p>
+        <div class="opciones" id="op-noc"></div>
+        <div id="indicadores"></div>
+      </section>
+
+      <section class="tarjeta" id="t-nic" aria-disabled="true">
+        <h2>4 · Intervenciones y meta</h2>
+        <p class="sub">Elige las intervenciones y redacta la meta con verbo, parámetro y plazo.</p>
+        <div class="opciones" id="op-nic"></div>
+        <div class="grupo" id="bloque-meta" hidden>
+          <h3>Meta de cuidado</h3>
+          <div class="meta-campos">
+            <div><label for="m-verbo">Verbo</label>
+              <select id="m-verbo"><option value="">—</option></select></div>
+            <div><label for="m-param">Parámetro medible</label>
+              <select id="m-param"><option value="">—</option></select></div>
+            <div><label for="m-valor">Cifra objetivo</label>
+              <input id="m-valor" type="text" placeholder="p. ej. por encima de 90 mmHg"></div>
+            <div><label for="m-plazo">Plazo</label>
+              <select id="m-plazo"><option value="">—</option></select></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="plan" id="plan" aria-live="polite"></aside>
+  </div>
+
+  <footer>Material educativo. Las etiquetas y los códigos corresponden a NANDA-I 2024-2026, NOC 7.ª edición y NIC 8.ª edición; las descripciones, los factores, los indicadores y las actividades están redactados para este recurso y no reproducen el texto de las clasificaciones. Los códigos deben confirmarse contra la edición licenciada antes de usarse en un documento académico. No sustituye los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+/* ============================================================
+   CONOCIMIENTO
+   Los textos descriptivos son propios: las definiciones oficiales de
+   NANDA, NOC y NIC están protegidas y no se reproducen. Lo que se
+   conserva literal es lo que identifica a cada elemento — su etiqueta
+   y su código —, que es lo que el estudiante debe aprender a citar.
+   ============================================================ */
+const DOMINIOS = [
+  { id:"d4c4", n:"Dominio 4 · Clase 4", titulo:"Respuestas cardiovasculares y pulmonares",
+    detalle:"La alteración compromete el gasto, la perfusión o la función cardiovascular. Es el dominio de casi toda arritmia sintomática.",
+    dx:["dx240","dx311","dx204"] },
+  { id:"d11c2", n:"Dominio 11 · Clase 2", titulo:"Lesión física",
+    detalle:"El paciente está en riesgo de un daño que la arritmia puede precipitar.",
+    dx:["dx205"] },
+  { id:"d4c3", n:"Dominio 4 · Clase 3", titulo:"Equilibrio de la energía",
+    detalle:"La arritmia no amenaza la vida, pero limita lo que el paciente puede hacer.",
+    dx:["dx298"] },
+  { id:"d9c2", n:"Dominio 9 · Clase 2", titulo:"Respuestas de afrontamiento",
+    detalle:"La respuesta emocional del paciente influye en el propio ritmo.",
+    dx:["dx400"] }
+];
+
+const DX = {
+  dx240:{ code:"00240", label:"Riesgo de disminución del gasto cardíaco", tipo:"riesgo",
+    descripcion:"La frecuencia, el ritmo o la pérdida de la contribución auricular al llenado hacen previsible una caída del volumen que el corazón expulsa.",
+    rotulo:"Factores de riesgo",
+    items:["Frecuencia ventricular sostenida por encima de 150 lpm","Frecuencia por debajo de 50 lpm con repercusión","Pérdida de la contracción auricular (fibrilación o flutter)","Ritmo irregular que acorta llenados sucesivos","Cardiopatía estructural previa","Alteración electrolítica activa"],
+    noc:["noc_bomba","noc_circ"], nic:["nic4090","nic4044","nic4150","nic6680"] },
+
+  dx311:{ code:"00311", label:"Riesgo de deterioro de la función cardiovascular", tipo:"riesgo",
+    descripcion:"Coinciden varios factores que, juntos, hacen previsible un compromiso cardiovascular que va más allá del gasto.",
+    rotulo:"Factores de riesgo",
+    items:["Isquemia miocárdica conocida o sospechada","Fármacos que prolongan el QT o deprimen la conducción","Hipopotasemia o hipomagnesemia","Infección sistémica activa","Hipoxemia","Antecedente de arritmia previa"],
+    noc:["noc_circ","noc_perf"], nic:["nic4090","nic4040","nic4050","nic6680"] },
+
+  dx204:{ code:"00204", label:"Perfusión tisular periférica ineficaz", tipo:"foco",
+    descripcion:"La hipoperfusión ya es visible en la exploración: es el diagnóstico de la consecuencia, no del riesgo.",
+    rotulo:"Características presentes",
+    items:["Relleno capilar superior a 3 segundos","Frialdad y palidez distales","Pulsos periféricos débiles","Livedo reticularis o moteado","Diuresis inferior a 0,5 mL/kg/h"],
+    noc:["noc_circ","noc_perf"], nic:["nic4090","nic4044","nic4150"] },
+
+  dx205:{ code:"00205", label:"Riesgo de shock", tipo:"riesgo",
+    descripcion:"La arritmia amenaza con desbordar los mecanismos de compensación. Vive en el dominio de seguridad, no en el cardiovascular: por eso muchos planes lo omiten.",
+    rotulo:"Factores de riesgo",
+    items:["Hipotensión sintomática atribuible al ritmo","Alteración del estado mental","Signos de hipoperfusión establecidos","Dolor torácico isquémico durante la arritmia","Signos de insuficiencia cardíaca aguda"],
+    noc:["noc_circ","noc_bomba"], nic:["nic4090","nic4044","nic4150","nic6680"] },
+
+  dx298:{ code:"00298", label:"Disminución de la tolerancia a la actividad", tipo:"foco",
+    descripcion:"El paciente mantiene la estabilidad en reposo, pero el esfuerzo le produce síntomas. Es el diagnóstico del seguimiento, no el de la urgencia.",
+    rotulo:"Características presentes",
+    items:["Disnea de esfuerzo","Fatiga desproporcionada a la actividad","Palpitaciones con el ejercicio habitual","Respuesta cronotrópica insuficiente o excesiva"],
+    noc:["noc_tol"], nic:["nic4040","nic4050"] },
+
+  dx400:{ code:"00400", label:"Ansiedad excesiva", tipo:"foco",
+    descripcion:"El miedo mantiene una descarga adrenérgica que acelera el ritmo y puede sostener la arritmia. Tratarlo es parte del tratamiento del ritmo.",
+    rotulo:"Características presentes",
+    items:["Inquietud y temor referidos","Hiperventilación","Frecuencia cardíaca en reposo desproporcionada","Anticipación del procedimiento (cardioversión, descarga)"],
+    noc:["noc_ansiedad"], nic:["nic4044","nic6680"] }
+};
+
+const NOC = {
+  noc_bomba:{ label:"Efectividad de la bomba cardíaca",
+    indicadores:["Presión arterial sistólica","Frecuencia cardíaca","Diuresis horaria","Tolerancia a la actividad"] },
+  noc_circ:{ label:"Estado circulatorio",
+    indicadores:["Presión arterial media","Relleno capilar","Temperatura y color de la piel","Pulsos periféricos"] },
+  noc_perf:{ label:"Perfusión tisular",
+    indicadores:["Dolor torácico","Alteraciones del segmento ST","Arritmias registradas"] },
+  noc_tol:{ label:"Tolerancia a la actividad",
+    indicadores:["Distancia caminada sin síntomas","Frecuencia cardíaca tras el esfuerzo","Disnea referida"] },
+  noc_ansiedad:{ label:"Nivel de ansiedad",
+    indicadores:["Inquietud referida","Frecuencia cardíaca en reposo","Frecuencia respiratoria en reposo"] }
+};
+
+const NIC = {
+  nic4090:{ code:"4090", label:"Manejo de la arritmia",
+    detalle:"La intervención nuclear: reconocer el ritmo, vigilar su repercusión y aplicar la conducta que corresponda." },
+  nic4044:{ code:"4044", label:"Cuidados cardíacos: agudos",
+    detalle:"Marco del paciente con compromiso cardíaco agudo. La monitorización electrocardiográfica continua es una de sus actividades." },
+  nic4040:{ code:"4040", label:"Cuidados cardíacos",
+    detalle:"Versión general, para el paciente estable o en seguimiento." },
+  nic4050:{ code:"4050", label:"Manejo del riesgo cardíaco",
+    detalle:"Actuación sobre los factores que hacen previsible el deterioro." },
+  nic4150:{ code:"4150", label:"Regulación hemodinámica",
+    detalle:"Vigilancia y sostén de la precarga, la poscarga y la contractilidad." },
+  nic6680:{ code:"6680", label:"Monitorización de los signos vitales",
+    detalle:"La vigilancia que convierte el plan en algo revisable." }
+};
+
+const VERBOS = ["Mantener","Reducir","Recuperar","Prevenir","Detectar"];
+const PLAZOS = ["en los primeros 30 minutos","en la primera hora","en las primeras 6 horas","en las primeras 24 horas","durante todo el episodio"];
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const est = { dominio:null, dx:null, factores:new Set(), noc:null,
+              indicadores:new Set(), nic:new Set(), verbo:"", param:"", valor:"", plazo:"" };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
+
+/* ============================================================
+   PINTADO
+   ============================================================ */
+function pintarPasos(){
+  const estados = [
+    est.dominio ? "hecho" : "activo",
+    !est.dominio ? "" : (est.dx ? "hecho" : "activo"),
+    !est.dx ? "" : (est.noc ? "hecho" : "activo"),
+    !est.noc ? "" : (est.nic.size ? "hecho" : "activo")
+  ];
+  const nombres = ["Dominio","Diagnóstico","Resultado","Intervenciones"];
+  $("#pasos").innerHTML = nombres.map((n,i) =>
+    `<span class="paso-chip" data-estado="${estados[i]}"><span class="n">${i+1}</span>${n}</span>`).join("");
+}
+
+function pintarDominios(){
+  $("#op-dominio").innerHTML = DOMINIOS.map(d => `
+    <button class="opcion" data-dominio="${d.id}" aria-pressed="${est.dominio===d.id}">
+      <span class="titulo">${esc(d.titulo)}</span>
+      <span class="detalle"><strong>${esc(d.n)}</strong> · ${esc(d.detalle)}</span>
+    </button>`).join("");
+}
+
+function pintarDx(){
+  const t = $("#t-dx");
+  t.setAttribute("aria-disabled", est.dominio ? "false" : "true");
+  if (!est.dominio) { $("#op-dx").innerHTML = ""; $("#factores").innerHTML = ""; return; }
+
+  const dom = DOMINIOS.find(d => d.id === est.dominio);
+  $("#op-dx").innerHTML = dom.dx.map(k => {
+    const d = DX[k];
+    return `<button class="opcion" data-dx="${k}" aria-pressed="${est.dx===k}">
+      <span class="titulo"><span class="codigo">${esc(d.code)}</span> ${esc(d.label)}
+        <span class="etiqueta-tipo" data-t="${d.tipo}">${d.tipo}</span></span>
+      <span class="detalle">${esc(d.descripcion)}</span></button>`;
+  }).join("");
+
+  if (!est.dx) { $("#factores").innerHTML = ""; return; }
+  const d = DX[est.dx];
+  $("#factores").innerHTML = `<div class="grupo"><h3>${esc(d.rotulo)}</h3>
+    <div class="rejilla">${d.items.map((it,i) => `
+      <button class="casilla" data-factor="${i}" aria-pressed="${est.factores.has(i)}">
+        <span class="marca">✓</span><span>${esc(it)}</span></button>`).join("")}</div></div>`;
+}
+
+function pintarNoc(){
+  const t = $("#t-noc");
+  t.setAttribute("aria-disabled", est.dx ? "false" : "true");
+  if (!est.dx) { $("#op-noc").innerHTML = ""; $("#indicadores").innerHTML = ""; return; }
+
+  $("#op-noc").innerHTML = DX[est.dx].noc.map(k => `
+    <button class="opcion" data-noc="${k}" aria-pressed="${est.noc===k}">
+      <span class="titulo">${esc(NOC[k].label)}</span>
+      <span class="detalle">${NOC[k].indicadores.length} indicadores disponibles</span></button>`).join("");
+
+  if (!est.noc) { $("#indicadores").innerHTML = ""; return; }
+  $("#indicadores").innerHTML = `<div class="grupo"><h3>Indicadores que vas a medir</h3>
+    <div class="rejilla">${NOC[est.noc].indicadores.map((it,i) => `
+      <button class="casilla" data-ind="${i}" aria-pressed="${est.indicadores.has(i)}">
+        <span class="marca">✓</span><span>${esc(it)}</span></button>`).join("")}</div></div>`;
+}
+
+function pintarNic(){
+  const t = $("#t-nic");
+  t.setAttribute("aria-disabled", est.noc ? "false" : "true");
+  if (!est.noc) { $("#op-nic").innerHTML = ""; $("#bloque-meta").hidden = true; return; }
+
+  $("#op-nic").innerHTML = DX[est.dx].nic.map(k => `
+    <button class="opcion" data-nic="${k}" aria-pressed="${est.nic.has(k)}">
+      <span class="titulo"><span class="codigo">${esc(NIC[k].code)}</span> ${esc(NIC[k].label)}</span>
+      <span class="detalle">${esc(NIC[k].detalle)}</span></button>`).join("");
+
+  $("#bloque-meta").hidden = est.nic.size === 0;
+  if (est.nic.size) rellenarMeta();
+}
+
+function rellenarMeta(){
+  const v = $("#m-verbo"), p = $("#m-param"), z = $("#m-plazo");
+  if (v.options.length <= 1) {
+    VERBOS.forEach(x => v.add(new Option(x, x)));
+    PLAZOS.forEach(x => z.add(new Option(x, x)));
+  }
+  const indicadores = NOC[est.noc].indicadores;
+  const actuales = [...p.options].slice(1).map(o => o.value).join("|");
+  if (actuales !== indicadores.join("|")) {
+    p.length = 1;
+    indicadores.forEach(x => p.add(new Option(x, x)));
+    est.param = "";
+  }
+  v.value = est.verbo; p.value = est.param; z.value = est.plazo;
+  $("#m-valor").value = est.valor;
+}
+
+function pintarPlan(){
+  const d = est.dx ? DX[est.dx] : null;
+  const bloque = (rotulo, valor) =>
+    `<div class="plan-bloque"><div class="plan-rotulo">${rotulo}</div>
+     <div class="plan-valor${valor ? "" : " vacio"}">${valor || "sin elegir"}</div></div>`;
+
+  const factores = d ? [...est.factores].map(i => d.items[i]) : [];
+  const indicadores = est.noc ? [...est.indicadores].map(i => NOC[est.noc].indicadores[i]) : [];
+  const lista = a => a.length ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
+
+  /* Los cuatro campos son obligatorios a propósito: una meta sin cifra es
+     exactamente el error que el apartado 5.4 enseña a evitar. */
+  const faltan = [];
+  if (!est.verbo) faltan.push("verbo");
+  if (!est.param) faltan.push("parámetro");
+  if (!est.valor.trim()) faltan.push("cifra");
+  if (!est.plazo) faltan.push("plazo");
+
+  const meta = faltan.length
+    ? `<div class="plan-meta incompleta">A la meta le falta: ${esc(faltan.join(", "))}.</div>`
+    : `<div class="plan-meta"><strong>Meta:</strong> ${esc(est.verbo)} ${esc(est.param.toLowerCase())} ${esc(est.valor.trim())} ${esc(est.plazo)}.</div>`;
+
+  let aviso = "";
+  if (d && est.factores.size === 0 && (est.noc || est.nic.size)) {
+    aviso = `<div class="aviso">Has avanzado sin marcar ${d.tipo === "riesgo" ? "ningún factor de riesgo" : "ninguna característica"}.
+             Un diagnóstico sin eso es una etiqueta puesta de memoria, no un juicio clínico.</div>`;
+  }
+
+  $("#plan").innerHTML = `<h2>Plan de cuidados</h2>
+    ${bloque("Diagnóstico", d ? `<strong>${esc(d.code)}</strong> ${esc(d.label)}` : "")}
+    ${factores.length ? `<div class="plan-bloque"><div class="plan-rotulo">${esc(d.rotulo)}</div>${lista(factores)}</div>` : ""}
+    ${bloque("Resultado esperado", est.noc ? esc(NOC[est.noc].label) : "")}
+    ${indicadores.length ? `<div class="plan-bloque"><div class="plan-rotulo">Indicadores</div>${lista(indicadores)}</div>` : ""}
+    ${est.nic.size
+      ? `<div class="plan-bloque"><div class="plan-rotulo">Intervenciones</div>
+         ${lista([...est.nic].map(k => `${NIC[k].code} · ${NIC[k].label}`))}</div>`
+      : bloque("Intervenciones", "")}
+    ${meta}
+    ${aviso}
+    <div class="acciones"><button class="btn-fantasma" id="reiniciar">Empezar otro plan</button></div>`;
+}
+
+function pintar(){ pintarPasos(); pintarDominios(); pintarDx(); pintarNoc(); pintarNic(); pintarPlan(); }
+
+/* ============================================================
+   EVENTOS
+   Delegados en el documento: el contenido se vuelve a pintar entero
+   en cada cambio, así que escuchar en los botones no serviría.
+   ============================================================ */
+document.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+
+  if (b.dataset.dominio) {
+    est.dominio = b.dataset.dominio === est.dominio ? null : b.dataset.dominio;
+    est.dx = null; est.factores.clear(); est.noc = null; est.indicadores.clear(); est.nic.clear();
+  } else if (b.dataset.dx) {
+    est.dx = b.dataset.dx === est.dx ? null : b.dataset.dx;
+    est.factores.clear(); est.noc = null; est.indicadores.clear(); est.nic.clear();
+  } else if (b.dataset.factor !== undefined) {
+    const i = +b.dataset.factor;
+    est.factores.has(i) ? est.factores.delete(i) : est.factores.add(i);
+  } else if (b.dataset.noc) {
+    est.noc = b.dataset.noc === est.noc ? null : b.dataset.noc;
+    est.indicadores.clear(); est.nic.clear(); est.param = "";
+  } else if (b.dataset.ind !== undefined) {
+    const i = +b.dataset.ind;
+    est.indicadores.has(i) ? est.indicadores.delete(i) : est.indicadores.add(i);
+  } else if (b.dataset.nic) {
+    est.nic.has(b.dataset.nic) ? est.nic.delete(b.dataset.nic) : est.nic.add(b.dataset.nic);
+  } else if (b.id === "reiniciar") {
+    est.dominio = null; est.dx = null; est.factores.clear(); est.noc = null;
+    est.indicadores.clear(); est.nic.clear(); est.verbo = est.param = est.plazo = "";
+  } else return;
+
+  pintar();
+});
+
+document.addEventListener("input", e => {
+  if (e.target.id === "m-verbo") est.verbo = e.target.value;
+  else if (e.target.id === "m-param") est.param = e.target.value;
+  else if (e.target.id === "m-plazo") est.plazo = e.target.value;
+  else if (e.target.id === "m-valor") est.valor = e.target.value;
+  else return;
+  pintarPlan();
+});
+
+pintar();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>

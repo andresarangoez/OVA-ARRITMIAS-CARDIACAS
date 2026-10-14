@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Escenario cronometrado de priorización</title>
+<link rel="stylesheet" href="../css/00-tipografias.css">
+<style>
+/* Layout: panel del paciente a la izquierda (constantes que cambian solas con
+   el tiempo) y decisión a la derecha. Al final, un informe que compara lo
+   decidido con lo que el reloj permitía. */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#1b2733; --muted:#5b6b7a; --line:#c9d3dc;
+  --azul:#0b2b4a; --azul-claro:#e8f0f8; --dorado:#c8a54b;
+  --verde:#2f8a4c; --verde-suave:#e5f4e9; --rojo:#c8323c; --rojo-suave:#fbe7e8;
+  --ambar:#b26a00; --ambar-suave:#fdf1e0;
+  --monitor:#0b1b2b; --mon-verde:#46e08a;
+  --f-display:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Raleway", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+     font-size:15px;line-height:1.55;font-variant-numeric:lining-nums}
+.wrap{max-width:1060px;margin:0 auto;padding:26px 16px 42px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(21px,3vw,28px);
+   line-height:1.18;margin:0 0 6px;text-wrap:balance;max-width:30ch}
+.lead{color:var(--muted);max-width:66ch;margin:0 0 20px}
+
+.columnas{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start}
+@media (max-width:880px){.columnas{grid-template-columns:1fr}}
+
+/* --- monitor --- */
+.monitor{background:var(--monitor);border-radius:14px;padding:16px 18px;color:#dbe7f3}
+.monitor .cab{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8fa6c0}
+.monitor .ritmo{color:var(--dorado);font-weight:800}
+.constantes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.const{background:rgba(255,255,255,.05);border-radius:9px;padding:9px 11px}
+.const .r{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8fa6c0}
+.const .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--mon-verde)}
+.const[data-alerta="true"] .v{color:#ff8a8a}
+.estado-paciente{margin-top:12px;font-size:14px;padding:9px 12px;border-radius:9px;
+  background:rgba(255,255,255,.06)}
+
+/* --- reloj --- */
+.reloj{display:flex;align-items:center;gap:12px;margin-top:14px}
+.reloj .num{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
+.barra{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.barra i{display:block;height:100%;background:var(--mon-verde);width:100%}
+.barra[data-urgente="true"] i{background:#ff8a8a}
+
+/* --- decisión --- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.panel h2{font-family:var(--f-display);font-size:19px;font-weight:700;margin:0 0 4px;text-wrap:balance}
+.panel .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.opciones{display:grid;gap:9px}
+.opcion{font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--bg);
+  border:1.5px solid var(--line);border-radius:10px;padding:12px 15px}
+.opcion:hover{border-color:var(--azul);background:var(--azul-claro)}
+.opcion b{display:block}
+.opcion span{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+
+.veredicto{border-radius:11px;padding:14px 16px;margin-top:4px}
+.veredicto[data-t="bien"]{background:var(--verde-suave);border-left:4px solid var(--verde)}
+.veredicto[data-t="tarde"]{background:var(--ambar-suave);border-left:4px solid var(--ambar)}
+.veredicto[data-t="mal"]{background:var(--rojo-suave);border-left:4px solid var(--rojo)}
+.veredicto h3{margin:0 0 6px;font-size:16px}
+
+.bitacora{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.bitacora h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 7px}
+.bitacora ol{margin:0;padding-left:20px}
+.bitacora li{margin:4px 0;font-size:14px}
+.bitacora .t{font-variant-numeric:tabular-nums;font-weight:700;color:var(--azul)}
+
+.acciones{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.btn{font:inherit;font-weight:700;font-size:14.5px;padding:10px 18px;border-radius:9px;cursor:pointer;
+  border:1.5px solid var(--azul);background:var(--azul);color:#fff}
+.btn-fantasma{font:inherit;font-weight:700;font-size:14px;padding:10px 18px;border-radius:9px;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn:focus-visible,.btn-fantasma:focus-visible,.opcion:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+footer{margin-top:22px;font-size:12.5px;color:var(--muted);max-width:80ch}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>El mismo acierto, tomado tarde, es otro resultado</h1>
+  <p class="lead">Un caso que avanza mientras decides. Las constantes cambian solas: cada segundo que tardas es un segundo que el paciente pasa como está. No hay forma de pausarlo, igual que en la realidad.</p>
+
+  <div class="columnas">
+    <div class="monitor" id="monitor"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <footer>Modelo didáctico. Las constantes evolucionan según una simplificación pensada para enseñar el peso del tiempo en la decisión, no para reproducir la fisiología de un paciente concreto. No sustituye los protocolos institucionales ni el juicio clínico.</footer>
+</div>
+
+<script>
+/* ============================================================
+   EL CASO
+   Tres momentos. En cada uno hay una decisión y una ventana de
+   tiempo: la misma respuesta puntúa distinto según cuándo llegue.
+   ============================================================ */
+const CASO = {
+  titulo:"Varón de 62 años, planta de medicina interna",
+  contexto:"Ingresado por neumonía. La auxiliar avisa de que «se ha puesto mal». Al llegar está pálido, sudoroso y responde con dificultad. El monitor muestra una taquicardia regular de QRS ancho a 190 lpm.",
+  inicio:{ fc:190, sis:78, dia:46, spo2:89, ritmo:"TV monomórfica", estado:"Somnoliento, responde a la voz. Piel fría y sudorosa." }
+};
+
+const MOMENTOS = [
+  {
+    pregunta:"¿Qué haces primero?",
+    sub:"Tienes el monitor puesto y una vía periférica. El paciente está como lo ves.",
+    ventana:20,
+    opciones:[
+      { id:"cv", texto:"Cardioversión sincronizada", pista:"Terapia eléctrica inmediata",
+        correcta:true,
+        bien:"Correcto. Hay hipotensión, alteración del estado mental y signos de hipoperfusión atribuibles al ritmo: el paciente está inestable y la terapia eléctrica es el tratamiento, no el rescate.",
+        tarde:"La decisión era la correcta, pero llegó tarde. En ese tiempo la presión siguió cayendo y el paciente perdió el nivel de conciencia que le permitía recibir sedación." },
+      { id:"amio", texto:"Antiarrítmico intravenoso", pista:"Intentar revertir con fármaco",
+        correcta:false,
+        mal:"Esta es la demora clásica. El fármaco es la conducta del paciente <strong>estable</strong>; en el inestable se pierde el tiempo que la cardioversión necesitaba." },
+      { id:"doce", texto:"Electrocardiograma de 12 derivaciones", pista:"Confirmar el diagnóstico antes de actuar",
+        correcta:false,
+        mal:"Confirmar es razonable cuando hay tiempo. Aquí no lo hay: el diagnóstico de inestabilidad ya está hecho a pie de cama y no lo cambia un trazado de doce derivaciones." },
+      { id:"vagal", texto:"Maniobras vagales", pista:"Empezar por lo menos invasivo",
+        correcta:false,
+        mal:"Las maniobras vagales son del QRS estrecho y del paciente estable. En una taquicardia de complejo ancho con inestabilidad no tienen lugar." }
+    ]
+  },
+  {
+    pregunta:"Tras la descarga el ritmo es sinusal a 96 lpm. ¿Y ahora?",
+    sub:"La presión empieza a recuperarse. El paciente abre los ojos.",
+    ventana:30,
+    opciones:[
+      { id:"causa", texto:"Buscar y corregir la causa", pista:"Electrolitos, isquemia, hipoxia, fármacos",
+        correcta:true,
+        bien:"Correcto. Una arritmia tratada sin corregir lo que la produjo reaparece. La neumonía, la hipoxemia y una posible alteración electrolítica siguen ahí.",
+        tarde:"La dirección era buena, pero mientras tanto nadie miró el potasio ni la saturación." },
+      { id:"alta", texto:"Dar por resuelto el episodio", pista:"El ritmo volvió a la normalidad",
+        correcta:false,
+        mal:"La resolución de la arritmia no devuelve al paciente a una prioridad baja. La causa sigue activa hasta que se demuestre lo contrario." },
+      { id:"profi", texto:"Iniciar antiarrítmico profiláctico sin más", pista:"Prevenir la recurrencia",
+        correcta:false,
+        mal:"Antes de añadir un fármaco hay que saber qué sostuvo la arritmia. Tratar la recurrencia sin la causa es repetir el problema con más efectos adversos." }
+    ]
+  },
+  {
+    pregunta:"Potasio 2,9 mEq/L y saturación de 90 % con gafas nasales. ¿Qué priorizas?",
+    sub:"El paciente está consciente y la presión es de 104/62 mmHg.",
+    ventana:40,
+    opciones:[
+      { id:"ambas", texto:"Corregir el potasio y mejorar la oxigenación, a la vez", pista:"Las dos sostienen la arritmia",
+        correcta:true,
+        bien:"Correcto. Son tareas que se ejecutan en paralelo, repartidas en el equipo. Ninguna tiene que esperar a la otra.",
+        tarde:"Correcto, aunque con el paciente ya estable el margen era amplio: aquí tardar costaba menos que al principio." },
+      { id:"solok", texto:"Solo el potasio", pista:"Es lo más arritmogénico",
+        correcta:false,
+        mal:"La hipopotasemia es determinante, pero la hipoxemia mantiene la irritabilidad miocárdica. No compiten: se corrigen juntas." },
+      { id:"espera", texto:"Repetir la analítica antes de actuar", pista:"Confirmar el resultado",
+        correcta:false,
+        mal:"Un potasio de 2,9 con una arritmia ventricular reciente no se deja esperando una confirmación." }
+    ]
+  }
+];
+
+/* ============================================================
+   ESTADO
+   El reloj corre con setInterval y NO con requestAnimationFrame: un
+   documento que no se dibuja —el modulo del OVA esta oculto hasta que
+   el estudiante pulsa «Comenzar»— no recibe fotogramas, y el escenario
+   se quedaria congelado. Ademas el reloj no arranca al cargar, sino
+   cuando el estudiante pulsa: si no, el caso se consumiria solo antes
+   de que llegara a verlo.
+   ============================================================ */
+const est = { fase:"portada", i:0, t:0, cron:null, hmd:{...CASO.inicio}, bitacora:[], ultimo:null };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
+const reloj = s => String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0");
+
+function deteriorar(){
+  /* Solo se deteriora mientras la arritmia sigue puesta, es decir, en el
+     primer momento. Despues de la cardioversion el paciente se recupera. */
+  if (est.i !== 0) return;
+  const h = est.hmd;
+  h.sis = Math.max(50, h.sis - 1);
+  h.dia = Math.max(30, h.dia - 1);
+  if (est.t % 3 === 0) h.spo2 = Math.max(72, h.spo2 - 1);
+  if (est.t > 25) h.estado = "No responde a la voz. Respiración superficial.";
+  else if (est.t > 12) h.estado = "Cada vez más somnoliento. Piel fría y sudorosa.";
+}
+
+function arrancarCronometro(){
+  pararCronometro();
+  est.cron = setInterval(() => {
+    est.t++;
+    deteriorar();
+    pintarMonitor();
+    pintarReloj();
+  }, 1000);
+}
+function pararCronometro(){ if (est.cron) { clearInterval(est.cron); est.cron = null; } }
+
+/* ============================================================
+   PINTADO
+   ============================================================ */
+function pintarMonitor(){
+  const h = est.hmd;
+  const bajo = h.sis < 90, desat = h.spo2 < 92;
+  $("#monitor").innerHTML = `
+    <div class="cab"><span>Monitor · DII</span><span class="ritmo">${esc(h.ritmo)}</span></div>
+    <div class="constantes">
+      <div class="const" data-alerta="${h.fc > 150 || h.fc < 50}">
+        <div class="r">FC · lpm</div><div class="v">${h.fc}</div></div>
+      <div class="const" data-alerta="${bajo}">
+        <div class="r">PA · mmHg</div><div class="v">${h.sis}/${h.dia}</div></div>
+      <div class="const" data-alerta="${desat}">
+        <div class="r">SpO₂ · %</div><div class="v">${h.spo2}</div></div>
+      <div class="const">
+        <div class="r">Tiempo</div><div class="v">${reloj(est.t)}</div></div>
+    </div>
+    <div class="estado-paciente">${esc(h.estado)}</div>
+    <div class="reloj" id="zona-reloj"></div>`;
+  pintarReloj();
+}
+
+function pintarReloj(){
+  const z = $("#zona-reloj");
+  if (!z) return;
+  if (est.fase !== "decidiendo") { z.innerHTML = ""; return; }
+  const m = MOMENTOS[est.i];
+  const restante = Math.max(0, m.ventana - est.t);
+  const pct = Math.max(0, Math.round(restante / m.ventana * 100));
+  z.innerHTML = `<span class="num">${restante}</span>
+    <div class="barra" data-urgente="${pct < 35}"><i style="width:${pct}%"></i></div>`;
+}
+
+function pintarPanel(){
+  if (est.fase === "portada") {
+    $("#panel").innerHTML = `
+      <h2>${esc(CASO.titulo)}</h2>
+      <p class="sub">${esc(CASO.contexto)}</p>
+      <p>El reloj empieza cuando pulses. A partir de ahí el paciente evoluciona solo.</p>
+      <div class="acciones"><button class="btn" data-empezar>Empezar el escenario</button></div>`;
+    return;
+  }
+
+  if (est.fase === "decidiendo") {
+    const m = MOMENTOS[est.i];
+    $("#panel").innerHTML = `
+      <h2>${esc(m.pregunta)}</h2>
+      <p class="sub">${esc(m.sub)}</p>
+      <div class="opciones">${m.opciones.map(o => `
+        <button class="opcion" data-op="${o.id}"><b>${esc(o.texto)}</b><span>${esc(o.pista)}</span></button>`).join("")}</div>
+      ${pintarBitacora()}`;
+    return;
+  }
+
+  if (est.fase === "respondido") {
+    const { op, tono, texto } = est.ultimo;
+    const ultimo = est.i === MOMENTOS.length - 1;
+    $("#panel").innerHTML = `
+      <div class="veredicto" data-t="${tono}">
+        <h3>${esc(op.texto)}</h3>
+        <p style="margin:0">${texto}</p>
+      </div>
+      ${pintarBitacora()}
+      <div class="acciones">
+        ${tono === "mal"
+          ? `<button class="btn" data-reintentar>Volver a decidir</button>`
+          : `<button class="btn" data-seguir>${ultimo ? "Ver el informe" : "Continuar"}</button>`}
+      </div>`;
+    return;
+  }
+
+  if (est.fase === "informe") pintarInforme();
+}
+
+function pintarBitacora(){
+  if (!est.bitacora.length) return "";
+  return `<div class="bitacora"><h3>Lo que ha pasado</h3><ol>${
+    est.bitacora.map(b => `<li><span class="t">${reloj(b.t)}</span> · ${b.texto}</li>`).join("")}</ol></div>`;
+}
+
+function pintarInforme(){
+  const aTiempo = est.bitacora.filter(b => b.tono === "bien").length;
+  const tarde = est.bitacora.filter(b => b.tono === "tarde").length;
+  const fallos = est.bitacora.filter(b => b.tono === "mal").length;
+
+  let cierre;
+  if (fallos === 0 && tarde === 0)
+    cierre = "Las tres decisiones fueron correctas y llegaron dentro de su ventana. Es el recorrido que el caso busca.";
+  else if (fallos === 0)
+    cierre = "Todas las decisiones fueron correctas, pero alguna llegó fuera de ventana. Es exactamente lo que esta unidad quiere mostrar: el acierto tardío no produce el mismo resultado que el acierto a tiempo.";
+  else
+    cierre = "Hubo decisiones que no correspondían a la situación. Antes de repetir, vuelve a la cadena de preguntas: pulso, estabilidad, anchura del QRS, regularidad.";
+
+  $("#panel").innerHTML = `
+    <h2>Informe del escenario</h2>
+    <p class="sub">Tiempo total: ${reloj(est.t)}</p>
+    <div class="veredicto" data-t="${fallos ? "mal" : (tarde ? "tarde" : "bien")}">
+      <h3>${aTiempo} a tiempo · ${tarde} tarde · ${fallos} fuera de lugar</h3>
+      <p style="margin:0">${esc(cierre)}</p>
+    </div>
+    ${pintarBitacora()}
+    <div class="acciones"><button class="btn" data-reiniciar>Repetir el escenario</button></div>`;
+}
+
+function pintar(){ pintarMonitor(); pintarPanel(); }
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+document.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+
+  if (b.hasAttribute("data-empezar")) {
+    est.fase = "decidiendo"; est.t = 0;
+    arrancarCronometro();
+
+  } else if (b.dataset.op) {
+    const m = MOMENTOS[est.i];
+    const op = m.opciones.find(o => o.id === b.dataset.op);
+    pararCronometro();
+
+    let tono, texto;
+    if (!op.correcta) { tono = "mal"; texto = op.mal; }
+    else if (est.t <= m.ventana) { tono = "bien"; texto = op.bien; }
+    else { tono = "tarde"; texto = op.tarde; }
+
+    est.bitacora.push({ t: est.t, tono, texto: `${esc(op.texto)} — ${tono === "bien" ? "a tiempo" : tono === "tarde" ? "fuera de ventana" : "no correspondía"}` });
+    est.ultimo = { op, tono, texto };
+    est.fase = "respondido";
+
+    if (op.correcta && est.i === 0) {
+      est.hmd = { fc:96, sis:102, dia:64, spo2:93, ritmo:"Ritmo sinusal",
+                  estado:"Consciente, orientado. Mejora el color de la piel." };
+    }
+
+  } else if (b.hasAttribute("data-reintentar")) {
+    est.fase = "decidiendo";
+    arrancarCronometro();
+
+  } else if (b.hasAttribute("data-seguir")) {
+    if (est.i === MOMENTOS.length - 1) { est.fase = "informe"; }
+    else { est.i++; est.t = 0; est.fase = "decidiendo"; arrancarCronometro(); }
+
+  } else if (b.hasAttribute("data-reiniciar")) {
+    pararCronometro();
+    est.fase = "portada"; est.i = 0; est.t = 0;
+    est.hmd = { ...CASO.inicio }; est.bitacora = []; est.ultimo = null;
+
+  } else return;
+
+  pintar();
+});
+
+pintar();
+</script>
+<script>
+/* Dentro del OVA esta pagina vive en un iframe, que no se ajusta solo a su
+   contenido: cada vez que el alto cambia se lo comunica al OVA, y responde
+   cuando el OVA se lo pide. */
+(function () {
+    /* El marco lo dimensiona el OVA al alto del contenido, asi que esta
+       pagina no tiene por donde desplazarse: la barra que aparecia era un
+       resto de redondeo, y encima cortaba en recto la esquina redondeada del
+       marco. Se oculta la barra, no el desbordamiento: la rueda y el teclado
+       siguen funcionando si alguna vez el marco se quedara corto. */
+    var sinBarra = document.createElement('style');
+    sinBarra.textContent = 'html{scrollbar-width:none}html::-webkit-scrollbar{width:0;height:0}';
+    (document.head || document.documentElement).appendChild(sinBarra);
+
+    var ultimo = 0;
+    function medir() {
+        var alto = Math.ceil(document.documentElement.scrollHeight);
+        if (!alto || alto === ultimo) return;
+        ultimo = alto;
+        parent.postMessage({ ova: 'alto', alto: alto }, '*');
+    }
+    addEventListener('load', medir);
+    addEventListener('resize', medir);
+    addEventListener('message', function (e) { if (e.data && e.data.ova === 'medir') medir(); });
+    document.addEventListener('click', function () { setTimeout(medir, 60); setTimeout(medir, 420); });
+    if (window.ResizeObserver) new ResizeObserver(medir).observe(document.body);
+    [120, 400, 1200, 3000].forEach(function (ms) { setTimeout(medir, ms); });
+})();
+</script>
+</body>
+</html>
