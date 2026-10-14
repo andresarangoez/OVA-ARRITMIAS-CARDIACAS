@@ -35,10 +35,14 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3vw,30px);
 .paso-chip[data-estado="hecho"]{border-color:var(--verde);color:var(--verde);background:var(--verde-suave)}
 .paso-chip[data-estado="hecho"] .n{background:var(--verde)}
 
-.columnas{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
-@media (max-width:900px){.columnas{grid-template-columns:1fr}}
-
-.tarjeta{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+/* Los cuatro pasos en cuadrantes y el plan cruzando por debajo: se lee como
+   lo que es, cuatro decisiones encadenadas y el resultado al final. Las dos
+   tarjetas de una misma fila se estiran a la misma altura, que es lo que hace
+   que la rejilla se vea como una rejilla y no como cuatro cajas sueltas. */
+.cuadrantes{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:760px){.cuadrantes{grid-template-columns:1fr 1fr}}
+.tarjeta{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    display:flex;flex-direction:column}
 .tarjeta h2{font-family:var(--f-display);font-size:18px;font-weight:700;margin:0 0 3px}
 .tarjeta .sub{color:var(--muted);font-size:13.5px;margin:0 0 14px}
 .tarjeta[aria-disabled="true"]{opacity:.45;pointer-events:none}
@@ -61,7 +65,7 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3vw,30px);
 .grupo{margin-top:16px}
 .grupo h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
   font-weight:700;margin:0 0 8px}
-.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:7px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:7px}
 .casilla{display:flex;align-items:flex-start;gap:9px;text-align:left;font:inherit;color:inherit;
   cursor:pointer;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:14px}
 .casilla:hover{border-color:var(--azul)}
@@ -78,11 +82,16 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3vw,30px);
   border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 
 /* --- plan --- */
-.plan{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);
-  border-top:4px solid var(--dorado);border-radius:14px;padding:18px 20px}
+.plan{margin-top:16px;background:var(--surface);border:1px solid var(--line);
+  border-top:4px solid var(--dorado);border-radius:14px;padding:18px 22px}
 .plan h2{font-family:var(--f-display);font-size:17px;font-weight:700;margin:0 0 12px}
+/* A lo ancho de la página, los bloques del plan se reparten en columnas en
+   vez de apilarse en una lista larguísima. */
+.plan-cuerpo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));
+  gap:0 26px;align-items:start}
 .plan-bloque{padding:11px 0;border-top:1px solid var(--bg)}
 .plan-bloque:first-of-type{border-top:0;padding-top:0}
+@media (min-width:760px){.plan-bloque{border-top:0;padding-top:0}}
 .plan-rotulo{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .plan-valor{margin-top:3px}
 .plan-valor.vacio{color:var(--muted);font-style:italic}
@@ -109,12 +118,11 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:85ch}
 
 <div class="wrap">
   <h1>Del dominio alterado al plan de cuidados</h1>
-  <p class="lead">Elige el dominio que la valoración encontró alterado. A partir de ahí la herramienta propone los diagnósticos de ese dominio, los resultados que miden su evolución y las intervenciones que corresponden. El plan se arma a la derecha a medida que decides.</p>
+  <p class="lead">Elige el dominio que la valoración encontró alterado. A partir de ahí la herramienta propone los diagnósticos de ese dominio, los resultados que miden su evolución y las intervenciones que corresponden. El plan se arma abajo a medida que decides.</p>
 
   <div class="pasos" id="pasos"></div>
 
-  <div class="columnas">
-    <div>
+  <div class="cuadrantes">
       <section class="tarjeta" id="t-dominio">
         <h2>1 · Dominio alterado</h2>
         <p class="sub">Qué área de la respuesta humana está comprometida.</p>
@@ -153,10 +161,9 @@ footer{margin-top:24px;font-size:12.5px;color:var(--muted);max-width:85ch}
           </div>
         </div>
       </section>
-    </div>
-
-    <aside class="plan" id="plan" aria-live="polite"></aside>
   </div>
+
+  <aside class="plan" id="plan" aria-live="polite"></aside>
 
   <footer>Material educativo. Las etiquetas y los códigos corresponden a NANDA-I 2024-2026, NOC 7.ª edición y NIC 8.ª edición; las descripciones, los factores, los indicadores y las actividades están redactados para este recurso y no reproducen el texto de las clasificaciones. Los códigos deben confirmarse contra la edición licenciada antes de usarse en un documento académico. No sustituye los protocolos institucionales ni el juicio clínico.</footer>
 </div>
@@ -384,6 +391,7 @@ function pintarPlan(){
   }
 
   $("#plan").innerHTML = `<h2>Plan de cuidados</h2>
+    <div class="plan-cuerpo">
     ${bloque("Diagnóstico", d ? `<strong>${esc(d.code)}</strong> ${esc(d.label)}` : "")}
     ${factores.length ? `<div class="plan-bloque"><div class="plan-rotulo">${esc(d.rotulo)}</div>${lista(factores)}</div>` : ""}
     ${bloque("Resultado esperado", est.noc ? esc(NOC[est.noc].label) : "")}
@@ -392,6 +400,7 @@ function pintarPlan(){
       ? `<div class="plan-bloque"><div class="plan-rotulo">Intervenciones</div>
          ${lista([...est.nic].map(k => `${NIC[k].code} · ${NIC[k].label}`))}</div>`
       : bloque("Intervenciones", "")}
+    </div>
     ${meta}
     ${aviso}
     <div class="acciones"><button class="btn-fantasma" id="reiniciar">Empezar otro plan</button></div>`;
