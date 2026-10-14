@@ -109,6 +109,7 @@ tr:last-child td,tr:last-child th{border-bottom:none}
 .note{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 @media (prefers-reduced-motion:reduce){.tp{animation:none}.card{transition:none}.meter i{transition:none}}
 </style>
+<link rel="stylesheet" href="../css/26-tipografia-widgets.css">
 </head>
 <body>
 
@@ -118,19 +119,12 @@ tr:last-child td,tr:last-child th{border-bottom:none}
     <p class="abstract">Las arritmias ventriculares constituyen un espectro continuo que va desde latidos prematuros aislados, habitualmente benignos, hasta la fibrilación ventricular, causa principal de muerte súbita. La cardiopatía estructural y la disfunción ventricular aumentan el riesgo asociado a cualquiera de ellas.</p>
   </header>
 
-  <nav class="tabs" role="tablist" aria-label="Secciones">
-    <button role="tab" id="vt-esp" aria-controls="vp-esp" aria-selected="true" tabindex="0"><span>1</span>Espectro</button>
-    <button role="tab" id="vt-tab" aria-controls="vp-tab" aria-selected="false" tabindex="-1"><span>2</span>Comparación</button>
-    <button role="tab" id="vt-quiz" aria-controls="vp-quiz" aria-selected="false" tabindex="-1"><span>3</span>Reconocimiento</button>
-    <button role="tab" id="vt-ref" aria-controls="vp-ref" aria-selected="false" tabindex="-1"><span>4</span>Referencias</button>
-  </nav>
 
   <!-- 1 Espectro -->
-  <section class="tp" id="vp-esp" role="tabpanel" aria-labelledby="vt-esp">
-    <p class="lead">Seleccione cada arritmia para visualizar su trazo en el monitor y consultar sus características. Active la opción inferior para observar cómo cambia el riesgo en presencia de cardiopatía estructural.</p>
+  <section class="tp" id="vp-esp">
+    <p class="lead">Las seis están ordenadas de menor a mayor gravedad. Elige cualquiera para ver su trazado y sus características.</p>
     <div class="spec" id="spec"></div>
-    <div class="axis"><div class="bar"></div><div class="lbl"><span>Menor gravedad</span><span>Mayor gravedad</span></div></div>
-    <label class="toggle"><input type="checkbox" id="struct"><span><b>Cardiopatía estructural o disfunción ventricular.</b> Aumenta el riesgo de cualquiera de estas arritmias.</span></label>
+    <div class="axis"><div class="bar"></div><div class="lbl"><span>Menor gravedad</span><span>Mayor gravedad</span></div></div>
     <div class="detail" aria-live="polite">
       <div class="mon">
         <div class="mbar"><span>Derivación II · simulación</span><b id="mName"></b><span class="rate" id="mRate"></span></div>
@@ -143,15 +137,14 @@ tr:last-child td,tr:last-child th{border-bottom:none}
           <dt>Criterio ECG</dt><dd id="dEcg"></dd>
           <dt>Repercusión</dt><dd id="dHem"></dd>
           <dt>Abordaje inicial</dt><dd id="dMan"></dd>
-          <dt id="shT" hidden>Con cardiopatía</dt><dd class="sh" id="dSh" hidden></dd>
-        </dl>
-        <div class="riskrow"><span>Riesgo de muerte súbita (representación relativa)</span><div class="meter"><i id="meter"></i></div></div>
+          <dt>Con cardiopatía estructural</dt><dd class="sh" id="dSh"></dd>
+        </dl>
       </div>
     </div>
   </section>
 
   <!-- 2 Comparación -->
-  <section class="tp" id="vp-tab" role="tabpanel" aria-labelledby="vt-tab" hidden>
+  <section class="tp" id="vp-tab">
     <div class="tablewrap">
       <table>
         <caption><b>Tabla 1.</b> Características comparativas de las arritmias ventriculares.</caption>
@@ -161,22 +154,9 @@ tr:last-child td,tr:last-child th{border-bottom:none}
     </div>
   </section>
 
-  <!-- 3 Reconocimiento -->
-  <section class="tp" id="vp-quiz" role="tabpanel" aria-labelledby="vt-quiz" hidden>
-    <p class="lead">Observe cada trazo e identifique la arritmia. Recibirá retroalimentación inmediata.</p>
-    <div class="quiz">
-      <div class="qhead"><span id="qProg"></span><span class="qbar"><i id="qBar"></i></span><span id="qScore"></span></div>
-      <div class="qbody">
-        <div class="qmon" id="qMon"></div>
-        <div class="qopts" id="qOpts"></div>
-        <div class="qfb" id="qFb" hidden></div>
-        <div><button class="qnext" id="qNext" hidden></button></div>
-      </div>
-    </div>
-  </section>
 
   <!-- 4 Referencias -->
-  <section class="tp" id="vp-ref" role="tabpanel" aria-labelledby="vt-ref" hidden>
+  <section class="tp" id="vp-ref">
     <ol class="refs">
       <li>Zeppenfeld K, Tfelt-Hansen J, de Riva M, et al. 2022 ESC Guidelines for the management of patients with ventricular arrhythmias and the prevention of sudden cardiac death. <i>Eur Heart J.</i> 2022;43(40):3997-4126.</li>
       <li>Al-Khatib SM, Stevenson WG, Ackerman MJ, et al. 2017 AHA/ACC/HRS Guideline for Management of Patients With Ventricular Arrhythmias and the Prevention of Sudden Cardiac Death. <i>Circulation.</i> 2018;138(13):e272-e391.</li>
@@ -267,75 +247,27 @@ const SEV={lo:"Menor gravedad",md:"Gravedad intermedia",hi:"Mayor gravedad"};
 
 /* ---------- Espectro ---------- */
 const spec=$("spec"),cards=[];
-let cur=0,anim=null;
+let cur=0;
 A.forEach((a,i)=>{
   const b=document.createElement("button");b.className="card "+a.c;b.setAttribute("aria-pressed","false");
   b.innerHTML=`<b>${a.t}</b><span>${a.s}</span>`;b.addEventListener("click",()=>show(i));spec.appendChild(b);cards.push(b);
 });
 function show(i){
-  cur=i;const a=A[i],st=$("struct").checked;
+  cur=i;const a=A[i];
   cards.forEach((c,j)=>c.setAttribute("aria-pressed",j===i));
   $("dT").textContent=`${a.t} ${a.s}`;
   const ps=$("pSev");ps.className="pill "+a.c;ps.textContent=SEV[a.c];
   const pp=$("pPulse");pp.className="pill "+(a.k==="fv"?"hi":a.c==="hi"?"hi":a.c==="md"?"md":"lo");pp.textContent=a.pulse;
   $("dDef").textContent=a.def;$("dEcg").textContent=a.ecg;$("dHem").textContent=a.hem;$("dMan").textContent=a.man;
-  $("dSh").textContent=a.sh;$("dSh").hidden=!st;$("shT").hidden=!st;
-  $("meter").style.left=a.r[st?1:0]+"%";
+  $("dSh").textContent=a.sh;
   $("mName").textContent=`${a.t} ${a.s}`;$("mRate").textContent=RH[a.k].rate;
-  $("mStrip").innerHTML=strip(a.k,!reduce);
-  cancelAnimationFrame(anim);
-  if(reduce)return;
-  const sR=$("mStrip").querySelector(".swR"),sL=$("mStrip").querySelector(".swL"),dur=RH[a.k].d*1000,t0=performance.now();
-  const run=t=>{const x=((t-t0)%dur)/dur*600;sR.setAttribute("width",x);sL.setAttribute("x1",x);sL.setAttribute("x2",x);anim=requestAnimationFrame(run);};
-  anim=requestAnimationFrame(run);
+  $("mStrip").innerHTML=strip(a.k,false);
 }
-$("struct").addEventListener("change",()=>{const a=A[cur],st=$("struct").checked;$("dSh").hidden=!st;$("shT").hidden=!st;$("meter").style.left=a.r[st?1:0]+"%";});
 show(0);
 
 /* ---------- Tabla ---------- */
 $("tbody").innerHTML=A.map(a=>`<tr><th class="${a.c}" scope="row">${a.t} ${a.s}</th><td>${a.freq}</td><td>${a.qrs}</td><td>${a.pulse}</td><td>${a.man}</td></tr>`).join("");
 
-/* ---------- Reconocimiento ---------- */
-const qOpts=$("qOpts"),qFb=$("qFb"),qNext=$("qNext");
-A.forEach(a=>{const b=document.createElement("button");b.dataset.k=a.k;b.textContent=`${a.t} ${a.s}`;qOpts.appendChild(b);});
-let order=[],qi=0,score=0,answered=false,done=false;
-function shuffle(x){for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x;}
-function qStart(){order=shuffle(A.map((_,i)=>i));qi=0;score=0;done=false;qShow();}
-function qShow(){
-  answered=false;const a=A[order[qi]];
-  // trazo sin marcas para no revelar la respuesta
-  const keep=RH[a.k].m;RH[a.k].m=[];$("qMon").innerHTML=strip(a.k,false);RH[a.k].m=keep;
-  $("qMon").hidden=false;qOpts.style.display="";
-  $("qProg").textContent=`Trazo ${qi+1} de ${A.length}`;$("qScore").textContent=`Aciertos: ${score}`;$("qBar").style.width=(qi/A.length*100)+"%";
-  qOpts.querySelectorAll("button").forEach(b=>{b.className="";b.disabled=false;});
-  qFb.hidden=true;qNext.hidden=true;
-}
-qOpts.addEventListener("click",e=>{
-  const b=e.target.closest("button");if(!b||answered)return;answered=true;
-  const a=A[order[qi]],ok=b.dataset.k===a.k;if(ok)score++;
-  qOpts.querySelectorAll("button").forEach(x=>{x.disabled=true;if(x.dataset.k===a.k)x.className="ok";else if(x===b)x.className="bad";});
-  qFb.className="qfb"+(ok?"":" bad");qFb.innerHTML=(ok?"<b>Correcto.</b> ":`<b>Incorrecto.</b> Se trata de ${a.t.toLowerCase()} ${a.s}. `)+a.ecg;qFb.hidden=false;
-  $("qScore").textContent=`Aciertos: ${score}`;$("qBar").style.width=((qi+1)/A.length*100)+"%";
-  qNext.textContent=qi<A.length-1?"Siguiente trazo →":"Ver resultado";qNext.hidden=false;
-});
-qNext.addEventListener("click",()=>{
-  if(done){qStart();return;}
-  if(qi<A.length-1){qi++;qShow();return;}
-  done=true;const pct=Math.round(score/A.length*100);
-  $("qMon").hidden=true;qOpts.style.display="none";
-  qFb.className="qfb"+(pct>=70?"":" bad");
-  qFb.innerHTML=`<b>Resultado: ${score} de ${A.length} (${pct} %).</b> `+(pct>=70?"Reconoce adecuadamente los patrones del espectro ventricular.":"Se recomienda repasar los trazos en la pestaña Espectro.");
-  qFb.hidden=false;qNext.textContent="Reiniciar";
-});
-qStart();
-
-/* ---------- Pestañas ---------- */
-const TABS=[...root.querySelectorAll('[role="tab"]')];
-function openTab(i,focus){TABS.forEach((t,j)=>{const on=i===j;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on;if(on&&focus)t.focus();});}
-TABS.forEach((t,i)=>{
-  t.addEventListener("click",()=>openTab(i));
-  t.addEventListener("keydown",e=>{let j=null;if(e.key==="ArrowRight")j=(i+1)%TABS.length;if(e.key==="ArrowLeft")j=(i-1+TABS.length)%TABS.length;if(j!==null){e.preventDefault();openTab(j,true);}});
-});
 })();
 </script>
 <script>

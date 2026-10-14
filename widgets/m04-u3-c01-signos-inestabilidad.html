@@ -123,6 +123,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
 .note{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 @media (prefers-reduced-motion:reduce){.tp{animation:none}.center .pic::after{animation:none}.node{transition:none}}
 </style>
+<link rel="stylesheet" href="../css/26-tipografia-widgets.css">
 </head>
 <body>
 
@@ -135,8 +136,6 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
   <nav class="tabs" role="tablist" aria-label="Secciones">
     <button role="tab" id="st-sig" aria-controls="sp-sig" aria-selected="true" tabindex="0"><span>1</span>Signos</button>
     <button role="tab" id="st-sim" aria-controls="sp-sim" aria-selected="false" tabindex="-1"><span>2</span>Decisión clínica</button>
-    <button role="tab" id="st-cas" aria-controls="sp-cas" aria-selected="false" tabindex="-1"><span>3</span>Casos</button>
-    <button role="tab" id="st-ref" aria-controls="sp-ref" aria-selected="false" tabindex="-1"><span>4</span>Referencias</button>
   </nav>
 
   <!-- 1 Signos -->
@@ -185,7 +184,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
   </section>
 
   <!-- 3 Casos -->
-  <section class="tp" id="sp-cas" role="tabpanel" aria-labelledby="st-cas" hidden>
+  <section class="tp" id="sp-cas">
     <p class="lead">Lea cada caso y determine si el paciente está estable o inestable.</p>
     <div class="quiz">
       <div class="qhead"><span id="qProg"></span><span class="qbar"><i id="qBar"></i></span><span id="qScore"></span></div>
@@ -199,7 +198,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font
   </section>
 
   <!-- 4 Referencias -->
-  <section class="tp" id="sp-ref" role="tabpanel" aria-labelledby="st-ref" hidden>
+  <section class="tp" id="sp-ref">
     <ol class="refs">
       <li>Panchal AR, Bartos JA, Cabañas JG, et al. Part 3: Adult Basic and Advanced Life Support: 2020 American Heart Association Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care. <i>Circulation.</i> 2020;142(16 Suppl 2):S366-S468.</li>
       <li>American Heart Association. 2025 American Heart Association Guidelines for Cardiopulmonary Resuscitation and Emergency Cardiovascular Care. <i>Circulation.</i> 2025.</li>
@@ -339,7 +338,7 @@ qStart();
 
 /* ---------- Pestañas ---------- */
 const TABS=[...root.querySelectorAll('[role="tab"]')];
-function openTab(i,focus){TABS.forEach((t,j)=>{const on=i===j;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on;if(on&&focus)t.focus();});if(i===0)requestAnimationFrame(drawLinks);}
+function openTab(i,focus){TABS.forEach((t,j)=>{const on=i===j;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;$(t.getAttribute("aria-controls")).hidden=!on;if(on&&focus)t.focus();});if(i===0)setTimeout(drawLinks,0);}
 TABS.forEach((t,i)=>{
   t.addEventListener("click",()=>openTab(i));
   t.addEventListener("keydown",e=>{let j=null;if(e.key==="ArrowRight")j=(i+1)%TABS.length;if(e.key==="ArrowLeft")j=(i-1+TABS.length)%TABS.length;if(j!==null){e.preventDefault();openTab(j,true);}});

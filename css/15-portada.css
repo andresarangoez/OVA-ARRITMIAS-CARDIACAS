@@ -201,7 +201,9 @@
     opacity: 0.75;
 }
 .modulos-titulo { margin: 0 0 10px 0; color: var(--fucs-azul-profundo); font-size: 1.6rem; font-weight: 800; letter-spacing: 0.3px; }
-.modulos-descripcion { margin: 0; width: 100%; color: var(--text-body); font-size: 0.98rem; line-height: 1.7; }
+/* Justificado, como el texto de los módulos: es un párrafo largo de varias
+   líneas y en bandera dejaba el borde derecho muy irregular. */
+.modulos-descripcion { margin: 0; width: 100%; color: var(--text-body); font-size: 0.98rem; line-height: 1.7; text-align: justify; text-wrap: pretty; }
 
 .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }
 

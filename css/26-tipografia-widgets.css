@@ -1,0 +1,34 @@
+/* --- TIPOGRAFÍA COMÚN DE LOS CÓDIGOS INTERACTIVOS ---
+   Esta hoja la enlazan SOLO los códigos de widgets/, y después de su propio
+   <style>, para poder corregir lo que cada uno trae de fábrica. No la carga
+   index.html: lo que hay aquí no debe tocar la página del OVA.
+
+   Cada código se diseñó por separado y traía sus propios topes de ancho de
+   línea —el título a 28 o 30 caracteres, la entradilla a 66, el pie a 80—,
+   heredados de la maqueta en la que nació. Vistos sueltos tienen sentido;
+   dentro del OVA no, porque el recuadro del código llega hasta el borde de la
+   columna y el texto se corta a media anchura, con el título partido en dos
+   líneas cuando cabía en una.
+
+   Aquí se quitan esos topes y se justifica el texto corrido, que es como se
+   compone el resto del módulo. */
+
+h1, h2,
+.lead, .lede, .abstract, .sub,
+footer {
+    max-width: none;
+}
+
+/* Justificado solo en el texto corrido: un título justificado se abre en
+   huecos feos en cuanto ocupa dos líneas. */
+.lead, .lede, .abstract,
+footer {
+    text-align: justify;
+    text-wrap: pretty;
+}
+
+/* En pantallas estrechas el justificado produce ríos de espacio en blanco
+   entre palabras, porque caben muy pocas por línea. */
+@media (max-width: 560px) {
+    .lead, .lede, .abstract, footer { text-align: left; }
+}
